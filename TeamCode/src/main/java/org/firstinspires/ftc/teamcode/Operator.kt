@@ -11,17 +11,17 @@ import org.firstinspires.ftc.teamcode.UtilClass.varStorage.varConfig
 import org.firstinspires.ftc.teamcode.extensions.Extensions.potentAngle
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.calcFlipPose
+import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.lastSetVal
 import org.firstinspires.ftc.teamcode.opModes.HardwareConfig
 import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.flipServo
 import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.potentiometer
 import org.firstinspires.ftc.teamcode.opModes.rr.drive.MecanumDrive
 
 object Operator {
-    var touchPressed = false
-    var xPressed = false
-    var squarePressed = false
-    fun bindOtherButtons(myOpMode: OpMode, drive: MecanumDrive?) {
-        //"Chase", "Camden", "Kian", "Grady", "Michael","Graden"
+    private var touchPressed = false
+    private var xPressed = false
+    fun bindOtherButtons(myOpMode: OpMode, drive: MecanumDrive) {
+        // "Camden", "Grady", "Michael","Graden", "Delaney", "Child"
 //        if (!airplaneArmed && timer.seconds() > 80) {
 //            airplaneArmed = true;
 //            myOpMode.gamepad2.runRumbleEffect(cRE);
@@ -29,7 +29,7 @@ object Operator {
 //        Blink.selectLights(myOpMode);
         val otherControls = Drivers.otherControls
         val currOther = Drivers.currOther
-        if (currOther === otherControls[1]) { //Camden
+        if (currOther === otherControls[0]) { //Camden
             if (!touchPressed && myOpMode.gamepad2.touchpad && LoopTime.useLoopTime) {
                 LoopTime.useLoopTime = false
             } else if (!touchPressed && myOpMode.gamepad2.touchpad && !LoopTime.useLoopTime) {
@@ -57,7 +57,7 @@ object Operator {
                 flipServo.calcFlipPose(0.0)
             }
             if (PastAngle.pastAngleVal != potentiometer.potentAngle()) {
-                flipServo.calcFlipPose(ServoExtensions.ServoPose.lastSetVal.toDouble())
+                flipServo.calcFlipPose(lastSetVal.toDouble())
             }
             //
             if (myOpMode.gamepad2.right_stick_y < -DeadZones.deadZone && varConfig.usePIDF) {
@@ -136,15 +136,15 @@ object Operator {
                 )
             }
         }
-        if (currOther === otherControls[3]) { //Grady
+        if (currOther === otherControls[1]) { //Grady
         }
-        if (currOther === otherControls[4]) { //Michael
+        if (currOther === otherControls[2]) { //Michael
         }
-        if (currOther === otherControls[5]) { //Graden
+        if (currOther === otherControls[3]) { //Graden
         }
-        if (currOther === otherControls[6]) { // Delaney
+        if (currOther === otherControls[4]) { // Delaney
         }
-        if (currOther === otherControls[7]) { // Child
+        if (currOther === otherControls[5]) { // Child
             flipServo.calcFlipPose(30.0)
         }
     }

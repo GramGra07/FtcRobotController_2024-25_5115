@@ -21,4 +21,20 @@ object MotorExtensions {
             this.mode = runMode
         }
     }
+    fun DcMotor.brake() {
+        this.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
+    }
+    fun DcMotor.coast() {
+        this.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
+    }
+    fun DcMotor.runToPosition() {
+        this.mode = DcMotor.RunMode.RUN_TO_POSITION
+    }
+    fun DcMotor.runUsingEncoder() {
+        this.mode = DcMotor.RunMode.RUN_USING_ENCODER
+    }
+    fun DcMotor.runWithoutEncoder() {
+        this.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+    }
+
 }

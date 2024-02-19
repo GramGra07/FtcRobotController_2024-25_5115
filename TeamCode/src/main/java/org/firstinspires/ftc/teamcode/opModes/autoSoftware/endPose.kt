@@ -9,10 +9,10 @@ import org.firstinspires.ftc.teamcode.opModes.autoSoftware.autoHardware.Companio
 import org.firstinspires.ftc.teamcode.opModes.rr.drive.MecanumDrive
 
 object endPose {
-    var endPoseRightRed = Pose2d(50.0, -EndPoseVals.outside.toDouble(), Math.toRadians(0.0))
-    var endPoseLeftRed = Pose2d(50.0, -EndPoseVals.inside.toDouble(), Math.toRadians(0.0))
-    var endPoseRightBlue = Pose2d(50.0, EndPoseVals.inside.toDouble(), Math.toRadians(0.0))
-    var endPoseLeftBlue = Pose2d(50.0, EndPoseVals.outside.toDouble(), Math.toRadians(0.0))
+    private var endPoseRightRed = Pose2d(50.0, -EndPoseVals.outside.toDouble(), Math.toRadians(0.0))
+    private var endPoseLeftRed = Pose2d(50.0, -EndPoseVals.inside.toDouble(), Math.toRadians(0.0))
+    private var endPoseRightBlue = Pose2d(50.0, EndPoseVals.inside.toDouble(), Math.toRadians(0.0))
+    private var endPoseLeftBlue = Pose2d(50.0, EndPoseVals.outside.toDouble(), Math.toRadians(0.0))
 
     // returns a trajectory sequence to go to the end pose
     fun goToEndPose(endPose: EndPose, drive: MecanumDrive) {
@@ -54,6 +54,5 @@ object endPose {
             else -> {}
         }
         updatePose(drive)
-        //        encoderDrive(motorExtension, -autoExtension, 1);
     }
 }

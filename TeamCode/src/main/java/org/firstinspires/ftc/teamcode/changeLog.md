@@ -1,3 +1,7 @@
+6.0.0 February 19th, 2024
+Changed to FTC 9.1.0
+Updated all classes to Kotlin
+
 5.5.0 January 26th, 2024
 Added PIDF modes and changed auto to a Finite State Machine
 

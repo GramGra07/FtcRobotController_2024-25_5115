@@ -20,6 +20,8 @@ import org.firstinspires.ftc.teamcode.UtilClass.varStorage.PIDVals
 import org.firstinspires.ftc.teamcode.UtilClass.varStorage.StartPose
 import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.setPatternCo
 import org.firstinspires.ftc.teamcode.extensions.Extensions.ledIND
+import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.runToPosition
+import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.runUsingEncoder
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.calcFlipPose
 import org.firstinspires.ftc.teamcode.opModes.HardwareConfig
 import org.firstinspires.ftc.teamcode.opModes.camera.VPObjectDetect
@@ -73,113 +75,22 @@ class autoHardware(opmode: LinearOpMode) // constructor
             PIDVals.extensionPIDFCo.d,
             PIDVals.extensionPIDFCo.f
         )
-        //        visionPortal.setProcessorEnabled(objProcessor, false);
         lights.setPatternCo()
     }
 
     companion object {
-        //    public static OpenCvWebcam webcam; // the webcam public we are using
-        @JvmField
         var START_POSE = Pose2d(0.0, 0.0, 0.0) // the start pose
+        //    public static OpenCvWebcam webcam; // the webcam public we are using
         var blueRotate = -90 // final blue rotation
         var redRotate = 90 // final red rotation
-
-        //default start position for RoadRunner
-        @JvmField
         var startPose = Pose2d(12.0, -63.0, Math.toRadians(90.0))
-
-        @JvmField
-        var spot: Pose2d? = null // cycle position to be updated
-
-        @JvmField
-        var autonomousRandom = AutoRandom.mid // default autonomous choice for spike mark
-
-        @JvmField
-        var autoRandomReliable: AutoRandom? = null // tracker for the AutoRandom enum
+        lateinit var spot: Pose2d // cycle position to be updated
+        var autonomousRandom = AutoRandom.MID // default autonomous choice for spike mark
+        lateinit var autoRandomReliable: AutoRandom // tracker for the AutoRandom enum
         var visionPortal: VisionPortal? = null // vision portal for the webcam
         var objProcessor: VPObjectDetect? = null // april tag processor for the vision portal
 
-        @JvmField
-        var aprilTagProcessor: AprilTagProcessor? =
-            null // april tag processor for the vision portal
-
-        @JvmStatic
-        fun doAprilTagPoseCorrection(
-            processor: AprilTagProcessor,
-            telemetry: Telemetry,
-            drive: MecanumDrive
-        ) {
-            val currentDetections: List<AprilTagDetection> = processor.detections
-            telemetry.addData("# AprilTags Detected", currentDetections.size)
-            var pose = Pose2d(0.0, 0.0, drive.poseEstimate.heading)
-
-            // Step through the list of detections and display info for each one.
-            for (detection in currentDetections) {
-                if (detection.metadata != null) {
-                    if (detection.id == 7 || detection.id == 10) {
-                        telemetry.addLine(
-                            String.format(
-                                "\n==== (ID %d) %s",
-                                detection.id,
-                                detection.metadata.name
-                            )
-                        )
-                        telemetry.addLine(
-                            String.format(
-                                "XYZ %6.1f %6.1f %6.1f  (inch)",
-                                detection.ftcPose.x,
-                                detection.ftcPose.y,
-                                detection.ftcPose.z
-                            )
-                        )
-                        telemetry.addLine(
-                            String.format(
-                                "PRY %6.1f %6.1f %6.1f  (deg)",
-                                detection.ftcPose.pitch,
-                                detection.ftcPose.roll,
-                                detection.ftcPose.yaw
-                            )
-                        )
-                        telemetry.addLine(
-                            String.format(
-                                "RBE %6.1f %6.1f %6.1f  (inch, deg, deg)",
-                                detection.ftcPose.range,
-                                detection.ftcPose.bearing,
-                                detection.ftcPose.elevation
-                            )
-                        )
-                        val aprilT = Pose2d(15.0, -72.0, Math.toRadians(0.0))
-                        val aprilS = Pose2d(-15.0, -72.0, Math.toRadians(0.0))
-                        var detectablePose: Pose2d
-                        detectablePose = if (detection.id == 7) {
-                            aprilS
-                        } else {
-                            aprilT
-                        }
-                        pose = Pose2d(
-                            detectablePose.x - detection.ftcPose.y,
-                            detectablePose.y - detection.ftcPose.x,
-                            drive.poseEstimate.heading
-                        )
-                    }
-                } else {
-                    telemetry.addLine(String.format("\n==== (ID %d) Unknown", detection.id))
-                    telemetry.addLine(
-                        String.format(
-                            "Center %6.0f %6.0f   (pixels)",
-                            detection.center.x,
-                            detection.center.y
-                        )
-                    )
-                }
-            }
-            if (pose.x != 0.0 && pose.y != 0.0) {
-                telemetry.update()
-                drive.poseEstimate = pose
-            }
-        }
-
-        fun getStartPose(alliance: Alliance, side: StartSide?): Pose2d {
+        fun getStartPose(alliance: Alliance, side: StartSide): Pose2d {
             StartPose.alliance = alliance
             StartPose.side = side
             when (alliance) {
@@ -231,25 +142,21 @@ class autoHardware(opmode: LinearOpMode) // constructor
 
                     else -> {}
                 }
-
-                else -> {}
             }
             return Pose2d(0.0, 0.0, 0.0)
         }
 
         // method to update the pose
-        @JvmStatic
         fun updatePose(drive: MecanumDrive) {
             PoseStorage.currentPose = drive.poseEstimate
         }
 
         // method to use encoders to go to a point with encoder
-        @JvmStatic
         fun encoderDrive(motor: DcMotor, position: Int, speed: Double, drive: MecanumDrive) {
-            motor.mode = DcMotor.RunMode.RUN_USING_ENCODER
+            motor.runUsingEncoder()
             motor.targetPosition = motor.currentPosition + position
             drive.update()
-            motor.mode = DcMotor.RunMode.RUN_TO_POSITION
+            motor.runToPosition()
             motor.power = Math.abs(speed)
             while (motor.isBusy) {
                 drive.update()

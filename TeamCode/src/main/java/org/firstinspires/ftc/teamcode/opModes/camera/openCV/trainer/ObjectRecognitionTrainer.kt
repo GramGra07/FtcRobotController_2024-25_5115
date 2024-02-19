@@ -8,8 +8,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
 import org.firstinspires.ftc.teamcode.EOCVWebcam
-import org.firstinspires.ftc.teamcode.extensions.ScalarExtensions.fetchScalar
-import org.firstinspires.ftc.teamcode.extensions.ScalarExtensions.scalarVals
+import org.firstinspires.ftc.teamcode.extensions.ScalarUtil.fetchScalar
+import org.firstinspires.ftc.teamcode.extensions.ScalarUtil.scalarVals
 import org.opencv.core.Core
 import org.opencv.core.Mat
 import org.opencv.core.MatOfPoint

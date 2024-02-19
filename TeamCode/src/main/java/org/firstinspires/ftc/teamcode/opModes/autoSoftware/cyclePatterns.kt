@@ -4,7 +4,6 @@ import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.geometry.Vector2d
 import org.firstinspires.ftc.teamcode.Enums.Alliance
 import org.firstinspires.ftc.teamcode.Enums.PathLong
-import org.firstinspires.ftc.teamcode.Trajectories.backdrop.BackdropTrajectories
 import org.firstinspires.ftc.teamcode.UtilClass.ServoUtil
 import org.firstinspires.ftc.teamcode.UtilClass.varStorage.StartPose
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.calcFlipPose
@@ -21,7 +20,7 @@ object cyclePatterns {
                 Alliance.RED -> {
                     autoHardware.spot = Pose2d(-54.5, -10.0, Math.toRadians(180.0))
                     drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(drive.poseEstimate)
-                        .lineToSplineHeading(Pose2d(36.0, -12.0, autoHardware.spot!!.heading))
+                        .lineToSplineHeading(Pose2d(36.0, -12.0, autoHardware.spot.heading))
                         .lineToLinearHeading(autoHardware.spot)
                         .addSpatialMarker(Vector2d(-36.0, -10.0)) {
                             flipServo.calcFlipPose(clawAngle.toDouble())
@@ -38,7 +37,7 @@ object cyclePatterns {
                 Alliance.BLUE -> {
                     autoHardware.spot = Pose2d(-54.5, 10.1, Math.toRadians(180.0))
                     drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(drive.poseEstimate)
-                        .lineToLinearHeading(Pose2d(36.0, 12.0, autoHardware.spot!!.heading))
+                        .lineToLinearHeading(Pose2d(36.0, 12.0, autoHardware.spot.heading))
                         .lineToLinearHeading(autoHardware.spot)
                         .addSpatialMarker(Vector2d(-36.0, 10.0)) {
                             flipServo.calcFlipPose(clawAngle.toDouble())
@@ -59,18 +58,18 @@ object cyclePatterns {
                         .lineToLinearHeading(
                             Pose2d(
                                 autoHardware.START_POSE.x,
-                                autoHardware.START_POSE.y + BackdropTrajectories.startOffsetRed,
-                                autoHardware.spot!!.heading
+                                autoHardware.START_POSE.y ,//+ BackdropTrajectories.startOffsetRed,
+                                autoHardware.spot.heading
                             )
                         )
                         .splineToLinearHeading(
                             Pose2d(
                                 -36.0,
-                                autoHardware.START_POSE.y + BackdropTrajectories.startOffsetRed,
-                                autoHardware.spot!!.heading
-                            ), autoHardware.spot!!.heading
+                                autoHardware.START_POSE.y ,//+ BackdropTrajectories.startOffsetRed,
+                                autoHardware.spot.heading
+                            ), autoHardware.spot.heading
                         )
-                        .splineToLinearHeading(autoHardware.spot, autoHardware.spot!!.heading)
+                        .splineToLinearHeading(autoHardware.spot, autoHardware.spot.heading)
                         .addSpatialMarker(Vector2d(-36.0, -58.0)) {
                             flipServo.calcFlipPose(clawAngle.toDouble())
                         }
@@ -88,18 +87,18 @@ object cyclePatterns {
                         .lineToLinearHeading(
                             Pose2d(
                                 autoHardware.START_POSE.x,
-                                autoHardware.START_POSE.y - BackdropTrajectories.startOffsetBlue,
-                                autoHardware.spot!!.heading
+                                autoHardware.START_POSE.y ,//- BackdropTrajectories.startOffsetBlue,
+                                autoHardware.spot.heading
                             )
                         )
                         .splineToLinearHeading(
                             Pose2d(
                                 -36.0,
-                                autoHardware.START_POSE.y - BackdropTrajectories.startOffsetBlue - 1,
-                                autoHardware.spot!!.heading
-                            ), autoHardware.spot!!.heading
+                                autoHardware.START_POSE.y ,//- BackdropTrajectories.startOffsetBlue - 1,
+                                autoHardware.spot.heading
+                            ), autoHardware.spot.heading
                         )
-                        .splineToLinearHeading(autoHardware.spot, autoHardware.spot!!.heading)
+                        .splineToLinearHeading(autoHardware.spot, autoHardware.spot.heading)
                         .addSpatialMarker(Vector2d(-36.0, 58.0)) {
                             flipServo.calcFlipPose(clawAngle.toDouble())
                         }

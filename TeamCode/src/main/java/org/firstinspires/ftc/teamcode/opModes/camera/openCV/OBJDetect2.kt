@@ -82,7 +82,7 @@ class OBJDetect2(var alliance: Alliance) : OpenCvPipeline() {
                         5.0,
                         Scalar(0.0, 255.0, 0.0)
                     )
-                    autoHardware.autonomousRandom = AutoRandom.right
+                    autoHardware.autonomousRandom = AutoRandom.RIGHT
                     green1.ledIND(HardwareConfig.red1, false)
                     green2.ledIND(HardwareConfig.red2, false)
                     green3.ledIND(HardwareConfig.red3, true)
@@ -108,7 +108,7 @@ class OBJDetect2(var alliance: Alliance) : OpenCvPipeline() {
                             5.0,
                             Scalar(0.0, 255.0, 0.0)
                         )
-                        autoHardware.autonomousRandom = AutoRandom.mid
+                        autoHardware.autonomousRandom = AutoRandom.MID
                         green1.ledIND(HardwareConfig.red1, true)
                         green2.ledIND(HardwareConfig.red2, true)
                         green3.ledIND(HardwareConfig.red3, false)
@@ -127,7 +127,7 @@ class OBJDetect2(var alliance: Alliance) : OpenCvPipeline() {
                 5.0,
                 Scalar(0.0, 255.0, 0.0)
             )
-            autoHardware.autonomousRandom = AutoRandom.left
+            autoHardware.autonomousRandom = AutoRandom.LEFT
             green1.ledIND(HardwareConfig.red1, false)
             green2.ledIND(HardwareConfig.red2, true)
             green3.ledIND(HardwareConfig.red3, false)

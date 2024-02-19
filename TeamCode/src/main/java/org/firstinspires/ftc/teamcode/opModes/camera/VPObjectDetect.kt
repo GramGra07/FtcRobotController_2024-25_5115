@@ -91,7 +91,7 @@ class VPObjectDetect(var alliance: Alliance) : VisionProcessor, CameraStreamSour
                         5.0,
                         Scalar(0.0, 255.0, 0.0)
                     )
-                    autoHardware.autonomousRandom = AutoRandom.right
+                    autoHardware.autonomousRandom = AutoRandom.RIGHT
                     lights.setPatternCo(RevBlinkinLedDriver.BlinkinPattern.WHITE)
                     current = 1
                 }
@@ -114,7 +114,7 @@ class VPObjectDetect(var alliance: Alliance) : VisionProcessor, CameraStreamSour
                             5.0,
                             Scalar(0.0, 255.0, 0.0)
                         )
-                        autoHardware.autonomousRandom = AutoRandom.mid
+                        autoHardware.autonomousRandom = AutoRandom.MID
                         lights.setPatternCo(RevBlinkinLedDriver.BlinkinPattern.GOLD)
                         current = 1
                         //                        shiftOffset = 0;
@@ -131,7 +131,7 @@ class VPObjectDetect(var alliance: Alliance) : VisionProcessor, CameraStreamSour
                 5.0,
                 Scalar(0.0, 255.0, 0.0)
             )
-            autoHardware.autonomousRandom = AutoRandom.left
+            autoHardware.autonomousRandom = AutoRandom.LEFT
             lights.setPatternCo(RevBlinkinLedDriver.BlinkinPattern.CONFETTI)
             //            shiftOffset = -leftShift;
         }

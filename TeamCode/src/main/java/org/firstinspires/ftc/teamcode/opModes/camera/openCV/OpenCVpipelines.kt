@@ -3,8 +3,8 @@ package org.firstinspires.ftc.teamcode.opModes.camera.openCV
 import com.acmerobotics.dashboard.FtcDashboard
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.UtilClass.varStorage.varConfig
-import org.firstinspires.ftc.teamcode.extensions.ScalarExtensions.fetchScalar
-import org.firstinspires.ftc.teamcode.extensions.ScalarExtensions.scalarVals
+import org.firstinspires.ftc.teamcode.extensions.ScalarUtil.fetchScalar
+import org.firstinspires.ftc.teamcode.extensions.ScalarUtil.scalarVals
 import org.firstinspires.ftc.teamcode.opModes.camera.openCV.trainer.vars.blueconeObjVars
 import org.firstinspires.ftc.teamcode.opModes.camera.openCV.trainer.vars.redconeObjVars
 import org.firstinspires.ftc.teamcode.opModes.camera.openCV.trainer.vars.redpropObjVars

@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.extensions
 
 import org.opencv.core.Scalar
 
-object ScalarExtensions {
+object ScalarUtil {
 
     fun scalarVals(color: String): Scalar {
         var c: String = color

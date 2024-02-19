@@ -20,6 +20,8 @@ import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.Drivers
 import org.firstinspires.ftc.teamcode.Drivers.bindDriverButtons
+import org.firstinspires.ftc.teamcode.Drivers.fieldCentric
+import org.firstinspires.ftc.teamcode.Drivers.switchProfile
 import org.firstinspires.ftc.teamcode.Enums.StartDist
 import org.firstinspires.ftc.teamcode.Operator.bindOtherButtons
 import org.firstinspires.ftc.teamcode.UtilClass.FileWriterFTC
@@ -43,6 +45,7 @@ import org.firstinspires.ftc.teamcode.opModes.autoSoftware.autoHardware
 import org.firstinspires.ftc.teamcode.opModes.rr.drive.MecanumDrive
 import org.firstinspires.ftc.teamcode.opModes.rr.drive.advanced.PoseStorage
 import java.io.FileWriter
+import kotlin.math.sqrt
 
 open class HardwareConfig(opmode: LinearOpMode) {
     private var slowMult: Int = varConfig.slowMult
@@ -73,9 +76,9 @@ open class HardwareConfig(opmode: LinearOpMode) {
         bindDriverButtons(myOpMode, drive)
         bindOtherButtons(myOpMode, drive)
         if (multipleDrivers) {
-            Drivers.switchProfile(myOpMode)
+            switchProfile(myOpMode)
         }
-        drive(Drivers.fieldCentric)
+        drive(fieldCentric)
         power() //sets power to power variables
         buildTelemetry() //makes telemetry
         loops++
@@ -162,10 +165,10 @@ open class HardwareConfig(opmode: LinearOpMode) {
         PoseStorage.currentPose = drive.poseEstimate
     }
 
-    fun updateDistTraveled(before: Pose2d, after: Pose2d) {
+    private fun updateDistTraveled(before: Pose2d, after: Pose2d) {
         val x = after.x - before.x
         val y = after.y - before.y
-        val dist = Math.sqrt(x * x + y * y)
+        val dist = sqrt(x * x + y * y)
         thisDist += dist
         totalDist += dist
     }
@@ -256,11 +259,11 @@ open class HardwareConfig(opmode: LinearOpMode) {
         var LPS = 0.0
         var refreshRate = 0.0
         var rrPS = 0.0
-        var pastRefreshRate = refreshRate
-        var pastSecondLoops = 0.0
-        var pastTimeRR = 0.0
+        private var pastRefreshRate = refreshRate
+        private var pastSecondLoops = 0.0
+        private var pastTimeRR = 0.0
         var lastTimeOpen = 0.0
-        var pastUseLoopTime: Boolean = LoopTime.useLoopTime
+        private var pastUseLoopTime: Boolean = LoopTime.useLoopTime
         lateinit var green1: DigitalChannel
         lateinit var green2: DigitalChannel
         lateinit var green3: DigitalChannel
@@ -280,7 +283,7 @@ open class HardwareConfig(opmode: LinearOpMode) {
         var extensionPIDF = PIDFController(0.0, 0.0, 0.0, 0.0)
         var rotationPIDF = PIDFController(0.0, 0.0, 0.0, 0.0)
         lateinit var startDist: StartDist
-        const val currentVersion = "5.5.0"
+        const val currentVersion = "6.0.0"
 
         //init
         fun init(ahwMap: HardwareMap, auto: Boolean) {
@@ -369,11 +372,6 @@ open class HardwareConfig(opmode: LinearOpMode) {
                 pastUseLoopTime = LoopTime.useLoopTime
             }
             LPS = loops / timer.seconds()
-            //        if (LPS != lastLPS) {
-//            LPSList.add(LPS);
-//            LPSAverage = LPSList.stream().mapToDouble(val -> val).average().orElse(0.0);
-//            lastLPS = LPS;
-//        }
             if (refreshRate != pastRefreshRate) {
                 rrPS = timer.seconds() - pastTimeRR
                 pastRefreshRate = refreshRate

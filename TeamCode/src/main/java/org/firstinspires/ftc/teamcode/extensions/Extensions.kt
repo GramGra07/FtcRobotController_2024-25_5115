@@ -28,17 +28,4 @@ object Extensions {
     }
 
     fun TouchSensor.getTouchSensor(): Boolean = this.isPressed
-
-
-    private const val minimumVoltage = 11.5
-    fun VoltageSensor.getVoltage(): Double { //VoltageSensor sensor
-        var result = Double.POSITIVE_INFINITY
-        val voltage = this.voltage
-        if (voltage > 0) {
-            result = Math.min(result, voltage)
-        }
-        lowVoltage = result <= minimumVoltage
-        currentVoltage = result
-        return result
-    }
 }

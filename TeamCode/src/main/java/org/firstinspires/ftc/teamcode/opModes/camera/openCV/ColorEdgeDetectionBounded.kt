@@ -119,7 +119,7 @@ class ColorEdgeDetectionBounded(var alliance: Alliance) : OpenCvPipeline() {
                         1.0,
                         Scalar(0.0, 255.0, 0.0)
                     )
-                    autoHardware.autonomousRandom = AutoRandom.left
+                    autoHardware.autonomousRandom = AutoRandom.LEFT
                 }
             }
             if (centers[highIndex]!!.x > pointsX[2] && centers[highIndex]!!.x < pointsX[3]) {
@@ -137,7 +137,7 @@ class ColorEdgeDetectionBounded(var alliance: Alliance) : OpenCvPipeline() {
                         1.0,
                         Scalar(0.0, 255.0, 0.0)
                     )
-                    autoHardware.autonomousRandom = AutoRandom.mid
+                    autoHardware.autonomousRandom = AutoRandom.MID
                 }
             }
             if (centers[highIndex]!!.x > pointsX[4] && centers[highIndex]!!.x < pointsX[5]) {
@@ -155,7 +155,7 @@ class ColorEdgeDetectionBounded(var alliance: Alliance) : OpenCvPipeline() {
                         1.0,
                         Scalar(0.0, 255.0, 0.0)
                     )
-                    autoHardware.autonomousRandom = AutoRandom.right
+                    autoHardware.autonomousRandom = AutoRandom.RIGHT
                 }
             }
         }

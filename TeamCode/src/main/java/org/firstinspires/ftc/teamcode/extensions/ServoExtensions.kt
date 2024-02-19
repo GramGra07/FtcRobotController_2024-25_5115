@@ -17,14 +17,16 @@ object ServoExtensions {
     @Override
     fun Servo.setPose(degrees: Double) {
         val degree_mult = 0.00555555554
-        ServoPose.position = degree_mult * degrees
-        ServoPose.position = degrees
-        this.position = ServoPose.position
+        lastPosition = degree_mult * degrees
+        lastSetVal = degrees.toInt()
+        this.position = lastPosition
     }
 
     var servoFlipVal = 62
     var hcalc = 96.0
     var flipOffset = -30.0
+    var lastPosition: Double = 0.0
+    var lastSetVal: Int = 0
     fun Servo.calcFlipPose(pose: Double) {
         val theta: Double =
             potentiometer.potentAngle() + flipOffset
@@ -32,21 +34,6 @@ object ServoExtensions {
         val sig: Double = ceil(-0.26 * theta + hcalc) + pose / 2
         this.position = sig
         servoFlipVal = sig.toInt()
-        ServoPose.lastSetVal = pose.toInt()
+        lastSetVal = pose.toInt()
     }
-
-    data class ServoPose(
-        val position: Double = 0.0,
-        val lastSetVal: Int = 0,
-        val servoFlipVal: Int = 62
-    ) {
-        companion object {
-            var position: Double = 0.0
-            var lastSetVal = 0
-            var servoFlipVal = 62
-        }
-    }
-
-    fun Servo.getPose(): Double = ServoPose.position
-    fun lastSetVal(): Int = ServoPose.lastSetVal
 }

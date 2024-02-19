@@ -14,25 +14,25 @@ import org.firstinspires.ftc.teamcode.opModes.rr.drive.MecanumDrive
 import org.firstinspires.ftc.teamcode.opModes.rr.drive.advanced.PoseStorage
 
 object Drivers {
-    val driverControls =
-        arrayOf("Chase", "Camden", "Kian", "Grady", "Michael", "Graden", "Delaney", "Child")
+    private val driverControls =
+        arrayOf( "Camden", "Grady", "Michael", "Graden", "Delaney", "Child")
     val otherControls = driverControls
     const val baseDriver = 0
     const val baseOther = 1 //list integer of base driver and other controls
     var currDriver = driverControls[DriverIndex.dIndex]
     var currOther = otherControls[DriverIndex.oIndex] //list string of driver and other controls
     var fieldCentric = false
-    var liftConnected = false
-    var optionsHigh1 = false
-    var shareHigh1 = false
-    var optionsHigh2 = false
-    var shareHigh2 = false
-    var slowModeButtonDown = false
-    var planeButtonDown = false
-    var planeReleased = true
+    private var liftConnected = false
+    private var optionsHigh1 = false
+    private var shareHigh1 = false
+    private var optionsHigh2 = false
+    private var shareHigh2 = false
+    private var slowModeButtonDown = false
+    private var planeButtonDown = false
+    private var planeReleased = true
     fun bindDriverButtons(myOpMode: OpMode, drive: MecanumDrive) {
-        //"Chase", "Camden", "Kian", "Grady", "Michael","Graden", "Delaney", "Child"
-        if (currDriver === driverControls[0]) { //Chase
+        // "Camden", "Grady", "Michael","Graden", "Delaney", "Child"
+        if (currDriver === driverControls[1]) { //grady
             fieldCentric = false
             //slowmode
 //            gamepad1.wasJustReleased(GamepadKeys.Button.B);
@@ -76,38 +76,12 @@ object Drivers {
                 myOpMode.gamepad1.cross
             )
         }
-        if (currDriver === driverControls[3]) { //Grady
-            fieldCentric = true
-            //slowmode
-            if (myOpMode.gamepad1.circle && !slowModeButtonDown && !HardwareConfig.slowModeIsOn) {
-                HardwareConfig.slowModeIsOn = true
-            } else if (myOpMode.gamepad1.circle && !slowModeButtonDown && HardwareConfig.slowModeIsOn) {
-                HardwareConfig.slowModeIsOn = false
-            }
-            slowModeButtonDown = myOpMode.gamepad1.circle
-            if (myOpMode.gamepad1.triangle && !planeButtonDown && !planeReleased) {
-                ServoUtil.releaseAirplane(airplaneServo)
-                planeReleased = true
-            } else if (myOpMode.gamepad1.triangle && !planeButtonDown && planeReleased) {
-                airplaneServo.setPose(airplaneReset.toDouble())
-                planeReleased = false
-            }
-            planeButtonDown = myOpMode.gamepad1.triangle
-            if (myOpMode.gamepad1.right_trigger > 0) {
-                HardwareConfig.liftPower = Limits.liftMax
-            } else if (myOpMode.gamepad1.left_trigger > 0) {
-                HardwareConfig.liftPower = -Limits.liftMax
-            } else {
-                HardwareConfig.liftPower = 0.0
-            }
+
+        if (currDriver === driverControls[0]) { //Camden
         }
-        if (currDriver === driverControls[1]) { //Camden
+        if (currDriver === driverControls[2]) { //Michael
         }
-        if (currDriver === driverControls[2]) { //Kian
-        }
-        if (currDriver === driverControls[4]) { //Michael
-        }
-        if (currDriver === driverControls[5]) { //Graden
+        if (currDriver === driverControls[3]) { //Graden
             fieldCentric = true
             if (myOpMode.gamepad1.circle && !slowModeButtonDown && !HardwareConfig.slowModeIsOn) {
                 HardwareConfig.slowModeIsOn = true
@@ -115,30 +89,8 @@ object Drivers {
                 HardwareConfig.slowModeIsOn = false
             }
             slowModeButtonDown = myOpMode.gamepad1.circle
-            if (myOpMode.gamepad1.triangle && !planeButtonDown && !planeReleased) {
-                ServoUtil.releaseAirplane(airplaneServo)
-                planeReleased = true
-            } else if (myOpMode.gamepad1.triangle && !planeButtonDown && planeReleased) {
-                ServoUtil.resetAirplane(airplaneServo)
-                planeReleased = false
-            }
-            planeButtonDown = myOpMode.gamepad1.triangle
-            if (myOpMode.gamepad1.right_trigger > 0) {
-                HardwareConfig.liftPower = Limits.liftMax
-            } else if (myOpMode.gamepad1.left_trigger > 0) {
-                HardwareConfig.liftPower = -Limits.liftMax
-            } else {
-                HardwareConfig.liftPower = 0.0
-            }
-            DriverAid.doDriverAid(
-                drive,
-                myOpMode.gamepad1.right_bumper,
-                myOpMode.gamepad1.dpad_up,
-                myOpMode.gamepad1.dpad_right,
-                myOpMode.gamepad1.cross
-            )
         }
-        if (currDriver === driverControls[6]) { //Delaney
+        if (currDriver === driverControls[4]) { //Delaney
             fieldCentric = false
             //slowmode
             if (myOpMode.gamepad1.circle && !slowModeButtonDown && !HardwareConfig.slowModeIsOn) {
@@ -185,7 +137,7 @@ object Drivers {
                 IsBusy.isAutoInTeleop = false
             }
         }
-        if (currDriver === driverControls[7]) { //Child
+        if (currDriver === driverControls[5]) { //Child
             fieldCentric = false
             HardwareConfig.slowModeIsOn = true
         }
