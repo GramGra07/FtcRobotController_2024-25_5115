@@ -1,98 +1,55 @@
-package org.firstinspires.ftc.teamcode.UtilClass;
+package org.firstinspires.ftc.teamcode.UtilClass
 
-import static org.firstinspires.ftc.teamcode.opModes.HardwareConfig.claw1Possessed;
-import static org.firstinspires.ftc.teamcode.opModes.HardwareConfig.claw2Possessed;
-import static org.firstinspires.ftc.teamcode.opModes.HardwareConfig.lastTimeOpen;
-import static org.firstinspires.ftc.teamcode.opModes.HardwareConfig.motorRotation;
-import static org.firstinspires.ftc.teamcode.opModes.HardwareConfig.potentiometer;
-import static org.firstinspires.ftc.teamcode.opModes.HardwareConfig.timer;
-
-import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.robotcore.hardware.Servo;
-
-import org.firstinspires.ftc.teamcode.Sensors;
-import org.firstinspires.ftc.teamcode.UtilClass.varStorage.PastAngle;
-import org.firstinspires.ftc.teamcode.opModes.HardwareConfig;
+import com.acmerobotics.dashboard.config.Config
+import com.qualcomm.robotcore.hardware.Servo
+import org.firstinspires.ftc.teamcode.extensions.Extensions.ledIND
+import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.setPose
+import org.firstinspires.ftc.teamcode.opModes.HardwareConfig
+import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.green1
+import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.green2
+import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.lastTimeOpen
+import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.red1
+import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.red2
+import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.timer
 
 @Config
-
-public class ServoUtil {
-    public static int backClaw = 20;
-    public static boolean useAutoClose = false;
-    public static double autoCloseDist = 6;
-    public static double position = 0;
-    public final static double degree_mult = 0.00555555554;
-
-    public static double setServo(double degrees) {
-        position = degree_mult * degrees;
-        return position;
-    }
-
-    public static double convertToDegrees(double pose) {
-        return pose / degree_mult;
-    }
-
-    public static int openClaw1 = 100;
-    public static int openClaw2 = 90;
-
-    public static void openClaw(Servo servo) {
-        if (servo == HardwareConfig.claw1) {
-            servo.setPosition(setServo(openClaw1));
-            Sensors.ledIND(HardwareConfig.green1, HardwareConfig.red1, false);
-            claw1Possessed = false;
-        } else if (servo == HardwareConfig.claw2) {
-            Sensors.ledIND(HardwareConfig.green2, HardwareConfig.red2, false);
-            servo.setPosition(setServo(openClaw2));
-            claw2Possessed = false;
+object ServoUtil {
+    var backClaw = 20
+    var openClaw1 = 100
+    var openClaw2 = 90
+    fun openClaw(servo: Servo) {
+        if (servo === HardwareConfig.claw1) {
+            servo.setPose(openClaw1.toDouble())
+            green1.ledIND(red1, false)
+        } else if (servo === HardwareConfig.claw2) {
+            green2.ledIND(red2, false)
+            servo.setPose(openClaw2.toDouble())
         }
-        lastTimeOpen = timer.seconds();
+        lastTimeOpen = timer.seconds()
     }
 
-    public static int closeClaw1 = 200;
-    public static int closeClaw2 = 10;
-
-    public static void closeClaw(Servo servo) {
+    var closeClaw1 = 200
+    var closeClaw2 = 10
+    fun closeClaw(servo: Servo?) {
         if (servo == HardwareConfig.claw1) {
-            servo.setPosition(setServo(closeClaw1));
-            Sensors.ledIND(HardwareConfig.green1, HardwareConfig.red1, true);
-            claw1Possessed = true;
+            servo.setPose(closeClaw1.toDouble())
+            green1.ledIND(red1, true)
         } else if (servo == HardwareConfig.claw2) {
-            servo.setPosition(setServo(closeClaw2));
-            Sensors.ledIND(HardwareConfig.green2, HardwareConfig.red2, true);
-            claw2Possessed = true;
+            servo.setPose((closeClaw2.toDouble()))
+            green2.ledIND(red2, true)
         }
     }
 
-    public static int servoFlipVal = 62;
-    public static double hcalc = 96;
-    public static double flipOffset = -30;
+    var releaseAirplane = 120
 
-    public static void calculateFlipPose(int pose, Servo servo) {
-        double theta = Sensors.getPotentVal(potentiometer) + flipOffset;
-        PastAngle.pastAngleVal = theta;
-        double sig = Math.ceil((-0.26 * theta) + hcalc) + (pose / 2);
-        servo.setPosition(setServo(sig));
-        servoFlipVal = (int) sig;
-        lastSetVal = pose;
+    fun releaseAirplane(servo: Servo) {
+        servo.setPose(releaseAirplane.toDouble())
     }
 
-    public static int lastSetVal;
-    public static int releaseAirplane = 120;
+    var raiseAirplaneVal = 40
+    var airplaneReset = 30
 
-    public static void releaseAirplane(Servo servo) {
-        servo.setPosition(setServo(releaseAirplane));
+    fun resetAirplane(servo: Servo) {
+        servo.setPose(airplaneReset.toDouble())
     }
-
-    public static int raiseAirplaneVal = 40;
-    public static int airplaneReset = 30;
-
-    public static void resetAirplane(Servo servo) {
-        servo.setPosition(setServo(airplaneReset));
-    }
-
-    public static void raiseAirplane(Servo servo) {
-        servo.setPosition(setServo(raiseAirplaneVal));
-    }
-
-    public static int downClawRigging = -20;
 }

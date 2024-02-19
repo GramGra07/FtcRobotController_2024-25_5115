@@ -1,6 +1,6 @@
-package org.firstinspires.ftc.teamcode.Enums;
+package org.firstinspires.ftc.teamcode.Enums
 
-public enum EndPose {
+enum class EndPose {
     NONE,
     StartingPosition,
     LEFT,

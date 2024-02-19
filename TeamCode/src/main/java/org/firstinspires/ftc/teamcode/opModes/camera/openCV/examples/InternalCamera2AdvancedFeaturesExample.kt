@@ -18,115 +18,106 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
  * SOFTWARE.
  */
+package org.firstinspires.ftc.teamcode.opModes.camera.openCV.examples
 
-package org.firstinspires.ftc.teamcode.opModes.camera.openCV.examples;
-
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
-import org.opencv.core.Mat;
-import org.opencv.core.Point;
-import org.opencv.core.Scalar;
-import org.opencv.imgproc.Imgproc;
-import org.openftc.easyopencv.OpenCvCamera;
-import org.openftc.easyopencv.OpenCvCameraFactory;
-import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.openftc.easyopencv.OpenCvInternalCamera2;
-import org.openftc.easyopencv.OpenCvPipeline;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp
+import org.opencv.core.Mat
+import org.opencv.core.Point
+import org.opencv.core.Scalar
+import org.opencv.imgproc.Imgproc
+import org.openftc.easyopencv.OpenCvCamera
+import org.openftc.easyopencv.OpenCvCamera.AsyncCameraOpenListener
+import org.openftc.easyopencv.OpenCvCameraFactory
+import org.openftc.easyopencv.OpenCvCameraRotation
+import org.openftc.easyopencv.OpenCvInternalCamera2
+import org.openftc.easyopencv.OpenCvPipeline
 
 /**
  * In this sample, we demonstrate how to use the advanced features provided
- * by the {@link OpenCvInternalCamera2} interface
+ * by the [OpenCvInternalCamera2] interface
  */
 @TeleOp
 @Disabled
-public class InternalCamera2AdvancedFeaturesExample extends LinearOpMode {
+class InternalCamera2AdvancedFeaturesExample : LinearOpMode() {
     /**
-     * NB: we declare our camera as the {@link OpenCvInternalCamera2} type,
-     * as opposed to simply {@link OpenCvCamera}. This allows us to access
+     * NB: we declare our camera as the [OpenCvInternalCamera2] type,
+     * as opposed to simply [OpenCvCamera]. This allows us to access
      * the advanced features supported only by the internal camera.
      */
-    OpenCvInternalCamera2 phoneCam;
-
-    @Override
-    public void runOpMode() {
+    lateinit var phoneCam: OpenCvInternalCamera2
+    override fun runOpMode() {
         /**
          * NOTE: Many comments have been omitted from this sample for the
          * sake of conciseness. If you're just starting out with EasyOpenCV,
-         * you should take a look at {@link InternalCamera1Example} or its
-         * webcam counterpart, {@link OpenCVBlue} first.
+         * you should take a look at [InternalCamera1Example] or its
+         * webcam counterpart, [OpenCVBlue] first.
          */
-
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera2(OpenCvInternalCamera2.CameraDirection.BACK, cameraMonitorViewId);
-
-        phoneCam.openCameraDeviceAsync(new OpenCvCamera.AsyncCameraOpenListener() {
-            @Override
-            public void onOpened() {
-                phoneCam.setPipeline(new UselessColorBoxDrawingPipeline(new Scalar(255, 0, 0)));
+        val cameraMonitorViewId = hardwareMap.appContext.resources.getIdentifier(
+            "cameraMonitorViewId",
+            "id",
+            hardwareMap.appContext.packageName
+        )
+        phoneCam = OpenCvCameraFactory.getInstance()
+            .createInternalCamera2(OpenCvInternalCamera2.CameraDirection.BACK, cameraMonitorViewId)
+        phoneCam.openCameraDeviceAsync(object : AsyncCameraOpenListener {
+            override fun onOpened() {
+                phoneCam.setPipeline(UselessColorBoxDrawingPipeline(Scalar(255.0, 0.0, 0.0)))
 
                 /*
                  * Start streaming
-                 */
-                phoneCam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT);
+                 */phoneCam.startStreaming(320, 240, OpenCvCameraRotation.UPRIGHT)
 
                 /*
                  * Demonstrate how to turn on the flashlight
-                 */
-                phoneCam.setFlashlightEnabled(true);
+                 */phoneCam.setFlashlightEnabled(true)
 
                 /*
                  * Demonstrate how to lock the camera hardware to sending frames at 30FPS
-                 */
-                phoneCam.setSensorFps(30);
+                 */phoneCam.setSensorFps(30)
 
                 /*
                  * Demonstrate how to set some manual sensor controls
-                 */
-                phoneCam.setExposureMode(OpenCvInternalCamera2.ExposureMode.MANUAL);
-                phoneCam.setFocusMode(OpenCvInternalCamera2.FocusMode.MANUAL);
-                phoneCam.setFocusDistance(phoneCam.getMinFocusDistance());
-                phoneCam.setExposureFractional(60);
-                phoneCam.setSensorGain(400);
-                phoneCam.setWhiteBalanceMode(OpenCvInternalCamera2.WhiteBalanceMode.INCANDESCENT);
+                 */phoneCam.setExposureMode(OpenCvInternalCamera2.ExposureMode.MANUAL)
+                phoneCam.setFocusMode(OpenCvInternalCamera2.FocusMode.MANUAL)
+                phoneCam.setFocusDistance(phoneCam.minFocusDistance)
+                phoneCam.setExposureFractional(60)
+                phoneCam.setSensorGain(400)
+                phoneCam.setWhiteBalanceMode(OpenCvInternalCamera2.WhiteBalanceMode.INCANDESCENT)
             }
 
-            @Override
-            public void onError(int errorCode) {
+            override fun onError(errorCode: Int) {
                 /*
                  * This will be called if the camera could not be opened
                  */
             }
-        });
-
-        waitForStart();
-
+        })
+        waitForStart()
         while (opModeIsActive()) {
-            sleep(100);
+            sleep(100)
         }
     }
 
-    class UselessColorBoxDrawingPipeline extends OpenCvPipeline {
-        Scalar color;
-
-        UselessColorBoxDrawingPipeline(Scalar color) {
-            this.color = color;
-        }
-
-        @Override
-        public Mat processFrame(Mat input) {
+    internal inner class UselessColorBoxDrawingPipeline(var color: Scalar) : OpenCvPipeline() {
+        override fun processFrame(input: Mat): Mat {
             Imgproc.rectangle(
-                    input,
-                    new Point(
-                            input.cols() / 4,
-                            input.rows() / 4),
-                    new Point(
-                            input.cols() * (3f / 4f),
-                            input.rows() * (3f / 4f)),
-                    color, 4);
-
-            return input;
+                input,
+                Point(
+                    (
+                            input.cols() / 4).toDouble(),
+                    (
+                            input.rows() / 4).toDouble()
+                ),
+                Point(
+                    (
+                            input.cols() * (3f / 4f)).toDouble(),
+                    (
+                            input.rows() * (3f / 4f)).toDouble()
+                ),
+                color, 4
+            )
+            return input
         }
     }
 }

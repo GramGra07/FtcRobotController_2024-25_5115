@@ -1,11 +1,13 @@
-package org.firstinspires.ftc.teamcode.UtilClass.varStorage;
+package org.firstinspires.ftc.teamcode.UtilClass.varStorage
 
-import static org.firstinspires.ftc.teamcode.UtilClass.ServoUtil.backClaw;
-
-import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.config.Config
+import org.firstinspires.ftc.teamcode.UtilClass.ServoUtil.backClaw
 
 @Config
-public class AutoServoPositions {//AutoServoPositions.flipUp
-    public static int flipDown = backClaw;
-    public static int flipUp = 60;
+object AutoServoPositions {
+    //AutoServoPositions.flipUp
+    var flipDown: Int = backClaw
+
+    @JvmField
+    var flipUp = 60
 }

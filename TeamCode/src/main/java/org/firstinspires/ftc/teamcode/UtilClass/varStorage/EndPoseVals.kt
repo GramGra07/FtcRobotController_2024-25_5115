@@ -1,10 +1,10 @@
-package org.firstinspires.ftc.teamcode.UtilClass.varStorage;
+package org.firstinspires.ftc.teamcode.UtilClass.varStorage
 
-import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.config.Config
 
 @Config
-public class EndPoseVals {
+object EndPoseVals {
     // contains positions for the robot to go to at the end of the auto
-    public static int outside = 60;
-    public static int inside = 12;
+    var outside = 60
+    var inside = 12
 }

@@ -1,8 +1,8 @@
-package org.firstinspires.ftc.teamcode.UtilClass.varStorage;
+package org.firstinspires.ftc.teamcode.UtilClass.varStorage
 
 //@Config
-public class LoopTime {
-    public static double loopInterval = 18;
-    public static boolean useLoopTime = true;
-    public static double autoCloseDelay = 5;
+object LoopTime {
+    var loopInterval = 18.0
+    var useLoopTime = true
+    var autoCloseDelay = 5.0
 }

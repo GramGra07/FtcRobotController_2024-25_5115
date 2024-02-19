@@ -1,9 +1,5 @@
 package org.firstinspires.ftc.teamcode.Trajectories.backdrop;
 
-import static org.firstinspires.ftc.teamcode.opModes.autoSoftware.autoHardware.autoRandomReliable;
-
-import org.firstinspires.ftc.teamcode.Enums.AutoRandom;
-
 public class ShiftTrajectories {
     public static int leftShift = 8;
     public static int rightShift = -8;

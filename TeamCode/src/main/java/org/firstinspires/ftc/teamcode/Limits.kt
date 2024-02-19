@@ -1,16 +1,20 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode
 
-import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.config.Config
 
 @Config
-public class Limits {
-    public static double flipperMin = -0.7, flipperMax = 0.7;
-    public static double liftMax = 1, liftMin = -0.7;
-    public static double slideMax = 1, slideMin = -1;
-    public static int autoExtension = 1100;
-    public static int autoRotation = 800;
-    public static int maxExtensionTicks = 3280;
-    public static int minExtensionTicks = 0;
-    public static int maxRotationTicks = 1424, maxPotent = 65;
-    public static int minRotationTicks = 0;
+object Limits {
+    var flipperMin = -0.7
+    var flipperMax = 0.7
+    var liftMax = 1.0
+    var liftMin = -0.7
+    var slideMax = 1.0
+    var slideMin = -1.0
+    var autoExtension = 1100
+    var autoRotation = 800
+    var maxExtensionTicks = 3280
+    var minExtensionTicks = 0
+    var maxRotationTicks = 1424
+    var maxPotent = 65
+    var minRotationTicks = 0
 }

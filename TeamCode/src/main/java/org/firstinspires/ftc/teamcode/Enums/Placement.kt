@@ -1,8 +1,8 @@
-package org.firstinspires.ftc.teamcode.Enums;
+package org.firstinspires.ftc.teamcode.Enums
 
-public enum Placement {
+enum class Placement {
     RED_RIGHT,
     RED_LEFT,
     BLUE_RIGHT,
-    BLUE_LEFT,
+    BLUE_LEFT
 }

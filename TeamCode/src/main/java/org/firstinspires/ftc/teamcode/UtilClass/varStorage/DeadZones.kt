@@ -1,5 +1,5 @@
-package org.firstinspires.ftc.teamcode.UtilClass.varStorage;
+package org.firstinspires.ftc.teamcode.UtilClass.varStorage
 
-public class DeadZones {
-    public static double deadZone = 0.15;
+object DeadZones {
+    var deadZone = 0.15
 }

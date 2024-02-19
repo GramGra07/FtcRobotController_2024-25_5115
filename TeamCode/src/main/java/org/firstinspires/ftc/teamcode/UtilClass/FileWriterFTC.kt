@@ -1,34 +1,35 @@
-package org.firstinspires.ftc.teamcode.UtilClass;
+package org.firstinspires.ftc.teamcode.UtilClass
 
-import static org.firstinspires.ftc.teamcode.opModes.HardwareConfig.useFileWriter;
+import android.os.Environment
+import org.firstinspires.ftc.teamcode.opModes.HardwareConfig
+import java.io.File
+import java.io.FileWriter
 
-import android.os.Environment;
+object FileWriterFTC {
+    val file = String.format(
+        "%s/FIRST/matchlogs/log.txt",
+        Environment.getExternalStorageDirectory().absolutePath
+    )
 
-import java.io.File;
-import java.io.FileWriter;
-
-public class FileWriterFTC {
-    public static final String file = String.format("%s/FIRST/matchlogs/log.txt", Environment.getExternalStorageDirectory().getAbsolutePath());
-
-    public static void setUpFile(FileWriter fileWriter) {
-        if (useFileWriter) {
-            File myObj = new File(file);
+    fun setUpFile(fileWriter: FileWriter) {
+        if (HardwareConfig.useFileWriter) {
+            val myObj = File(file)
             try {
-                myObj.delete();
-                myObj.createNewFile();
-            } catch (Exception e) {
-                e.printStackTrace();
+                myObj.delete()
+                myObj.createNewFile()
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
             try {
-                fileWriter.write("");
-                fileWriter.close();
-            } catch (Exception e) {
-                e.printStackTrace();
+                fileWriter.write("")
+                fileWriter.close()
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
     }
 
-    public static void writeToFile(FileWriter fileWriter, int x, int y) {
+    fun writeToFile(fileWriter: FileWriter, x: Int, y: Int) {
         //  terminal
         //  clear
         //  adb shell
@@ -37,13 +38,14 @@ public class FileWriterFTC {
         //  paste into file.txt
         //  run testGraphing in pycharm or other python IDE
         //  look at results in graph.png
-        if (useFileWriter) {
+        var fileWriter = fileWriter
+        if (HardwareConfig.useFileWriter) {
             try {
-                fileWriter = new FileWriter(file, true);
-                fileWriter.append(String.valueOf(x)).append(" ").append(String.valueOf(y)).append(" \n");
-                fileWriter.close();
-            } catch (Exception e) {
-                e.printStackTrace();
+                fileWriter = FileWriter(file, true)
+                fileWriter.append(x.toString()).append(" ").append(y.toString()).append(" \n")
+                fileWriter.close()
+            } catch (e: Exception) {
+                e.printStackTrace()
             }
         }
     }

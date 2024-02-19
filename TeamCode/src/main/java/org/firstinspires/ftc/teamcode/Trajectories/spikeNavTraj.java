@@ -5,7 +5,6 @@ import static org.firstinspires.ftc.teamcode.opModes.autoSoftware.autoHardware.S
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 
 import org.firstinspires.ftc.teamcode.Enums.Alliance;
-import org.firstinspires.ftc.teamcode.Enums.StartSide;
 import org.firstinspires.ftc.teamcode.UtilClass.varStorage.StartPose;
 import org.firstinspires.ftc.teamcode.opModes.rr.drive.MecanumDrive;
 import org.firstinspires.ftc.teamcode.opModes.rr.trajectorysequence.TrajectorySequence;

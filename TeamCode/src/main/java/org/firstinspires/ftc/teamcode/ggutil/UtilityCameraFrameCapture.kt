@@ -30,65 +30,63 @@
  * TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
  * THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
+package org.firstinspires.ftc.teamcode.ggutil
 
-package org.firstinspires.ftc.teamcode.ggutil;
-
-import static org.firstinspires.ftc.teamcode.EOCVWebcam.cam2_N;
-
-import android.util.Size;
-
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.vision.VisionPortal;
-
-import java.util.Locale;
+import android.util.Size
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp
+import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
+import org.firstinspires.ftc.teamcode.EOCVWebcam
+import org.firstinspires.ftc.vision.VisionPortal
+import java.util.Locale
 
 @TeleOp(name = "Utility: Camera Frame Capture", group = "aaa")
 @Disabled
-public class UtilityCameraFrameCapture extends LinearOpMode {
-    final int RESOLUTION_WIDTH = 1280;
-    final int RESOLUTION_HEIGHT = 720;
+class UtilityCameraFrameCapture : LinearOpMode() {
+    val RESOLUTION_WIDTH = 1280
+    val RESOLUTION_HEIGHT = 720
 
     // Internal state
-    boolean lastX;
-    int frameCount;
-    long capReqTime;
-
-    @Override
-    public void runOpMode() {
-        VisionPortal portal;
-        portal = new VisionPortal.Builder()
-                .setCamera(hardwareMap.get(WebcamName.class, cam2_N))
-                .setCameraResolution(new Size(RESOLUTION_WIDTH, RESOLUTION_HEIGHT))
-                .build();
-
-        while (!isStopRequested()) {
-            boolean x = gamepad1.cross;
-
+    var lastX = false
+    var frameCount = 0
+    var capReqTime: Long = 0
+    override fun runOpMode() {
+        val portal: VisionPortal = VisionPortal.Builder()
+            .setCamera(hardwareMap.get(WebcamName::class.java, EOCVWebcam.cam2_N))
+            .setCameraResolution(Size(RESOLUTION_WIDTH, RESOLUTION_HEIGHT))
+            .build()
+        while (!isStopRequested) {
+            val x = gamepad1.cross
             if (x && !lastX) {
-                portal.saveNextFrameRaw(String.format(Locale.US, "CameraFrameCapture-%06d", frameCount++));
-                capReqTime = System.currentTimeMillis();
+                portal.saveNextFrameRaw(
+                    String.format(
+                        Locale.US,
+                        "CameraFrameCapture-%06d",
+                        frameCount++
+                    )
+                )
+                capReqTime = System.currentTimeMillis()
             }
-
-            lastX = x;
-
-            telemetry.addLine("######## Camera Capture Utility ########");
-            telemetry.addLine(String.format(Locale.US, " > Resolution: %dx%d", RESOLUTION_WIDTH, RESOLUTION_HEIGHT));
-            telemetry.addLine(" > Press X (or Square) to capture a frame");
-            telemetry.addData(" > Camera Status", portal.getCameraState());
-
-            if (capReqTime != 0) {
-                telemetry.addLine("\nCaptured Frame!");
+            lastX = x
+            telemetry.addLine("######## Camera Capture Utility ########")
+            telemetry.addLine(
+                String.format(
+                    Locale.US,
+                    " > Resolution: %dx%d",
+                    RESOLUTION_WIDTH,
+                    RESOLUTION_HEIGHT
+                )
+            )
+            telemetry.addLine(" > Press X (or Square) to capture a frame")
+            telemetry.addData(" > Camera Status", portal.cameraState)
+            if (capReqTime != 0L) {
+                telemetry.addLine("\nCaptured Frame!")
             }
-
-            if (capReqTime != 0 && System.currentTimeMillis() - capReqTime > 1000) {
-                capReqTime = 0;
+            if (capReqTime != 0L && System.currentTimeMillis() - capReqTime > 1000) {
+                capReqTime = 0
             }
-
-            telemetry.update();
+            telemetry.update()
         }
     }
 }

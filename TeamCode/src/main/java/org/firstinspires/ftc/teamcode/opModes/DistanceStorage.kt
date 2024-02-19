@@ -1,5 +1,9 @@
-package org.firstinspires.ftc.teamcode.opModes.rr.drive.advanced;
+package org.firstinspires.ftc.teamcode.opModes
 
-public class DistanceStorage {
-    public static double totalDist;
+data class DistanceStorage(val totalDist: Double = 0.0) {
+    companion object {
+        var totalDist: Double = 0.0
+    }
+
+    fun getDist(): Double = totalDist
 }

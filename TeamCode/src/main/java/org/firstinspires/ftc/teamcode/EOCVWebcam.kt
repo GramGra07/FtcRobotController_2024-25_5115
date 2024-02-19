@@ -1,7 +1,7 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode
 
-public class EOCVWebcam {
+object EOCVWebcam {
     //webcam
-    public final static String cam1_N = "Webcam 1";
-    public final static String cam2_N = "Webcam 2";
+    const val cam1_N = "Webcam 1"
+    const val cam2_N = "Webcam 2"
 }

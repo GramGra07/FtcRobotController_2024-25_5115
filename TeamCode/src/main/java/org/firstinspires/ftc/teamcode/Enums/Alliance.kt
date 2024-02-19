@@ -1,6 +1,6 @@
-package org.firstinspires.ftc.teamcode.Enums;
+package org.firstinspires.ftc.teamcode.Enums
 
-public enum Alliance {
+enum class Alliance {
     RED,
-    BLUE,
+    BLUE
 }

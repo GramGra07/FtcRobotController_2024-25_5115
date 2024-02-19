@@ -1,6 +1,6 @@
-package org.firstinspires.ftc.teamcode.Enums;
+package org.firstinspires.ftc.teamcode.Enums
 
-public enum StartDist {
+enum class StartDist {
     SHORT_SIDE,
-    LONG_SIDE,
+    LONG_SIDE
 }

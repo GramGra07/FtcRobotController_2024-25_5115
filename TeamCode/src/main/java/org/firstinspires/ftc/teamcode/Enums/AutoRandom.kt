@@ -1,7 +1,7 @@
-package org.firstinspires.ftc.teamcode.Enums;
+package org.firstinspires.ftc.teamcode.Enums
 
-public enum AutoRandom {
+enum class AutoRandom {
     left,
     mid,
-    right,
+    right
 }

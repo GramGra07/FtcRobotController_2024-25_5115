@@ -1,64 +1,59 @@
-package org.firstinspires.ftc.teamcode.opModes.autoSoftware;
+package org.firstinspires.ftc.teamcode.opModes.autoSoftware
 
-import static org.firstinspires.ftc.teamcode.UtilClass.varStorage.EndPoseVals.inside;
-import static org.firstinspires.ftc.teamcode.UtilClass.varStorage.EndPoseVals.outside;
-import static org.firstinspires.ftc.teamcode.opModes.autoSoftware.autoHardware.START_POSE;
-import static org.firstinspires.ftc.teamcode.opModes.autoSoftware.autoHardware.updatePose;
+import com.acmerobotics.roadrunner.geometry.Pose2d
+import org.firstinspires.ftc.teamcode.Enums.Alliance
+import org.firstinspires.ftc.teamcode.Enums.EndPose
+import org.firstinspires.ftc.teamcode.UtilClass.varStorage.EndPoseVals
+import org.firstinspires.ftc.teamcode.UtilClass.varStorage.StartPose
+import org.firstinspires.ftc.teamcode.opModes.autoSoftware.autoHardware.Companion.updatePose
+import org.firstinspires.ftc.teamcode.opModes.rr.drive.MecanumDrive
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
-
-import org.firstinspires.ftc.teamcode.Enums.EndPose;
-import org.firstinspires.ftc.teamcode.UtilClass.varStorage.StartPose;
-import org.firstinspires.ftc.teamcode.opModes.rr.drive.MecanumDrive;
-
-public class endPose {
-
-    public static Pose2d endPoseRightRed = new Pose2d(50, -outside, Math.toRadians(0));
-    public static Pose2d endPoseLeftRed = new Pose2d(50, -inside, Math.toRadians(0));
-    public static Pose2d endPoseRightBlue = new Pose2d(50, inside, Math.toRadians(0));
-    public static Pose2d endPoseLeftBlue = new Pose2d(50, outside, Math.toRadians(0));
+object endPose {
+    var endPoseRightRed = Pose2d(50.0, -EndPoseVals.outside.toDouble(), Math.toRadians(0.0))
+    var endPoseLeftRed = Pose2d(50.0, -EndPoseVals.inside.toDouble(), Math.toRadians(0.0))
+    var endPoseRightBlue = Pose2d(50.0, EndPoseVals.inside.toDouble(), Math.toRadians(0.0))
+    var endPoseLeftBlue = Pose2d(50.0, EndPoseVals.outside.toDouble(), Math.toRadians(0.0))
 
     // returns a trajectory sequence to go to the end pose
-    public static void goToEndPose(EndPose endPose, MecanumDrive drive) {
-        Pose2d pose = drive.getPoseEstimate();
-        switch (endPose) {
-            case StartingPosition:
-                pose = START_POSE;
-                drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+    fun goToEndPose(endPose: EndPose, drive: MecanumDrive) {
+        var pose: Pose2d? = drive.poseEstimate
+        when (endPose) {
+            EndPose.StartingPosition -> {
+                pose = autoHardware.START_POSE
+                drive.followTrajectorySequenceAsync(
+                    drive.trajectorySequenceBuilder(drive.poseEstimate)
                         .lineToLinearHeading(pose)
                         .build()
-                );
-                break;
-            case LEFT:
-                switch (StartPose.alliance) {
-                    case RED:
-                        pose = endPoseLeftRed;
-                        break;
-                    case BLUE:
-                        pose = endPoseLeftBlue;
-                        break;
+                )
+            }
+
+            EndPose.LEFT -> {
+                when (StartPose.alliance) {
+                    Alliance.RED -> pose = endPoseLeftRed
+                    Alliance.BLUE -> pose = endPoseLeftBlue
                 }
-                drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                drive.followTrajectorySequenceAsync(
+                    drive.trajectorySequenceBuilder(drive.poseEstimate)
                         .lineToLinearHeading(pose)
                         .build()
-                );
-                break;
-            case RIGHT:
-                switch (StartPose.alliance) {
-                    case RED:
-                        pose = endPoseRightRed;
-                        break;
-                    case BLUE:
-                        pose = endPoseRightBlue;
-                        break;
+                )
+            }
+
+            EndPose.RIGHT -> {
+                when (StartPose.alliance) {
+                    Alliance.RED -> pose = endPoseRightRed
+                    Alliance.BLUE -> pose = endPoseRightBlue
                 }
-                drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(drive.getPoseEstimate())
+                drive.followTrajectorySequenceAsync(
+                    drive.trajectorySequenceBuilder(drive.poseEstimate)
                         .lineToLinearHeading(pose)
                         .build()
-                );
-                break;
+                )
+            }
+
+            else -> {}
         }
-        updatePose(drive);
-//        encoderDrive(motorExtension, -autoExtension, 1);
+        updatePose(drive)
+        //        encoderDrive(motorExtension, -autoExtension, 1);
     }
 }

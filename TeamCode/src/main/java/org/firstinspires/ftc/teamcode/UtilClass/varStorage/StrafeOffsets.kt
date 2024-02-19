@@ -1,13 +1,13 @@
-package org.firstinspires.ftc.teamcode.UtilClass.varStorage;
+package org.firstinspires.ftc.teamcode.UtilClass.varStorage
 
-import com.acmerobotics.dashboard.config.Config;
+import com.acmerobotics.dashboard.config.Config
 
 @Config
-public class StrafeOffsets {
-    public static int RLO = 0;
-    public static int RLI_mr = 4;
-    public static int RLI_l = 0;
-    public static int BRI_ml = 5;
-    public static int BRI_r = 0;
-    public static int BRO = -4;
+object StrafeOffsets {
+    var RLO = 0
+    var RLI_mr = 4
+    var RLI_l = 0
+    var BRI_ml = 5
+    var BRI_r = 0
+    var BRO = -4
 }

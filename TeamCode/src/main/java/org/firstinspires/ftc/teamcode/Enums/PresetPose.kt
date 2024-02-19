@@ -1,7 +1,7 @@
-package org.firstinspires.ftc.teamcode.Enums;
+package org.firstinspires.ftc.teamcode.Enums
 
-public enum PresetPose {
+enum class PresetPose {
     HIGH,
     RISE_UP,
-    NONE,
+    NONE
 }
