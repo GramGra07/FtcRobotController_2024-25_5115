@@ -111,6 +111,8 @@ android {
     }
 
     packagingOptions {
+        exclude 'META-INF/LICENSE-notice.md'
+        exclude 'META-INF/LICENSE.md'
         pickFirst '**/*.so'
     }
     sourceSets.main {
@@ -121,5 +123,8 @@ android {
 }
 
 repositories {
+    mavenCentral()
+    google()
+    jcenter()
 }
 

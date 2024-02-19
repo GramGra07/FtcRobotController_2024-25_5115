@@ -1,0 +1,8 @@
+opModes/auto/cycleAutos/endIn/insideBackPath/FullBLIpI.java
+opModes/auto/cycleAutos/endIn/insideBackPath/FullBRIpI.java
+opModes/auto/cycleAutos/endIn/insideBackPath/FullRLIpI.java
+opModes/auto/cycleAutos/endIn/insideBackPath/FullRRIpI.java
+opModes/auto/cycleAutos/endOut/insideBackPath/FullBLIpO.java
+opModes/auto/cycleAutos/endOut/insideBackPath/FullBRIpO.java
+opModes/auto/cycleAutos/endOut/insideBackPath/FullRLIpO.java
+opModes/auto/cycleAutos/endOut/insideBackPath/FullRRIpO.java
