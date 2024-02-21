@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.opModes.autoSoftware
 
-import com.acmerobotics.roadrunner.geometry.Pose2d
-import com.acmerobotics.roadrunner.geometry.Vector2d
+import org.firstinspires.ftc.teamcode.hummingbird.Flower
+import org.firstinspires.ftc.teamcode.hummingbird.Vector
 import org.firstinspires.ftc.teamcode.Enums.Alliance
 import org.firstinspires.ftc.teamcode.Enums.PathLong
 import org.firstinspires.ftc.teamcode.UtilClass.ServoUtil
@@ -18,11 +18,11 @@ object cyclePatterns {
         when (pathLong) {
             PathLong.INSIDE -> when (StartPose.alliance) {
                 Alliance.RED -> {
-                    autoHardware.spot = Pose2d(-54.5, -10.0, Math.toRadians(180.0))
+                    autoHardware.spot = Flower(-54.5, -10.0, Math.toRadians(180.0))
                     drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(drive.poseEstimate)
-                        .lineToSplineHeading(Pose2d(36.0, -12.0, autoHardware.spot.heading))
+                        .lineToSplineHeading(Flower(36.0, -12.0, autoHardware.spot.heading))
                         .lineToLinearHeading(autoHardware.spot)
-                        .addSpatialMarker(Vector2d(-36.0, -10.0)) {
+                        .addSpatialMarker(Vector(-36.0, -10.0)) {
                             flipServo.calcFlipPose(clawAngle.toDouble())
                         }
                         .addDisplacementMarker {
@@ -35,11 +35,11 @@ object cyclePatterns {
                 }
 
                 Alliance.BLUE -> {
-                    autoHardware.spot = Pose2d(-54.5, 10.1, Math.toRadians(180.0))
+                    autoHardware.spot = Flower(-54.5, 10.1, Math.toRadians(180.0))
                     drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(drive.poseEstimate)
-                        .lineToLinearHeading(Pose2d(36.0, 12.0, autoHardware.spot.heading))
+                        .lineToLinearHeading(Flower(36.0, 12.0, autoHardware.spot.heading))
                         .lineToLinearHeading(autoHardware.spot)
-                        .addSpatialMarker(Vector2d(-36.0, 10.0)) {
+                        .addSpatialMarker(Vector(-36.0, 10.0)) {
                             flipServo.calcFlipPose(clawAngle.toDouble())
                         }
                         .addDisplacementMarker {
@@ -53,24 +53,24 @@ object cyclePatterns {
 
             PathLong.OUTSIDE -> when (StartPose.alliance) {
                 Alliance.RED -> {
-                    autoHardware.spot = Pose2d(-57.0, -31.0, Math.toRadians(180.0))
+                    autoHardware.spot = Flower(-57.0, -31.0, Math.toRadians(180.0))
                     drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(drive.poseEstimate)
                         .lineToLinearHeading(
-                            Pose2d(
+                            Flower(
                                 autoHardware.START_POSE.x,
                                 autoHardware.START_POSE.y ,//+ BackdropTrajectories.startOffsetRed,
                                 autoHardware.spot.heading
                             )
                         )
                         .splineToLinearHeading(
-                            Pose2d(
+                            Flower(
                                 -36.0,
                                 autoHardware.START_POSE.y ,//+ BackdropTrajectories.startOffsetRed,
                                 autoHardware.spot.heading
                             ), autoHardware.spot.heading
                         )
                         .splineToLinearHeading(autoHardware.spot, autoHardware.spot.heading)
-                        .addSpatialMarker(Vector2d(-36.0, -58.0)) {
+                        .addSpatialMarker(Vector(-36.0, -58.0)) {
                             flipServo.calcFlipPose(clawAngle.toDouble())
                         }
                         .addDisplacementMarker {
@@ -82,24 +82,24 @@ object cyclePatterns {
                 }
 
                 Alliance.BLUE -> {
-                    autoHardware.spot = Pose2d(-55.0, 31.0, Math.toRadians(180.0))
+                    autoHardware.spot = Flower(-55.0, 31.0, Math.toRadians(180.0))
                     drive.followTrajectorySequenceAsync(drive.trajectorySequenceBuilder(drive.poseEstimate)
                         .lineToLinearHeading(
-                            Pose2d(
+                            Flower(
                                 autoHardware.START_POSE.x,
                                 autoHardware.START_POSE.y ,//- BackdropTrajectories.startOffsetBlue,
                                 autoHardware.spot.heading
                             )
                         )
                         .splineToLinearHeading(
-                            Pose2d(
+                            Flower(
                                 -36.0,
                                 autoHardware.START_POSE.y ,//- BackdropTrajectories.startOffsetBlue - 1,
                                 autoHardware.spot.heading
                             ), autoHardware.spot.heading
                         )
                         .splineToLinearHeading(autoHardware.spot, autoHardware.spot.heading)
-                        .addSpatialMarker(Vector2d(-36.0, 58.0)) {
+                        .addSpatialMarker(Vector(-36.0, 58.0)) {
                             flipServo.calcFlipPose(clawAngle.toDouble())
                         }
                         .addDisplacementMarker {

@@ -1,13 +1,11 @@
 package org.firstinspires.ftc.teamcode
 
-import com.acmerobotics.roadrunner.geometry.Pose2d
+import org.firstinspires.ftc.teamcode.hummingbird.Flower
 import com.acmerobotics.roadrunner.util.Angle.normDelta
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import org.firstinspires.ftc.teamcode.UtilClass.DriverAid
 import org.firstinspires.ftc.teamcode.UtilClass.ServoUtil
-import org.firstinspires.ftc.teamcode.UtilClass.ServoUtil.airplaneReset
 import org.firstinspires.ftc.teamcode.UtilClass.varStorage.IsBusy
-import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.setPose
 import org.firstinspires.ftc.teamcode.opModes.HardwareConfig
 import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.airplaneServo
 import org.firstinspires.ftc.teamcode.opModes.rr.drive.MecanumDrive
@@ -106,7 +104,7 @@ object Drivers {
                 PoseStorage.currentPose = drive.poseEstimate
                 drive.followTrajectorySequence(drive.trajectorySequenceBuilder(drive.poseEstimate)
                     .splineToLinearHeading(
-                        Pose2d(
+                        Flower(
                             drive.poseEstimate.x + 5, drive.poseEstimate.y + 10, normDelta(
                                 Math.toRadians(135.0) - drive.poseEstimate.heading
                             )
@@ -115,7 +113,7 @@ object Drivers {
                     .addDisplacementMarker { ServoUtil.openClaw(HardwareConfig.claw1) }
                     .addDisplacementMarker { ServoUtil.openClaw(HardwareConfig.claw2) }
                     .splineToLinearHeading(
-                        Pose2d(
+                        Flower(
                             drive.poseEstimate.x - 5, drive.poseEstimate.y - 10, normDelta(
                                 Math.toRadians(45.0) - drive.poseEstimate.heading
                             )

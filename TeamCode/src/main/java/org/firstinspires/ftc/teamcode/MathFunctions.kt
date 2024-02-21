@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode
 
-import com.acmerobotics.roadrunner.geometry.Pose2d
+import org.firstinspires.ftc.teamcode.hummingbird.Flower
 
 class MathFunctions {
     var position = 0.0 //sets servo position to 0-1 multiplier
@@ -22,7 +22,7 @@ class MathFunctions {
         return value >= min && value <= max
     }
 
-    fun getQuadrant(pose: Pose2d): Int {
+    fun getQuadrant(pose: Flower): Int {
         var x = pose.x.toInt()
         var y = pose.y.toInt()
         if (x == 0) {

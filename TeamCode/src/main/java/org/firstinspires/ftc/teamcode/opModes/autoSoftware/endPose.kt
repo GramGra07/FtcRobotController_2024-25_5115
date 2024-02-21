@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.opModes.autoSoftware
 
-import com.acmerobotics.roadrunner.geometry.Pose2d
+import org.firstinspires.ftc.teamcode.hummingbird.Flower
 import org.firstinspires.ftc.teamcode.Enums.Alliance
 import org.firstinspires.ftc.teamcode.Enums.EndPose
 import org.firstinspires.ftc.teamcode.UtilClass.varStorage.EndPoseVals
@@ -9,14 +9,14 @@ import org.firstinspires.ftc.teamcode.opModes.autoSoftware.autoHardware.Companio
 import org.firstinspires.ftc.teamcode.opModes.rr.drive.MecanumDrive
 
 object endPose {
-    private var endPoseRightRed = Pose2d(50.0, -EndPoseVals.outside.toDouble(), Math.toRadians(0.0))
-    private var endPoseLeftRed = Pose2d(50.0, -EndPoseVals.inside.toDouble(), Math.toRadians(0.0))
-    private var endPoseRightBlue = Pose2d(50.0, EndPoseVals.inside.toDouble(), Math.toRadians(0.0))
-    private var endPoseLeftBlue = Pose2d(50.0, EndPoseVals.outside.toDouble(), Math.toRadians(0.0))
+    private var endPoseRightRed = Flower(50.0, -EndPoseVals.outside.toDouble(), Math.toRadians(0.0))
+    private var endPoseLeftRed = Flower(50.0, -EndPoseVals.inside.toDouble(), Math.toRadians(0.0))
+    private var endPoseRightBlue = Flower(50.0, EndPoseVals.inside.toDouble(), Math.toRadians(0.0))
+    private var endPoseLeftBlue = Flower(50.0, EndPoseVals.outside.toDouble(), Math.toRadians(0.0))
 
     // returns a trajectory sequence to go to the end pose
     fun goToEndPose(endPose: EndPose, drive: MecanumDrive) {
-        var pose: Pose2d? = drive.poseEstimate
+        var pose: Flower? = drive.poseEstimate
         when (endPose) {
             EndPose.StartingPosition -> {
                 pose = autoHardware.START_POSE
