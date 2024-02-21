@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode
 
-import org.firstinspires.ftc.teamcode.hummingbird.Flower
+import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.util.Angle.normDelta
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import org.firstinspires.ftc.teamcode.UtilClass.DriverAid
@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.opModes.rr.drive.advanced.PoseStorage
 
 object Drivers {
     private val driverControls =
-        arrayOf( "Camden", "Grady", "Michael", "Graden", "Delaney", "Child")
+        arrayOf("Camden", "Grady", "Michael", "Graden", "Delaney", "Child")
     val otherControls = driverControls
     const val baseDriver = 0
     const val baseOther = 1 //list integer of base driver and other controls
@@ -104,7 +104,7 @@ object Drivers {
                 PoseStorage.currentPose = drive.poseEstimate
                 drive.followTrajectorySequence(drive.trajectorySequenceBuilder(drive.poseEstimate)
                     .splineToLinearHeading(
-                        Flower(
+                        Pose2d(
                             drive.poseEstimate.x + 5, drive.poseEstimate.y + 10, normDelta(
                                 Math.toRadians(135.0) - drive.poseEstimate.heading
                             )
@@ -113,7 +113,7 @@ object Drivers {
                     .addDisplacementMarker { ServoUtil.openClaw(HardwareConfig.claw1) }
                     .addDisplacementMarker { ServoUtil.openClaw(HardwareConfig.claw2) }
                     .splineToLinearHeading(
-                        Flower(
+                        Pose2d(
                             drive.poseEstimate.x - 5, drive.poseEstimate.y - 10, normDelta(
                                 Math.toRadians(45.0) - drive.poseEstimate.heading
                             )

@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.opModes
 
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
-import org.firstinspires.ftc.teamcode.hummingbird.Flower
+import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.arcrobotics.ftclib.controller.PIDFController
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
@@ -165,7 +165,7 @@ open class HardwareConfig(opmode: LinearOpMode) {
         PoseStorage.currentPose = drive.poseEstimate
     }
 
-    private fun updateDistTraveled(before: Flower, after: Flower) {
+    private fun updateDistTraveled(before: Pose2d, after: Pose2d) {
         val x = after.x - before.x
         val y = after.y - before.y
         val dist = sqrt(x * x + y * y)

@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.opModes.autoSoftware
 import android.util.Size
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
-import org.firstinspires.ftc.teamcode.hummingbird.Flower
+import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.DcMotor
@@ -77,18 +77,19 @@ class autoHardware(opmode: LinearOpMode) // constructor
     }
 
     companion object {
-        var START_POSE = Flower(0.0, 0.0, 0.0) // the start pose
+        var START_POSE = Pose2d(0.0, 0.0, 0.0) // the start pose
+
         //    public static OpenCvWebcam webcam; // the webcam public we are using
         var blueRotate = -90 // final blue rotation
         var redRotate = 90 // final red rotation
-        var startPose = Flower(12.0, -63.0, Math.toRadians(90.0))
-        lateinit var spot: Flower // cycle position to be updated
+        var startPose = Pose2d(12.0, -63.0, Math.toRadians(90.0))
+        lateinit var spot: Pose2d // cycle position to be updated
         var autonomousRandom = AutoRandom.MID // default autonomous choice for spike mark
         lateinit var autoRandomReliable: AutoRandom // tracker for the AutoRandom enum
         var visionPortal: VisionPortal? = null // vision portal for the webcam
         var objProcessor: VPObjectDetect? = null // april tag processor for the vision portal
 
-        fun getStartPose(alliance: Alliance, side: StartSide): Flower {
+        fun getStartPose(alliance: Alliance, side: StartSide): Pose2d {
             StartPose.alliance = alliance
             StartPose.side = side
             when (alliance) {
@@ -96,14 +97,14 @@ class autoHardware(opmode: LinearOpMode) // constructor
                     when (side) {
                         StartSide.LEFT -> {
                             startDist = StartDist.LONG_SIDE
-                            START_POSE = Flower(-36.0, -62.0, Math.toRadians(redRotate.toDouble()))
-                            return Flower(-36.0, -62.0, Math.toRadians(redRotate.toDouble()))
+                            START_POSE = Pose2d(-36.0, -62.0, Math.toRadians(redRotate.toDouble()))
+                            return Pose2d(-36.0, -62.0, Math.toRadians(redRotate.toDouble()))
                         }
 
                         StartSide.RIGHT -> {
                             startDist = StartDist.SHORT_SIDE
-                            START_POSE = Flower(12.0, -62.0, Math.toRadians(redRotate.toDouble()))
-                            return Flower(12.0, -62.0, Math.toRadians(redRotate.toDouble()))
+                            START_POSE = Pose2d(12.0, -62.0, Math.toRadians(redRotate.toDouble()))
+                            return Pose2d(12.0, -62.0, Math.toRadians(redRotate.toDouble()))
                         }
 
                         else -> {}
@@ -111,14 +112,14 @@ class autoHardware(opmode: LinearOpMode) // constructor
                     when (side) {
                         StartSide.LEFT -> {
                             startDist = StartDist.SHORT_SIDE
-                            START_POSE = Flower(12.0, 62.0, Math.toRadians(blueRotate.toDouble()))
-                            return Flower(12.0, 62.0, Math.toRadians(blueRotate.toDouble()))
+                            START_POSE = Pose2d(12.0, 62.0, Math.toRadians(blueRotate.toDouble()))
+                            return Pose2d(12.0, 62.0, Math.toRadians(blueRotate.toDouble()))
                         }
 
                         StartSide.RIGHT -> {
                             startDist = StartDist.LONG_SIDE
-                            START_POSE = Flower(-36.0, 62.0, Math.toRadians(blueRotate.toDouble()))
-                            return Flower(-36.0, 62.0, Math.toRadians(blueRotate.toDouble()))
+                            START_POSE = Pose2d(-36.0, 62.0, Math.toRadians(blueRotate.toDouble()))
+                            return Pose2d(-36.0, 62.0, Math.toRadians(blueRotate.toDouble()))
                         }
 
                         else -> {}
@@ -128,20 +129,20 @@ class autoHardware(opmode: LinearOpMode) // constructor
                 Alliance.BLUE -> when (side) {
                     StartSide.LEFT -> {
                         startDist = StartDist.SHORT_SIDE
-                        START_POSE = Flower(12.0, 62.0, Math.toRadians(blueRotate.toDouble()))
-                        return Flower(12.0, 62.0, Math.toRadians(blueRotate.toDouble()))
+                        START_POSE = Pose2d(12.0, 62.0, Math.toRadians(blueRotate.toDouble()))
+                        return Pose2d(12.0, 62.0, Math.toRadians(blueRotate.toDouble()))
                     }
 
                     StartSide.RIGHT -> {
                         startDist = StartDist.LONG_SIDE
-                        START_POSE = Flower(-36.0, 62.0, Math.toRadians(blueRotate.toDouble()))
-                        return Flower(-36.0, 62.0, Math.toRadians(blueRotate.toDouble()))
+                        START_POSE = Pose2d(-36.0, 62.0, Math.toRadians(blueRotate.toDouble()))
+                        return Pose2d(-36.0, 62.0, Math.toRadians(blueRotate.toDouble()))
                     }
 
                     else -> {}
                 }
             }
-            return Flower(0.0, 0.0, 0.0)
+            return Pose2d(0.0, 0.0, 0.0)
         }
 
         // method to update the pose
