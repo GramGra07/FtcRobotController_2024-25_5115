@@ -5,17 +5,18 @@ import kotlin.math.sin
 import kotlin.math.sqrt
 
 class HummingbirdDrive {
+
     // Constants for wheel parameters
     val WHEEL_DISTANCE = 12.0 // distance between wheels in inches
-     val WHEEL_RADIUS = 2.0 // radius of each wheel in inches
-     val TICKS_PER_REVOLUTION = 1440.0 // encoder ticks per wheel revolution
+    val WHEEL_RADIUS = 2.0 // radius of each wheel in inches
+    val TICKS_PER_REVOLUTION = 1440.0 // encoder ticks per wheel revolution
 
     // Constants for PID control
-     val KP_HEADING = 0.1 // Proportional gain for heading control
-     val KI_HEADING = 0.01 // Integral gain for heading control
-     val KD_HEADING = 0.05 // Derivative gain for heading control
-     val KP_DISTANCE = 0.1 // Proportional gain for distance control
-     val TARGET_TOLERANCE = 1.0 // Tolerance for target heading
+    val KP_HEADING = 0.1 // Proportional gain for heading control
+    val KI_HEADING = 0.01 // Integral gain for heading control
+    val KD_HEADING = 0.05 // Derivative gain for heading control
+    val KP_DISTANCE = 0.1 // Proportional gain for distance control
+    val TARGET_TOLERANCE = 1.0 // Tolerance for target heading
 
     // Variables for robot position and orientation
     var robotX = 0.0 // in inches
@@ -29,10 +30,11 @@ class HummingbirdDrive {
     var distancePreviousError = 0.0
 
     // Function to update robot position and orientation based on encoder readings
-    fun updatePosition(leftTicks: Int, rightTicks: Int) {
+    fun updatePosition(leftTicks: Int, rightTicks: Int, rearTicks: Int) {
         // Calculate distance traveled by each wheel
         val leftDistance = (leftTicks / TICKS_PER_REVOLUTION) * (PI * WHEEL_RADIUS)
         val rightDistance = (rightTicks / TICKS_PER_REVOLUTION) * (PI * WHEEL_RADIUS)
+        val rearDistance = (rearTicks / TICKS_PER_REVOLUTION) * (PI * WHEEL_RADIUS)
 
         // Calculate robot's movement and rotation
         val distance = (leftDistance + rightDistance) / 2.0
@@ -41,7 +43,7 @@ class HummingbirdDrive {
         // Update robot position and orientation
         robotX += distance * cos(Math.toRadians(robotHeading + rotation / 2.0))
         robotY += distance * sin(Math.toRadians(robotHeading + rotation / 2.0))
-        robotHeading += Math.toDegrees(rotation)
+        robotHeading += Math.toDegrees(rotation) + Math.toDegrees(rearDistance / WHEEL_DISTANCE)
     }
 
     // Function to calculate PID control output for heading control
@@ -69,8 +71,7 @@ class HummingbirdDrive {
         val wheelSpeeds = mutableListOf<Double>()
         wheelSpeeds.add(headingPIDOutput + distancePIDOutput) // Front left wheel
         wheelSpeeds.add(-headingPIDOutput + distancePIDOutput) // Front right wheel
-        wheelSpeeds.add(headingPIDOutput + distancePIDOutput) // Rear left wheel
-        wheelSpeeds.add(-headingPIDOutput + distancePIDOutput) // Rear right wheel
+        wheelSpeeds.add(headingPIDOutput + distancePIDOutput) // Rear wheel
         return wheelSpeeds
     }
 
@@ -106,7 +107,7 @@ class HummingbirdDrive {
 
             // Simulate robot movement (for demonstration purposes)
             // Implement your own code to actually control the robot based on wheel speeds
-            updatePosition(100, 110)
+            updatePosition(100, 110, 120)
         }
     }
 
@@ -119,7 +120,8 @@ class HummingbirdDrive {
         var x = 0.0
         var y = 0.0
         for (i in 0..n) {
-            val coefficient = binomialCoefficient(n, i) * Math.pow(1 - t, n - i) * Math.pow(t, i)
+            val i2 = i.toDouble()
+            val coefficient = binomialCoefficient(n, i) * Math.pow(1 - t, n - i2) * Math.pow(t, i2)
             x += coefficient * controlPoints[i].first
             y += coefficient * controlPoints[i].second
         }
@@ -148,4 +150,5 @@ class HummingbirdDrive {
         // Follow the defined path using Bezier splines
         followPathUsingBezierSplines(controlPoints, numSegments = 100)
     }
+
 }
