@@ -24,13 +24,13 @@ import java.util.concurrent.atomic.AtomicReference
 
 class VPObjectDetect(var alliance: Alliance) : VisionProcessor, CameraStreamSource {
     private val lastFrame = AtomicReference(Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565))
-    var ycrcbMat = Mat()
+    private var ycrcbMat = Mat()
     var right = Mat()
-    var middle = Mat()
+    private var middle = Mat()
     var c = Scalar(255.0, 0.0, 0.0)
     var current = 0
-    var scalarLow: Scalar? = null
-    var scalarHigh: Scalar? = null
+    private lateinit var scalarLow: Scalar
+    private lateinit var scalarHigh: Scalar
     override fun init(width: Int, height: Int, calibration: CameraCalibration) {
         lastFrame.set(Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565))
     }
@@ -75,9 +75,9 @@ class VPObjectDetect(var alliance: Alliance) : VisionProcessor, CameraStreamSour
         val rightMean = Core.mean(right).`val`
         val middleMean = Core.mean(middle).`val`
         // check if it is within the scalar low and high
-        if (rightMean[0] > scalarLow!!.`val`[0] && rightMean[0] < scalarHigh!!.`val`[0]) {
-            if (rightMean[1] > scalarLow!!.`val`[1] && rightMean[1] < scalarHigh!!.`val`[1]) {
-                if (rightMean[2] > scalarLow!!.`val`[2] && rightMean[2] < scalarHigh!!.`val`[2]) {
+        if (rightMean[0] > scalarLow.`val`[0] && rightMean[0] < scalarHigh.`val`[0]) {
+            if (rightMean[1] > scalarLow.`val`[1] && rightMean[1] < scalarHigh.`val`[1]) {
+                if (rightMean[2] > scalarLow.`val`[2] && rightMean[2] < scalarHigh.`val`[2]) {
                     Imgproc.rectangle(
                         frame, Point(pointsX[2].toDouble(), pointsY[2].toDouble()), Point(
                             pointsX[3].toDouble(), pointsY[3].toDouble()
@@ -98,9 +98,9 @@ class VPObjectDetect(var alliance: Alliance) : VisionProcessor, CameraStreamSour
             }
         }
         if (current != 1) {
-            if (middleMean[0] > scalarLow!!.`val`[0] && middleMean[0] < scalarHigh!!.`val`[0]) {
-                if (middleMean[1] > scalarLow!!.`val`[1] && middleMean[1] < scalarHigh!!.`val`[1]) {
-                    if (middleMean[2] > scalarLow!!.`val`[2] && middleMean[2] < scalarHigh!!.`val`[2]) {
+            if (middleMean[0] > scalarLow.`val`[0] && middleMean[0] < scalarHigh.`val`[0]) {
+                if (middleMean[1] > scalarLow.`val`[1] && middleMean[1] < scalarHigh.`val`[1]) {
+                    if (middleMean[2] > scalarLow.`val`[2] && middleMean[2] < scalarHigh.`val`[2]) {
                         Imgproc.rectangle(
                             frame, Point(pointsX[0].toDouble(), pointsY[0].toDouble()), Point(
                                 pointsX[1].toDouble(), pointsY[1].toDouble()

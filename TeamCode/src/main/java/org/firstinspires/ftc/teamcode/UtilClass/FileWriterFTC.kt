@@ -29,6 +29,13 @@ object FileWriterFTC {
         }
     }
 
+    fun FileWriter.init() {
+        val file = String.format(
+            "%s/FIRST/matchlogs/log.txt",
+            Environment.getExternalStorageDirectory().absolutePath
+        )
+    }
+
     fun writeToFile(fileWriter: FileWriter, x: Int, y: Int) {
         //  terminal
         //  clear

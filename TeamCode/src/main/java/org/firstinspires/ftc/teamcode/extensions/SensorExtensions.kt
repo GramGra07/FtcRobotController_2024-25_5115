@@ -3,27 +3,50 @@ package org.firstinspires.ftc.teamcode.extensions
 import com.qualcomm.robotcore.hardware.AnalogInput
 import com.qualcomm.robotcore.hardware.DigitalChannel
 import com.qualcomm.robotcore.hardware.HardwareMap
+import com.qualcomm.robotcore.hardware.TouchSensor
 import com.qualcomm.robotcore.hardware.VoltageSensor
+import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.teamcode.UtilClass.varStorage.PastAngle
-import org.firstinspires.ftc.teamcode.extensions.Extensions.potentAngle
 
 object SensorExtensions {
-    fun DigitalChannel.init(
+    fun initDigiChan(
         hw: HardwareMap,
         name: String,
         mode: DigitalChannel.Mode = DigitalChannel.Mode.OUTPUT
-    ) {
-        this.mode = mode
-        hw.get(DigitalChannel::class.java, name)
+    ): DigitalChannel {
+        val t = hw.get(DigitalChannel::class.java, name)
+        t.mode = mode
+        return t
     }
 
-    fun AnalogInput.init(hw: HardwareMap, name: String) {
-        hw.get(AnalogInput::class.java, name)
-        PastAngle.pastAngleVal = this.potentAngle()
+    fun initPotent(hw: HardwareMap, name: String): AnalogInput {
+        val t = hw.get(AnalogInput::class.java, name)
+        PastAngle.pastAngleVal = t.potentAngle()
+        return t
     }
 
-    fun VoltageSensor.init(hw: HardwareMap, name: String) {
-        hw.get(VoltageSensor::class.java, name)
+    private val POTENTIOMETER_MAX = 270.0
+    private val POTENTIOMETER_MIN = 0.0
+
+    // extend the AnalogInput class to include a method to get the angle of the potentiometer
+    fun AnalogInput.potentAngle(): Double {
+        return Range.clip(
+            (this.voltage - POTENTIOMETER_MIN) / (POTENTIOMETER_MAX - POTENTIOMETER_MIN),
+            0.0,
+            1.0
+        )
+    }
+
+    fun DigitalChannel.getPressed(): Boolean = !this.state
+    fun DigitalChannel.ledIND(red: DigitalChannel, greenOn: Boolean) {
+        this.state = greenOn
+        red.state = !greenOn
+    }
+
+    fun TouchSensor.getTouchSensor(): Boolean = this.isPressed
+
+    fun initVSensor(hw: HardwareMap, name: String): VoltageSensor {
+        return hw.get(VoltageSensor::class.java, name)
     }
 
     private fun VoltageSensor.getVoltageCorrected(): Double {

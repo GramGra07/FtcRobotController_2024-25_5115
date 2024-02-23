@@ -8,11 +8,11 @@ import org.firstinspires.ftc.teamcode.UtilClass.varStorage.LoopTime
 import org.firstinspires.ftc.teamcode.UtilClass.varStorage.PIDVals
 import org.firstinspires.ftc.teamcode.UtilClass.varStorage.PastAngle
 import org.firstinspires.ftc.teamcode.UtilClass.varStorage.varConfig
-import org.firstinspires.ftc.teamcode.extensions.Extensions.potentAngle
-import org.firstinspires.ftc.teamcode.extensions.ServoExtensions
+import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.potentAngle
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.calcFlipPose
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.lastSetVal
 import org.firstinspires.ftc.teamcode.opModes.HardwareConfig
+import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.extensionPower
 import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.flipServo
 import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.potentiometer
 import org.firstinspires.ftc.teamcode.opModes.rr.drive.MecanumDrive
@@ -122,6 +122,8 @@ object Operator {
                         Limits.maxExtensionTicks.toDouble()
                     ), -1.0, 1.0
                 )
+            }else{
+                extensionPower = 0.0
             }
             if (!varConfig.usePIDF) {
                 HardwareConfig.extensionPower = Range.clip(

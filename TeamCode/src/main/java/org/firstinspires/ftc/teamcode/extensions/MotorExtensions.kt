@@ -5,34 +5,40 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.HardwareMap
 
 object MotorExtensions {
-    fun DcMotor.init(
+    fun initMotor(
         hw: HardwareMap,
         name: String,
         runMode: DcMotor.RunMode,
         direction: DcMotorSimple.Direction? = DcMotorSimple.Direction.FORWARD
-    ) {
-        hw.get(DcMotor::class.java, name)
-        this.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
-        this.direction = direction
+    ): DcMotor {
+        val t = hw.get(DcMotor::class.java, name)
+        t.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
+        t.direction = direction
         if (runMode == DcMotor.RunMode.RUN_USING_ENCODER) {
-            this.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-            this.mode = runMode
+            t.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+            t.mode = runMode
         } else {
-            this.mode = runMode
+            t.mode = runMode
         }
+        return t
     }
+
     fun DcMotor.brake() {
         this.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.BRAKE
     }
+
     fun DcMotor.coast() {
         this.zeroPowerBehavior = DcMotor.ZeroPowerBehavior.FLOAT
     }
+
     fun DcMotor.runToPosition() {
         this.mode = DcMotor.RunMode.RUN_TO_POSITION
     }
+
     fun DcMotor.runUsingEncoder() {
         this.mode = DcMotor.RunMode.RUN_USING_ENCODER
     }
+
     fun DcMotor.runWithoutEncoder() {
         this.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
     }

@@ -4,14 +4,15 @@ import com.qualcomm.hardware.rev.RevBlinkinLedDriver
 import com.qualcomm.robotcore.hardware.HardwareMap
 
 object BlinkExtensions {
-    fun RevBlinkinLedDriver.init(
+    fun initLights(
         hw: HardwareMap,
         name: String,
         pattern: RevBlinkinLedDriver.BlinkinPattern = RevBlinkinLedDriver.BlinkinPattern.HOT_PINK
-    ) {
-        hw.get(RevBlinkinLedDriver::class.java, name)
-        this.setPattern(pattern)
+    ): RevBlinkinLedDriver {
+        val t = hw.get(RevBlinkinLedDriver::class.java, name)
+        t.setPattern(pattern)
         LEDColor.currentColor = pattern.toString()
+        return t
     }
 
     fun RevBlinkinLedDriver.setPatternCo(pattern: RevBlinkinLedDriver.BlinkinPattern = RevBlinkinLedDriver.BlinkinPattern.HOT_PINK) {

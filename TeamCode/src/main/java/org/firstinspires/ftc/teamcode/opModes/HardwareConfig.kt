@@ -1,6 +1,7 @@
 //import
 package org.firstinspires.ftc.teamcode.opModes
 
+import android.os.Environment
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
 import com.acmerobotics.roadrunner.geometry.Pose2d
@@ -25,20 +26,24 @@ import org.firstinspires.ftc.teamcode.Drivers.switchProfile
 import org.firstinspires.ftc.teamcode.Enums.StartDist
 import org.firstinspires.ftc.teamcode.Operator.bindOtherButtons
 import org.firstinspires.ftc.teamcode.UtilClass.FileWriterFTC
+import org.firstinspires.ftc.teamcode.UtilClass.FileWriterFTC.setUpFile
 import org.firstinspires.ftc.teamcode.UtilClass.ServoUtil
 import org.firstinspires.ftc.teamcode.UtilClass.varStorage.IsBusy
 import org.firstinspires.ftc.teamcode.UtilClass.varStorage.LoopTime
 import org.firstinspires.ftc.teamcode.UtilClass.varStorage.varConfig
 import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.currentColor
-import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.init
-import org.firstinspires.ftc.teamcode.extensions.Extensions.ledIND
-import org.firstinspires.ftc.teamcode.extensions.Extensions.potentAngle
-import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.init
+import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.initLights
+import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.initMotor
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.currentVoltage
-import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.init
+import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.initDigiChan
+import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.initPotent
+import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.initVSensor
+import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.ledIND
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.lowVoltage
+import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.potentAngle
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.calcFlipPose
-import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.init
+import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.initServo
+import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.lastSetVal
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.servoFlipVal
 import org.firstinspires.ftc.teamcode.opModes.DistanceStorage.Companion.totalDist
 import org.firstinspires.ftc.teamcode.opModes.autoSoftware.autoHardware
@@ -158,7 +163,7 @@ open class HardwareConfig(opmode: LinearOpMode) {
         drive.update()
         updateDistTraveled(PoseStorage.currentPose, drive.poseEstimate)
         FileWriterFTC.writeToFile(
-            fileWriter,
+            fileWriter!!,
             drive.poseEstimate.x.toInt(),
             drive.poseEstimate.y.toInt()
         )
@@ -183,7 +188,6 @@ open class HardwareConfig(opmode: LinearOpMode) {
         motorLift.power = liftPower
         motorExtension.power = extensionPower
         motorRotation.power = rotationPower
-        flipServo.calcFlipPose(servoFlipVal.toDouble())
     }
 
     fun buildTelemetry() {
@@ -277,7 +281,7 @@ open class HardwareConfig(opmode: LinearOpMode) {
         lateinit var drive: MecanumDrive
         var thisDist = 0.0
         val timer: ElapsedTime = ElapsedTime()
-        lateinit var fileWriter: FileWriter
+        var fileWriter: FileWriter? = null
         private lateinit var myOpMode: LinearOpMode
         var once = false
         var extensionPIDF = PIDFController(0.0, 0.0, 0.0, 0.0)
@@ -291,51 +295,59 @@ open class HardwareConfig(opmode: LinearOpMode) {
                 MultipleTelemetry(myOpMode.telemetry, FtcDashboard.getInstance().telemetry)
             thisDist = 0.0
             once = false
-            FileWriterFTC.setUpFile(fileWriter)
+            val file = String.format(
+                "%s/FIRST/matchlogs/log.txt",
+                Environment.getExternalStorageDirectory().absolutePath
+            )
+            fileWriter = FileWriter(file, true)
+            setUpFile(fileWriter!!)
             updateStatus("Initializing")
             drive = MecanumDrive(ahwMap)
             drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER)
             drive.poseEstimate = PoseStorage.currentPose
             val timer = ElapsedTime() //declaring the runtime variable
-            vSensor.init(ahwMap, "Expansion Hub 2")
-            lights.init(ahwMap, "blinkin")
+            vSensor = initVSensor(ahwMap, "Expansion Hub 2")
+            lights = initLights(ahwMap, "blinkin")
             // rev potentiometer //analog
-            potentiometer.init(ahwMap, "potent")
-            green1.init(ahwMap, "green1")
-            green2.init(ahwMap, "green2")
-            green3.init(ahwMap, "green3")
-            green4.init(ahwMap, "green4")
-            red1.init(ahwMap, "red1")
-            red2.init(ahwMap, "red2")
-            red3.init(ahwMap, "red3")
-            red4.init(ahwMap, "red4")
+            potentiometer = initPotent(ahwMap, "potent")
+            green1 = initDigiChan(ahwMap, "green1")
+            green2 = initDigiChan(ahwMap, "green2")
+            green3 = initDigiChan(ahwMap, "green3")
+            green4 = initDigiChan(ahwMap, "green4")
+            red1 = initDigiChan(ahwMap, "red1")
+            red2 = initDigiChan(ahwMap, "red2")
+            red3 = initDigiChan(ahwMap, "red3")
+            red4 = initDigiChan(ahwMap, "red4")
             // Declare our motors
-            motorFrontLeft.init(ahwMap, "motorFrontLeft", DcMotor.RunMode.RUN_WITHOUT_ENCODER)
-            motorBackLeft.init(
+            motorFrontLeft =
+                initMotor(ahwMap, "motorFrontLeft", DcMotor.RunMode.RUN_WITHOUT_ENCODER)
+            motorBackLeft = initMotor(
                 ahwMap,
                 "motorBackLeft",
                 DcMotor.RunMode.RUN_WITHOUT_ENCODER,
                 DcMotorSimple.Direction.REVERSE
             )
-            motorFrontRight.init(ahwMap, "motorFrontRight", DcMotor.RunMode.RUN_WITHOUT_ENCODER)
-            motorBackRight.init(ahwMap, "motorBackRight", DcMotor.RunMode.RUN_WITHOUT_ENCODER)
-            motorLift.init(
+            motorFrontRight =
+                initMotor(ahwMap, "motorFrontRight", DcMotor.RunMode.RUN_WITHOUT_ENCODER)
+            motorBackRight =
+                initMotor(ahwMap, "motorBackRight", DcMotor.RunMode.RUN_WITHOUT_ENCODER)
+            motorLift = initMotor(
                 ahwMap,
                 "lift",
                 DcMotor.RunMode.RUN_WITHOUT_ENCODER,
                 DcMotorSimple.Direction.REVERSE
             )
-            motorExtension.init(ahwMap, "slideMotor", DcMotor.RunMode.RUN_USING_ENCODER)
-            motorRotation.init(
+            motorExtension = initMotor(ahwMap, "slideMotor", DcMotor.RunMode.RUN_USING_ENCODER)
+            motorRotation = initMotor(
                 ahwMap,
                 "flipperMotor",
                 DcMotor.RunMode.RUN_USING_ENCODER,
                 DcMotorSimple.Direction.REVERSE
             )
-            claw1.init(ahwMap, "claw1")
-            claw2.init(ahwMap, "claw2")
-            flipServo.init(ahwMap, "flipServo")
-            airplaneServo.init(ahwMap, "airplaneServo")
+            claw1 = initServo(ahwMap, "claw1")
+            claw2 = initServo(ahwMap, "claw2")
+            flipServo = initServo(ahwMap, "flipServo")
+            airplaneServo = initServo(ahwMap, "airplaneServo")
             ServoUtil.closeClaw(claw1)
             ServoUtil.closeClaw(claw2)
             timer.reset()

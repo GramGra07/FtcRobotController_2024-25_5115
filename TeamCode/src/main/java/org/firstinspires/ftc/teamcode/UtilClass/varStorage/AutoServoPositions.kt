@@ -6,6 +6,7 @@ import org.firstinspires.ftc.teamcode.UtilClass.ServoUtil.backClaw
 @Config
 object AutoServoPositions {
     //AutoServoPositions.flipUp
+    @JvmField
     var flipDown: Int = backClaw
 
     @JvmField

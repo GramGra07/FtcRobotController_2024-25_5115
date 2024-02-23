@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.ggutil.blank
 
-import org.firstinspires.ftc.teamcode.hummingbird.Flower
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
@@ -13,7 +12,7 @@ import org.firstinspires.ftc.teamcode.opModes.rr.drive.advanced.PoseStorage
 @Autonomous
 @Disabled
 class blankAuto : LinearOpMode() {
-    var startPose: Flower = autoHardware.startPose
+    var startPose: com.acmerobotics.roadrunner.geometry.Pose2d = autoHardware.startPose
     var robot = autoHardware(this)
 
     @Throws(InterruptedException::class)

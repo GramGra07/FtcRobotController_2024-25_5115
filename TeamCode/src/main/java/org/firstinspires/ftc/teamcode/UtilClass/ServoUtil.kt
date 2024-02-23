@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.UtilClass
 
 import com.acmerobotics.dashboard.config.Config
 import com.qualcomm.robotcore.hardware.Servo
-import org.firstinspires.ftc.teamcode.extensions.Extensions.ledIND
+import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.ledIND
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.setPose
 import org.firstinspires.ftc.teamcode.opModes.HardwareConfig
 import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.green1
@@ -15,7 +15,11 @@ import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.timer
 @Config
 object ServoUtil {
     var backClaw = 20
+
+    @JvmField
     var openClaw1 = 100
+
+    @JvmField
     var openClaw2 = 90
     fun openClaw(servo: Servo) {
         if (servo === HardwareConfig.claw1) {
@@ -28,7 +32,10 @@ object ServoUtil {
         lastTimeOpen = timer.seconds()
     }
 
+    @JvmField
     var closeClaw1 = 200
+
+    @JvmField
     var closeClaw2 = 10
     fun closeClaw(servo: Servo?) {
         if (servo == HardwareConfig.claw1) {
@@ -40,13 +47,17 @@ object ServoUtil {
         }
     }
 
+    @JvmField
     var releaseAirplane = 120
 
     fun releaseAirplane(servo: Servo) {
         servo.setPose(releaseAirplane.toDouble())
     }
 
+    @JvmField
     var raiseAirplaneVal = 40
+
+    @JvmField
     var airplaneReset = 30
 
     fun resetAirplane(servo: Servo) {

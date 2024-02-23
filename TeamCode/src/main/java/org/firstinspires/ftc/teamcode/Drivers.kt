@@ -15,8 +15,8 @@ object Drivers {
     private val driverControls =
         arrayOf("Camden", "Grady", "Michael", "Graden", "Delaney", "Child")
     val otherControls = driverControls
-    const val baseDriver = 0
-    const val baseOther = 1 //list integer of base driver and other controls
+    const val baseDriver = 1
+    const val baseOther = 0 //list integer of base driver and other controls
     var currDriver = driverControls[DriverIndex.dIndex]
     var currOther = otherControls[DriverIndex.oIndex] //list string of driver and other controls
     var fieldCentric = false
