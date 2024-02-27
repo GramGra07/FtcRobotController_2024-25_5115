@@ -1,14 +1,12 @@
 package org.firstinspires.ftc.teamcode.Trajectories.backdrop
 
+//import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.flipServo
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.geometry.Vector2d
 import com.acmerobotics.roadrunner.util.Angle.normDelta
 import org.firstinspires.ftc.teamcode.Enums.AutoRandom
 import org.firstinspires.ftc.teamcode.Enums.AutoRandom.MID
 import org.firstinspires.ftc.teamcode.Enums.PathLong
-import org.firstinspires.ftc.teamcode.UtilClass.varStorage.AutoServoPositions.flipUp
-import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.calcFlipPose
-//import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.flipServo
 import org.firstinspires.ftc.teamcode.opModes.autoSoftware.AutoHardware
 import org.firstinspires.ftc.teamcode.opModes.rr.drive.MecanumDrive
 import org.firstinspires.ftc.teamcode.opModes.rr.trajectorysequence.TrajectorySequence
@@ -73,7 +71,11 @@ object BackdropTrajectories {
             .build()
     }
 
-    fun redLong(drive: MecanumDrive, pathLong: PathLong?, clawSubsystem: ClawSubsystem): TrajectorySequence? {
+    fun redLong(
+        drive: MecanumDrive,
+        pathLong: PathLong?,
+        clawSubsystem: ClawSubsystem
+    ): TrajectorySequence? {
         val baseX = 58 + forwardOffset - backdropOffset
         var baseY = -32 - 2
         return when (pathLong) {
@@ -356,7 +358,7 @@ object BackdropTrajectories {
         val baseX = 58 + forwardOffset
         val baseY = 38 + blueMidOff
         when (AutoHardware.autoRandomReliable) {
-            AutoRandom.MID -> return drive.trajectorySequenceBuilder(drive.poseEstimate)
+            MID -> return drive.trajectorySequenceBuilder(drive.poseEstimate)
                 .lineToLinearHeading(
                     Pose2d(
                         baseX.toDouble(),
@@ -397,7 +399,11 @@ object BackdropTrajectories {
             .build()
     }
 
-    fun blueLong(drive: MecanumDrive, pathLong: PathLong?,clawSubsystem: ClawSubsystem): TrajectorySequence? {
+    fun blueLong(
+        drive: MecanumDrive,
+        pathLong: PathLong?,
+        clawSubsystem: ClawSubsystem
+    ): TrajectorySequence? {
         val baseX = 58 + forwardOffset - backdropOffset
         var baseY = 38 + blueMidOff
         return when (pathLong) {
@@ -432,7 +438,7 @@ object BackdropTrajectories {
                         )
                         .build()
 
-                    AutoRandom.MID -> return drive.trajectorySequenceBuilder(drive.poseEstimate)
+                    MID -> return drive.trajectorySequenceBuilder(drive.poseEstimate)
                         .addDisplacementMarker {
                             clawSubsystem.flipUp()
                             clawSubsystem.update()
@@ -484,7 +490,7 @@ object BackdropTrajectories {
                 }
                 baseY -= 4
                 when (AutoHardware.autoRandomReliable) {
-                    AutoRandom.MID -> return drive.trajectorySequenceBuilder(drive.poseEstimate)
+                    MID -> return drive.trajectorySequenceBuilder(drive.poseEstimate)
                         .addDisplacementMarker {
                             clawSubsystem.flipUp()
                             clawSubsystem.update()
@@ -582,7 +588,7 @@ object BackdropTrajectories {
             PathLong.OUTSIDE -> {
                 baseY -= 4
                 when (AutoHardware.autoRandomReliable) {
-                    AutoRandom.MID -> return drive.trajectorySequenceBuilder(drive.poseEstimate)
+                    MID -> return drive.trajectorySequenceBuilder(drive.poseEstimate)
                         .addDisplacementMarker {
                             clawSubsystem.flipUp()
                             clawSubsystem.update()

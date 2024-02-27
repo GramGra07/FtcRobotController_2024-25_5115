@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.opModes.autoSoftware
 
-import com.acmerobotics.roadrunner.drive.Drive
 import org.firstinspires.ftc.teamcode.Enums.EndPose
 import org.firstinspires.ftc.teamcode.Enums.PathLong
 import org.firstinspires.ftc.teamcode.Enums.StartDist

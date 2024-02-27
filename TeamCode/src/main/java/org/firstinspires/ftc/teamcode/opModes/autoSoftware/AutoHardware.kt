@@ -5,7 +5,6 @@ import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
-import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
@@ -14,20 +13,13 @@ import org.firstinspires.ftc.teamcode.Enums.Alliance
 import org.firstinspires.ftc.teamcode.Enums.AutoRandom
 import org.firstinspires.ftc.teamcode.Enums.StartDist
 import org.firstinspires.ftc.teamcode.Enums.StartSide
-import org.firstinspires.ftc.teamcode.UtilClass.ServoUtil.closeClaw
-import org.firstinspires.ftc.teamcode.UtilClass.varStorage.PIDVals.extensionPIDFCo
-import org.firstinspires.ftc.teamcode.UtilClass.varStorage.PIDVals.rotationPIDFCo
 import org.firstinspires.ftc.teamcode.UtilClass.varStorage.StartPose
 import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.setPatternCo
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.ledIND
-import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.calcFlipPose
 import org.firstinspires.ftc.teamcode.opModes.HardwareConfig
 import org.firstinspires.ftc.teamcode.opModes.camera.VPObjectDetect
 import org.firstinspires.ftc.teamcode.opModes.rr.drive.MecanumDrive
 import org.firstinspires.ftc.teamcode.opModes.rr.drive.advanced.PoseStorage
-import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem
-import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
-import org.firstinspires.ftc.teamcode.subsystems.ExtendoSubsystem
 import org.firstinspires.ftc.vision.VisionPortal
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor
@@ -37,7 +29,7 @@ import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor
 class AutoHardware(opmode: LinearOpMode) // constructor
     : HardwareConfig(opmode) {
     var hardwareMap: HardwareMap? = null // first initialization of the hardware map
-    fun initAuto(ahwMap: HardwareMap, myOpMode: LinearOpMode, cycling: Boolean) {
+    fun initAuto(ahwMap: HardwareMap, myOpMode: LinearOpMode) {
         val telemetry: Telemetry =
             MultipleTelemetry(myOpMode.telemetry, FtcDashboard.getInstance().telemetry)
         hardwareMap = ahwMap // hardware map initialization
@@ -116,7 +108,7 @@ class AutoHardware(opmode: LinearOpMode) // constructor
             telemetry: Telemetry,
             drive: MecanumDrive
         ) {
-            val currentDetections: List<AprilTagDetection> = processor.getDetections()
+            val currentDetections: List<AprilTagDetection> = processor.detections
             telemetry.addData("# AprilTags Detected", currentDetections.size)
             var pose = Pose2d(0.0, 0.0, drive.poseEstimate.heading)
 

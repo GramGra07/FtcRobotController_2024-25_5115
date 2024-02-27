@@ -4,16 +4,12 @@ package org.firstinspires.ftc.teamcode.opModes
 import android.os.Environment
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
-import com.arcrobotics.ftclib.controller.PIDFController
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.hardware.AnalogInput
-import com.qualcomm.robotcore.hardware.DcMotor
-import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.DigitalChannel
 import com.qualcomm.robotcore.hardware.HardwareMap
-import com.qualcomm.robotcore.hardware.Servo
 import com.qualcomm.robotcore.hardware.VoltageSensor
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.Telemetry
@@ -28,7 +24,6 @@ import org.firstinspires.ftc.teamcode.UtilClass.varStorage.LoopTime
 import org.firstinspires.ftc.teamcode.UtilClass.varStorage.varConfig
 import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.currentColor
 import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.initLights
-import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.initMotor
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.currentVoltage
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.initDigiChan
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.initPotent
@@ -36,8 +31,6 @@ import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.initVSensor
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.ledIND
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.lowVoltage
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.potentAngle
-import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.initServo
-import org.firstinspires.ftc.teamcode.opModes.DistanceStorage.Companion.totalDist
 import org.firstinspires.ftc.teamcode.opModes.autoSoftware.AutoHardware
 import org.firstinspires.ftc.teamcode.opModes.rr.drive.MecanumDrive
 import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem
@@ -73,7 +66,8 @@ open class HardwareConfig() {
         lateinit var lights: RevBlinkinLedDriver
         var slowModeIsOn = false
         var reversed = false
-//        var liftPower = 0.0
+
+        //        var liftPower = 0.0
 //        var extensionPower = 0.0
 //        var rotationPower = 0.0
         var loops = 0.0
@@ -101,7 +95,8 @@ open class HardwareConfig() {
         var fileWriter: FileWriter? = null
         private lateinit var myOpMode: LinearOpMode
         var once = false
-//        var extensionPIDF = PIDFController(0.0, 0.0, 0.0, 0.0)
+
+        //        var extensionPIDF = PIDFController(0.0, 0.0, 0.0, 0.0)
 //        var rotationPIDF = PIDFController(0.0, 0.0, 0.0, 0.0)
         lateinit var startDist: StartDist
         val currentVersion = "6.0.0"

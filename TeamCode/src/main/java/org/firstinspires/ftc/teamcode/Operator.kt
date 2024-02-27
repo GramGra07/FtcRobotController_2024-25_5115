@@ -5,7 +5,6 @@ import org.firstinspires.ftc.teamcode.Limits.maxRotationTicks
 import org.firstinspires.ftc.teamcode.Limits.minRotationTicks
 import org.firstinspires.ftc.teamcode.UtilClass.varStorage.DeadZones
 import org.firstinspires.ftc.teamcode.UtilClass.varStorage.LoopTime
-import org.firstinspires.ftc.teamcode.UtilClass.varStorage.varConfig
 import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.ExtendoSubsystem
 

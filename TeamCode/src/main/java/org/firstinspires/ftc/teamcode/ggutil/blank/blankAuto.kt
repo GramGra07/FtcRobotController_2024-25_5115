@@ -19,7 +19,7 @@ class blankAuto : LinearOpMode() {
     override fun runOpMode() {
         val drive = MecanumDrive(hardwareMap)
         drive.poseEstimate = startPose
-        robot.initAuto(hardwareMap, this, false)
+        robot.initAuto(hardwareMap, this)
         if (opModeIsActive()) {
             PoseStorage.currentPose = drive.poseEstimate
         }

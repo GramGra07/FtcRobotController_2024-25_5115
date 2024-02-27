@@ -23,8 +23,9 @@ class EndgameSubsystem(ahwMap: HardwareMap) {
         EXTEND,
         STOP
     }
-    private var shootState:ShooterState = ShooterState.CLOSED
-    private var liftState:LiftStates = LiftStates.STOP
+
+    private var shootState: ShooterState = ShooterState.CLOSED
+    private var liftState: LiftStates = LiftStates.STOP
 
     private var motorLift: DcMotor? = null
 
@@ -46,41 +47,50 @@ class EndgameSubsystem(ahwMap: HardwareMap) {
             airplaneServo = initServo(ahwMap, "airplaneServo")
         }
     }
-    fun retract(){
+
+    fun retract() {
         liftState = LiftStates.RETRACT
     }
-    fun extend(){
+
+    fun extend() {
         liftState = LiftStates.EXTEND
     }
-    fun stopLift(){
+
+    fun stopLift() {
         liftState = LiftStates.STOP
     }
-    fun shoot(){
+
+    fun shoot() {
         shootState = ShooterState.OPEN
     }
-    fun resetAirplane(){
+
+    fun resetAirplane() {
         shootState = ShooterState.CLOSED
     }
-    private fun power(){
+
+    private fun power() {
         when (liftState) {
             LiftStates.RETRACT -> {
                 motorLift!!.power = liftMax
             }
+
             LiftStates.EXTEND -> {
                 motorLift!!.power = -liftMax
             }
+
             LiftStates.STOP -> {
                 motorLift!!.power = 0.0
             }
         }
     }
 
-    fun update(){
+    fun update() {
         power()
         when (shootState) {
             ShooterState.OPEN -> {
                 releaseAirplane(airplaneServo!!)
             }
+
             ShooterState.CLOSED -> {
                 resetAirplane(airplaneServo!!)
             }

@@ -22,7 +22,7 @@ class RR : LinearOpMode() {
     override fun runOpMode() {
         driveSubsystem.drive!!.poseEstimate = getStartPose(Alliance.RED, StartSide.RIGHT)
         val machine: StateMachine<place1States> = place1Machine(clawSubsystem, driveSubsystem)
-        robot.initAuto(hardwareMap, this, false)
+        robot.initAuto(hardwareMap, this)
         machine.start()
         while (machine.mainLoop(this)) {
             machine.update()

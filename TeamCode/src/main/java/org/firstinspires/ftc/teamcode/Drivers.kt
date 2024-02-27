@@ -4,8 +4,6 @@ import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.util.Angle.normDelta
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import org.firstinspires.ftc.teamcode.UtilClass.DriverAid
-import org.firstinspires.ftc.teamcode.UtilClass.varStorage.IsBusy
-import org.firstinspires.ftc.teamcode.opModes.HardwareConfig
 import org.firstinspires.ftc.teamcode.opModes.rr.drive.advanced.PoseStorage
 import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
@@ -37,13 +35,13 @@ object Drivers {
         val drive = driveSubsystem.drive!!
         // "Camden", "Grady", "Michael","Graden", "Delaney", "Child"
         if (currDriver === driverControls[1]) { //grady
-            fieldCentric = false
+            fieldCentric = true
             //slowmode
 //            gamepad1.wasJustReleased(GamepadKeys.Button.B);
-            if (myOpMode.gamepad1.circle && !slowModeButtonDown && !HardwareConfig.slowModeIsOn) {
-                HardwareConfig.slowModeIsOn = true
-            } else if (myOpMode.gamepad1.circle && !slowModeButtonDown && HardwareConfig.slowModeIsOn) {
-                HardwareConfig.slowModeIsOn = false
+            if (myOpMode.gamepad1.circle && !slowModeButtonDown && !driveSubsystem.slowModeIsOn) {
+                driveSubsystem.slowModeIsOn = true
+            } else if (myOpMode.gamepad1.circle && !slowModeButtonDown && driveSubsystem.slowModeIsOn) {
+                driveSubsystem.slowModeIsOn = false
             }
             slowModeButtonDown = myOpMode.gamepad1.circle
             //            gamepad1.wasJustReleased(GamepadKeys.Button.Y);
@@ -87,25 +85,25 @@ object Drivers {
         }
         if (currDriver === driverControls[3]) { //Graden
             fieldCentric = true
-            if (myOpMode.gamepad1.circle && !slowModeButtonDown && !HardwareConfig.slowModeIsOn) {
-                HardwareConfig.slowModeIsOn = true
-            } else if (myOpMode.gamepad1.circle && !slowModeButtonDown && HardwareConfig.slowModeIsOn) {
-                HardwareConfig.slowModeIsOn = false
+            if (myOpMode.gamepad1.circle && !slowModeButtonDown && !driveSubsystem.slowModeIsOn) {
+                driveSubsystem.slowModeIsOn = true
+            } else if (myOpMode.gamepad1.circle && !slowModeButtonDown && driveSubsystem.slowModeIsOn) {
+                driveSubsystem.slowModeIsOn = false
             }
             slowModeButtonDown = myOpMode.gamepad1.circle
         }
         if (currDriver === driverControls[4]) { //Delaney
             fieldCentric = false
             //slowmode
-            if (myOpMode.gamepad1.circle && !slowModeButtonDown && !HardwareConfig.slowModeIsOn) {
-                HardwareConfig.slowModeIsOn = true
-            } else if (myOpMode.gamepad1.circle && !slowModeButtonDown && HardwareConfig.slowModeIsOn) {
-                HardwareConfig.slowModeIsOn = false
+            if (myOpMode.gamepad1.circle && !slowModeButtonDown && !driveSubsystem.slowModeIsOn) {
+                driveSubsystem.slowModeIsOn = true
+            } else if (myOpMode.gamepad1.circle && !slowModeButtonDown && driveSubsystem.slowModeIsOn) {
+                driveSubsystem.slowModeIsOn = false
             }
             slowModeButtonDown = myOpMode.gamepad1.circle
             if (myOpMode.gamepad1.triangle) {
-                HardwareConfig.slowModeIsOn = false
-                IsBusy.isAutoInTeleop = true
+                driveSubsystem.slowModeIsOn = false
+                driveSubsystem.isAutoInTeleop = true
                 drive.update()
                 PoseStorage.currentPose = drive.poseEstimate
                 drive.followTrajectorySequence(drive.trajectorySequenceBuilder(drive.poseEstimate)
@@ -142,16 +140,16 @@ object Drivers {
                     .build())
             }
             if (myOpMode.gamepad1.cross) {
-                IsBusy.isAutoInTeleop = true
+                driveSubsystem.isAutoInTeleop = true
                 drive.breakFollowing()
             }
             if (!drive.isBusy) {
-                IsBusy.isAutoInTeleop = false
+                driveSubsystem.isAutoInTeleop = false
             }
         }
         if (currDriver === driverControls[5]) { //Child
             fieldCentric = false
-            HardwareConfig.slowModeIsOn = true
+            driveSubsystem.slowModeIsOn = true
         }
     }
 

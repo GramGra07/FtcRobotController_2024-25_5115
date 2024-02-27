@@ -16,7 +16,7 @@ import org.firstinspires.ftc.teamcode.opModes.rr.drive.MecanumDrive
 import org.firstinspires.ftc.teamcode.opModes.rr.drive.advanced.PoseStorage
 import kotlin.math.sqrt
 
-class DriveSubsystem( ahwMap: HardwareMap) {
+class DriveSubsystem(ahwMap: HardwareMap) {
     var drive: MecanumDrive? = null
 
     private var motorFrontLeft: DcMotor? = null
@@ -38,20 +38,31 @@ class DriveSubsystem( ahwMap: HardwareMap) {
                     DcMotor.RunMode.RUN_WITHOUT_ENCODER
                 )
         }
-        motorBackLeft = MotorExtensions.initMotor(
-            ahwMap,
-            "motorBackLeft",
-            DcMotor.RunMode.RUN_WITHOUT_ENCODER,
-            DcMotorSimple.Direction.REVERSE
-        )
-        motorFrontRight =
-            MotorExtensions.initMotor(
+        if (motorBackLeft == null) {
+            motorBackLeft = MotorExtensions.initMotor(
                 ahwMap,
-                "motorFrontRight",
-                DcMotor.RunMode.RUN_WITHOUT_ENCODER
+                "motorBackLeft",
+                DcMotor.RunMode.RUN_WITHOUT_ENCODER,
+                DcMotorSimple.Direction.REVERSE
             )
-        motorBackRight =
-            MotorExtensions.initMotor(ahwMap, "motorBackRight", DcMotor.RunMode.RUN_WITHOUT_ENCODER)
+        }
+        if (motorFrontRight == null) {
+            motorFrontRight =
+                MotorExtensions.initMotor(
+                    ahwMap,
+                    "motorFrontRight",
+                    DcMotor.RunMode.RUN_WITHOUT_ENCODER,
+                    DcMotorSimple.Direction.REVERSE
+                )
+        }
+        if (motorBackRight == null) {
+            motorBackRight =
+                MotorExtensions.initMotor(
+                    ahwMap,
+                    "motorBackRight",
+                    DcMotor.RunMode.RUN_WITHOUT_ENCODER
+                )
+        }
     }
 
     private var thisDist = 0.0
@@ -69,10 +80,10 @@ class DriveSubsystem( ahwMap: HardwareMap) {
     private var controllerAngle = 0.0
     private var robotDegree = 0.0
     private var movementDegree = 0.0
-    private var slowModeIsOn = false
+    var slowModeIsOn = false
     var reverse = false
     var isAutoInTeleop = false
-    fun driveByGamepads(fieldCentric: Boolean,myOpMode: OpMode) {
+    fun driveByGamepads(fieldCentric: Boolean, myOpMode: OpMode) {
         if (fieldCentric) {
             gamepadX =
                 myOpMode.gamepad1.left_stick_x.toDouble() //get the x val of left stick and store
@@ -152,18 +163,20 @@ class DriveSubsystem( ahwMap: HardwareMap) {
     }
 
     private fun power() {
-        if (isAutoInTeleop) {
+        if (!isAutoInTeleop) {
             motorFrontLeft!!.power = frontLeftPower
             motorBackLeft!!.power = backLeftPower
             motorFrontRight!!.power = frontRightPower
             motorBackRight!!.power = backRightPower
         }
     }
-    fun update(){
+
+    fun update() {
         power()
         drive!!.update()
     }
-    fun telemetry(telemetry: Telemetry){
+
+    fun telemetry(telemetry: Telemetry) {
         if (reverse) {
             telemetry.addData("reversed", "")
         }

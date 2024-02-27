@@ -31,7 +31,7 @@ class PiParkBLO : LinearOpMode() {
                 extendoSubsystem,
                 driveSubsystem
             )
-        robot.initAuto(hardwareMap, this, false)
+        robot.initAuto(hardwareMap, this)
         machine.start()
         while (machine.mainLoop(this)) {
             machine.update()
