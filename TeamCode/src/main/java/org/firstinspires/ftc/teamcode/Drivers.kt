@@ -4,12 +4,12 @@ import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.util.Angle.normDelta
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import org.firstinspires.ftc.teamcode.UtilClass.DriverAid
-import org.firstinspires.ftc.teamcode.UtilClass.ServoUtil
 import org.firstinspires.ftc.teamcode.UtilClass.varStorage.IsBusy
 import org.firstinspires.ftc.teamcode.opModes.HardwareConfig
-import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.airplaneServo
-import org.firstinspires.ftc.teamcode.opModes.rr.drive.MecanumDrive
 import org.firstinspires.ftc.teamcode.opModes.rr.drive.advanced.PoseStorage
+import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem
+import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
+import org.firstinspires.ftc.teamcode.subsystems.EndgameSubsystem
 
 object Drivers {
     private val driverControls =
@@ -28,7 +28,13 @@ object Drivers {
     private var slowModeButtonDown = false
     private var planeButtonDown = false
     private var planeReleased = true
-    fun bindDriverButtons(myOpMode: OpMode, drive: MecanumDrive) {
+    fun bindDriverButtons(
+        myOpMode: OpMode,
+        driveSubsystem: DriveSubsystem,
+        clawSubsystem: ClawSubsystem,
+        endgameSubsystem: EndgameSubsystem
+    ) {
+        val drive = driveSubsystem.drive!!
         // "Camden", "Grady", "Michael","Graden", "Delaney", "Child"
         if (currDriver === driverControls[1]) { //grady
             fieldCentric = false
@@ -41,25 +47,25 @@ object Drivers {
             }
             slowModeButtonDown = myOpMode.gamepad1.circle
             //            gamepad1.wasJustReleased(GamepadKeys.Button.Y);
-            if (myOpMode.gamepad1.triangle && !planeButtonDown && !planeReleased) {
-                ServoUtil.releaseAirplane(airplaneServo)
-                planeReleased = true
-            } else if (myOpMode.gamepad1.triangle && !planeButtonDown && planeReleased) {
-                ServoUtil.resetAirplane(airplaneServo)
-                planeReleased = false
+            if (myOpMode.gamepad1.triangle && !planeButtonDown && !endgameSubsystem.planeReleased) {
+                endgameSubsystem.shoot()
+                endgameSubsystem.planeReleased = true
+            } else if (myOpMode.gamepad1.triangle && !planeButtonDown && endgameSubsystem.planeReleased) {
+                endgameSubsystem.resetAirplane()
+                endgameSubsystem.planeReleased = false
             }
             planeButtonDown = myOpMode.gamepad1.triangle
             //            gamepad1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER);
             // gamepad1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER);
             if (myOpMode.gamepad1.right_trigger > 0) {
-                HardwareConfig.liftPower = -Limits.liftMax
+//                HardwareConfig.liftPower = -Limits.liftMax
+                endgameSubsystem.retract()
             } else if (myOpMode.gamepad1.left_trigger > 0) {
-                HardwareConfig.liftPower = Limits.liftMax
+                endgameSubsystem.extend()
+//                HardwareConfig.liftPower = Limits.liftMax
             } else {
-                HardwareConfig.liftPower = 0.0
-            }
-            if (liftConnected) {
-                HardwareConfig.extensionPower = HardwareConfig.liftPower
+                endgameSubsystem.stopLift()
+//                HardwareConfig.liftPower = 0.0
             }
             // using ftc lib
 //            gamepad1.getButton(GamepadKeys.Button.RIGHT_BUMPER);
@@ -110,8 +116,14 @@ object Drivers {
                             )
                         ), normDelta(Math.toRadians(135.0) - drive.poseEstimate.heading)
                     )
-                    .addDisplacementMarker { ServoUtil.openClaw(HardwareConfig.claw1) }
-                    .addDisplacementMarker { ServoUtil.openClaw(HardwareConfig.claw2) }
+                    .addDisplacementMarker {
+                        clawSubsystem.openLeft()
+                        clawSubsystem.update()
+                    }
+                    .addDisplacementMarker {
+                        clawSubsystem.openRight()
+                        clawSubsystem.update()
+                    }
                     .splineToLinearHeading(
                         Pose2d(
                             drive.poseEstimate.x - 5, drive.poseEstimate.y - 10, normDelta(
@@ -119,8 +131,10 @@ object Drivers {
                             )
                         ), normDelta(Math.toRadians(135.0) - drive.poseEstimate.heading)
                     )
-                    .addDisplacementMarker { ServoUtil.closeClaw(HardwareConfig.claw1) }
-                    .addDisplacementMarker { ServoUtil.closeClaw(HardwareConfig.claw2) }
+                    .addDisplacementMarker {
+                        clawSubsystem.closeBoth()
+                        clawSubsystem.update()
+                    }
                     .splineToLinearHeading(
                         PoseStorage.currentPose,
                         PoseStorage.currentPose.heading

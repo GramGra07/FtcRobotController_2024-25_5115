@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.Enums.Alliance
 import org.firstinspires.ftc.teamcode.Enums.AutoRandom
 import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.setPatternCo
 import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.lights
-import org.firstinspires.ftc.teamcode.opModes.autoSoftware.autoHardware
+import org.firstinspires.ftc.teamcode.opModes.autoSoftware.AutoHardware
 import org.firstinspires.ftc.vision.VisionProcessor
 import org.opencv.android.Utils
 import org.opencv.core.Core
@@ -91,7 +91,7 @@ class VPObjectDetect(var alliance: Alliance) : VisionProcessor, CameraStreamSour
                         5.0,
                         Scalar(0.0, 255.0, 0.0)
                     )
-                    autoHardware.autonomousRandom = AutoRandom.RIGHT
+                    AutoHardware.autonomousRandom = AutoRandom.RIGHT
                     lights.setPatternCo(RevBlinkinLedDriver.BlinkinPattern.WHITE)
                     current = 1
                 }
@@ -114,7 +114,7 @@ class VPObjectDetect(var alliance: Alliance) : VisionProcessor, CameraStreamSour
                             5.0,
                             Scalar(0.0, 255.0, 0.0)
                         )
-                        autoHardware.autonomousRandom = AutoRandom.MID
+                        AutoHardware.autonomousRandom = AutoRandom.MID
                         lights.setPatternCo(RevBlinkinLedDriver.BlinkinPattern.GOLD)
                         current = 1
                         //                        shiftOffset = 0;
@@ -131,7 +131,7 @@ class VPObjectDetect(var alliance: Alliance) : VisionProcessor, CameraStreamSour
                 5.0,
                 Scalar(0.0, 255.0, 0.0)
             )
-            autoHardware.autonomousRandom = AutoRandom.LEFT
+            AutoHardware.autonomousRandom = AutoRandom.LEFT
             lights.setPatternCo(RevBlinkinLedDriver.BlinkinPattern.CONFETTI)
             //            shiftOffset = -leftShift;
         }

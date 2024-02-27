@@ -3,6 +3,10 @@ package org.firstinspires.ftc.teamcode.opModes.teleOp
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.opModes.HardwareConfig
+import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem
+import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
+import org.firstinspires.ftc.teamcode.subsystems.EndgameSubsystem
+import org.firstinspires.ftc.teamcode.subsystems.ExtendoSubsystem
 
 @TeleOp(group = "a") //@Disabled//disabling the opmode
 

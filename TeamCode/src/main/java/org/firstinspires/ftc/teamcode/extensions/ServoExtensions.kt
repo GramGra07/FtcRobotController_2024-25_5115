@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.extensions
 import com.acmerobotics.dashboard.config.Config
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.Servo
-import org.firstinspires.ftc.teamcode.UtilClass.ServoUtil
 import org.firstinspires.ftc.teamcode.UtilClass.varStorage.PastAngle
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.potentAngle
 import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.potentiometer
@@ -16,8 +15,8 @@ object ServoExtensions {
     }
 
     fun Servo.setPose(degrees: Double) {
-        val degree_mult = 0.00555555554
-        this.position = degree_mult * degrees
+        val degreeMult = 0.00555555554
+        this.position = degreeMult * degrees
     }
 
     @JvmField

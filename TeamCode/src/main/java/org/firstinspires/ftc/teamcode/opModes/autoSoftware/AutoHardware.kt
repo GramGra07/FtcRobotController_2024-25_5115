@@ -25,13 +25,16 @@ import org.firstinspires.ftc.teamcode.opModes.HardwareConfig
 import org.firstinspires.ftc.teamcode.opModes.camera.VPObjectDetect
 import org.firstinspires.ftc.teamcode.opModes.rr.drive.MecanumDrive
 import org.firstinspires.ftc.teamcode.opModes.rr.drive.advanced.PoseStorage
+import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem
+import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
+import org.firstinspires.ftc.teamcode.subsystems.ExtendoSubsystem
 import org.firstinspires.ftc.vision.VisionPortal
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor
 
 //config can be enabled to change variables in real time through FTC Dash
 //@Config
-class autoHardware(opmode: LinearOpMode) // constructor
+class AutoHardware(opmode: LinearOpMode) // constructor
     : HardwareConfig(opmode) {
     var hardwareMap: HardwareMap? = null // first initialization of the hardware map
     fun initAuto(ahwMap: HardwareMap, myOpMode: LinearOpMode, cycling: Boolean) {
@@ -51,16 +54,18 @@ class autoHardware(opmode: LinearOpMode) // constructor
 //                    .build();
 //        }
         visionPortal = VisionPortal.Builder()
-            .setCamera(ahwMap.get<WebcamName>(WebcamName::class.java, cam2_N))
+            .setCamera(ahwMap.get(WebcamName::class.java, cam2_N))
             .setCameraResolution(Size(1280, 720))
             .addProcessors(objProcessor)
             .build()
         FtcDashboard.getInstance()
             .startCameraStream(objProcessor, 0.0) // start the camera stream on FTC Dash
-        HardwareConfig.Companion.timer.reset()
+        timer.reset()
         //        ServoUtil.closeClaw(HardwareConfig.claw1);
 //        ServoUtil.closeClaw(HardwareConfig.claw2);
-        flipServo.calcFlipPose(80.0)
+        clawSubsystem.flipHigh()
+        clawSubsystem.update()
+//        flipServo.calcFlipPose(80.0)
         telemetry.update()
         if (myOpMode.isStopRequested) {
             return
@@ -69,21 +74,21 @@ class autoHardware(opmode: LinearOpMode) // constructor
         green2.ledIND(red2, false)
         green3.ledIND(red3, false)
         green4.ledIND(red4, false)
-        closeClaw(claw1)
-        closeClaw(claw2)
+        clawSubsystem.closeBoth()
+        clawSubsystem.update()
         myOpMode.waitForStart() // wait for the start button to be pressed
-        HardwareConfig.Companion.rotationPIDF.setPIDF(
-            rotationPIDFCo.p,
-            rotationPIDFCo.i,
-            rotationPIDFCo.d,
-            rotationPIDFCo.f
-        )
-        HardwareConfig.Companion.extensionPIDF.setPIDF(
-            extensionPIDFCo.p,
-            extensionPIDFCo.i,
-            extensionPIDFCo.d,
-            extensionPIDFCo.f
-        )
+//        HardwareConfig.Companion.rotationPIDF.setPIDF(
+//            rotationPIDFCo.p,
+//            rotationPIDFCo.i,
+//            rotationPIDFCo.d,
+//            rotationPIDFCo.f
+//        )
+//        HardwareConfig.Companion.extensionPIDF.setPIDF(
+//            extensionPIDFCo.p,
+//            extensionPIDFCo.i,
+//            extensionPIDFCo.d,
+//            extensionPIDFCo.f
+//        )
         //        visionPortal.setProcessorEnabled(objProcessor, false);
         lights.setPatternCo()
     }
@@ -260,19 +265,20 @@ class autoHardware(opmode: LinearOpMode) // constructor
         fun updatePose(drive: MecanumDrive) {
             PoseStorage.currentPose = drive.poseEstimate
         }
-        // method to use encoders to go to a point with encoder
-        fun encoderDrive(motor: DcMotor, position: Int, speed: Double, drive: MecanumDrive) {
-            motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER)
-            motor.setTargetPosition(motor.getCurrentPosition() + position)
-            drive.update()
-            motor.setMode(DcMotor.RunMode.RUN_TO_POSITION)
-            motor.setPower(Math.abs(speed))
-            while (motor.isBusy()) {
-                drive.update()
-            }
-            motor.setPower(0.0)
-            //        motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        }
+
+//        // method to use encoders to go to a point with encoder
+//        fun encoderDrive(motor: DcMotor, position: Int, speed: Double, drive: MecanumDrive) {
+//            motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER)
+//            motor.setTargetPosition(motor.getCurrentPosition() + position)
+//            drive.update()
+//            motor.setMode(DcMotor.RunMode.RUN_TO_POSITION)
+//            motor.setPower(Math.abs(speed))
+//            while (motor.isBusy()) {
+//                drive.update()
+//            }
+//            motor.setPower(0.0)
+//            //        motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        }
     }
 
 

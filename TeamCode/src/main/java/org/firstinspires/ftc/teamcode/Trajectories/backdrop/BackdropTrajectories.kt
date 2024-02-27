@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.Trajectories.backdrop
 
-import com.acmerobotics.dashboard.config.Config
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.acmerobotics.roadrunner.geometry.Vector2d
 import com.acmerobotics.roadrunner.util.Angle.normDelta
@@ -9,10 +8,11 @@ import org.firstinspires.ftc.teamcode.Enums.AutoRandom.MID
 import org.firstinspires.ftc.teamcode.Enums.PathLong
 import org.firstinspires.ftc.teamcode.UtilClass.varStorage.AutoServoPositions.flipUp
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.calcFlipPose
-import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.flipServo
-import org.firstinspires.ftc.teamcode.opModes.autoSoftware.autoHardware
+//import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.flipServo
+import org.firstinspires.ftc.teamcode.opModes.autoSoftware.AutoHardware
 import org.firstinspires.ftc.teamcode.opModes.rr.drive.MecanumDrive
 import org.firstinspires.ftc.teamcode.opModes.rr.trajectorysequence.TrajectorySequence
+import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem
 
 //@Config
 object BackdropTrajectories {
@@ -31,7 +31,7 @@ object BackdropTrajectories {
     fun redShort(drive: MecanumDrive): TrajectorySequence {
         val baseX = 54 + forwardOffset //!
         val baseY = -32 - redMidOff - 1
-        when (autoHardware.autoRandomReliable) {
+        when (AutoHardware.autoRandomReliable) {
             MID -> return drive.trajectorySequenceBuilder(drive.poseEstimate)
                 .lineToLinearHeading(
                     Pose2d(
@@ -73,15 +73,17 @@ object BackdropTrajectories {
             .build()
     }
 
-    fun redLong(drive: MecanumDrive, pathLong: PathLong?): TrajectorySequence? {
+    fun redLong(drive: MecanumDrive, pathLong: PathLong?, clawSubsystem: ClawSubsystem): TrajectorySequence? {
         val baseX = 58 + forwardOffset - backdropOffset
         var baseY = -32 - 2
         return when (pathLong) {
             PathLong.INSIDE -> {
-                when (autoHardware.autoRandomReliable) {
+                when (AutoHardware.autoRandomReliable) {
                     MID -> return drive.trajectorySequenceBuilder(drive.poseEstimate)
                         .addDisplacementMarker {
-                            flipServo.calcFlipPose((flipUp).toDouble())
+                            clawSubsystem.flipHigh()
+                            clawSubsystem.update()
+//                            flipServo.calcFlipPose((flipUp).toDouble())
                         }
                         .lineToLinearHeading(
                             Pose2d(
@@ -103,7 +105,9 @@ object BackdropTrajectories {
 
                     AutoRandom.RIGHT -> return drive.trajectorySequenceBuilder(drive.poseEstimate)
                         .addDisplacementMarker {
-                            flipServo.calcFlipPose((flipUp).toDouble())
+                            clawSubsystem.flipUp()
+                            clawSubsystem.update()
+//                            flipServo.calcFlipPose((flipUp).toDouble())
                         }
                         .lineToLinearHeading(
                             Pose2d(
@@ -125,9 +129,11 @@ object BackdropTrajectories {
 
                     AutoRandom.LEFT -> return drive.trajectorySequenceBuilder(drive.poseEstimate)
                         .addDisplacementMarker {
-                            flipServo.calcFlipPose((flipUp).toDouble())
+                            clawSubsystem.flipUp()
+                            clawSubsystem.update()
+//                            flipServo.calcFlipPose((flipUp).toDouble())
                         }
-                        .turn(normDelta(autoHardware.START_POSE.heading - drive.poseEstimate.heading))
+                        .turn(normDelta(AutoHardware.START_POSE.heading - drive.poseEstimate.heading))
                         .lineTo(
                             Vector2d(
                                 drive.poseEstimate.x + 4,
@@ -154,22 +160,24 @@ object BackdropTrajectories {
                     else -> {}
                 }
                 baseY += 5
-                when (autoHardware.autoRandomReliable) {
+                when (AutoHardware.autoRandomReliable) {
                     MID -> return drive.trajectorySequenceBuilder(drive.poseEstimate)
                         .addDisplacementMarker {
-                            flipServo.calcFlipPose((flipUp).toDouble())
+                            clawSubsystem.flipUp()
+                            clawSubsystem.update()
+//                            flipServo.calcFlipPose((flipUp).toDouble())
                         }
                         .lineToLinearHeading(
                             Pose2d(
-                                autoHardware.START_POSE.x - xOffset,
-                                autoHardware.START_POSE.y + startOffsetRed,
+                                AutoHardware.START_POSE.x - xOffset,
+                                AutoHardware.START_POSE.y + startOffsetRed,
                                 Math.toRadians(endAngle.toDouble())
                             )
                         )
                         .lineToLinearHeading(
                             Pose2d(
-                                -autoHardware.START_POSE.x - offset,
-                                autoHardware.START_POSE.y + startOffsetRed,
+                                -AutoHardware.START_POSE.x - offset,
+                                AutoHardware.START_POSE.y + startOffsetRed,
                                 Math.toRadians(endAngle.toDouble())
                             )
                         )
@@ -184,19 +192,21 @@ object BackdropTrajectories {
 
                     AutoRandom.LEFT -> return drive.trajectorySequenceBuilder(drive.poseEstimate)
                         .addDisplacementMarker {
-                            flipServo.calcFlipPose((flipUp).toDouble())
+                            clawSubsystem.flipUp()
+                            clawSubsystem.update()
+//                            flipServo.calcFlipPose((flipUp).toDouble())
                         }
                         .lineToLinearHeading(
                             Pose2d(
-                                autoHardware.START_POSE.x - xOffset,
-                                autoHardware.START_POSE.y + startOffsetRed,
+                                AutoHardware.START_POSE.x - xOffset,
+                                AutoHardware.START_POSE.y + startOffsetRed,
                                 Math.toRadians(endAngle.toDouble())
                             )
                         )
                         .lineToLinearHeading(
                             Pose2d(
-                                -autoHardware.START_POSE.x - offset,
-                                autoHardware.START_POSE.y + startOffsetRed,
+                                -AutoHardware.START_POSE.x - offset,
+                                AutoHardware.START_POSE.y + startOffsetRed,
                                 Math.toRadians(endAngle.toDouble())
                             )
                         )
@@ -211,19 +221,21 @@ object BackdropTrajectories {
 
                     AutoRandom.RIGHT -> return drive.trajectorySequenceBuilder(drive.poseEstimate)
                         .addDisplacementMarker {
-                            flipServo.calcFlipPose((flipUp).toDouble())
+                            clawSubsystem.flipUp()
+                            clawSubsystem.update()
+//                            flipServo.calcFlipPose((flipUp).toDouble())
                         }
                         .lineToLinearHeading(
                             Pose2d(
-                                autoHardware.START_POSE.x - xOffset,
-                                autoHardware.START_POSE.y + startOffsetRed,
+                                AutoHardware.START_POSE.x - xOffset,
+                                AutoHardware.START_POSE.y + startOffsetRed,
                                 Math.toRadians(endAngle.toDouble())
                             )
                         )
                         .lineToLinearHeading(
                             Pose2d(
-                                -autoHardware.START_POSE.x - offset,
-                                autoHardware.START_POSE.y + startOffsetRed,
+                                -AutoHardware.START_POSE.x - offset,
+                                AutoHardware.START_POSE.y + startOffsetRed,
                                 Math.toRadians(endAngle.toDouble())
                             )
                         )
@@ -243,22 +255,24 @@ object BackdropTrajectories {
 
             PathLong.OUTSIDE -> {
                 baseY += 5
-                when (autoHardware.autoRandomReliable) {
+                when (AutoHardware.autoRandomReliable) {
                     MID -> return drive.trajectorySequenceBuilder(drive.poseEstimate)
                         .addDisplacementMarker {
-                            flipServo.calcFlipPose((flipUp).toDouble())
+                            clawSubsystem.flipUp()
+                            clawSubsystem.update()
+//                            flipServo.calcFlipPose((flipUp).toDouble())
                         }
                         .lineToLinearHeading(
                             Pose2d(
-                                autoHardware.START_POSE.x - xOffset,
-                                autoHardware.START_POSE.y + startOffsetRed,
+                                AutoHardware.START_POSE.x - xOffset,
+                                AutoHardware.START_POSE.y + startOffsetRed,
                                 Math.toRadians(endAngle.toDouble())
                             )
                         )
                         .lineToLinearHeading(
                             Pose2d(
-                                -autoHardware.START_POSE.x - offset,
-                                autoHardware.START_POSE.y + startOffsetRed,
+                                -AutoHardware.START_POSE.x - offset,
+                                AutoHardware.START_POSE.y + startOffsetRed,
                                 Math.toRadians(endAngle.toDouble())
                             )
                         )
@@ -273,19 +287,21 @@ object BackdropTrajectories {
 
                     AutoRandom.LEFT -> return drive.trajectorySequenceBuilder(drive.poseEstimate)
                         .addDisplacementMarker {
-                            flipServo.calcFlipPose((flipUp).toDouble())
+                            clawSubsystem.flipUp()
+                            clawSubsystem.update()
+//                            flipServo.calcFlipPose((flipUp).toDouble())
                         }
                         .lineToLinearHeading(
                             Pose2d(
-                                autoHardware.START_POSE.x - xOffset,
-                                autoHardware.START_POSE.y + startOffsetRed,
+                                AutoHardware.START_POSE.x - xOffset,
+                                AutoHardware.START_POSE.y + startOffsetRed,
                                 Math.toRadians(endAngle.toDouble())
                             )
                         )
                         .lineToLinearHeading(
                             Pose2d(
-                                -autoHardware.START_POSE.x - offset,
-                                autoHardware.START_POSE.y + startOffsetRed,
+                                -AutoHardware.START_POSE.x - offset,
+                                AutoHardware.START_POSE.y + startOffsetRed,
                                 Math.toRadians(endAngle.toDouble())
                             )
                         )
@@ -300,19 +316,21 @@ object BackdropTrajectories {
 
                     AutoRandom.RIGHT -> return drive.trajectorySequenceBuilder(drive.poseEstimate)
                         .addDisplacementMarker {
-                            flipServo.calcFlipPose((flipUp).toDouble())
+                            clawSubsystem.flipUp()
+                            clawSubsystem.update()
+//                            flipServo.calcFlipPose((flipUp).toDouble())
                         }
                         .lineToLinearHeading(
                             Pose2d(
-                                autoHardware.START_POSE.x - xOffset,
-                                autoHardware.START_POSE.y + startOffsetRed,
+                                AutoHardware.START_POSE.x - xOffset,
+                                AutoHardware.START_POSE.y + startOffsetRed,
                                 Math.toRadians(endAngle.toDouble())
                             )
                         )
                         .lineToLinearHeading(
                             Pose2d(
-                                -autoHardware.START_POSE.x - offset,
-                                autoHardware.START_POSE.y + startOffsetRed,
+                                -AutoHardware.START_POSE.x - offset,
+                                AutoHardware.START_POSE.y + startOffsetRed,
                                 Math.toRadians(endAngle.toDouble())
                             )
                         )
@@ -337,7 +355,7 @@ object BackdropTrajectories {
     fun blueShort(drive: MecanumDrive): TrajectorySequence {
         val baseX = 58 + forwardOffset
         val baseY = 38 + blueMidOff
-        when (autoHardware.autoRandomReliable) {
+        when (AutoHardware.autoRandomReliable) {
             AutoRandom.MID -> return drive.trajectorySequenceBuilder(drive.poseEstimate)
                 .lineToLinearHeading(
                     Pose2d(
@@ -379,15 +397,17 @@ object BackdropTrajectories {
             .build()
     }
 
-    fun blueLong(drive: MecanumDrive, pathLong: PathLong?): TrajectorySequence? {
+    fun blueLong(drive: MecanumDrive, pathLong: PathLong?,clawSubsystem: ClawSubsystem): TrajectorySequence? {
         val baseX = 58 + forwardOffset - backdropOffset
         var baseY = 38 + blueMidOff
         return when (pathLong) {
             PathLong.INSIDE -> {
-                when (autoHardware.autoRandomReliable) {
+                when (AutoHardware.autoRandomReliable) {
                     AutoRandom.LEFT -> return drive.trajectorySequenceBuilder(drive.poseEstimate)
                         .addDisplacementMarker {
-                            flipServo.calcFlipPose((flipUp).toDouble())
+                            clawSubsystem.flipUp()
+                            clawSubsystem.update()
+//                            flipServo.calcFlipPose((flipUp).toDouble())
                         }
                         .lineToLinearHeading(
                             Pose2d(
@@ -414,7 +434,9 @@ object BackdropTrajectories {
 
                     AutoRandom.MID -> return drive.trajectorySequenceBuilder(drive.poseEstimate)
                         .addDisplacementMarker {
-                            flipServo.calcFlipPose((flipUp).toDouble())
+                            clawSubsystem.flipUp()
+                            clawSubsystem.update()
+//                            flipServo.calcFlipPose((flipUp).toDouble())
                         }
                         .lineToLinearHeading(
                             Pose2d(
@@ -436,7 +458,9 @@ object BackdropTrajectories {
 
                     AutoRandom.RIGHT -> return drive.trajectorySequenceBuilder(drive.poseEstimate)
                         .addDisplacementMarker {
-                            flipServo.calcFlipPose((flipUp).toDouble())
+                            clawSubsystem.flipUp()
+                            clawSubsystem.update()
+//                            flipServo.calcFlipPose((flipUp).toDouble())
                         }
                         .lineToLinearHeading(
                             Pose2d(
@@ -459,22 +483,24 @@ object BackdropTrajectories {
                     else -> {}
                 }
                 baseY -= 4
-                when (autoHardware.autoRandomReliable) {
+                when (AutoHardware.autoRandomReliable) {
                     AutoRandom.MID -> return drive.trajectorySequenceBuilder(drive.poseEstimate)
                         .addDisplacementMarker {
-                            flipServo.calcFlipPose((flipUp).toDouble())
+                            clawSubsystem.flipUp()
+                            clawSubsystem.update()
+//                            flipServo.calcFlipPose((flipUp).toDouble())
                         }
                         .lineToLinearHeading(
                             Pose2d(
-                                autoHardware.START_POSE.x,
-                                autoHardware.START_POSE.y - startOffsetBlue,
+                                AutoHardware.START_POSE.x,
+                                AutoHardware.START_POSE.y - startOffsetBlue,
                                 Math.toRadians(endAngle.toDouble())
                             )
                         )
                         .lineToLinearHeading(
                             Pose2d(
-                                -autoHardware.START_POSE.x - offset,
-                                autoHardware.START_POSE.y - startOffsetBlue,
+                                -AutoHardware.START_POSE.x - offset,
+                                AutoHardware.START_POSE.y - startOffsetBlue,
                                 Math.toRadians(endAngle.toDouble())
                             )
                         )
@@ -490,19 +516,21 @@ object BackdropTrajectories {
 
                     AutoRandom.LEFT -> return drive.trajectorySequenceBuilder(drive.poseEstimate)
                         .addDisplacementMarker {
-                            flipServo.calcFlipPose((flipUp).toDouble())
+                            clawSubsystem.flipUp()
+                            clawSubsystem.update()
+//                            flipServo.calcFlipPose((flipUp).toDouble())
                         }
                         .lineToLinearHeading(
                             Pose2d(
-                                autoHardware.START_POSE.x,
-                                autoHardware.START_POSE.y - startOffsetBlue,
+                                AutoHardware.START_POSE.x,
+                                AutoHardware.START_POSE.y - startOffsetBlue,
                                 Math.toRadians(endAngle.toDouble())
                             )
                         )
                         .lineToLinearHeading(
                             Pose2d(
-                                -autoHardware.START_POSE.x - offset,
-                                autoHardware.START_POSE.y - startOffsetBlue,
+                                -AutoHardware.START_POSE.x - offset,
+                                AutoHardware.START_POSE.y - startOffsetBlue,
                                 Math.toRadians(endAngle.toDouble())
                             )
                         )
@@ -518,19 +546,21 @@ object BackdropTrajectories {
 
                     AutoRandom.RIGHT -> return drive.trajectorySequenceBuilder(drive.poseEstimate)
                         .addDisplacementMarker {
-                            flipServo.calcFlipPose((flipUp).toDouble())
+                            clawSubsystem.flipUp()
+                            clawSubsystem.update()
+//                            flipServo.calcFlipPose((flipUp).toDouble())
                         }
                         .lineToLinearHeading(
                             Pose2d(
-                                autoHardware.START_POSE.x,
-                                autoHardware.START_POSE.y - startOffsetBlue,
+                                AutoHardware.START_POSE.x,
+                                AutoHardware.START_POSE.y - startOffsetBlue,
                                 Math.toRadians(endAngle.toDouble())
                             )
                         )
                         .lineToLinearHeading(
                             Pose2d(
-                                -autoHardware.START_POSE.x - offset,
-                                autoHardware.START_POSE.y - startOffsetBlue,
+                                -AutoHardware.START_POSE.x - offset,
+                                AutoHardware.START_POSE.y - startOffsetBlue,
                                 Math.toRadians(endAngle.toDouble())
                             )
                         )
@@ -551,22 +581,24 @@ object BackdropTrajectories {
 
             PathLong.OUTSIDE -> {
                 baseY -= 4
-                when (autoHardware.autoRandomReliable) {
+                when (AutoHardware.autoRandomReliable) {
                     AutoRandom.MID -> return drive.trajectorySequenceBuilder(drive.poseEstimate)
                         .addDisplacementMarker {
-                            flipServo.calcFlipPose((flipUp).toDouble())
+                            clawSubsystem.flipUp()
+                            clawSubsystem.update()
+//                            flipServo.calcFlipPose((flipUp).toDouble())
                         }
                         .lineToLinearHeading(
                             Pose2d(
-                                autoHardware.START_POSE.x,
-                                autoHardware.START_POSE.y - startOffsetBlue,
+                                AutoHardware.START_POSE.x,
+                                AutoHardware.START_POSE.y - startOffsetBlue,
                                 Math.toRadians(endAngle.toDouble())
                             )
                         )
                         .lineToLinearHeading(
                             Pose2d(
-                                -autoHardware.START_POSE.x - offset,
-                                autoHardware.START_POSE.y - startOffsetBlue,
+                                -AutoHardware.START_POSE.x - offset,
+                                AutoHardware.START_POSE.y - startOffsetBlue,
                                 Math.toRadians(endAngle.toDouble())
                             )
                         )
@@ -582,19 +614,21 @@ object BackdropTrajectories {
 
                     AutoRandom.LEFT -> return drive.trajectorySequenceBuilder(drive.poseEstimate)
                         .addDisplacementMarker {
-                            flipServo.calcFlipPose((flipUp).toDouble())
+                            clawSubsystem.flipUp()
+                            clawSubsystem.update()
+//                            flipServo.calcFlipPose((flipUp).toDouble())
                         }
                         .lineToLinearHeading(
                             Pose2d(
-                                autoHardware.START_POSE.x,
-                                autoHardware.START_POSE.y - startOffsetBlue,
+                                AutoHardware.START_POSE.x,
+                                AutoHardware.START_POSE.y - startOffsetBlue,
                                 Math.toRadians(endAngle.toDouble())
                             )
                         )
                         .lineToLinearHeading(
                             Pose2d(
-                                -autoHardware.START_POSE.x - offset,
-                                autoHardware.START_POSE.y - startOffsetBlue,
+                                -AutoHardware.START_POSE.x - offset,
+                                AutoHardware.START_POSE.y - startOffsetBlue,
                                 Math.toRadians(endAngle.toDouble())
                             )
                         )
@@ -610,19 +644,21 @@ object BackdropTrajectories {
 
                     AutoRandom.RIGHT -> return drive.trajectorySequenceBuilder(drive.poseEstimate)
                         .addDisplacementMarker {
-                            flipServo.calcFlipPose((flipUp).toDouble())
+                            clawSubsystem.flipUp()
+                            clawSubsystem.update()
+//                            flipServo.calcFlipPose((flipUp).toDouble())
                         }
                         .lineToLinearHeading(
                             Pose2d(
-                                autoHardware.START_POSE.x,
-                                autoHardware.START_POSE.y - startOffsetBlue,
+                                AutoHardware.START_POSE.x,
+                                AutoHardware.START_POSE.y - startOffsetBlue,
                                 Math.toRadians(endAngle.toDouble())
                             )
                         )
                         .lineToLinearHeading(
                             Pose2d(
-                                -autoHardware.START_POSE.x - offset,
-                                autoHardware.START_POSE.y - startOffsetBlue,
+                                -AutoHardware.START_POSE.x - offset,
+                                AutoHardware.START_POSE.y - startOffsetBlue,
                                 Math.toRadians(endAngle.toDouble())
                             )
                         )

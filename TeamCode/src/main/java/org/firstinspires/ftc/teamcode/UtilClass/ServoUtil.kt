@@ -4,7 +4,7 @@ import com.acmerobotics.dashboard.config.Config
 import com.qualcomm.robotcore.hardware.Servo
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.ledIND
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.setPose
-import org.firstinspires.ftc.teamcode.opModes.HardwareConfig
+import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.clawSubsystem
 import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.green1
 import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.green2
 import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.lastTimeOpen
@@ -22,10 +22,10 @@ object ServoUtil {
     @JvmField
     var openClaw2 = 90
     fun openClaw(servo: Servo) {
-        if (servo === HardwareConfig.claw1) {
+        if (servo === clawSubsystem.claw1) {
             servo.setPose(openClaw1.toDouble())
             green1.ledIND(red1, false)
-        } else if (servo === HardwareConfig.claw2) {
+        } else if (servo === clawSubsystem.claw2) {
             green2.ledIND(red2, false)
             servo.setPose(openClaw2.toDouble())
         }
@@ -37,11 +37,11 @@ object ServoUtil {
 
     @JvmField
     var closeClaw2 = 10
-    fun closeClaw(servo: Servo?) {
-        if (servo == HardwareConfig.claw1) {
+    fun closeClaw(servo: Servo) {
+        if (servo == clawSubsystem.claw1) {
             servo.setPose(closeClaw1.toDouble())
             green1.ledIND(red1, true)
-        } else if (servo == HardwareConfig.claw2) {
+        } else if (servo == clawSubsystem.claw2) {
             servo.setPose((closeClaw2.toDouble()))
             green2.ledIND(red2, true)
         }

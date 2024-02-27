@@ -14,20 +14,20 @@ object ScalarUtil {
             "white" -> c = "white"
         }
 
-        if (c === "yellow") {
-            return Scalar(255.0, 255.0, 0.0)
+        return if (c === "yellow") {
+            Scalar(255.0, 255.0, 0.0)
         } else if (c === "blue") {
-            return Scalar(0.0, 0.0, 255.0)
+            Scalar(0.0, 0.0, 255.0)
         } else if (c === "green") {
-            return Scalar(0.0, 255.0, 0.0)
+            Scalar(0.0, 255.0, 0.0)
         } else if (c === "red") {
-            return Scalar(255.0, 0.0, 0.0)
+            Scalar(255.0, 0.0, 0.0)
         } else if (c === "black") {
-            return Scalar(0.0, 0.0, 0.0)
+            Scalar(0.0, 0.0, 0.0)
         } else if (c === "white") {
-            return Scalar(255.0, 255.0, 255.0)
+            Scalar(255.0, 255.0, 255.0)
         } else {
-            return Scalar(255.0, 255.0, 255.0)
+            Scalar(255.0, 255.0, 255.0)
         }
     }
 
@@ -49,20 +49,6 @@ object ScalarUtil {
                     "blue" -> return Scalar(100.0, 100.0, 100.0)
                     "white" -> return Scalar(0.0, 0.0, 100.0)
                     "green" -> return Scalar(40.0, 100.0, 100.0)
-                }
-                when (name) {
-                    "red" -> {
-                        when (num) {
-                            1 -> return Scalar(8.0, 255.0, 255.0)
-                            2 -> return Scalar(180.0, 255.0, 255.0)
-                        }
-                        return Scalar(30.0, 255.0, 255.0)
-                    }
-
-                    "yellow" -> return Scalar(30.0, 255.0, 255.0)
-                    "blue" -> return Scalar(140.0, 255.0, 255.0)
-                    "white" -> return Scalar(180.0, 255.0, 255.0)
-                    "green" -> return Scalar(75.0, 255.0, 255.0)
                 }
             }
 

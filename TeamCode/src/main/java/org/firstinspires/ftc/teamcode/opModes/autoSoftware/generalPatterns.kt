@@ -19,21 +19,26 @@ import org.firstinspires.ftc.teamcode.Trajectories.spikeNavTraj.fwdLeft
 import org.firstinspires.ftc.teamcode.Trajectories.spikeNavTraj.fwdRight
 import org.firstinspires.ftc.teamcode.Trajectories.spikeNavTraj.midPiNav
 import org.firstinspires.ftc.teamcode.UtilClass.varStorage.StartPose
-import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.calcFlipPose
 import org.firstinspires.ftc.teamcode.opModes.HardwareConfig
-import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.flipServo
 import org.firstinspires.ftc.teamcode.opModes.rr.drive.MecanumDrive
+import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem
 
 object generalPatterns {
     // method to go to the backdrop
-    fun navToBackdrop_Place(drive: MecanumDrive, pathLong: PathLong, isCycling: Boolean) {
+    fun navToBackdrop_Place(
+        drive: MecanumDrive,
+        pathLong: PathLong,
+        isCycling: Boolean,
+        clawSubsystem: ClawSubsystem
+    ) {
         if (!isCycling) {
             when (StartPose.alliance) {
                 Alliance.RED -> when (StartPose.side) {
                     StartSide.LEFT -> drive.followTrajectorySequenceAsync(
                         BackdropTrajectories.redLong(
                             drive,
-                            pathLong
+                            pathLong,
+                            clawSubsystem
                         )
                     )
 
@@ -54,7 +59,8 @@ object generalPatterns {
                     StartSide.RIGHT -> drive.followTrajectorySequenceAsync(
                         BackdropTrajectories.blueLong(
                             drive,
-                            pathLong
+                            pathLong,
+                            clawSubsystem
                         )
                     )
                 }
@@ -65,14 +71,16 @@ object generalPatterns {
                     Alliance.RED -> drive.followTrajectorySequenceAsync(
                         BackdropTrajectories.redLong(
                             drive,
-                            pathLong
+                            pathLong,
+                            clawSubsystem
                         )
                     )
 
                     Alliance.BLUE -> drive.followTrajectorySequenceAsync(
                         BackdropTrajectories.blueLong(
                             drive,
-                            pathLong
+                            pathLong,
+                            clawSubsystem
                         )
                     )
                 }
@@ -87,19 +95,21 @@ object generalPatterns {
                             .lineToLinearHeading(
                                 Pose2d(
                                     -36.0,
-                                    autoHardware.START_POSE.y + startOffsetRed,
+                                    AutoHardware.START_POSE.y + startOffsetRed,
                                     Math.toRadians(endAngle.toDouble())
                                 )
                             )
                             .lineToLinearHeading(
                                 Pose2d(
-                                    autoHardware.START_POSE.x,
-                                    autoHardware.START_POSE.y + startOffsetRed + 1,
+                                    AutoHardware.START_POSE.x,
+                                    AutoHardware.START_POSE.y + startOffsetRed + 1,
                                     Math.toRadians(endAngle.toDouble())
                                 )
                             )
                             .addSpatialMarker(Vector2d(-24.0, -36.0)) {
-                                flipServo.calcFlipPose(30.0)
+                                clawSubsystem.flipBack()
+                                clawSubsystem.update()
+//                                flipServo.calcFlipPose(30.0)
                             }
                             .splineToLinearHeading(
                                 Pose2d(
@@ -118,19 +128,21 @@ object generalPatterns {
                             .lineToLinearHeading(
                                 Pose2d(
                                     -36.0,
-                                    autoHardware.START_POSE.y - startOffsetBlue,
+                                    AutoHardware.START_POSE.y - startOffsetBlue,
                                     Math.toRadians(endAngle.toDouble())
                                 )
                             )
                             .lineToLinearHeading(
                                 Pose2d(
-                                    autoHardware.START_POSE.x,
-                                    autoHardware.START_POSE.y - startOffsetBlue - 1,
+                                    AutoHardware.START_POSE.x,
+                                    AutoHardware.START_POSE.y - startOffsetBlue - 1,
                                     Math.toRadians(endAngle.toDouble())
                                 )
                             )
                             .addSpatialMarker(Vector2d(-24.0, -36.0)) {
-                                flipServo.calcFlipPose(30.0)
+//                                flipServo.calcFlipPose(30.0)
+                                clawSubsystem.flipBack()
+                                clawSubsystem.update()
                             }
                             .splineToLinearHeading(
                                 Pose2d(
@@ -162,8 +174,8 @@ object generalPatterns {
             HardwareConfig.Companion.startDist == StartDist.LONG_SIDE && StartPose.alliance == Alliance.RED
         placement =
             if (RedRight) Placement.RED_RIGHT else if (BlueLeft) Placement.BLUE_LEFT else if (BlueRight) Placement.BLUE_RIGHT else if (RedLeft) Placement.RED_LEFT else Placement.RED_RIGHT
-        when (autoHardware.autonomousRandom) {
-            AutoRandom.LEFT-> {
+        when (AutoHardware.autonomousRandom) {
+            AutoRandom.LEFT -> {
                 when (placement) {
                     Placement.BLUE_RIGHT, Placement.RED_RIGHT, Placement.RED_LEFT -> drive.followTrajectorySequenceAsync(
                         fwdLeft(drive)
@@ -173,16 +185,16 @@ object generalPatterns {
                         drive.trajectorySequenceBuilder(drive.poseEstimate)
                             .splineToLinearHeading(
                                 Pose2d(
-                                    autoHardware.START_POSE.x + 13,
-                                    autoHardware.START_POSE.y - 20,
-                                    autoHardware.START_POSE.heading
-                                ), autoHardware.START_POSE.heading
+                                    AutoHardware.START_POSE.x + 13,
+                                    AutoHardware.START_POSE.y - 20,
+                                    AutoHardware.START_POSE.heading
+                                ), AutoHardware.START_POSE.heading
                             )
                             .build()
                     )
                 }
-                autoHardware.updatePose(drive)
-                autoHardware.autoRandomReliable = AutoRandom.LEFT
+                AutoHardware.updatePose(drive)
+                AutoHardware.autoRandomReliable = AutoRandom.LEFT
             }
 
             AutoRandom.MID -> {
@@ -219,8 +231,8 @@ object generalPatterns {
                         else -> {}
                     }
                 }
-                autoHardware.updatePose(drive)
-                autoHardware.autoRandomReliable = AutoRandom.MID
+                AutoHardware.updatePose(drive)
+                AutoHardware.autoRandomReliable = AutoRandom.MID
             }
 
             AutoRandom.RIGHT -> {
@@ -233,16 +245,16 @@ object generalPatterns {
                         drive.trajectorySequenceBuilder(drive.poseEstimate)
                             .splineToLinearHeading(
                                 Pose2d(
-                                    autoHardware.START_POSE.x + 16,
-                                    autoHardware.START_POSE.y + 17,
-                                    autoHardware.START_POSE.heading
-                                ), autoHardware.START_POSE.heading
+                                    AutoHardware.START_POSE.x + 16,
+                                    AutoHardware.START_POSE.y + 17,
+                                    AutoHardware.START_POSE.heading
+                                ), AutoHardware.START_POSE.heading
                             )
                             .build()
                     )
                 }
-                autoHardware.updatePose(drive)
-                autoHardware.autoRandomReliable = AutoRandom.RIGHT
+                AutoHardware.updatePose(drive)
+                AutoHardware.autoRandomReliable = AutoRandom.RIGHT
             }
 
             else -> {}

@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.TouchSensor
 import com.qualcomm.robotcore.hardware.VoltageSensor
 import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.teamcode.UtilClass.varStorage.PastAngle
+import kotlin.math.min
 
 object SensorExtensions {
     fun initDigiChan(
@@ -25,13 +26,13 @@ object SensorExtensions {
         return t
     }
 
-    private val POTENTIOMETER_MAX = 270.0
-    private val POTENTIOMETER_MIN = 0.0
 
     // extend the AnalogInput class to include a method to get the angle of the potentiometer
     fun AnalogInput.potentAngle(): Double {
+        val potentMax = 270.0
+        val potentMin = 0.0
         return Range.clip(
-            (this.voltage - POTENTIOMETER_MIN) / (POTENTIOMETER_MAX - POTENTIOMETER_MIN),
+            (this.voltage - potentMin) / (potentMax - potentMin),
             0.0,
             1.0
         )
@@ -54,7 +55,7 @@ object SensorExtensions {
         var result = Double.POSITIVE_INFINITY
         val voltage = this.voltage
         if (voltage > 0) {
-            result = Math.min(result, voltage)
+            result = min(result, voltage)
         }
         Voltage.lowVoltage = result <= minimumVoltage
         Voltage.currentVoltage = result

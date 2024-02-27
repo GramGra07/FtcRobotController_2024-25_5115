@@ -20,7 +20,7 @@ object endPose {
         var pose = drive.poseEstimate
         when (endPose) {
             EndPose.StartingPosition -> {
-                pose = autoHardware.START_POSE
+                pose = AutoHardware.START_POSE
                 drive.followTrajectorySequenceAsync(
                     drive.trajectorySequenceBuilder(drive.poseEstimate)
                         .lineToLinearHeading(pose)
@@ -54,7 +54,7 @@ object endPose {
 
             else -> {}
         }
-        autoHardware.updatePose(drive)
+        AutoHardware.updatePose(drive)
         //        encoderDrive(motorExtension, -autoExtension, 1);
     }
 }

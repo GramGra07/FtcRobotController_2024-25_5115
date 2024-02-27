@@ -1,27 +1,31 @@
 package org.firstinspires.ftc.teamcode.opModes.autoSoftware
 
+import com.acmerobotics.roadrunner.drive.Drive
 import org.firstinspires.ftc.teamcode.Enums.EndPose
 import org.firstinspires.ftc.teamcode.Enums.PathLong
 import org.firstinspires.ftc.teamcode.Enums.StartDist
 import org.firstinspires.ftc.teamcode.Limits.autoExtension
 import org.firstinspires.ftc.teamcode.Limits.autoRotation
-import org.firstinspires.ftc.teamcode.UtilClass.ServoUtil
-import org.firstinspires.ftc.teamcode.UtilClass.ServoUtil.openClaw
-import org.firstinspires.ftc.teamcode.UtilClass.varStorage.AutoServoPositions.flipDown
-import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.calcFlipPose
 import org.firstinspires.ftc.teamcode.opModes.HardwareConfig
-import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.claw2
-import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.flipServo
 import org.firstinspires.ftc.teamcode.opModes.rr.drive.MecanumDrive
+import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem
+import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
+import org.firstinspires.ftc.teamcode.subsystems.ExtendoSubsystem
 import org.gentrifiedApps.statemachineftc.StateMachine
 
 object autoPatterns {
-    fun place1Machine(drive: MecanumDrive): StateMachine<place1States> {
+    fun place1Machine(
+        clawSubsystem: ClawSubsystem,
+        driveSubsystem: DriveSubsystem,
+        drive: MecanumDrive = driveSubsystem.drive!!
+    ): StateMachine<place1States> {
         val builder = StateMachine.Builder<place1States>()
         return builder
             .state(place1States.SPIKE_NAV)
             .onEnter(place1States.SPIKE_NAV) {
-                flipServo.calcFlipPose(0.0)
+                clawSubsystem.flipZero()
+                clawSubsystem.update()
+//                flipServo.calcFlipPose(0.0)
                 generalPatterns.SpikeNav(drive, PathLong.NONE)
             }
             .whileState(
@@ -31,7 +35,10 @@ object autoPatterns {
                 { drive.update() })
             .onExit(
                 place1States.SPIKE_NAV
-            ) { openClaw(claw2) }
+            ) { //openClaw(claw2)
+                clawSubsystem.openRight()
+                clawSubsystem.update()
+            }
             .transition(
                 place1States.SPIKE_NAV,
                 { !drive.isBusy }, 0.0
@@ -40,7 +47,9 @@ object autoPatterns {
             .onEnter(
                 place1States.END_POSE
             ) {
-                flipServo.calcFlipPose(30.0)
+                clawSubsystem.flipBack()
+                clawSubsystem.update()
+//                flipServo.calcFlipPose(30.0)
                 endPose.goToEndPose(EndPose.StartingPosition, drive)
             }
             .whileState(
@@ -59,9 +68,12 @@ object autoPatterns {
     var rotate = 0
     var extend = 0
     fun pixelParkMachine(
-        drive: MecanumDrive,
         pathLong: PathLong,
-        endPose: EndPose
+        endPose: EndPose,
+        clawSubsystem: ClawSubsystem,
+        extendoSubsystem: ExtendoSubsystem,
+        driveSubsystem: DriveSubsystem,
+        drive: MecanumDrive = driveSubsystem.drive!!
     ): StateMachine<pixelParkStates> {
         val builder = StateMachine.Builder<pixelParkStates>()
         return builder
@@ -74,7 +86,9 @@ object autoPatterns {
             ) // if we want to make it delay before entering
             .state(pixelParkStates.SPIKE_NAV)
             .onEnter(pixelParkStates.SPIKE_NAV) {
-                flipServo.calcFlipPose(0.0)
+                clawSubsystem.flipZero()
+                clawSubsystem.update()
+//                flipServo.calcFlipPose(0.0)
                 generalPatterns.SpikeNav(drive, pathLong)
             }
             .whileState(
@@ -82,53 +96,68 @@ object autoPatterns {
                 { !drive.isBusy },
                 { drive.update() })
             .onExit(pixelParkStates.SPIKE_NAV) {
-                ServoUtil.openClaw(HardwareConfig.claw2)
-                flipServo.calcFlipPose(30.0)
+                clawSubsystem.openRight()
+                clawSubsystem.flipBack()
+                clawSubsystem.update()
+//                ServoUtil.openClaw(HardwareConfig.claw2)
+//                flipServo.calcFlipPose(30.0)
             }
             .transition(pixelParkStates.SPIKE_NAV, { !drive.isBusy }, 0.0)
             .state(pixelParkStates.BACKDROP)
             .onEnter(pixelParkStates.BACKDROP) {
-                flipServo.calcFlipPose(30.0)
-                generalPatterns.navToBackdrop_Place(drive, pathLong, false)
+                clawSubsystem.flipBack()
+                clawSubsystem.update()
+//                flipServo.calcFlipPose(30.0)
+                generalPatterns.navToBackdrop_Place(drive, pathLong, false, clawSubsystem)
             }
             .whileState(
                 pixelParkStates.BACKDROP,
                 { !drive.isBusy },
                 { drive.update() })
             .onExit(pixelParkStates.BACKDROP) {
-                val clawOffset = 10
                 if (HardwareConfig.Companion.startDist == StartDist.LONG_SIDE) {
                     rotate = autoRotation - 400
                     extend = autoExtension
                     //                        calculateFlipPose(AutoServoPositions.flipDown - clawOffset, flipServo);
-                    autoHardware.encoderDrive(
-                        HardwareConfig.Companion.motorRotation,
-                        rotate,
-                        1.0,
-                        drive
-                    )
+
+                    extendoSubsystem.autoRotate(rotate, driveSubsystem)
+
+//                    AutoHardware.encoderDrive(
+//                        HardwareConfig.Companion.motorRotation,
+//                        rotate,
+//                        1.0,
+//                        drive
+//                    )
                 } else {
                     extend = autoExtension / 2
                 }
-                flipServo.calcFlipPose((flipDown - clawOffset).toDouble())
-                autoHardware.encoderDrive(
-                    HardwareConfig.Companion.motorExtension,
-                    extend,
-                    1.0,
-                    drive
-                )
-                ServoUtil.openClaw(HardwareConfig.Companion.claw1)
+                clawSubsystem.flipDown()
+                clawSubsystem.update()
+//                flipServo.calcFlipPose((flipDown - clawOffset).toDouble())
+                extendoSubsystem.autoExtend(extend, driveSubsystem)
+//                AutoHardware.encoderDrive(
+//                    HardwareConfig.Companion.motorExtension,
+//                    extend,
+//                    1.0,
+//                    drive
+//                )
+                clawSubsystem.openRight()
+                clawSubsystem.update()
+//                ServoUtil.openClaw(HardwareConfig.Companion.claw1)
             }
             .transition(pixelParkStates.BACKDROP, { !drive.isBusy }, 0.0)
             .state(pixelParkStates.END_POSE)
             .onEnter(pixelParkStates.END_POSE) {
-                autoHardware.encoderDrive(
-                    HardwareConfig.Companion.motorExtension,
-                    -extend,
-                    0.5,
-                    drive
-                )
-                flipServo.calcFlipPose(60.0)
+                extendoSubsystem.autoExtend(-extend, driveSubsystem)
+//                AutoHardware.encoderDrive(
+//                    HardwareConfig.Companion.motorExtension,
+//                    -extend,
+//                    0.5,
+//                    drive
+//                )
+//                flipServo.calcFlipPose(60.0)
+                clawSubsystem.flipHigh()
+                clawSubsystem.update()
                 if (endPose != EndPose.NONE) {
                     org.firstinspires.ftc.teamcode.opModes.autoSoftware.endPose.goToEndPose(
                         endPose,
@@ -144,12 +173,13 @@ object autoPatterns {
             .state(pixelParkStates.RETRACT)
             .onEnter(pixelParkStates.RETRACT) {
                 if (HardwareConfig.Companion.startDist == StartDist.LONG_SIDE) {
-                    autoHardware.encoderDrive(
-                        HardwareConfig.Companion.motorRotation,
-                        -rotate,
-                        1.0,
-                        drive
-                    )
+                    extendoSubsystem.autoRotate(-rotate, driveSubsystem)
+//                    AutoHardware.encoderDrive(
+//                        HardwareConfig.Companion.motorRotation,
+//                        -rotate,
+//                        1.0,
+//                        drive
+//                    )
                 }
             }
             .onExit(pixelParkStates.RETRACT) {}

@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.Trajectories
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import org.firstinspires.ftc.teamcode.Enums.Alliance
 import org.firstinspires.ftc.teamcode.UtilClass.varStorage.StartPose
-import org.firstinspires.ftc.teamcode.opModes.autoSoftware.autoHardware
+import org.firstinspires.ftc.teamcode.opModes.autoSoftware.AutoHardware
 import org.firstinspires.ftc.teamcode.opModes.rr.drive.MecanumDrive
 import org.firstinspires.ftc.teamcode.opModes.rr.trajectorysequence.TrajectorySequence
 
@@ -13,20 +13,20 @@ object spikeNavTraj {
             drive.trajectorySequenceBuilder(drive.poseEstimate)
                 .splineToLinearHeading(
                     Pose2d(
-                        autoHardware.START_POSE.x + 8,
-                        autoHardware.START_POSE.y + 25,
-                        autoHardware.START_POSE.heading
-                    ), autoHardware.START_POSE.heading
+                        AutoHardware.START_POSE.x + 8,
+                        AutoHardware.START_POSE.y + 25,
+                        AutoHardware.START_POSE.heading
+                    ), AutoHardware.START_POSE.heading
                 )
                 .build()
         } else {
             drive.trajectorySequenceBuilder(drive.poseEstimate)
                 .splineToLinearHeading(
                     Pose2d(
-                        autoHardware.START_POSE.x + 8,
-                        autoHardware.START_POSE.y - 25,
-                        autoHardware.START_POSE.heading
-                    ), autoHardware.START_POSE.heading
+                        AutoHardware.START_POSE.x + 8,
+                        AutoHardware.START_POSE.y - 25,
+                        AutoHardware.START_POSE.heading
+                    ), AutoHardware.START_POSE.heading
                 )
                 .build()
         }
@@ -38,13 +38,13 @@ object spikeNavTraj {
             drive.trajectorySequenceBuilder(drive.poseEstimate)
                 .splineToLinearHeading(
                     Pose2d(
-                        autoHardware.START_POSE.x,
-                        autoHardware.START_POSE.y - 23,
-                        autoHardware.START_POSE.heading + rotate - Math.toRadians(
+                        AutoHardware.START_POSE.x,
+                        AutoHardware.START_POSE.y - 23,
+                        AutoHardware.START_POSE.heading + rotate - Math.toRadians(
                             10.0
                         )
                     ),
-                    autoHardware.START_POSE.heading + rotate - Math.toRadians(
+                    AutoHardware.START_POSE.heading + rotate - Math.toRadians(
                         10.0
                     )
                 )
@@ -53,13 +53,13 @@ object spikeNavTraj {
             drive.trajectorySequenceBuilder(drive.poseEstimate)
                 .splineToLinearHeading(
                     Pose2d(
-                        autoHardware.START_POSE.x,
-                        autoHardware.START_POSE.y + 22,
-                        autoHardware.START_POSE.heading + rotate - Math.toRadians(
+                        AutoHardware.START_POSE.x,
+                        AutoHardware.START_POSE.y + 22,
+                        AutoHardware.START_POSE.heading + rotate - Math.toRadians(
                             10.0
                         )
                     ),
-                    autoHardware.START_POSE.heading + rotate - Math.toRadians(
+                    AutoHardware.START_POSE.heading + rotate - Math.toRadians(
                         10.0
                     )
                 )
@@ -72,20 +72,20 @@ object spikeNavTraj {
             drive.trajectorySequenceBuilder(drive.poseEstimate)
                 .splineToLinearHeading(
                     Pose2d(
-                        autoHardware.START_POSE.x,
-                        autoHardware.START_POSE.y + 23,
-                        autoHardware.START_POSE.heading - rotate
-                    ), autoHardware.START_POSE.heading - rotate
+                        AutoHardware.START_POSE.x,
+                        AutoHardware.START_POSE.y + 23,
+                        AutoHardware.START_POSE.heading - rotate
+                    ), AutoHardware.START_POSE.heading - rotate
                 )
                 .build()
         } else {
             drive.trajectorySequenceBuilder(drive.poseEstimate)
                 .splineToLinearHeading(
                     Pose2d(
-                        autoHardware.START_POSE.x,
-                        autoHardware.START_POSE.y - 23,
-                        autoHardware.START_POSE.heading - rotate
-                    ), autoHardware.START_POSE.heading - rotate
+                        AutoHardware.START_POSE.x,
+                        AutoHardware.START_POSE.y - 23,
+                        AutoHardware.START_POSE.heading - rotate
+                    ), AutoHardware.START_POSE.heading - rotate
                 )
                 .build()
         }
