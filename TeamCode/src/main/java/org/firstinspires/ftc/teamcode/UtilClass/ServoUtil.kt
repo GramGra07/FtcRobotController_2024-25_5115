@@ -22,10 +22,10 @@ object ServoUtil {
     @JvmField
     var openClaw2 = 90
     fun openClaw(servo: Servo) {
-        if (servo === clawSubsystem.claw1) {
+        if (servo === clawSubsystem!!.claw1) {
             servo.setPose(openClaw1.toDouble())
             green1.ledIND(red1, false)
-        } else if (servo === clawSubsystem.claw2) {
+        } else if (servo === clawSubsystem!!.claw2) {
             green2.ledIND(red2, false)
             servo.setPose(openClaw2.toDouble())
         }
@@ -38,10 +38,10 @@ object ServoUtil {
     @JvmField
     var closeClaw2 = 10
     fun closeClaw(servo: Servo) {
-        if (servo == clawSubsystem.claw1) {
+        if (servo == clawSubsystem!!.claw1) {
             servo.setPose(closeClaw1.toDouble())
             green1.ledIND(red1, true)
-        } else if (servo == clawSubsystem.claw2) {
+        } else if (servo == clawSubsystem!!.claw2) {
             servo.setPose((closeClaw2.toDouble()))
             green2.ledIND(red2, true)
         }

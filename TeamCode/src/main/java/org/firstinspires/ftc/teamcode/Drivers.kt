@@ -35,6 +35,55 @@ object Drivers {
         val drive = driveSubsystem.drive!!
         // "Camden", "Grady", "Michael","Graden", "Delaney", "Child"
         if (currDriver === driverControls[1]) { //grady
+            fieldCentric = false //!change this to true after expo
+            //slowmode
+//            gamepad1.wasJustReleased(GamepadKeys.Button.B);
+            if (myOpMode.gamepad1.circle && !slowModeButtonDown && !driveSubsystem.slowModeIsOn) {
+                driveSubsystem.slowModeIsOn = true
+            } else if (myOpMode.gamepad1.circle && !slowModeButtonDown && driveSubsystem.slowModeIsOn) {
+                driveSubsystem.slowModeIsOn = false
+            }
+            slowModeButtonDown = myOpMode.gamepad1.circle
+            //            gamepad1.wasJustReleased(GamepadKeys.Button.Y);
+            if (myOpMode.gamepad1.triangle && !planeButtonDown && !endgameSubsystem.planeReleased) {
+                endgameSubsystem.shoot()
+                endgameSubsystem.planeReleased = true
+            } else if (myOpMode.gamepad1.triangle && !planeButtonDown && endgameSubsystem.planeReleased) {
+                endgameSubsystem.resetAirplane()
+                endgameSubsystem.planeReleased = false
+            }
+            planeButtonDown = myOpMode.gamepad1.triangle
+            //            gamepad1.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER);
+            // gamepad1.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER);
+            if (myOpMode.gamepad1.right_trigger > 0) {
+//                HardwareConfig.liftPower = -Limits.liftMax
+                endgameSubsystem.retract()
+            } else if (myOpMode.gamepad1.left_trigger > 0) {
+                endgameSubsystem.extend()
+//                HardwareConfig.liftPower = Limits.liftMax
+            } else {
+                endgameSubsystem.stopLift()
+//                HardwareConfig.liftPower = 0.0
+            }
+            // using ftc lib
+//            gamepad1.getButton(GamepadKeys.Button.RIGHT_BUMPER);
+//            gamepad1.getButton(GamepadKeys.Button.DPAD_UP);
+//            gamepad1.getButton(GamepadKeys.Button.DPAD_RIGHT);
+//            gamepad1.getButton(GamepadKeys.Button.A);
+            DriverAid.doDriverAid(
+                driveSubsystem,
+                myOpMode.gamepad1.right_bumper,
+                myOpMode.gamepad1.dpad_up,
+                myOpMode.gamepad1.dpad_right,
+                myOpMode.gamepad1.cross
+            )
+        }
+
+        if (currDriver === driverControls[0]) { //Camden
+        }
+        if (currDriver === driverControls[2]) { //Michael
+        }
+        if (currDriver === driverControls[3]) { //Graden
             fieldCentric = true
             //slowmode
 //            gamepad1.wasJustReleased(GamepadKeys.Button.B);
@@ -71,26 +120,12 @@ object Drivers {
 //            gamepad1.getButton(GamepadKeys.Button.DPAD_RIGHT);
 //            gamepad1.getButton(GamepadKeys.Button.A);
             DriverAid.doDriverAid(
-                drive,
+                driveSubsystem,
                 myOpMode.gamepad1.right_bumper,
                 myOpMode.gamepad1.dpad_up,
                 myOpMode.gamepad1.dpad_right,
                 myOpMode.gamepad1.cross
             )
-        }
-
-        if (currDriver === driverControls[0]) { //Camden
-        }
-        if (currDriver === driverControls[2]) { //Michael
-        }
-        if (currDriver === driverControls[3]) { //Graden
-            fieldCentric = true
-            if (myOpMode.gamepad1.circle && !slowModeButtonDown && !driveSubsystem.slowModeIsOn) {
-                driveSubsystem.slowModeIsOn = true
-            } else if (myOpMode.gamepad1.circle && !slowModeButtonDown && driveSubsystem.slowModeIsOn) {
-                driveSubsystem.slowModeIsOn = false
-            }
-            slowModeButtonDown = myOpMode.gamepad1.circle
         }
         if (currDriver === driverControls[4]) { //Delaney
             fieldCentric = false

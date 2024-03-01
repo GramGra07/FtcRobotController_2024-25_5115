@@ -1,8 +1,6 @@
 package org.firstinspires.ftc.teamcode
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
-import org.firstinspires.ftc.teamcode.Limits.maxRotationTicks
-import org.firstinspires.ftc.teamcode.Limits.minRotationTicks
 import org.firstinspires.ftc.teamcode.UtilClass.varStorage.DeadZones
 import org.firstinspires.ftc.teamcode.UtilClass.varStorage.LoopTime
 import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem
@@ -64,7 +62,7 @@ object Operator {
 //            }
             //
             if (myOpMode.gamepad2.right_stick_y < -DeadZones.deadZone && extendoSubsystem.usePIDF) {
-                extendoSubsystem.setPowerR(maxRotationTicks.toDouble())
+                extendoSubsystem.setPowerR(extendoSubsystem.maxRotationTicks.toDouble())
 //                HardwareConfig.rotationPower = Range.clip(
 //                    HardwareConfig.rotationPIDF.calculate(
 //                        HardwareConfig.motorRotation.currentPosition.toDouble(),
@@ -72,7 +70,7 @@ object Operator {
 //                    ), -1.0, 1.0
 //                )
             } else if (myOpMode.gamepad2.right_stick_y > DeadZones.deadZone && extendoSubsystem.usePIDF) {
-                extendoSubsystem.setPowerR(minRotationTicks.toDouble())
+                extendoSubsystem.setPowerR(extendoSubsystem.minRotationTicks.toDouble())
 //                HardwareConfig.rotationPIDF.setPIDF(
 //                    PIDVals.rotationPIDFCo.p,
 //                    PIDVals.rotationPIDFCo.i,
@@ -115,9 +113,9 @@ object Operator {
 //                        Limits.minExtensionTicks.toDouble()
 //                    ), -1.0, 1.0
 //                ))
-                extendoSubsystem.setPowerE(Limits.minExtensionTicks.toDouble())
+                extendoSubsystem.setPowerE(extendoSubsystem.minExtensionTicks.toDouble())
             } else if (myOpMode.gamepad2.left_stick_y < -DeadZones.deadZone && extendoSubsystem.usePIDF) {
-                extendoSubsystem.setPowerE(Limits.maxExtensionTicks.toDouble())
+                extendoSubsystem.setPowerE(extendoSubsystem.maxExtensionTicks.toDouble())
 //                HardwareConfig.extensionPIDF.setPIDF(
 //                    PIDVals.extensionPIDFCo.p,
 //                    PIDVals.extensionPIDFCo.i,

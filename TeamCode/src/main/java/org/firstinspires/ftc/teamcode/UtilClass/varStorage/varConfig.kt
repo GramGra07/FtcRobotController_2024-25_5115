@@ -21,7 +21,7 @@ object varConfig {
     var useFileWriter = true
 
     @JvmField
-    var multipleDrivers = false
+    var multipleDrivers = true
 
     @JvmField
     var usePIDF = true

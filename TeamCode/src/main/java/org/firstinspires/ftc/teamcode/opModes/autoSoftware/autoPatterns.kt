@@ -3,8 +3,6 @@ package org.firstinspires.ftc.teamcode.opModes.autoSoftware
 import org.firstinspires.ftc.teamcode.Enums.EndPose
 import org.firstinspires.ftc.teamcode.Enums.PathLong
 import org.firstinspires.ftc.teamcode.Enums.StartDist
-import org.firstinspires.ftc.teamcode.Limits.autoExtension
-import org.firstinspires.ftc.teamcode.Limits.autoRotation
 import org.firstinspires.ftc.teamcode.opModes.HardwareConfig
 import org.firstinspires.ftc.teamcode.opModes.rr.drive.MecanumDrive
 import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem
@@ -115,8 +113,8 @@ object autoPatterns {
                 { drive.update() })
             .onExit(pixelParkStates.BACKDROP) {
                 if (HardwareConfig.Companion.startDist == StartDist.LONG_SIDE) {
-                    rotate = autoRotation - 400
-                    extend = autoExtension
+                    rotate = extendoSubsystem.autoRotation - 400
+                    extend = extendoSubsystem.autoExtension
                     //                        calculateFlipPose(AutoServoPositions.flipDown - clawOffset, flipServo);
 
                     extendoSubsystem.autoRotate(rotate, driveSubsystem)
@@ -128,7 +126,7 @@ object autoPatterns {
 //                        drive
 //                    )
                 } else {
-                    extend = autoExtension / 2
+                    extend = extendoSubsystem.autoExtension / 2
                 }
                 clawSubsystem.flipDown()
                 clawSubsystem.update()

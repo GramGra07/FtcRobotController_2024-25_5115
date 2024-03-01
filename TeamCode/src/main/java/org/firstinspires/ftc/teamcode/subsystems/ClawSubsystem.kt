@@ -32,45 +32,40 @@ class ClawSubsystem(ahwMap: HardwareMap) {
     private var flipServo: Servo? = null
 
     init {
-        if (claw1 == null) {
-            claw1 = initServo(ahwMap, "claw1")
-        }
-        if (claw2 == null) {
-            claw2 = initServo(ahwMap, "claw2")
-        }
-        if (flipServo == null) {
-            flipServo = initServo(ahwMap, "flipServo")
-        }
+        claw1 = initServo(ahwMap, "claw1")
+        claw2 = initServo(ahwMap, "claw2")
+        flipServo = initServo(ahwMap, "flipServo")
         closeBoth()
         update()
     }
 
-    private var states: Array<ClawStates> = arrayOf(ClawStates.OPEN, ClawStates.OPEN)
+    private var rightState = ClawStates.CLOSED
+    private var leftState = ClawStates.CLOSED
     private var flipState = FlipStates.BACK
     fun openBoth() {
-        states[0] = ClawStates.OPEN
-        states[1] = ClawStates.OPEN
+        rightState = ClawStates.OPEN
+        leftState = ClawStates.OPEN
     }
 
     fun openLeft() {
-        states[0] = ClawStates.OPEN
+        leftState = ClawStates.OPEN
     }
 
     fun openRight() {
-        states[1] = ClawStates.OPEN
+        rightState = ClawStates.OPEN
     }
 
     fun closeBoth() {
-        states[0] = ClawStates.CLOSED
-        states[1] = ClawStates.CLOSED
+        leftState = ClawStates.CLOSED
+        rightState = ClawStates.CLOSED
     }
 
     fun closeLeft() {
-        states[0] = ClawStates.CLOSED
+        leftState = ClawStates.CLOSED
     }
 
     fun closeRight() {
-        states[1] = ClawStates.CLOSED
+        rightState = ClawStates.CLOSED
     }
 
     fun flipHigh() {
@@ -94,11 +89,11 @@ class ClawSubsystem(ahwMap: HardwareMap) {
     }
 
     fun update() {
-        when (states[0]) {
+        when (rightState) {
             ClawStates.OPEN -> openClaw(claw1!!)
             ClawStates.CLOSED -> closeClaw(claw1!!)
         }
-        when (states[1]) {
+        when (leftState) {
             ClawStates.OPEN -> openClaw(claw2!!)
             ClawStates.CLOSED -> closeClaw(claw2!!)
         }
