@@ -21,17 +21,16 @@ import org.gentrifiedApps.statemachineftc.StateMachine
 
 class PiParkRRI : LinearOpMode() {
     var startPose = AutoHardware.startPose
-    var robot = AutoHardware(this)
+    var robot = AutoHardware(this, hardwareMap, true)
     override fun runOpMode() {
-        driveSubsystem.drive!!.poseEstimate = getStartPose(Alliance.RED, StartSide.RIGHT)
+        driveSubsystem!!.drive!!.poseEstimate = getStartPose(Alliance.RED, StartSide.RIGHT)
         val machine: StateMachine<pixelParkStates> =
             pixelParkMachine(
                 PathLong.NONE, EndPose.LEFT,
-                clawSubsystem,
-                extendoSubsystem,
-                driveSubsystem
+                clawSubsystem!!,
+                extendoSubsystem!!,
+                driveSubsystem!!
             )
-        robot.initAuto(hardwareMap, this)
         machine.start()
         while (machine.mainLoop(this)) {
             machine.update()

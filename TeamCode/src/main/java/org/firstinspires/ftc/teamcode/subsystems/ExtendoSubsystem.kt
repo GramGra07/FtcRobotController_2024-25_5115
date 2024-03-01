@@ -6,7 +6,6 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.robotcore.external.Telemetry
-import org.firstinspires.ftc.teamcode.Limits
 import org.firstinspires.ftc.teamcode.UtilClass.varStorage.PIDVals
 import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.initMotor
 import kotlin.math.abs
@@ -34,6 +33,39 @@ class ExtendoSubsystem(ahwMap: HardwareMap) {
     private var extensionPIDF = PIDFController(0.0, 0.0, 0.0, 0.0)
     private var rotationPIDF = PIDFController(0.0, 0.0, 0.0, 0.0)
 
+    @JvmField
+    var flipperMin = -0.7
+
+    @JvmField
+    var flipperMax = 0.7
+
+    @JvmField
+    var slideMax = 1.0
+
+    @JvmField
+    var slideMin = -1.0
+
+    @JvmField
+    var autoExtension = 1100
+
+    @JvmField
+    var autoRotation = 800
+
+    @JvmField
+    var maxExtensionTicks = 3280
+
+    @JvmField
+    var minExtensionTicks = 0
+
+    @JvmField
+    var maxRotationTicks = 1424
+
+    @JvmField
+    var maxPotent = 65
+
+    @JvmField
+    var minRotationTicks = 0
+
     init {
         if (motorExtension == null) {
             motorExtension = initMotor(ahwMap, "slideMotor", DcMotor.RunMode.RUN_USING_ENCODER)
@@ -60,8 +92,8 @@ class ExtendoSubsystem(ahwMap: HardwareMap) {
             RotateState.CONTROL -> {
                 Range.clip(
                     input,
-                    Limits.flipperMin,
-                    Limits.flipperMax
+                    flipperMin,
+                    flipperMax
                 )
             }
 
@@ -81,8 +113,8 @@ class ExtendoSubsystem(ahwMap: HardwareMap) {
             ExtendState.CONTROL -> {
                 Range.clip(
                     input,
-                    Limits.slideMin,
-                    Limits.slideMax
+                    slideMin,
+                    slideMax
                 )
             }
 

@@ -1,36 +1,27 @@
-package org.firstinspires.ftc.teamcode.opModes.auto.pixelParkAutos.endOut.outsidePath
+package org.firstinspires.ftc.teamcode.opModes.auto.constant.place1Auto
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.firstinspires.ftc.teamcode.Enums.Alliance
-import org.firstinspires.ftc.teamcode.Enums.EndPose
-import org.firstinspires.ftc.teamcode.Enums.PathLong
 import org.firstinspires.ftc.teamcode.Enums.StartSide
 import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.clawSubsystem
 import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.driveSubsystem
-import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.extendoSubsystem
 import org.firstinspires.ftc.teamcode.opModes.autoSoftware.AutoHardware
 import org.firstinspires.ftc.teamcode.opModes.autoSoftware.AutoHardware.Companion.getStartPose
-import org.firstinspires.ftc.teamcode.opModes.autoSoftware.autoPatterns.pixelParkMachine
-import org.firstinspires.ftc.teamcode.opModes.autoSoftware.autoPatterns.pixelParkStates
-import org.firstinspires.ftc.teamcode.opModes.autoSoftware.autoSorting.piParkOSort
+import org.firstinspires.ftc.teamcode.opModes.autoSoftware.autoPatterns.place1Machine
+import org.firstinspires.ftc.teamcode.opModes.autoSoftware.autoPatterns.place1States
+import org.firstinspires.ftc.teamcode.opModes.autoSoftware.autoSorting.place1Sort
 import org.firstinspires.ftc.teamcode.opModes.autoSoftware.autoSorting.preselect
 import org.gentrifiedApps.statemachineftc.StateMachine
 
-@Autonomous(group = piParkOSort, preselectTeleOp = preselect) //@Disabled
+@Autonomous(group = place1Sort, preselectTeleOp = preselect) //@Disabled
 
-class PiParkRLOpO : LinearOpMode() {
+class RL : LinearOpMode() {
     var startPose = AutoHardware.startPose
     var robot = AutoHardware(this, hardwareMap, true)
     override fun runOpMode() {
         driveSubsystem!!.drive!!.poseEstimate = getStartPose(Alliance.RED, StartSide.LEFT)
-        val machine: StateMachine<pixelParkStates> =
-            pixelParkMachine(
-                PathLong.OUTSIDE, EndPose.RIGHT,
-                clawSubsystem!!,
-                extendoSubsystem!!,
-                driveSubsystem!!
-            )
+        val machine: StateMachine<place1States> = place1Machine(clawSubsystem!!, driveSubsystem!!)
         machine.start()
         while (machine.mainLoop(this)) {
             machine.update()

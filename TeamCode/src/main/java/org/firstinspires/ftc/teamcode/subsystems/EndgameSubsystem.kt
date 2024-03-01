@@ -4,16 +4,14 @@ import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.Servo
-import org.firstinspires.ftc.teamcode.Limits.liftMax
 import org.firstinspires.ftc.teamcode.UtilClass.ServoUtil.releaseAirplane
 import org.firstinspires.ftc.teamcode.UtilClass.ServoUtil.resetAirplane
 import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.initMotor
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.initServo
 
+
 class EndgameSubsystem(ahwMap: HardwareMap) {
     enum class ShooterState {
-
-
         OPEN,
         CLOSED
     }
@@ -32,6 +30,8 @@ class EndgameSubsystem(ahwMap: HardwareMap) {
     private var airplaneServo: Servo? = null
 
     var planeReleased = false
+
+    private var liftMax = 1.0
 
 
     init {

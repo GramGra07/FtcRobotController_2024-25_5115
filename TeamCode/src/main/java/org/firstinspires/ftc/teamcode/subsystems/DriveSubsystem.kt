@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystems
 import com.acmerobotics.roadrunner.geometry.Pose2d
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.hardware.DcMotor
+import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.util.Range
@@ -10,6 +11,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.UtilClass.FileWriterFTC
 import org.firstinspires.ftc.teamcode.UtilClass.varStorage.varConfig
 import org.firstinspires.ftc.teamcode.extensions.MotorExtensions
+import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.getMotorCurrent
 import org.firstinspires.ftc.teamcode.opModes.DistanceStorage
 import org.firstinspires.ftc.teamcode.opModes.HardwareConfig
 import org.firstinspires.ftc.teamcode.opModes.rr.drive.MecanumDrive
@@ -19,10 +21,11 @@ import kotlin.math.sqrt
 class DriveSubsystem(ahwMap: HardwareMap) {
     var drive: MecanumDrive? = null
 
-    private var motorFrontLeft: DcMotor? = null
-    private var motorBackLeft: DcMotor? = null
-    private var motorFrontRight: DcMotor? = null
-    private var motorBackRight: DcMotor? = null
+    private var motorFrontLeft: DcMotorEx? = null
+    private var motorBackLeft: DcMotorEx? = null
+    private var motorFrontRight: DcMotorEx? = null
+    private var motorBackRight: DcMotorEx? = null
+    private var motorList: List<DcMotorEx> = listOf()
 
     init {
         if (drive == null) {
@@ -37,6 +40,7 @@ class DriveSubsystem(ahwMap: HardwareMap) {
                     "motorFrontLeft",
                     DcMotor.RunMode.RUN_WITHOUT_ENCODER
                 )
+            motorList.plus(motorFrontLeft!!)
         }
         if (motorBackLeft == null) {
             motorBackLeft = MotorExtensions.initMotor(
@@ -45,6 +49,7 @@ class DriveSubsystem(ahwMap: HardwareMap) {
                 DcMotor.RunMode.RUN_WITHOUT_ENCODER,
                 DcMotorSimple.Direction.REVERSE
             )
+            motorList.plus(motorBackLeft!!)
         }
         if (motorFrontRight == null) {
             motorFrontRight =
@@ -54,6 +59,7 @@ class DriveSubsystem(ahwMap: HardwareMap) {
                     DcMotor.RunMode.RUN_WITHOUT_ENCODER,
                     DcMotorSimple.Direction.REVERSE
                 )
+            motorList.plus(motorFrontRight!!)
         }
         if (motorBackRight == null) {
             motorBackRight =
@@ -62,6 +68,7 @@ class DriveSubsystem(ahwMap: HardwareMap) {
                     "motorBackRight",
                     DcMotor.RunMode.RUN_WITHOUT_ENCODER
                 )
+            motorList.plus(motorBackRight!!)
         }
     }
 
@@ -163,7 +170,7 @@ class DriveSubsystem(ahwMap: HardwareMap) {
     }
 
     private fun power() {
-        if (!isAutoInTeleop) {
+        if (isAutoInTeleop) { //! verify this works
             motorFrontLeft!!.power = frontLeftPower
             motorBackLeft!!.power = backLeftPower
             motorFrontRight!!.power = frontRightPower
@@ -185,5 +192,16 @@ class DriveSubsystem(ahwMap: HardwareMap) {
         }
         telemetry.addData("thisDistance (in)", "%.1f", thisDist)
         telemetry.addData("totalDistance (in)", "%.1f", DistanceStorage.totalDist)
+        getCurrentTelemetry(telemetry)
+    }
+
+    private fun getCurrentTelemetry(telemetry: Telemetry) {
+        val currentList: Map<DcMotorEx, Double> = mapOf()
+        motorList.forEach {
+            currentList.plus(Pair(it, it.getMotorCurrent()))
+        }
+        currentList.forEach {
+            telemetry.addData(it.key.deviceName, it.value)
+        }
     }
 }
