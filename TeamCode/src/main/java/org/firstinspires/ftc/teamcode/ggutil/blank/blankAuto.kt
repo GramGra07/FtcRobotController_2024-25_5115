@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.opModes.rr.drive.advanced.PoseStorage
 @Disabled
 class blankAuto : LinearOpMode() {
     var startPose: com.acmerobotics.roadrunner.geometry.Pose2d = AutoHardware.startPose
-    var robot = AutoHardware(this)
+    var robot = AutoHardware(this, hardwareMap, true)
 
     @Throws(InterruptedException::class)
     override fun runOpMode() {

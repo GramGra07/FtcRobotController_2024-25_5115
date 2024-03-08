@@ -8,8 +8,8 @@ import org.firstinspires.ftc.teamcode.opModes.HardwareConfig
 
 class teleOp : LinearOpMode() {
     //declaring the class
-    var robot = HardwareConfig(this, hardwareMap, false)
     override fun runOpMode() { //if opmode is started
+        var robot = HardwareConfig(this, hardwareMap, false)
         waitForStart()
         while (opModeIsActive()) { //while the op mode is active
             robot.doBulk()

@@ -40,6 +40,12 @@ import org.firstinspires.ftc.teamcode.subsystems.ExtendoSubsystem
 import java.io.FileWriter
 
 open class HardwareConfig() {
+
+    constructor(opMode: LinearOpMode, ahwMap: HardwareMap, auto: Boolean) : this() {
+        myOpMode = opMode
+        this.init(ahwMap, auto)
+    }
+
     companion object {
         val timer: ElapsedTime = ElapsedTime()
 
@@ -51,26 +57,7 @@ open class HardwareConfig() {
         var useFileWriter: Boolean = varConfig.useFileWriter
         var multipleDrivers: Boolean = varConfig.multipleDrivers
         var statusVal = "OFFLINE"
-
-        //        lateinit var claw1: Servo
-//        lateinit var claw2: Servo
-//        lateinit var flipServo: Servo
-//        lateinit var airplaneServo: Servo
-
-        //    lateinit var motorFrontLeft: DcMotor
-//    lateinit var motorBackLeft: DcMotor
-//    lateinit var motorFrontRight: DcMotor
-//    lateinit var motorBackRight: DcMotor
-//        lateinit var motorLift: DcMotor
-//        lateinit var motorExtension: DcMotor
-//        lateinit var motorRotation: DcMotor
         lateinit var lights: RevBlinkinLedDriver
-        var slowModeIsOn = false
-        var reversed = false
-
-        //        var liftPower = 0.0
-//        var extensionPower = 0.0
-//        var rotationPower = 0.0
         var loops = 0.0
         var LPS = 0.0
         var refreshRate = 0.0
@@ -91,19 +78,11 @@ open class HardwareConfig() {
         lateinit var potentiometer: AnalogInput
         lateinit var vSensor: VoltageSensor
         lateinit var drive: MecanumDrive
-        var thisDist = 0.0
         var fileWriter: FileWriter? = null
         private lateinit var myOpMode: LinearOpMode
         var once = false
-
-        //        var extensionPIDF = PIDFController(0.0, 0.0, 0.0, 0.0)
-//        var rotationPIDF = PIDFController(0.0, 0.0, 0.0, 0.0)
         lateinit var startDist: StartDist
-        val currentVersion = "6.0.0"
-
-        //init
-
-
+        const val CURRENT_VERSION = "7.0.0"
         fun updateStatus(status: String) {
             statusVal = status
         }
@@ -113,6 +92,18 @@ open class HardwareConfig() {
         ahwMap: HardwareMap,
         auto: Boolean,
     ) {
+        vSensor = initVSensor(ahwMap, "Expansion Hub 2")
+        lights = initLights(ahwMap, "blinkin")
+        // rev potentiometer //analog
+        potentiometer = initPotent(ahwMap, "potent")
+        green1 = initDigiChan(ahwMap, "green1")
+        green2 = initDigiChan(ahwMap, "green2")
+        green3 = initDigiChan(ahwMap, "green3")
+        green4 = initDigiChan(ahwMap, "green4")
+        red1 = initDigiChan(ahwMap, "red1")
+        red2 = initDigiChan(ahwMap, "red2")
+        red3 = initDigiChan(ahwMap, "red3")
+        red4 = initDigiChan(ahwMap, "red4")
         if (driveSubsystem == null) {
             driveSubsystem = DriveSubsystem(ahwMap)
         }
@@ -144,18 +135,6 @@ open class HardwareConfig() {
 //            drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER)
 //            drive.poseEstimate = PoseStorage.currentPose
         val timer = ElapsedTime() //declaring the runtime variable
-        vSensor = initVSensor(ahwMap, "Expansion Hub 2")
-        lights = initLights(ahwMap, "blinkin")
-        // rev potentiometer //analog
-        potentiometer = initPotent(ahwMap, "potent")
-        green1 = initDigiChan(ahwMap, "green1")
-        green2 = initDigiChan(ahwMap, "green2")
-        green3 = initDigiChan(ahwMap, "green3")
-        green4 = initDigiChan(ahwMap, "green4")
-        red1 = initDigiChan(ahwMap, "red1")
-        red2 = initDigiChan(ahwMap, "red2")
-        red3 = initDigiChan(ahwMap, "red3")
-        red4 = initDigiChan(ahwMap, "red4")
         // Declare our motors
 //            motorFrontLeft =
 //                initMotor(ahwMap, "motorFrontLeft", DcMotor.RunMode.RUN_WITHOUT_ENCODER)
@@ -195,7 +174,7 @@ open class HardwareConfig() {
         green4.ledIND(red4, true)
         telemetry.addData("Status", "Initialized")
         telemetry.addData("Color", lights.currentColor())
-        telemetry.addData("Version", currentVersion)
+        telemetry.addData("Version", CURRENT_VERSION)
         telemetry.addData("Voltage", "%.2f", vSensor.currentVoltage())
         if (auto) {
             telemetry.addData("Random", AutoHardware.autonomousRandom)
@@ -208,18 +187,13 @@ open class HardwareConfig() {
         }
     }
 
-    constructor(opMode: LinearOpMode, ahwMap: HardwareMap, auto: Boolean) : this() {
-        myOpMode = opMode
-        this.init(ahwMap, auto)
-    }
-
     //code to run all drive functions
     fun doBulk() {
         once(myOpMode) //runs once
         periodically() //runs every loop
         loopTimeCalculations()
         bindDriverButtons(myOpMode, driveSubsystem!!, clawSubsystem!!, endgameSubsystem!!)
-        bindOtherButtons(myOpMode, clawSubsystem!!, extendoSubsystem!!)
+        bindOtherButtons(myOpMode, clawSubsystem!!, extendoSubsystem!!, driveSubsystem!!)
         if (multipleDrivers) {
             switchProfile(myOpMode)
         }
@@ -245,10 +219,8 @@ open class HardwareConfig() {
     }
 
     private fun periodically() {
-        if (LoopTime.useLoopTime) {
-            if (loops % LoopTime.loopInterval == 0.0) { // happens every loopInterval, loops
-                refreshRate++
-            }
+        if (LoopTime.useLoopTime && loops % LoopTime.loopInterval == 0.0) {
+            refreshRate++
         }
     }
 
@@ -376,7 +348,7 @@ open class HardwareConfig() {
         telemetry.addData("Color", lights.currentColor())
         telemetry.addData("Status", statusVal) //shows current status
         teleSpace()
-        telemetry.addData("Version", currentVersion)
+        telemetry.addData("Version", CURRENT_VERSION)
         telemetry.update()
     }
 

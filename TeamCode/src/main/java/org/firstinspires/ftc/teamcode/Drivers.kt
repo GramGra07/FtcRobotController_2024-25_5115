@@ -35,7 +35,7 @@ object Drivers {
         val drive = driveSubsystem.drive!!
         // "Camden", "Grady", "Michael","Graden", "Delaney", "Child"
         if (currDriver === driverControls[1]) { //grady
-            fieldCentric = false //!change this to true after expo
+            fieldCentric = true
             //slowmode
 //            gamepad1.wasJustReleased(GamepadKeys.Button.B);
             if (myOpMode.gamepad1.circle && !slowModeButtonDown && !driveSubsystem.slowModeIsOn) {
@@ -80,11 +80,13 @@ object Drivers {
         }
 
         if (currDriver === driverControls[0]) { //Camden
+            fieldCentric = false
         }
         if (currDriver === driverControls[2]) { //Michael
+            fieldCentric = false
         }
         if (currDriver === driverControls[3]) { //Graden
-            fieldCentric = true
+            fieldCentric = false
             //slowmode
 //            gamepad1.wasJustReleased(GamepadKeys.Button.B);
             if (myOpMode.gamepad1.circle && !slowModeButtonDown && !driveSubsystem.slowModeIsOn) {
@@ -190,7 +192,7 @@ object Drivers {
 
     fun switchProfile(myOpMode: OpMode) {
         //driver
-        if (myOpMode.gamepad1.options && !optionsHigh1) {
+        if (myOpMode.gamepad1.options && !optionsHigh1 && (!myOpMode.gamepad1.circle || !myOpMode.gamepad1.cross) && (!myOpMode.gamepad2.circle || !myOpMode.gamepad2.cross)) {
             if (DriverIndex.dIndex == driverControls.size - 1) {
                 DriverIndex.dIndex = 0
             } else {
@@ -199,7 +201,7 @@ object Drivers {
             currDriver = driverControls[DriverIndex.dIndex]
         }
         optionsHigh1 = myOpMode.gamepad1.options
-        if (myOpMode.gamepad1.share && !shareHigh1) {
+        if (myOpMode.gamepad1.share && !shareHigh1 && (!myOpMode.gamepad1.circle || !myOpMode.gamepad1.cross) && (!myOpMode.gamepad2.circle || !myOpMode.gamepad2.cross)) {
             if (DriverIndex.dIndex == 0) {
                 DriverIndex.dIndex = driverControls.size - 1
             } else {
@@ -209,7 +211,7 @@ object Drivers {
         }
         shareHigh1 = myOpMode.gamepad1.share
         //other
-        if (myOpMode.gamepad2.options && !optionsHigh2) {
+        if (myOpMode.gamepad2.options && !optionsHigh2 && (!myOpMode.gamepad2.circle || !myOpMode.gamepad2.cross) && (!myOpMode.gamepad1.circle || !myOpMode.gamepad1.cross)) {
             if (DriverIndex.oIndex == otherControls.size - 1) {
                 DriverIndex.oIndex = 0
             } else {
@@ -218,7 +220,7 @@ object Drivers {
             currOther = otherControls[DriverIndex.oIndex]
         }
         optionsHigh2 = myOpMode.gamepad2.options
-        if (myOpMode.gamepad2.share && !shareHigh2) {
+        if (myOpMode.gamepad2.share && !shareHigh2 && (!myOpMode.gamepad2.circle || !myOpMode.gamepad2.cross) && (!myOpMode.gamepad1.circle || !myOpMode.gamepad1.cross)) {
             if (DriverIndex.oIndex == 0) {
                 DriverIndex.oIndex = otherControls.size - 1
             } else {
@@ -227,8 +229,8 @@ object Drivers {
             currOther = otherControls[DriverIndex.oIndex]
         }
         shareHigh2 = myOpMode.gamepad2.share
-        if (currDriver === driverControls[7]) {
-            currOther = driverControls[7]
+        if (currDriver === driverControls[driverControls.size - 1]) {
+            currOther = driverControls[driverControls.size - 1]
         }
     }
 }

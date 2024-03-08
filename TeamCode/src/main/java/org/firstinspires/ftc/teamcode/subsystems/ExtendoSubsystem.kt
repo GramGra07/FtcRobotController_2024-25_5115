@@ -139,7 +139,7 @@ class ExtendoSubsystem(ahwMap: HardwareMap) {
     fun autoExtend(position: Int, driveSubsystem: DriveSubsystem) {
         val drive = driveSubsystem.drive!!
         motorExtension!!.mode = DcMotor.RunMode.RUN_USING_ENCODER
-        motorExtension!!.targetPosition = (motorExtension!!.currentPosition + position).toInt()
+        motorExtension!!.targetPosition = (motorExtension!!.currentPosition + position)
         drive.update()
         motorExtension!!.mode = DcMotor.RunMode.RUN_TO_POSITION
         motorExtension!!.power = abs(1).toDouble()
@@ -152,7 +152,7 @@ class ExtendoSubsystem(ahwMap: HardwareMap) {
     fun autoRotate(position: Int, driveSubsystem: DriveSubsystem) {
         val drive = driveSubsystem.drive!!
         motorRotation!!.mode = DcMotor.RunMode.RUN_USING_ENCODER
-        motorRotation!!.targetPosition = (motorRotation!!.currentPosition + position).toInt()
+        motorRotation!!.targetPosition = (motorRotation!!.currentPosition + position)
         drive.update()
         motorRotation!!.mode = DcMotor.RunMode.RUN_TO_POSITION
         motorRotation!!.power = abs(1).toDouble()

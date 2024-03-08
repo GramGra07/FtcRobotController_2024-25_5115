@@ -1,9 +1,9 @@
 package org.firstinspires.ftc.teamcode
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
-import org.firstinspires.ftc.teamcode.UtilClass.varStorage.DeadZones
 import org.firstinspires.ftc.teamcode.UtilClass.varStorage.LoopTime
 import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem
+import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.ExtendoSubsystem
 
 object Operator {
@@ -12,7 +12,8 @@ object Operator {
     fun bindOtherButtons(
         myOpMode: OpMode,
         clawSubsystem: ClawSubsystem,
-        extendoSubsystem: ExtendoSubsystem
+        extendoSubsystem: ExtendoSubsystem,
+        driveSubsystem: DriveSubsystem,
     ) {
         // "Camden", "Grady", "Michael","Graden", "Delaney", "Child"
 //        if (!airplaneArmed && timer.seconds() > 80) {
@@ -61,7 +62,7 @@ object Operator {
 //                flipServo.calcFlipPose(lastSetVal.toDouble())
 //            }
             //
-            if (myOpMode.gamepad2.right_stick_y < -DeadZones.deadZone && extendoSubsystem.usePIDF) {
+            if (myOpMode.gamepad2.right_stick_y < -driveSubsystem.deadZone && extendoSubsystem.usePIDF) {
                 extendoSubsystem.setPowerR(extendoSubsystem.maxRotationTicks.toDouble())
 //                HardwareConfig.rotationPower = Range.clip(
 //                    HardwareConfig.rotationPIDF.calculate(
@@ -69,7 +70,7 @@ object Operator {
 //                        Limits.maxRotationTicks.toDouble()
 //                    ), -1.0, 1.0
 //                )
-            } else if (myOpMode.gamepad2.right_stick_y > DeadZones.deadZone && extendoSubsystem.usePIDF) {
+            } else if (myOpMode.gamepad2.right_stick_y > driveSubsystem.deadZone && extendoSubsystem.usePIDF) {
                 extendoSubsystem.setPowerR(extendoSubsystem.minRotationTicks.toDouble())
 //                HardwareConfig.rotationPIDF.setPIDF(
 //                    PIDVals.rotationPIDFCo.p,
@@ -94,7 +95,7 @@ object Operator {
                 extendoSubsystem.usePIDF = true
             }
             xPressed = myOpMode.gamepad2.cross
-            if (myOpMode.gamepad2.left_stick_y > DeadZones.deadZone && extendoSubsystem.usePIDF) {
+            if (myOpMode.gamepad2.left_stick_y > driveSubsystem.deadZone && extendoSubsystem.usePIDF) {
 //                HardwareConfig.extensionPIDF.setPIDF(
 //                    PIDVals.extensionPIDFCo.p,
 //                    PIDVals.extensionPIDFCo.i,
@@ -114,7 +115,7 @@ object Operator {
 //                    ), -1.0, 1.0
 //                ))
                 extendoSubsystem.setPowerE(extendoSubsystem.minExtensionTicks.toDouble())
-            } else if (myOpMode.gamepad2.left_stick_y < -DeadZones.deadZone && extendoSubsystem.usePIDF) {
+            } else if (myOpMode.gamepad2.left_stick_y < -driveSubsystem.deadZone && extendoSubsystem.usePIDF) {
                 extendoSubsystem.setPowerE(extendoSubsystem.maxExtensionTicks.toDouble())
 //                HardwareConfig.extensionPIDF.setPIDF(
 //                    PIDVals.extensionPIDFCo.p,

@@ -149,8 +149,7 @@ class AutoHardware(opmode: LinearOpMode, ahwMap: HardwareMap, auto: Boolean) // 
                         )
                         val aprilT = Pose2d(15.0, -72.0, Math.toRadians(0.0))
                         val aprilS = Pose2d(-15.0, -72.0, Math.toRadians(0.0))
-                        var detectablePose: Pose2d
-                        detectablePose = if (detection.id == 7) {
+                        val detectablePose: Pose2d = if (detection.id == 7) {
                             aprilS
                         } else {
                             aprilT
@@ -219,13 +218,13 @@ class AutoHardware(opmode: LinearOpMode, ahwMap: HardwareMap, auto: Boolean) // 
                 Alliance.RED -> {
                     when (side) {
                         StartSide.LEFT -> {
-                            HardwareConfig.Companion.startDist = StartDist.LONG_SIDE
+                            startDist = StartDist.LONG_SIDE
                             START_POSE = Pose2d(-36.0, -62.0, Math.toRadians(redRotate.toDouble()))
                             Pose2d(-36.0, -62.0, Math.toRadians(redRotate.toDouble()))
                         }
 
                         StartSide.RIGHT -> {
-                            HardwareConfig.Companion.startDist = StartDist.SHORT_SIDE
+                            startDist = StartDist.SHORT_SIDE
                             START_POSE = Pose2d(12.0, -62.0, Math.toRadians(redRotate.toDouble()))
                             Pose2d(12.0, -62.0, Math.toRadians(redRotate.toDouble()))
                         }
@@ -233,19 +232,19 @@ class AutoHardware(opmode: LinearOpMode, ahwMap: HardwareMap, auto: Boolean) // 
                 }
 
                 Alliance.BLUE -> {
-                    when (side) {
+                    return when (side) {
                         StartSide.LEFT -> {
-                            HardwareConfig.Companion.startDist = StartDist.SHORT_SIDE
+                            startDist = StartDist.SHORT_SIDE
                             START_POSE =
                                 Pose2d(12.0, 62.0, Math.toRadians(blueRotate.toDouble()))
-                            return Pose2d(12.0, 62.0, Math.toRadians(blueRotate.toDouble()))
+                            Pose2d(12.0, 62.0, Math.toRadians(blueRotate.toDouble()))
                         }
 
                         StartSide.RIGHT -> {
-                            HardwareConfig.Companion.startDist = StartDist.LONG_SIDE
+                            startDist = StartDist.LONG_SIDE
                             START_POSE =
                                 Pose2d(-36.0, 62.0, Math.toRadians(blueRotate.toDouble()))
-                            return Pose2d(-36.0, 62.0, Math.toRadians(blueRotate.toDouble()))
+                            Pose2d(-36.0, 62.0, Math.toRadians(blueRotate.toDouble()))
                         }
                     }
                 }

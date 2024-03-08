@@ -3,10 +3,8 @@ package org.firstinspires.ftc.teamcode.subsystems
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.Servo
 import org.firstinspires.ftc.teamcode.UtilClass.ServoUtil
-import org.firstinspires.ftc.teamcode.UtilClass.ServoUtil.closeClaw
-import org.firstinspires.ftc.teamcode.UtilClass.ServoUtil.openClaw
 import org.firstinspires.ftc.teamcode.UtilClass.varStorage.AutoServoPositions
-import org.firstinspires.ftc.teamcode.UtilClass.varStorage.PastAngle
+import org.firstinspires.ftc.teamcode.UtilClass.varStorage.PotentPositions
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.potentAngle
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.calcFlipPose
@@ -32,10 +30,20 @@ class ClawSubsystem(ahwMap: HardwareMap) {
     private var flipServo: Servo? = null
 
     init {
-        claw1 = initServo(ahwMap, "claw1")
-        claw2 = initServo(ahwMap, "claw2")
-        flipServo = initServo(ahwMap, "flipServo")
+        if (claw1 == null) {
+//            claw1 = ahwMap.get(Servo::class.java, "claw1")
+            claw1 = initServo(ahwMap, "claw1")
+        }
+        if (claw2 == null) {
+//            claw2 = ahwMap.get(Servo::class.java, "claw2")
+            claw2 = initServo(ahwMap, "claw2")
+        }
+        if (flipServo == null) {
+//            flipServo = ahwMap.get(Servo::class.java, "flipServo")
+            flipServo = initServo(ahwMap, "flipServo")
+        }
         closeBoth()
+        flipBack()
         update()
     }
 
@@ -90,12 +98,12 @@ class ClawSubsystem(ahwMap: HardwareMap) {
 
     fun update() {
         when (rightState) {
-            ClawStates.OPEN -> openClaw(claw1!!)
-            ClawStates.CLOSED -> closeClaw(claw1!!)
+            ClawStates.OPEN -> ServoUtil.openClaw1(claw1!!)
+            ClawStates.CLOSED -> ServoUtil.closeClaw1(claw1!!)
         }
         when (leftState) {
-            ClawStates.OPEN -> openClaw(claw2!!)
-            ClawStates.CLOSED -> closeClaw(claw2!!)
+            ClawStates.OPEN -> ServoUtil.openClaw2(claw2!!)
+            ClawStates.CLOSED -> ServoUtil.closeClaw2(claw2!!)
         }
         when (flipState) {
             FlipStates.HIGH -> flipServo!!.calcFlipPose(70.0)
@@ -104,7 +112,7 @@ class ClawSubsystem(ahwMap: HardwareMap) {
             FlipStates.UP -> flipServo!!.calcFlipPose(AutoServoPositions.flipUp.toDouble())
             FlipStates.DOWN -> flipServo!!.calcFlipPose((AutoServoPositions.flipDown - 10).toDouble())
         }
-        if (PastAngle.pastAngleVal != potentiometer.potentAngle()) {
+        if (PotentPositions.pastAngleVal != potentiometer.potentAngle()) {
             flipServo!!.calcFlipPose(ServoExtensions.lastSetVal.toDouble())
         }
     }

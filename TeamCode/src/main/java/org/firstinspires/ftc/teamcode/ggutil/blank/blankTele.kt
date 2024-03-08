@@ -8,11 +8,10 @@ import org.firstinspires.ftc.teamcode.opModes.HardwareConfig
 @TeleOp
 @Disabled
 class blankTele : LinearOpMode() {
-    var robot = HardwareConfig(this)
+    var robot = HardwareConfig(this, hardwareMap, false)
 
     @Throws(InterruptedException::class)
     override fun runOpMode() {
-        HardwareConfig.init(hardwareMap, false)
         waitForStart()
         while (opModeIsActive()) { //while the op mode is active
             robot.doBulk()
