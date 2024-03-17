@@ -16,23 +16,24 @@ import org.firstinspires.ftc.teamcode.extensions.MotorExtensions
 import kotlin.math.cos
 import kotlin.math.sin
 
-class OdometrySubsystem(ahwMap: HardwareMap, startX: Double, startY: Double, startHeading: Double) {
+class OdometrySubsystem2Wheel(
+    ahwMap: HardwareMap,
+    startX: Double,
+    startY: Double,
+    startHeading: Double
+) {
     private var leftPod: DcMotorEx? = null
     private var rightPod: DcMotorEx? = null
-    private var centerPod: DcMotorEx? = null
     private var hwMap: HardwareMap? = null
 
-    private var trackwidth = 36.65835571289
-    private var centerPodOffset = 18.7227783203125
-    private var wheelRadius = 1.75
-    private var podTicks = 8192.0
+    private var trackwidth = DriveConfigH.TRACK_WIDTH
+    private var wheelRadius = DriveConfigH.WHEEL_RADIUS
+    private var podTicks = DriveConfigH.TICKS_PER_REV
     private var cm_per_tick = 2.0 * Math.PI * wheelRadius / podTicks
     private var currentRightPod = 0
     private var currentLeftPod = 0
-    private var currentCenterPod = 0
     private var oldRightPod = 0
     private var oldLeftPod = 0
-    private var oldCenterPod = 0
     private var startHeading = 0.0
     private var botHeading = startHeading
 
@@ -79,16 +80,6 @@ class OdometrySubsystem(ahwMap: HardwareMap, startX: Double, startY: Double, sta
             rightPod!!.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
             rightPod!!.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         }
-        if (centerPod == null) {
-            centerPod = MotorExtensions.initMotor(
-                ahwMap,
-                "LB",
-                DcMotor.RunMode.RUN_WITHOUT_ENCODER,
-                DcMotorSimple.Direction.REVERSE
-            )
-            centerPod!!.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-            centerPod!!.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
-        }
     }
 
     fun update() {
@@ -102,18 +93,15 @@ class OdometrySubsystem(ahwMap: HardwareMap, startX: Double, startY: Double, sta
             ConvertedHeadingForPosition = 0 + botHeading
         }
         heading = ConvertedHeadingForPosition
-        oldCenterPod = currentCenterPod
         oldLeftPod = currentLeftPod
         oldRightPod = currentRightPod
-        currentCenterPod = -centerPod!!.currentPosition
         currentLeftPod = -leftPod!!.currentPosition
         currentRightPod = rightPod!!.currentPosition
         val dn1 = currentLeftPod - oldLeftPod
         val dn2 = currentRightPod - oldRightPod
-        val dn3 = currentCenterPod - oldCenterPod
         dtheta = cm_per_tick * ((dn2 - dn1) / trackwidth)
         dx = cm_per_tick * (dn1 + dn2) / 2.0
-        dy = cm_per_tick * (dn3 - (dn2 - dn1) * centerPodOffset / trackwidth)
+        dy = 0.0 // No dy component in two-wheel odometry
         val theta = heading + dtheta / 2.0
         poseX += dx * cos(Math.toRadians(ConvertedHeadingForPosition)) - dy * sin(
             Math.toRadians(
@@ -149,34 +137,28 @@ class OdometrySubsystem(ahwMap: HardwareMap, startX: Double, startY: Double, sta
     fun reset(newPos: Vector2D) {
         leftPod!!.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
         rightPod!!.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-        centerPod!!.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
         poseX = newPos.x
         poseY = newPos.y
         leftPod!!.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         rightPod!!.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
-        centerPod!!.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
     }
 
     fun reset(heading: Double) {
         leftPod!!.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
         rightPod!!.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-        centerPod!!.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
         this.heading = heading
         leftPod!!.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         rightPod!!.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
-        centerPod!!.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
     }
 
     fun reset(newPos: Vector2D, heading: Double) {
         leftPod!!.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
         rightPod!!.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-        centerPod!!.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
         poseX = newPos.x
         poseY = newPos.y
         this.heading = heading
         leftPod!!.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         rightPod!!.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
-        centerPod!!.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
     }
 
     companion object {

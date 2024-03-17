@@ -4,6 +4,7 @@ package org.firstinspires.ftc.teamcode.opModes
 import android.os.Environment
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
+import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
@@ -17,7 +18,6 @@ import org.firstinspires.ftc.teamcode.Drivers
 import org.firstinspires.ftc.teamcode.Drivers.bindDriverButtons
 import org.firstinspires.ftc.teamcode.Drivers.fieldCentric
 import org.firstinspires.ftc.teamcode.Drivers.switchProfile
-import org.firstinspires.ftc.teamcode.Enums.StartDist
 import org.firstinspires.ftc.teamcode.Operator.bindOtherButtons
 import org.firstinspires.ftc.teamcode.UtilClass.FileWriterFTC.setUpFile
 import org.firstinspires.ftc.teamcode.UtilClass.varStorage.LoopTime
@@ -31,13 +31,13 @@ import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.initVSensor
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.ledIND
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.lowVoltage
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.potentAngle
-import org.firstinspires.ftc.teamcode.opModes.autoSoftware.AutoHardware
 import org.firstinspires.ftc.teamcode.opModes.rr.drive.MecanumDrive
 import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.EndgameSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.ExtendoSubsystem
 import java.io.FileWriter
+
 
 open class HardwareConfig() {
 
@@ -81,7 +81,8 @@ open class HardwareConfig() {
         var fileWriter: FileWriter? = null
         private lateinit var myOpMode: LinearOpMode
         var once = false
-        lateinit var startDist: StartDist
+
+        //        lateinit var startDist: StartDist
         const val CURRENT_VERSION = "7.0.0"
         fun updateStatus(status: String) {
             statusVal = status
@@ -92,6 +93,12 @@ open class HardwareConfig() {
         ahwMap: HardwareMap,
         auto: Boolean,
     ) {
+        val allHubs = ahwMap.getAll(
+            LynxModule::class.java
+        )
+        for (module in allHubs) {
+            module.bulkCachingMode = LynxModule.BulkCachingMode.AUTO
+        }
         vSensor = initVSensor(ahwMap, "Expansion Hub 2")
         lights = initLights(ahwMap, "blinkin")
         // rev potentiometer //analog
@@ -131,42 +138,7 @@ open class HardwareConfig() {
         fileWriter = FileWriter(file, true)
         setUpFile(fileWriter!!)
         updateStatus("Initializing")
-//            drive = MecanumDrive(ahwMap)
-//            drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER)
-//            drive.poseEstimate = PoseStorage.currentPose
-        val timer = ElapsedTime() //declaring the runtime variable
-        // Declare our motors
-//            motorFrontLeft =
-//                initMotor(ahwMap, "motorFrontLeft", DcMotor.RunMode.RUN_WITHOUT_ENCODER)
-//            motorBackLeft = initMotor(
-//                ahwMap,
-//                "motorBackLeft",
-//                DcMotor.RunMode.RUN_WITHOUT_ENCODER,
-//                DcMotorSimple.Direction.REVERSE
-//            )
-//            motorFrontRight =
-//                initMotor(ahwMap, "motorFrontRight", DcMotor.RunMode.RUN_WITHOUT_ENCODER)
-//            motorBackRight =
-//                initMotor(ahwMap, "motorBackRight", DcMotor.RunMode.RUN_WITHOUT_ENCODER)
-//            motorLift = initMotor(
-//                ahwMap,
-//                "lift",
-//                DcMotor.RunMode.RUN_WITHOUT_ENCODER,
-//                DcMotorSimple.Direction.REVERSE
-//            )
-//            motorExtension = initMotor(ahwMap, "slideMotor", DcMotor.RunMode.RUN_USING_ENCODER)
-//            motorRotation = initMotor(
-//                ahwMap,
-//                "flipperMotor",
-//                DcMotor.RunMode.RUN_USING_ENCODER,
-//                DcMotorSimple.Direction.REVERSE
-//            )
-//        claw1 = initServo(ahwMap, "claw1")
-//        claw2 = initServo(ahwMap, "claw2")
-//        flipServo = initServo(ahwMap, "flipServo")
-//            airplaneServo = initServo(ahwMap, "airplaneServo")
-//        ServoUtil.closeClaw(claw1)
-//        ServoUtil.closeClaw(claw2)
+        val timer = ElapsedTime()
         timer.reset()
         green1.ledIND(red1, true)
         green2.ledIND(red2, true)
@@ -176,9 +148,6 @@ open class HardwareConfig() {
         telemetry.addData("Color", lights.currentColor())
         telemetry.addData("Version", CURRENT_VERSION)
         telemetry.addData("Voltage", "%.2f", vSensor.currentVoltage())
-        if (auto) {
-            telemetry.addData("Random", AutoHardware.autonomousRandom)
-        }
         if (vSensor.lowVoltage()) {
             telemetry.addData("lowBattery", "true")
         }
@@ -199,7 +168,7 @@ open class HardwareConfig() {
         }
         driveSubsystem!!.driveByGamepads(fieldCentric, myOpMode) //runs drive
 //        drive(fieldCentric)
-        power() //sets power to power variables
+        update() //sets power to power variables
         buildTelemetry() //makes telemetry
         loops++
     }
@@ -224,102 +193,11 @@ open class HardwareConfig() {
         }
     }
 
-//    private var slowMult: Int = varConfig.slowMult
-//    private var slowPower = 0
-//    private var xControl = 0.0
-//    private var yControl = 0.0
-//    private var frontRightPower = 0.0
-//    private var frontLeftPower = 0.0
-//    private var backRightPower = 0.0
-//    private var backLeftPower = 0.0
-//    private var gamepadX = 0.0
-//    private var gamepadY = 0.0
-//    private var gamepadHypot = 0.0
-//    private var controllerAngle = 0.0
-//    private var robotDegree = 0.0
-//    private var movementDegree = 0.0
-//    var reverse = false
-//    fun drive(fieldCentric: Boolean) {
-//        if (fieldCentric) {
-//            gamepadX =
-//                myOpMode.gamepad1.left_stick_x.toDouble() //get the x val of left stick and store
-//            gamepadY =
-//                -myOpMode.gamepad1.left_stick_y.toDouble() //get the y val of left stick and store
-//            gamepadHypot = Range.clip(Math.hypot(gamepadX, gamepadY), 0.0, 1.0) //get the
-//            // hypotenuse of the x and y values,clip it to a max of 1 and store
-//            controllerAngle = Math.toDegrees(
-//                Math.atan2(
-//                    gamepadY,
-//                    gamepadX
-//                )
-//            ) //Get the angle of the controller stick using arc tangent
-//            robotDegree = Math.toDegrees(drive.poseEstimate.heading) // change to imu
-//            movementDegree =
-//                controllerAngle - robotDegree //get the movement degree based on the controller vs robot angle
-//            xControl =
-//                Math.cos(Math.toRadians(movementDegree)) * gamepadHypot //get the x value of the movement
-//            yControl =
-//                Math.sin(Math.toRadians(movementDegree)) * gamepadHypot //get the y value of the movement
-//            val turn: Double = -myOpMode.gamepad1.right_stick_x.toDouble()
-//            frontRightPower =
-//                (yControl * Math.abs(yControl) - xControl * Math.abs(xControl) + turn) / slowPower
-//            backRightPower =
-//                (yControl * Math.abs(yControl) + xControl * Math.abs(xControl) + turn) / slowPower
-//            frontLeftPower =
-//                (yControl * Math.abs(yControl) + xControl * Math.abs(xControl) - turn) / slowPower
-//            backLeftPower =
-//                (yControl * Math.abs(yControl) - xControl * Math.abs(xControl) - turn) / slowPower
-//        } else {
-////            reverse = myOpMode.gamepad1.touchpad_finger_1_x > 0.5;//0,1 left to right
-////            reversed = reverse;
-//            yControl = -myOpMode.gamepad1.left_stick_y.toDouble()
-//            xControl = myOpMode.gamepad1.left_stick_x.toDouble()
-//            if (reverse) {
-//                yControl = -yControl
-//                xControl = -xControl
-//            }
-//            val turn: Double = -myOpMode.gamepad1.right_stick_x.toDouble()
-//            slowPower = if (slowModeIsOn) {
-//                slowMult
-//            } else {
-//                1
-//            }
-//            frontRightPower = (yControl - xControl + turn) / slowPower
-//            backRightPower = (yControl + xControl + turn) / slowPower
-//            frontLeftPower = (yControl + xControl - turn) / slowPower
-//            backLeftPower = (yControl - xControl - turn) / slowPower
-//        }
-//        drive.update()
-//        updateDistTraveled(PoseStorage.currentPose, drive.poseEstimate)
-//        FileWriterFTC.writeToFile(
-//            fileWriter!!,
-//            drive.poseEstimate.x.toInt(),
-//            drive.poseEstimate.y.toInt()
-//        )
-//        PoseStorage.currentPose = drive.poseEstimate
-//    }
-
-//    private fun updateDistTraveled(before: Pose2d, after: Pose2d) {
-//        val x = after.x - before.x
-//        val y = after.y - before.y
-//        val dist = sqrt(x * x + y * y)
-//        thisDist += dist
-//        totalDist += dist
-//    }
-
-    fun power() { // put all set power here
-//        if (!IsBusy.isAutoInTeleop) {
-//            motorFrontLeft.power = frontLeftPower
-//            motorBackLeft.power = backLeftPower
-//            motorFrontRight.power = frontRightPower
-//            motorBackRight.power = backRightPower
-//        }
+    fun update() {
         driveSubsystem!!.update()
         endgameSubsystem!!.update()
         clawSubsystem!!.update()
         extendoSubsystem!!.update()
-//        motorExtension.power = extensionPower
-//        motorRotation.power = rotationPower
     }
 
     private fun buildTelemetry() {

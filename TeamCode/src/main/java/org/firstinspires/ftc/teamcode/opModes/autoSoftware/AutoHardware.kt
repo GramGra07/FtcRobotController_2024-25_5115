@@ -9,10 +9,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
 import org.firstinspires.ftc.teamcode.EOCVWebcam.cam2_N
-import org.firstinspires.ftc.teamcode.Enums.Alliance
-import org.firstinspires.ftc.teamcode.Enums.AutoRandom
-import org.firstinspires.ftc.teamcode.Enums.StartDist
-import org.firstinspires.ftc.teamcode.Enums.StartSide
 import org.firstinspires.ftc.teamcode.UtilClass.varStorage.StartPose
 import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.setPatternCo
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.ledIND
@@ -95,9 +91,10 @@ class AutoHardware(opmode: LinearOpMode, ahwMap: HardwareMap, auto: Boolean) // 
         @JvmField
         var startPose = Pose2d(12.0, -63.0, Math.toRadians(90.0))
         lateinit var spot: Pose2d // cycle position to be updated
-        var autonomousRandom: AutoRandom =
-            AutoRandom.MID // default autonomous choice for spike mark
-        var autoRandomReliable: AutoRandom? = null // tracker for the AutoRandom enum
+
+        //        var autonomousRandom: AutoRandom =
+//            AutoRandom.MID // default autonomous choice for spike mark
+//        var autoRandomReliable: AutoRandom? = null // tracker for the AutoRandom enum
         var visionPortal: VisionPortal? = null // vision portal for the webcam
         var objProcessor: VPObjectDetect? = null // april tag processor for the vision portal
         var aprilTagProcessor: AprilTagProcessor? =
@@ -211,46 +208,46 @@ class AutoHardware(opmode: LinearOpMode, ahwMap: HardwareMap, auto: Boolean) // 
         //        }
         //    }
         // method to get the start pose
-        fun getStartPose(alliance: Alliance, side: StartSide): Pose2d {
-            StartPose.alliance = alliance
-            StartPose.side = side
-            when (alliance) {
-                Alliance.RED -> {
-                    when (side) {
-                        StartSide.LEFT -> {
-                            startDist = StartDist.LONG_SIDE
-                            START_POSE = Pose2d(-36.0, -62.0, Math.toRadians(redRotate.toDouble()))
-                            Pose2d(-36.0, -62.0, Math.toRadians(redRotate.toDouble()))
-                        }
-
-                        StartSide.RIGHT -> {
-                            startDist = StartDist.SHORT_SIDE
-                            START_POSE = Pose2d(12.0, -62.0, Math.toRadians(redRotate.toDouble()))
-                            Pose2d(12.0, -62.0, Math.toRadians(redRotate.toDouble()))
-                        }
-                    }
-                }
-
-                Alliance.BLUE -> {
-                    return when (side) {
-                        StartSide.LEFT -> {
-                            startDist = StartDist.SHORT_SIDE
-                            START_POSE =
-                                Pose2d(12.0, 62.0, Math.toRadians(blueRotate.toDouble()))
-                            Pose2d(12.0, 62.0, Math.toRadians(blueRotate.toDouble()))
-                        }
-
-                        StartSide.RIGHT -> {
-                            startDist = StartDist.LONG_SIDE
-                            START_POSE =
-                                Pose2d(-36.0, 62.0, Math.toRadians(blueRotate.toDouble()))
-                            Pose2d(-36.0, 62.0, Math.toRadians(blueRotate.toDouble()))
-                        }
-                    }
-                }
-            }
-            return START_POSE
-        }
+//        fun getStartPose(alliance: Alliance, side: StartSide): Pose2d {
+//            StartPose.alliance = alliance
+//            StartPose.side = side
+//            when (alliance) {
+//                Alliance.RED -> {
+//                    when (side) {
+//                        StartSide.LEFT -> {
+//                            startDist = StartDist.LONG_SIDE
+//                            START_POSE = Pose2d(-36.0, -62.0, Math.toRadians(redRotate.toDouble()))
+//                            Pose2d(-36.0, -62.0, Math.toRadians(redRotate.toDouble()))
+//                        }
+//
+//                        StartSide.RIGHT -> {
+//                            startDist = StartDist.SHORT_SIDE
+//                            START_POSE = Pose2d(12.0, -62.0, Math.toRadians(redRotate.toDouble()))
+//                            Pose2d(12.0, -62.0, Math.toRadians(redRotate.toDouble()))
+//                        }
+//                    }
+//                }
+//
+//                Alliance.BLUE -> {
+//                    return when (side) {
+//                        StartSide.LEFT -> {
+//                            startDist = StartDist.SHORT_SIDE
+//                            START_POSE =
+//                                Pose2d(12.0, 62.0, Math.toRadians(blueRotate.toDouble()))
+//                            Pose2d(12.0, 62.0, Math.toRadians(blueRotate.toDouble()))
+//                        }
+//
+//                        StartSide.RIGHT -> {
+//                            startDist = StartDist.LONG_SIDE
+//                            START_POSE =
+//                                Pose2d(-36.0, 62.0, Math.toRadians(blueRotate.toDouble()))
+//                            Pose2d(-36.0, 62.0, Math.toRadians(blueRotate.toDouble()))
+//                        }
+//                    }
+//                }
+//            }
+//            return START_POSE
+//        }
 
         // method to update the pose
         fun updatePose(drive: MecanumDrive) {

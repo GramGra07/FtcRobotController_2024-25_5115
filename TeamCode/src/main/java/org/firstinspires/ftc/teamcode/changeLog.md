@@ -1,3 +1,6 @@
+7.0.0 March 16th, 2024
+Completely switched to subsystem control with sights set on RR 1.0 and avoidance subsystems
+
 6.0.0 February 19th, 2024
 Changed to FTC 9.1.0
 Updated all classes to Kotlin

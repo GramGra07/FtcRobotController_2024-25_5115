@@ -3,9 +3,7 @@ package org.firstinspires.ftc.teamcode.ggutil.blank
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
-import org.firstinspires.ftc.teamcode.Enums.EndPose
 import org.firstinspires.ftc.teamcode.opModes.autoSoftware.AutoHardware
-import org.firstinspires.ftc.teamcode.opModes.autoSoftware.endPose
 import org.firstinspires.ftc.teamcode.opModes.rr.drive.MecanumDrive
 import org.firstinspires.ftc.teamcode.opModes.rr.drive.advanced.PoseStorage
 
@@ -23,6 +21,5 @@ class blankAuto : LinearOpMode() {
         if (opModeIsActive()) {
             PoseStorage.currentPose = drive.poseEstimate
         }
-        endPose.goToEndPose(EndPose.NONE, drive)
     }
 }
