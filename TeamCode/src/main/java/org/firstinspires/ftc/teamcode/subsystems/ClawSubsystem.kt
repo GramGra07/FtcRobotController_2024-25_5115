@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.calcFlipPose
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.initServo
 import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.potentiometer
 
+
 class ClawSubsystem(ahwMap: HardwareMap) {
     enum class ClawStates {
         OPEN,
@@ -116,4 +117,12 @@ class ClawSubsystem(ahwMap: HardwareMap) {
             flipServo!!.calcFlipPose(ServoExtensions.lastSetVal.toDouble())
         }
     }
+//    var flipHigh: Action = Action {
+//        flipServo!!.calcFlipPose(70.0)
+//        return@Action true
+//    }
+//    var drive: MecanumDrive = MecanumDrive(hardwareMap, Pose2d(11.8, 61.7, Math.toRadians(90.0)))
+//    var trajectoryAction1:Action = drive.actionBuilder(drive.pose)
+//        .lineToX(32.0)
+//        .build()
 }

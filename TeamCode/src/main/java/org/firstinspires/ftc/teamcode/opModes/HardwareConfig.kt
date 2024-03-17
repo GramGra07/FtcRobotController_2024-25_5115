@@ -31,7 +31,7 @@ import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.initVSensor
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.ledIND
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.lowVoltage
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.potentAngle
-import org.firstinspires.ftc.teamcode.opModes.rr.drive.MecanumDrive
+import org.firstinspires.ftc.teamcode.rr.MecanumDrive
 import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.EndgameSubsystem
@@ -56,7 +56,8 @@ open class HardwareConfig() {
 
         var useFileWriter: Boolean = varConfig.useFileWriter
         var multipleDrivers: Boolean = varConfig.multipleDrivers
-        var statusVal = "OFFLINE"
+        const val cam1_N = "Webcam 1"
+        const val cam2_N = "Webcam 2"
         lateinit var lights: RevBlinkinLedDriver
         var loops = 0.0
         var LPS = 0.0
@@ -84,9 +85,6 @@ open class HardwareConfig() {
 
         //        lateinit var startDist: StartDist
         const val CURRENT_VERSION = "7.0.0"
-        fun updateStatus(status: String) {
-            statusVal = status
-        }
     }
 
     fun init(
@@ -137,7 +135,6 @@ open class HardwareConfig() {
         )
         fileWriter = FileWriter(file, true)
         setUpFile(fileWriter!!)
-        updateStatus("Initializing")
         val timer = ElapsedTime()
         timer.reset()
         green1.ledIND(red1, true)
@@ -180,7 +177,6 @@ open class HardwareConfig() {
                 MultipleTelemetry(myOpMode.telemetry, FtcDashboard.getInstance().telemetry)
             // Telemetry telemetry = myOpMode.telemetry;
             telemetry.clearAll()
-            updateStatus("Running")
             myOpMode.gamepad1.setLedColor(229.0, 74.0, 161.0, -1)
             myOpMode.gamepad2.setLedColor(0.0, 0.0, 0.0, -1)
             once = true
@@ -224,7 +220,6 @@ open class HardwareConfig() {
         telemetry.addData("Refresh Rate", "%.1f", rrPS)
         teleSpace()
         telemetry.addData("Color", lights.currentColor())
-        telemetry.addData("Status", statusVal) //shows current status
         teleSpace()
         telemetry.addData("Version", CURRENT_VERSION)
         telemetry.update()

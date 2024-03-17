@@ -1,53 +1,80 @@
 package org.firstinspires.ftc.teamcode.UtilClass
 
-import com.acmerobotics.roadrunner.util.Angle.normDelta
-import org.firstinspires.ftc.teamcode.Enums.Alliance
-import org.firstinspires.ftc.teamcode.UtilClass.varStorage.StartPose
-import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.updateStatus
-import org.firstinspires.ftc.teamcode.opModes.rr.drive.MecanumDrive
+import com.acmerobotics.dashboard.FtcDashboard
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket
+import com.acmerobotics.roadrunner.Action
+import com.acmerobotics.roadrunner.SequentialAction
+import org.firstinspires.ftc.teamcode.rr.MecanumDrive
+import org.firstinspires.ftc.teamcode.subsystems.DriveConfig
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
 
-object DriverAid {
 
+object DriverAid {
+    var turnAngle = 0.0
+    private val dash = FtcDashboard.getInstance()
+    private var runningActions: List<Action> = ArrayList<Action>()
     fun doDriverAid(
         driveSubsystem: DriveSubsystem,
         goToDrone: Boolean,
         turnStraight: Boolean,
         turnWing: Boolean,
-        breakFollowing: Boolean,
+        drive: MecanumDrive = driveSubsystem.drive!!
     ) {
-        val drive: MecanumDrive = driveSubsystem.drive!!
+        val packet = TelemetryPacket()
+
         if (goToDrone) {
             driveSubsystem.slowModeIsOn = false
             driveSubsystem.isAutoInTeleop = true
-            updateStatus("Auto-ing")
-            drive.update()
+            drive.updatePoseEstimate()
             // go to drone scoring position]
         }
         if (turnStraight) {
             driveSubsystem.slowModeIsOn = false
             driveSubsystem.isAutoInTeleop = true
-            updateStatus("Auto-ing")
-            drive.turnAsync(normDelta(Math.toRadians(0.0) - drive.poseEstimate.heading))
+//!            turnAngle = normDelta(Math.toRadians(0.0) - drive.pose.heading.real) TODO test this
+
+            runningActions.plus(
+                SequentialAction(
+                    drive.actionBuilder(drive.pose).turnTo(Math.toRadians(90.0)).build()
+                )
+            )
         }
         if (turnWing) {
             driveSubsystem.slowModeIsOn = false
             driveSubsystem.isAutoInTeleop = true
-            updateStatus("Auto-ing")
-            if (StartPose.alliance == Alliance.RED) {
-                drive.turnAsync(normDelta(Math.toRadians(135.0) - drive.poseEstimate.heading))
-            } else {
-                drive.turnAsync(normDelta(Math.toRadians(-135.0) - drive.poseEstimate.heading))
+            runningActions.plus(
+                SequentialAction(
+                    drive.actionBuilder(drive.pose).turnTo(Math.toRadians(90.0)).build()
+                )
+            )
+        }
+
+        val newActions: MutableList<Action> = ArrayList()
+        for (action in runningActions) {
+            action.preview(packet.fieldOverlay())
+            if (action.run(packet)) {
+                newActions.add(action)
             }
         }
-        if (!drive.isBusy) {
-            driveSubsystem.isAutoInTeleop = false
-            updateStatus("Running")
-        }
-        if (breakFollowing) {
-            driveSubsystem.isAutoInTeleop = false
-            updateStatus("Running")
-            drive.breakFollowing()
-        }
+        runningActions = newActions
+        dash.sendTelemetryPacket(packet)
+    }
+
+    fun cMPTurnVect(thetaError: Double): Map<String, Double> {
+        val kpTheta = DriveConfig.MOTOR_VELO_PID.p // Proportional gain for theta error
+
+        // Calculate the correction for each motor based on the theta error
+        val flPower = -kpTheta * thetaError  // Front-left wheel
+        val frPower = kpTheta * thetaError   // Front-right wheel
+        val rlPower = -kpTheta * thetaError  // Rear-left wheel
+        val rrPower = kpTheta * thetaError   // Rear-right wheel
+
+        // Return a map containing the calculated motor powers
+        return mapOf(
+            "FL" to flPower,
+            "FR" to frPower,
+            "RL" to rlPower,
+            "RR" to rrPower
+        )
     }
 }

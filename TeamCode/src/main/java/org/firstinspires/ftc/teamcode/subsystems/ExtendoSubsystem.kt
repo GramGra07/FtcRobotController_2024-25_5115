@@ -140,11 +140,11 @@ class ExtendoSubsystem(ahwMap: HardwareMap) {
         val drive = driveSubsystem.drive!!
         motorExtension!!.mode = DcMotor.RunMode.RUN_USING_ENCODER
         motorExtension!!.targetPosition = (motorExtension!!.currentPosition + position)
-        drive.update()
+        drive.updatePoseEstimate()
         motorExtension!!.mode = DcMotor.RunMode.RUN_TO_POSITION
         motorExtension!!.power = abs(1).toDouble()
         while (motorExtension!!.isBusy) {
-            drive.update()
+            drive.updatePoseEstimate()
         }
         motorExtension!!.power = 0.0
     }
@@ -153,11 +153,11 @@ class ExtendoSubsystem(ahwMap: HardwareMap) {
         val drive = driveSubsystem.drive!!
         motorRotation!!.mode = DcMotor.RunMode.RUN_USING_ENCODER
         motorRotation!!.targetPosition = (motorRotation!!.currentPosition + position)
-        drive.update()
+        drive.updatePoseEstimate()
         motorRotation!!.mode = DcMotor.RunMode.RUN_TO_POSITION
         motorRotation!!.power = abs(1).toDouble()
         while (motorRotation!!.isBusy) {
-            drive.update()
+            drive.updatePoseEstimate()
         }
         motorRotation!!.power = 0.0
     }

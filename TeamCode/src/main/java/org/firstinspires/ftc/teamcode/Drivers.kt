@@ -76,8 +76,7 @@ object Drivers {
                 driveSubsystem,
                 myOpMode.gamepad1.right_bumper,
                 myOpMode.gamepad1.dpad_up,
-                myOpMode.gamepad1.dpad_right,
-                myOpMode.gamepad1.cross
+                myOpMode.gamepad1.dpad_right
             )
         }
 
@@ -127,8 +126,7 @@ object Drivers {
                 driveSubsystem,
                 myOpMode.gamepad1.right_bumper,
                 myOpMode.gamepad1.dpad_up,
-                myOpMode.gamepad1.dpad_right,
-                myOpMode.gamepad1.cross
+                myOpMode.gamepad1.dpad_right
             )
         }
         if (currDriver === driverControls[4]) { //Delaney

@@ -26,9 +26,9 @@ class OdometrySubsystem2Wheel(
     private var rightPod: DcMotorEx? = null
     private var hwMap: HardwareMap? = null
 
-    private var trackwidth = DriveConfigH.TRACK_WIDTH
-    private var wheelRadius = DriveConfigH.WHEEL_RADIUS
-    private var podTicks = DriveConfigH.TICKS_PER_REV
+    private var trackwidth = DriveConfig.TRACK_WIDTH
+    private var wheelRadius = DriveConfig.WHEEL_RADIUS
+    private var podTicks = DriveConfig.TICKS_PER_REV
     private var cm_per_tick = 2.0 * Math.PI * wheelRadius / podTicks
     private var currentRightPod = 0
     private var currentLeftPod = 0

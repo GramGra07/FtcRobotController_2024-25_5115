@@ -42,7 +42,7 @@ class VectorField(point: Point? = Point(), radius: Double) {
             return Point(x1, y1)
         }
 
-        fun getPointIfAvoid(fields: List<VectorField>, pose: Point): Point {
+        private fun getPointIfAvoid(fields: List<VectorField>, pose: Point): Point {
             var newPose = pose
             for (field in fields) {
                 if (poseInField(pose, field)) {
@@ -52,7 +52,7 @@ class VectorField(point: Point? = Point(), radius: Double) {
             return newPose
         }
 
-        fun calculateWheelVelocities(xError: Double, yError: Double): Map<String, Double> {
+        private fun calculateWheelVelocities(xError: Double, yError: Double): Map<String, Double> {
             val kp = DriveConstants.MOTOR_VELO_PID.p
             val theta = atan2(yError, xError)
             val magnitude = sqrt(xError.pow(2.0) + yError.pow(2.0))

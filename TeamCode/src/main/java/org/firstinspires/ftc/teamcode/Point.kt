@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode
 
-import com.acmerobotics.roadrunner.geometry.Pose2d
+import com.acmerobotics.roadrunner.Pose2d
 
 class Point(var x: Double? = 0.0, var y: Double? = 0.0) {
     fun setPoint(x: Double, y: Double) {
@@ -8,7 +8,7 @@ class Point(var x: Double? = 0.0, var y: Double? = 0.0) {
         this.y = y
     }
 
-    fun toPose(): Pose2d {
-        return Pose2d(x!!, y!!)
+    fun toPose(heading: Double? = 0.0): Pose2d {
+        return Pose2d(x!!, y!!, Math.toRadians(heading!!))
     }
 }

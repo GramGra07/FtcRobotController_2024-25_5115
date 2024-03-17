@@ -3,19 +3,17 @@ package org.firstinspires.ftc.teamcode.opModes.autoSoftware
 import android.util.Size
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
-import com.acmerobotics.roadrunner.geometry.Pose2d
+import com.acmerobotics.roadrunner.Pose2d
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
-import org.firstinspires.ftc.teamcode.EOCVWebcam.cam2_N
-import org.firstinspires.ftc.teamcode.UtilClass.varStorage.StartPose
 import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.setPatternCo
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.ledIND
 import org.firstinspires.ftc.teamcode.opModes.HardwareConfig
+import org.firstinspires.ftc.teamcode.opModes.PoseStorage
 import org.firstinspires.ftc.teamcode.opModes.camera.VPObjectDetect
-import org.firstinspires.ftc.teamcode.opModes.rr.drive.MecanumDrive
-import org.firstinspires.ftc.teamcode.opModes.rr.drive.advanced.PoseStorage
+import org.firstinspires.ftc.teamcode.rr.MecanumDrive
 import org.firstinspires.ftc.vision.VisionPortal
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor
@@ -30,7 +28,7 @@ class AutoHardware(opmode: LinearOpMode, ahwMap: HardwareMap, auto: Boolean) // 
             MultipleTelemetry(myOpMode.telemetry, FtcDashboard.getInstance().telemetry)
         hardwareMap = ahwMap // hardware map initialization
         init(ahwMap, true) // hardware config initialization
-        objProcessor = VPObjectDetect(StartPose.alliance)
+        objProcessor = VPObjectDetect()
         //        if (aprilTagProcessor == null && cycling == true) {
 //            aprilTagProcessor = new AprilTagProcessor.Builder()
 //                    .setLensIntrinsics(972.571, 972.571, 667.598, 309.012)
@@ -107,7 +105,7 @@ class AutoHardware(opmode: LinearOpMode, ahwMap: HardwareMap, auto: Boolean) // 
         ) {
             val currentDetections: List<AprilTagDetection> = processor.detections
             telemetry.addData("# AprilTags Detected", currentDetections.size)
-            var pose = Pose2d(0.0, 0.0, drive.poseEstimate.heading)
+            var pose = Pose2d(0.0, 0.0, drive.pose.heading.real)
 
             // Step through the list of detections and display info for each one.
             for (detection in currentDetections) {
@@ -152,9 +150,9 @@ class AutoHardware(opmode: LinearOpMode, ahwMap: HardwareMap, auto: Boolean) // 
                             aprilT
                         }
                         pose = Pose2d(
-                            detectablePose.x - detection.ftcPose.y,
-                            detectablePose.y - detection.ftcPose.x,
-                            drive.poseEstimate.heading
+                            detectablePose.position.x - detection.ftcPose.y,
+                            detectablePose.position.y - detection.ftcPose.x,
+                            drive.pose.heading.real
                         )
                     }
                 } else {
@@ -168,9 +166,9 @@ class AutoHardware(opmode: LinearOpMode, ahwMap: HardwareMap, auto: Boolean) // 
                     )
                 }
             }
-            if (pose.x != 0.0 && pose.y != 0.0) {
+            if (pose.position.x != 0.0 && pose.position.y != 0.0) {
                 telemetry.update()
-                drive.poseEstimate = pose
+                drive.pose = pose
             }
         }
 
@@ -251,7 +249,7 @@ class AutoHardware(opmode: LinearOpMode, ahwMap: HardwareMap, auto: Boolean) // 
 
         // method to update the pose
         fun updatePose(drive: MecanumDrive) {
-            PoseStorage.currentPose = drive.poseEstimate
+            PoseStorage.currentPose = drive.pose
         }
 
 //        // method to use encoders to go to a point with encoder

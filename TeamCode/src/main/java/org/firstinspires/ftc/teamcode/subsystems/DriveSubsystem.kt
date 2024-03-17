@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystems
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.config.Config
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
-import com.acmerobotics.roadrunner.geometry.Pose2d
+import com.acmerobotics.roadrunner.Pose2d
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.robotcore.external.Telemetry
+import org.firstinspires.ftc.teamcode.UtilClass.DriverAid.cMPTurnVect
 import org.firstinspires.ftc.teamcode.UtilClass.FileWriterFTC
 import org.firstinspires.ftc.teamcode.UtilClass.varStorage.varConfig
 import org.firstinspires.ftc.teamcode.extensions.MotorExtensions
@@ -18,8 +19,8 @@ import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.getMotorCurrent
 import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toPoint
 import org.firstinspires.ftc.teamcode.opModes.DistanceStorage
 import org.firstinspires.ftc.teamcode.opModes.HardwareConfig
-import org.firstinspires.ftc.teamcode.opModes.rr.drive.MecanumDrive
-import org.firstinspires.ftc.teamcode.opModes.rr.drive.advanced.PoseStorage
+import org.firstinspires.ftc.teamcode.opModes.PoseStorage
+import org.firstinspires.ftc.teamcode.rr.MecanumDrive
 import org.firstinspires.ftc.teamcode.subsystems.avoidance.AvoidanceSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.avoidance.VectorField.Companion.getCorrectionByAvoidance
 import kotlin.math.abs
@@ -31,8 +32,6 @@ import kotlin.math.sqrt
 
 @Config
 class DriveSubsystem(ahwMap: HardwareMap) {
-    @JvmField
-    var deadZone = 0.15
 
     var drive: MecanumDrive? = null
 
@@ -52,9 +51,7 @@ class DriveSubsystem(ahwMap: HardwareMap) {
             avoidanceSubsystem = AvoidanceSubsystem()
         }
         if (drive == null) {
-            drive = MecanumDrive(ahwMap)
-            drive!!.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER)
-            drive!!.poseEstimate = PoseStorage.currentPose
+            drive = MecanumDrive(ahwMap, Pose2d(0.0, 0.0, 0.0))
         }
         if (motorFrontLeft == null) {
             motorFrontLeft =
@@ -131,7 +128,7 @@ class DriveSubsystem(ahwMap: HardwareMap) {
                     gamepadX
                 )
             ) //Get the angle of the controller stick using arc tangent
-            robotDegree = Math.toDegrees(drive!!.poseEstimate.heading) // change to imu
+            robotDegree = Math.toDegrees(drive!!.pose.heading.real) // change to imu
             movementDegree =
                 controllerAngle - robotDegree //get the movement degree based on the controller vs robot angle
             xControl =
@@ -148,36 +145,14 @@ class DriveSubsystem(ahwMap: HardwareMap) {
             backLeftPower =
                 (yControl * abs(yControl) - xControl * abs(xControl) - turn) / slowPower
         } else {
-
-            gamepadX =
-                myOpMode.gamepad1.left_stick_x.toDouble() //get the x val of left stick and store
-
-            gamepadY =
-                -myOpMode.gamepad1.left_stick_y.toDouble() //get the y val of left stick and store
-
-            gamepadHypot = Range.clip(hypot(gamepadX, gamepadY), 0.0, 1.0) //get the
-
-            // hypotenuse of the x and y values,clip it to a max of 1 and store
-            // hypotenuse of the x and y values,clip it to a max of 1 and store
-            controllerAngle = Math.toDegrees(
-                atan2(
-                    gamepadY,
-                    gamepadX
-                )
-            ) //Get the angle of the controller stick using arc tangent
-
-            robotDegree = Math.toDegrees(drive!!.poseEstimate.heading) // change to imu
-
-            movementDegree =
-                controllerAngle - robotDegree //get the movement degree based on the controller vs robot angle
-
-            xControl =
-                cos(Math.toRadians(movementDegree)) * gamepadHypot //get the x value of the movement
-
-            yControl =
-                sin(Math.toRadians(movementDegree)) * gamepadHypot //get the y value of the movement
-
-            val turn = -myOpMode.gamepad1.right_stick_x.toDouble()
+            yControl = -myOpMode.gamepad1.left_stick_y.toDouble()
+            xControl = myOpMode.gamepad1.left_stick_x.toDouble()
+            val turn: Double = (-myOpMode.gamepad1.right_stick_x).toDouble()
+            slowPower = if (slowModeIsOn) {
+                slowMult
+            } else {
+                1
+            }
             frontRightPower =
                 (yControl * abs(yControl) - xControl * abs(xControl) + turn) / slowPower
             backRightPower =
@@ -186,19 +161,20 @@ class DriveSubsystem(ahwMap: HardwareMap) {
                 (yControl * abs(yControl) + xControl * abs(xControl) - turn) / slowPower
             backLeftPower = (yControl * abs(yControl) - xControl * abs(xControl) - turn) / slowPower
         }
-        drive!!.update()
-        updateDistTraveled(PoseStorage.currentPose, drive!!.poseEstimate)
+        drive!!.updatePoseEstimate()
+        updateDistTraveled(PoseStorage.currentPose, drive!!.pose)
         FileWriterFTC.writeToFile(
             HardwareConfig.fileWriter!!,
-            drive!!.poseEstimate.x.toInt(),
-            drive!!.poseEstimate.y.toInt()
+            drive!!.pose.position.x.toInt(),
+            drive!!.pose.position.y.toInt()
         )
-        PoseStorage.currentPose = drive!!.poseEstimate
+        PoseStorage.currentPose = drive!!.pose
+
     }
 
     private fun updateDistTraveled(before: Pose2d, after: Pose2d) {
-        val x = after.x - before.x
-        val y = after.y - before.y
+        val x = after.position.x - before.position.x
+        val y = after.position.y - before.position.y
         val dist = sqrt(x * x + y * y)
         thisDist += dist
         DistanceStorage.totalDist += dist
@@ -216,17 +192,28 @@ class DriveSubsystem(ahwMap: HardwareMap) {
     }
 
     fun resetHeading() {
-        drive!!.poseEstimate = Pose2d(drive!!.poseEstimate.x, drive!!.poseEstimate.y, 0.0)
+        drive!!.pose = Pose2d(drive!!.pose.position.x, drive!!.pose.position.y, 0.0)
     }
 
     private fun power() {
         avoidanceSubsystem!!.update()
         if (!isAutoInTeleop) {
             val addedPowers: Map<String, Double?> = disectPowers()
-            val flP: Double = addedPowers["FL"] ?: 0.0
-            val frP: Double = addedPowers["FR"] ?: 0.0
-            val rlP: Double = addedPowers["RL"] ?: 0.0
-            val rrP: Double = addedPowers["RR"] ?: 0.0
+            var flP: Double = addedPowers["FL"] ?: 0.0
+            var frP: Double = addedPowers["FR"] ?: 0.0
+            var rlP: Double = addedPowers["RL"] ?: 0.0
+            var rrP: Double = addedPowers["RR"] ?: 0.0
+            val driveAidPowers: Map<String, Double> =
+                cMPTurnVect(Math.toRadians(0.0) - drive!!.pose.heading.real)
+            val flP2: Double = driveAidPowers["FL"] ?: 0.0
+            val frP2: Double = driveAidPowers["FR"] ?: 0.0
+            val rlP2: Double = driveAidPowers["RL"] ?: 0.0
+            val rrP2: Double = driveAidPowers["RR"] ?: 0.0
+            flP += flP2
+            frP += frP2
+            rlP += rlP2
+            rrP += rrP2
+
             frontLeftPower = Range.clip(frontLeftPower + flP, -1.0, 1.0)
             frontRightPower = Range.clip(frontRightPower + frP, -1.0, 1.0)
             backLeftPower = Range.clip(backLeftPower + rlP, -1.0, 1.0)
@@ -240,19 +227,22 @@ class DriveSubsystem(ahwMap: HardwareMap) {
     }
 
     private fun disectPowers(): Map<String, Double> {
-        return getCorrectionByAvoidance(avoidanceSubsystem!!.fields, drive!!.poseEstimate.toPoint())
+        return getCorrectionByAvoidance(
+            avoidanceSubsystem!!.fields,
+            drive!!.pose.position.toPoint()
+        )
     }
 
     fun update() {
         power()
-        drive!!.update()
+        drive!!.updatePoseEstimate()
         odometrySubsystem!!.update()
         drawBot(
             TelemetryPacket(),
             FtcDashboard.getInstance(),
-            drive!!.poseEstimate.x,
-            drive!!.poseEstimate.y,
-            drive!!.poseEstimate.heading
+            drive!!.pose.position.x,
+            drive!!.pose.position.y,
+            drive!!.pose.heading.real
         )
     }
 

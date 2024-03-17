@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.teamcode.subsystems.avoidance
 
 import com.acmerobotics.dashboard.FtcDashboard
+import com.acmerobotics.dashboard.config.Config
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import org.firstinspires.ftc.teamcode.Point
 
+@Config
 class AvoidanceSubsystem {
 
     private val rad: Double = 10.0
@@ -26,8 +28,8 @@ class AvoidanceSubsystem {
 
     var fields: List<VectorField> = VectorField.massCreate(createFields())
 
-    private val packet = TelemetryPacket();
-    private val dashboard: FtcDashboard = FtcDashboard.getInstance();
+    private val packet = TelemetryPacket()
+    private val dashboard: FtcDashboard = FtcDashboard.getInstance()
 
     init {
         fields = VectorField.massCreate(createFields())
@@ -38,7 +40,7 @@ class AvoidanceSubsystem {
             packet.fieldOverlay()
                 .fillCircle(field.point.x!!, field.point.y!!, rad)
         }
-        dashboard.sendTelemetryPacket(packet);
+        dashboard.sendTelemetryPacket(packet)
     }
 
     fun update() {

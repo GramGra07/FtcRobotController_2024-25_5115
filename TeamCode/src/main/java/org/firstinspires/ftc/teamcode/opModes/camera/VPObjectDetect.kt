@@ -7,11 +7,8 @@ import org.firstinspires.ftc.robotcore.external.function.Consumer
 import org.firstinspires.ftc.robotcore.external.function.Continuation
 import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration
-import org.firstinspires.ftc.teamcode.Enums.Alliance
-import org.firstinspires.ftc.teamcode.Enums.AutoRandom
 import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.setPatternCo
 import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.lights
-import org.firstinspires.ftc.teamcode.opModes.autoSoftware.AutoHardware
 import org.firstinspires.ftc.vision.VisionProcessor
 import org.opencv.android.Utils
 import org.opencv.core.Core
@@ -22,7 +19,7 @@ import org.opencv.core.Scalar
 import org.opencv.imgproc.Imgproc
 import java.util.concurrent.atomic.AtomicReference
 
-class VPObjectDetect(var alliance: Alliance) : VisionProcessor, CameraStreamSource {
+class VPObjectDetect : VisionProcessor, CameraStreamSource { //var alliance: Alliance
     private val lastFrame = AtomicReference(Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565))
     private var ycrcbMat = Mat()
     var right = Mat()
@@ -36,13 +33,13 @@ class VPObjectDetect(var alliance: Alliance) : VisionProcessor, CameraStreamSour
     }
 
     override fun processFrame(frame: Mat, captureTimeNanos: Long): Any {
-        if (alliance == Alliance.RED) {
-            scalarLow = Scalar(0.0, 140.0, 0.0)
-            scalarHigh = Scalar(255.0, 255.0, 255.0)
-        } else if (alliance == Alliance.BLUE) {
-            scalarLow = Scalar(0.0, 0.0, 130.0)
-            scalarHigh = Scalar(255.0, 255.0, 255.0)
-        }
+//        if (alliance == Alliance.RED) {
+        scalarLow = Scalar(0.0, 140.0, 0.0)
+        scalarHigh = Scalar(255.0, 255.0, 255.0)
+//        } else if (alliance == Alliance.BLUE) {
+//            scalarLow = Scalar(0.0, 0.0, 130.0)
+//            scalarHigh = Scalar(255.0, 255.0, 255.0)
+//        }
         Imgproc.rectangle(
             frame, Point(pointsX[0].toDouble(), pointsY[0].toDouble()), Point(
                 pointsX[1].toDouble(), pointsY[1].toDouble()
@@ -91,7 +88,7 @@ class VPObjectDetect(var alliance: Alliance) : VisionProcessor, CameraStreamSour
                         5.0,
                         Scalar(0.0, 255.0, 0.0)
                     )
-                    AutoHardware.autonomousRandom = AutoRandom.RIGHT
+//                    AutoHardware.autonomousRandom = AutoRandom.RIGHT
                     lights.setPatternCo(RevBlinkinLedDriver.BlinkinPattern.WHITE)
                     current = 1
                 }
@@ -114,7 +111,7 @@ class VPObjectDetect(var alliance: Alliance) : VisionProcessor, CameraStreamSour
                             5.0,
                             Scalar(0.0, 255.0, 0.0)
                         )
-                        AutoHardware.autonomousRandom = AutoRandom.MID
+//                        AutoHardware.autonomousRandom = AutoRandom.MID
                         lights.setPatternCo(RevBlinkinLedDriver.BlinkinPattern.GOLD)
                         current = 1
                         //                        shiftOffset = 0;
@@ -131,7 +128,7 @@ class VPObjectDetect(var alliance: Alliance) : VisionProcessor, CameraStreamSour
                 5.0,
                 Scalar(0.0, 255.0, 0.0)
             )
-            AutoHardware.autonomousRandom = AutoRandom.LEFT
+//            AutoHardware.autonomousRandom = AutoRandom.LEFT
             lights.setPatternCo(RevBlinkinLedDriver.BlinkinPattern.CONFETTI)
             //            shiftOffset = -leftShift;
         }

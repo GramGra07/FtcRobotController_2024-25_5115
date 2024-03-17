@@ -1,12 +1,18 @@
 package org.firstinspires.ftc.teamcode
 
+import com.acmerobotics.dashboard.config.Config
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import org.firstinspires.ftc.teamcode.UtilClass.varStorage.LoopTime
 import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.ExtendoSubsystem
 
+@Config
 object Operator {
+
+    @JvmField
+    var deadZone = 0.15
+
     private var touchPressed = false
     private var xPressed = false
     fun bindOtherButtons(
@@ -50,19 +56,12 @@ object Operator {
             //
             if (myOpMode.gamepad2.dpad_left) {
                 clawSubsystem.flipBack()
-//                flipServo.calcFlipPose(ServoUtil.backClaw.toDouble())
             } else if (myOpMode.gamepad2.dpad_up) {
                 clawSubsystem.flipHigh()
-//                flipServo.calcFlipPose(70.0)
             } else if (myOpMode.gamepad2.dpad_down) {
                 clawSubsystem.flipZero()
-//                flipServo.calcFlipPose(0.0)
             }
-//            if (PastAngle.pastAngleVal != potentiometer.potentAngle()) {
-//                flipServo.calcFlipPose(lastSetVal.toDouble())
-//            }
-            //
-            if (myOpMode.gamepad2.right_stick_y < -driveSubsystem.deadZone && extendoSubsystem.usePIDF) {
+            if (myOpMode.gamepad2.right_stick_y < -deadZone && extendoSubsystem.usePIDF) {
                 extendoSubsystem.setPowerR(extendoSubsystem.maxRotationTicks.toDouble())
 //                HardwareConfig.rotationPower = Range.clip(
 //                    HardwareConfig.rotationPIDF.calculate(
@@ -70,20 +69,8 @@ object Operator {
 //                        Limits.maxRotationTicks.toDouble()
 //                    ), -1.0, 1.0
 //                )
-            } else if (myOpMode.gamepad2.right_stick_y > driveSubsystem.deadZone && extendoSubsystem.usePIDF) {
+            } else if (myOpMode.gamepad2.right_stick_y > deadZone && extendoSubsystem.usePIDF) {
                 extendoSubsystem.setPowerR(extendoSubsystem.minRotationTicks.toDouble())
-//                HardwareConfig.rotationPIDF.setPIDF(
-//                    PIDVals.rotationPIDFCo.p,
-//                    PIDVals.rotationPIDFCo.i,
-//                    PIDVals.rotationPIDFCo.d,
-//                    PIDVals.rotationPIDFCo.f
-//                )
-//                HardwareConfig.rotationPower = Range.clip(
-//                    HardwareConfig.rotationPIDF.calculate(
-//                        HardwareConfig.motorRotation.currentPosition.toDouble(),
-//                        Limits.minRotationTicks.toDouble()
-//                    ), -1.0, 1.0
-//                )
             } else {
                 extendoSubsystem.stopR()
 //                HardwareConfig.rotationPower = 0.0
@@ -95,40 +82,10 @@ object Operator {
                 extendoSubsystem.usePIDF = true
             }
             xPressed = myOpMode.gamepad2.cross
-            if (myOpMode.gamepad2.left_stick_y > driveSubsystem.deadZone && extendoSubsystem.usePIDF) {
-//                HardwareConfig.extensionPIDF.setPIDF(
-//                    PIDVals.extensionPIDFCo.p,
-//                    PIDVals.extensionPIDFCo.i,
-//                    PIDVals.extensionPIDFCo.d,
-//                    PIDVals.extensionPIDFCo.f
-//                ) // allows to use dashboard
-//                extensionPower = Range.clip(
-//                    HardwareConfig.extensionPIDF.calculate(
-//                        HardwareConfig.motorExtension.currentPosition.toDouble(),
-//                        Limits.minExtensionTicks.toDouble()
-//                    ), -1.0, 1.0
-//                )
-//                extendoSubsystem.setPowerE(Range.clip(
-//                    extendoSubsystem.extensionPIDF.calculate(
-//                        extendoSubsystem.motorExtension!!.currentPosition.toDouble(),
-//                        Limits.minExtensionTicks.toDouble()
-//                    ), -1.0, 1.0
-//                ))
+            if (myOpMode.gamepad2.left_stick_y > deadZone && extendoSubsystem.usePIDF) {
                 extendoSubsystem.setPowerE(extendoSubsystem.minExtensionTicks.toDouble())
-            } else if (myOpMode.gamepad2.left_stick_y < -driveSubsystem.deadZone && extendoSubsystem.usePIDF) {
+            } else if (myOpMode.gamepad2.left_stick_y < -deadZone && extendoSubsystem.usePIDF) {
                 extendoSubsystem.setPowerE(extendoSubsystem.maxExtensionTicks.toDouble())
-//                HardwareConfig.extensionPIDF.setPIDF(
-//                    PIDVals.extensionPIDFCo.p,
-//                    PIDVals.extensionPIDFCo.i,
-//                    PIDVals.extensionPIDFCo.d,
-//                    PIDVals.extensionPIDFCo.f
-//                ) // allows to use dashboard
-//                extensionPower = Range.clip(
-//                    HardwareConfig.extensionPIDF.calculate(
-//                        HardwareConfig.motorExtension.currentPosition.toDouble(),
-//                        Limits.maxExtensionTicks.toDouble()
-//                    ), -1.0, 1.0
-//                )
             } else {
 //                extensionPower = 0.0
                 extendoSubsystem.stopE()
