@@ -4,7 +4,8 @@ package org.firstinspires.ftc.teamcode.opModes
 import android.os.Environment
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
-import com.qualcomm.hardware.lynx.LynxModule
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket
+import com.acmerobotics.roadrunner.Vector2d
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
@@ -24,6 +25,7 @@ import org.firstinspires.ftc.teamcode.UtilClass.varStorage.LoopTime
 import org.firstinspires.ftc.teamcode.UtilClass.varStorage.varConfig
 import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.currentColor
 import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.initLights
+import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toPoint
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.currentVoltage
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.initDigiChan
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.initPotent
@@ -36,6 +38,7 @@ import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.EndgameSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.ExtendoSubsystem
+import org.firstinspires.ftc.teamcode.subsystems.avoidance.VectorField
 import java.io.FileWriter
 
 
@@ -91,12 +94,6 @@ open class HardwareConfig() {
         ahwMap: HardwareMap,
         auto: Boolean,
     ) {
-        val allHubs = ahwMap.getAll(
-            LynxModule::class.java
-        )
-        for (module in allHubs) {
-            module.bulkCachingMode = LynxModule.BulkCachingMode.AUTO
-        }
         vSensor = initVSensor(ahwMap, "Expansion Hub 2")
         lights = initLights(ahwMap, "blinkin")
         // rev potentiometer //analog
@@ -126,6 +123,7 @@ open class HardwareConfig() {
             MultipleTelemetry(myOpMode.telemetry, FtcDashboard.getInstance().telemetry)
 
         driveSubsystem!!.reset()
+        drive = driveSubsystem!!.drive!!
 
 //        thisDist = 0.0
         once = false
@@ -151,6 +149,7 @@ open class HardwareConfig() {
         if (!auto) {
             telemetry.update()
         }
+        drawPackets()
     }
 
     //code to run all drive functions
@@ -208,6 +207,7 @@ open class HardwareConfig() {
         if (vSensor.lowVoltage()) {
             telemetry.addData("", "We have a low battery")
         }
+        telemetry.addData("Pose: ", drive.pose.toPoint().toString())
         //        telemetry.addData("Speed",drive.getWheelVelocities()[0])
         // get potent with extension
         telemetry.addData("potentiometer", "%.1f", potentiometer.potentAngle())
@@ -222,9 +222,55 @@ open class HardwareConfig() {
         telemetry.addData("Color", lights.currentColor())
         teleSpace()
         telemetry.addData("Version", CURRENT_VERSION)
+
+        for (field in driveSubsystem!!.avoidanceSubsystem!!.fields) {
+            if (VectorField.poseInField(drive.pose.toPoint(), field)) {
+                telemetry.addData("pose in", "field")
+            }
+        }
+
+
         telemetry.update()
+        drawPackets()
     }
 
+    private fun drawPackets() {
+        val dashboard: FtcDashboard = FtcDashboard.getInstance()
+        val packet = TelemetryPacket()
+        val rad = driveSubsystem!!.avoidanceSubsystem!!.rad
+        packet.fieldOverlay()
+            .setFill("red")
+            .setAlpha(0.3)
+        for (field in driveSubsystem!!.avoidanceSubsystem!!.fields) {
+            packet.fieldOverlay()
+                .fillCircle(field.point.y!!, field.point.x!!, rad)
+        }
+        val ROBOT_RADIUS = 9.0
+        val t = drive.pose
+        val halfv: Vector2d = t.heading.vec().times(0.5 * ROBOT_RADIUS)
+        val p1: Vector2d = t.position.plus(halfv)
+        val (x, y) = p1.plus(halfv)
+        packet.fieldOverlay()
+            .setStrokeWidth(1)
+            .setFill("green")
+            .setAlpha(1.0)
+            .strokeCircle(t.position.x, t.position.y, ROBOT_RADIUS).strokeLine(p1.x, p1.y, x, y)
+//        val poseX = driveSubsystem!!.odometrySubsystem!!.poseX
+//        val poseY = driveSubsystem!!.odometrySubsystem!!.poseY
+//        val heading = driveSubsystem!!.odometrySubsystem!!.heading
+//        packet.fieldOverlay()
+//            .setFill("pink")
+//            .setAlpha(1.0)
+//            .strokeCircle(poseX,poseY, rad)
+//            .strokeLine(
+//                poseX,
+//                poseY,
+//                poseX + rad/2 * cos(Math.toRadians(heading)),
+//                poseY + rad/2 * sin(Math.toRadians(heading))
+//            )
+
+        dashboard.sendTelemetryPacket(packet)
+    }
     private fun teleSpace() {
         val telemetry: Telemetry =
             MultipleTelemetry(myOpMode.telemetry, FtcDashboard.getInstance().telemetry)

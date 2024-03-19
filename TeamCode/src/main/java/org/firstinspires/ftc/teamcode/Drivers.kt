@@ -1,10 +1,7 @@
 package org.firstinspires.ftc.teamcode
 
-import com.acmerobotics.roadrunner.geometry.Pose2d
-import com.acmerobotics.roadrunner.util.Angle.normDelta
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import org.firstinspires.ftc.teamcode.UtilClass.DriverAid
-import org.firstinspires.ftc.teamcode.opModes.rr.drive.advanced.PoseStorage
 import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.EndgameSubsystem
@@ -138,51 +135,6 @@ object Drivers {
                 driveSubsystem.slowModeIsOn = false
             }
             slowModeButtonDown = myOpMode.gamepad1.circle
-            if (myOpMode.gamepad1.triangle) {
-                driveSubsystem.slowModeIsOn = false
-                driveSubsystem.isAutoInTeleop = true
-                drive.update()
-                PoseStorage.currentPose = drive.poseEstimate
-                drive.followTrajectorySequence(drive.trajectorySequenceBuilder(drive.poseEstimate)
-                    .splineToLinearHeading(
-                        Pose2d(
-                            drive.poseEstimate.x + 5, drive.poseEstimate.y + 10, normDelta(
-                                Math.toRadians(135.0) - drive.poseEstimate.heading
-                            )
-                        ), normDelta(Math.toRadians(135.0) - drive.poseEstimate.heading)
-                    )
-                    .addDisplacementMarker {
-                        clawSubsystem.openLeft()
-                        clawSubsystem.update()
-                    }
-                    .addDisplacementMarker {
-                        clawSubsystem.openRight()
-                        clawSubsystem.update()
-                    }
-                    .splineToLinearHeading(
-                        Pose2d(
-                            drive.poseEstimate.x - 5, drive.poseEstimate.y - 10, normDelta(
-                                Math.toRadians(45.0) - drive.poseEstimate.heading
-                            )
-                        ), normDelta(Math.toRadians(135.0) - drive.poseEstimate.heading)
-                    )
-                    .addDisplacementMarker {
-                        clawSubsystem.closeBoth()
-                        clawSubsystem.update()
-                    }
-                    .splineToLinearHeading(
-                        PoseStorage.currentPose,
-                        PoseStorage.currentPose.heading
-                    )
-                    .build())
-            }
-            if (myOpMode.gamepad1.cross) {
-                driveSubsystem.isAutoInTeleop = true
-                drive.breakFollowing()
-            }
-            if (!drive.isBusy) {
-                driveSubsystem.isAutoInTeleop = false
-            }
         }
         if (currDriver === driverControls[5]) { //Child
             fieldCentric = false

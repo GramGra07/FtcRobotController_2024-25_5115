@@ -23,7 +23,6 @@ import com.acmerobotics.roadrunner.Rotation2d;
 import com.acmerobotics.roadrunner.Time;
 import com.acmerobotics.roadrunner.TimeTrajectory;
 import com.acmerobotics.roadrunner.TimeTurn;
-import com.acmerobotics.roadrunner.TrajectoryActionBuilder;
 import com.acmerobotics.roadrunner.TurnConstraints;
 import com.acmerobotics.roadrunner.Twist2dDual;
 import com.acmerobotics.roadrunner.Vector2d;
@@ -64,19 +63,19 @@ public final class MecanumDrive {
         // TODO: fill in these values based on
         //   see https://ftc-docs.firstinspires.org/en/latest/programming_resources/imu/imu.html?highlight=imu#physical-hub-mounting
         public RevHubOrientationOnRobot.LogoFacingDirection logoFacingDirection =
-                RevHubOrientationOnRobot.LogoFacingDirection.UP;
+                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT;
         public RevHubOrientationOnRobot.UsbFacingDirection usbFacingDirection =
-                RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD;
+                RevHubOrientationOnRobot.UsbFacingDirection.UP;
 
         // drive model parameters
-        public double inPerTick = 1;
-        public double lateralInPerTick = inPerTick;
-        public double trackWidthTicks = 0;
+        public double inPerTick = 0.002990281585;
+        public double lateralInPerTick = 0.0019808842928630615;
+        public double trackWidthTicks = 4561.934805946835;
 
         // feedforward parameters (in tick units)
-        public double kS = 0;
-        public double kV = 0;
-        public double kA = 0;
+        public double kS = 0.9559958840101861;
+        public double kV = 0.0004760203071314852;
+        public double kA = 0.0001;
 
         // path profile parameters (in inches)
         public double maxWheelVel = 50;
@@ -474,19 +473,19 @@ public final class MecanumDrive {
         c.strokePolyline(xPoints, yPoints);
     }
 
-    public TrajectoryActionBuilder actionBuilder(Pose2d beginPose) {
-        return new TrajectoryActionBuilder(
-                new TurnAction,
-                new FollowTrajectoryAction,
-                new TrajectoryBuilderParams(
-                        1e-6,
-                        new ProfileParams(
-                                0.25, 0.1, 1e-2
-                        )
-                ),
-                beginPose, 0.0,
-                defaultTurnConstraints,
-                defaultVelConstraint, defaultAccelConstraint
-        );
-    }
+//    public TrajectoryActionBuilder actionBuilder(Pose2d beginPose) {
+//        return new TrajectoryActionBuilder(
+//                TurnAction::new,
+//                FollowTrajectoryAction::new,
+//                new TrajectoryBuilderParams(
+//                        1e-6,
+//                        new ProfileParams(
+//                                0.25, 0.1, 1e-2
+//                        )
+//                ),
+//                beginPose, 0.0,
+//                defaultTurnConstraints,
+//                defaultVelConstraint, defaultAccelConstraint
+//        );
+//    }
 }

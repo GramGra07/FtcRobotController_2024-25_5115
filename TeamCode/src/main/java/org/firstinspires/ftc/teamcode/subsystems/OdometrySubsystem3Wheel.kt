@@ -22,6 +22,8 @@ class OdometrySubsystem3Wheel(
     startY: Double,
     startHeading: Double
 ) {
+    var poseX: Double
+    var poseY: Double
     private var leftPod: DcMotorEx? = null
     private var rightPod: DcMotorEx? = null
     private var centerPod: DcMotorEx? = null
@@ -41,9 +43,8 @@ class OdometrySubsystem3Wheel(
     private var startHeading = 0.0
     private var botHeading = startHeading
 
-    private var poseX: Double
-    private var poseY: Double
-    private var heading = 0.0
+
+    var heading = 0.0
     private var dtheta = 0.0
     private var dx = 0.0
     private var dy = 0.0
@@ -186,6 +187,8 @@ class OdometrySubsystem3Wheel(
 
     companion object {
         var ConvertedHeadingForPosition = 0.0
+//        var poseX: Double = 0.0
+//        var poseY: Double = 0.0
     }
 
     fun telemetry(telemetry: Telemetry) {

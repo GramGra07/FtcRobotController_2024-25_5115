@@ -1,8 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems
 
-import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.config.Config
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.acmerobotics.roadrunner.Pose2d
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.hardware.DcMotor
@@ -40,13 +38,14 @@ class DriveSubsystem(ahwMap: HardwareMap) {
     private var motorFrontRight: DcMotorEx? = null
     private var motorBackRight: DcMotorEx? = null
     private var motorList: List<DcMotorEx> = listOf()
-    private var odometrySubsystem: OdometrySubsystem2Wheel? = null
-    private var avoidanceSubsystem: AvoidanceSubsystem? = null
+
+    //    var odometrySubsystem: OdometrySubsystem3Wheel? = null
+    var avoidanceSubsystem: AvoidanceSubsystem? = null
 
     init {
-        if (odometrySubsystem == null) {
-            odometrySubsystem = OdometrySubsystem2Wheel(ahwMap, 0.0, 0.0, 0.0)
-        }
+//        if (odometrySubsystem == null) {
+//            odometrySubsystem = OdometrySubsystem3Wheel(ahwMap, 0.0, 0.0, 0.0)
+//        }
         if (avoidanceSubsystem == null) {
             avoidanceSubsystem = AvoidanceSubsystem()
         }
@@ -128,7 +127,7 @@ class DriveSubsystem(ahwMap: HardwareMap) {
                     gamepadX
                 )
             ) //Get the angle of the controller stick using arc tangent
-            robotDegree = Math.toDegrees(drive!!.pose.heading.real) // change to imu
+            robotDegree = Math.toDegrees(drive!!.pose.heading.toDouble()) // change to imu
             movementDegree =
                 controllerAngle - robotDegree //get the movement degree based on the controller vs robot angle
             xControl =
@@ -196,15 +195,25 @@ class DriveSubsystem(ahwMap: HardwareMap) {
     }
 
     private fun power() {
-        avoidanceSubsystem!!.update()
         if (!isAutoInTeleop) {
-            val addedPowers: Map<String, Double?> = disectPowers()
-            var flP: Double = addedPowers["FL"] ?: 0.0
-            var frP: Double = addedPowers["FR"] ?: 0.0
-            var rlP: Double = addedPowers["RL"] ?: 0.0
-            var rrP: Double = addedPowers["RR"] ?: 0.0
+            val addedPowers: Map<String, Double?>? = disectPowers()
+            var flP: Double
+            var frP: Double
+            var rlP: Double
+            var rrP: Double
+            if (addedPowers == null) {
+                flP = 0.0
+                frP = 0.0
+                rlP = 0.0
+                rrP = 0.0
+            } else {
+                flP = addedPowers["FL"] ?: 0.0
+                frP = addedPowers["FR"] ?: 0.0
+                rlP = addedPowers["RL"] ?: 0.0
+                rrP = addedPowers["RR"] ?: 0.0
+            }
             val driveAidPowers: Map<String, Double> =
-                cMPTurnVect(Math.toRadians(0.0) - drive!!.pose.heading.real)
+                cMPTurnVect(Math.toRadians(0.0) - drive!!.pose.heading.toDouble())
             val flP2: Double = driveAidPowers["FL"] ?: 0.0
             val frP2: Double = driveAidPowers["FR"] ?: 0.0
             val rlP2: Double = driveAidPowers["RL"] ?: 0.0
@@ -226,24 +235,17 @@ class DriveSubsystem(ahwMap: HardwareMap) {
         }
     }
 
-    private fun disectPowers(): Map<String, Double> {
+    private fun disectPowers(): Map<String, Double>? {
         return getCorrectionByAvoidance(
             avoidanceSubsystem!!.fields,
-            drive!!.pose.position.toPoint()
+            drive!!.pose.position.toPoint(),
         )
     }
 
     fun update() {
         power()
         drive!!.updatePoseEstimate()
-        odometrySubsystem!!.update()
-        drawBot(
-            TelemetryPacket(),
-            FtcDashboard.getInstance(),
-            drive!!.pose.position.x,
-            drive!!.pose.position.y,
-            drive!!.pose.heading.real
-        )
+//        odometrySubsystem!!.update()
     }
 
     fun telemetry(telemetry: Telemetry) {
@@ -256,7 +258,8 @@ class DriveSubsystem(ahwMap: HardwareMap) {
         telemetry.addData("thisDistance (in)", "%.1f", thisDist)
         telemetry.addData("totalDistance (in)", "%.1f", DistanceStorage.totalDist)
         getCurrentTelemetry(telemetry)
-        odometrySubsystem!!.telemetry(telemetry)
+        telemetry.addData("addPowers", disectPowers())
+//        odometrySubsystem!!.telemetry(telemetry)
     }
 
     private fun getCurrentTelemetry(telemetry: Telemetry) {
@@ -267,26 +270,5 @@ class DriveSubsystem(ahwMap: HardwareMap) {
         currentList.forEach {
             telemetry.addData(it.key.deviceName, it.value)
         }
-    }
-
-    private fun drawBot(
-        packet: TelemetryPacket,
-        dashboard: FtcDashboard,
-        poseX: Double,
-        poseY: Double,
-        heading: Double
-    ) {
-        packet.fieldOverlay()
-            .setFill("pink")
-            .setAlpha(1.0)
-            .fillCircle(poseX, poseY, 2.0)
-            .strokeLine(
-                poseX,
-                poseY,
-                poseX + 10 * cos(Math.toRadians(heading)),
-                poseY + 10 * sin(Math.toRadians(heading))
-            )
-
-        dashboard.sendTelemetryPacket(packet)
     }
 }
