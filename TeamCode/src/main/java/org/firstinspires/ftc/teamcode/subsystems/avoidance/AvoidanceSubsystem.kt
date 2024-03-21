@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.subsystems.avoidance
 
+import VectorField
 import org.firstinspires.ftc.teamcode.Point
+import org.firstinspires.ftc.teamcode.UtilClass.varStorage.varConfig
 
 //@Config
 class AvoidanceSubsystem {
 
-    val rad: Double = 5.0
+    var rad: Double = varConfig.fieldRadius
 
     private var points: List<Point> = listOf(
         Point(24.0, 0.0),

@@ -25,4 +25,13 @@ object varConfig {
 
     @JvmField
     var usePIDF = true
+
+    @JvmField
+    var usingAvoidance = true
+
+    @JvmField
+    var fieldRadius = 15.0
+
+    @JvmField
+    var correctionSpeedAvoid = 0.1
 }

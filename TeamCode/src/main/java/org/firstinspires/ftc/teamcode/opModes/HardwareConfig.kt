@@ -1,6 +1,7 @@
 //import
 package org.firstinspires.ftc.teamcode.opModes
 
+import VectorField
 import android.os.Environment
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
@@ -38,7 +39,6 @@ import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.EndgameSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.ExtendoSubsystem
-import org.firstinspires.ftc.teamcode.subsystems.avoidance.VectorField
 import java.io.FileWriter
 
 
@@ -243,7 +243,7 @@ open class HardwareConfig() {
             .setAlpha(0.3)
         for (field in driveSubsystem!!.avoidanceSubsystem!!.fields) {
             packet.fieldOverlay()
-                .fillCircle(field.point.y!!, field.point.x!!, rad)
+                .fillCircle(field.point?.y!!, field.point!!.x!!, rad)
         }
         val ROBOT_RADIUS = 9.0
         val t = drive.pose
@@ -271,6 +271,7 @@ open class HardwareConfig() {
 
         dashboard.sendTelemetryPacket(packet)
     }
+
     private fun teleSpace() {
         val telemetry: Telemetry =
             MultipleTelemetry(myOpMode.telemetry, FtcDashboard.getInstance().telemetry)

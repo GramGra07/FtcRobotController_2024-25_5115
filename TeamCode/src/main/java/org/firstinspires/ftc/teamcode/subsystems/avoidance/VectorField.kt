@@ -1,38 +1,41 @@
-package org.firstinspires.ftc.teamcode.subsystems.avoidance
-
 import org.firstinspires.ftc.teamcode.Point
+import org.firstinspires.ftc.teamcode.UtilClass.varStorage.varConfig
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.pow
 import kotlin.math.sin
 import kotlin.math.sqrt
 
+//@Config
 class VectorField(point: Point? = Point(), radius: Double) {
-    var point: Point = point!!
-    private var rad = radius
+    var point: Point? = point
+    @JvmField
+    var rad = radius
+
     companion object {
-        private const val kp: Double = 0.1
+        private var fieldStrengthCoefficient: Double = varConfig.correctionSpeedAvoid
+
         fun getCorrectionByAvoidance(fields: List<VectorField>, pose: Point): Map<String, Double>? {
-            var newPose = Point()
+            fieldStrengthCoefficient = varConfig.correctionSpeedAvoid
+            var newPose: Point? = null
             for (field in fields) {
                 if (poseInField(pose, field)) {
                     newPose = closestFree(pose, field)
                 }
             }
-            if (newPose == Point()) {
+            if (newPose == null) {
                 return null
             }
-            val newPoint = newPose
-            val xError = pose.x!! - newPoint.x!!
-            val yError = pose.y!! - newPoint.y!!
+            val xError = pose.x!! - newPose.x!!
+            val yError = pose.y!! - newPose.y!!
             val theta = atan2(yError, xError)
             val magnitude = sqrt(xError.pow(2.0) + yError.pow(2.0))
-            val forwardCorrection = kp * magnitude * sin(theta)
-            val strafeCorrection = kp * magnitude * cos(theta)
+            val forwardCorrection = fieldStrengthCoefficient * magnitude * sin(theta) * -1
+            val strafeCorrection = fieldStrengthCoefficient * magnitude * cos(theta) * -1
             val flVelocity = forwardCorrection + strafeCorrection  // Front-left wheel
-            val frVelocity = forwardCorrection - strafeCorrection  // Front-right wheel
+            val frVelocity = forwardCorrection - strafeCorrection * -1 // Front-right wheel
             val rlVelocity = forwardCorrection + strafeCorrection  // Rear-left wheel
-            val rrVelocity = forwardCorrection - strafeCorrection  // Rear-right wheel
+            val rrVelocity = forwardCorrection - strafeCorrection * -1 // Rear-right wheel
 
             return mapOf(
                 "FL" to flVelocity,
@@ -51,18 +54,22 @@ class VectorField(point: Point? = Point(), radius: Double) {
         }
 
         fun poseInField(pose: Point, field: VectorField): Boolean {
-            val robotRadius = 8
-            val distance =
-                sqrt((pose.x!! - field.point.x!!).pow(2.0) + (pose.y!! - field.point.y!!).pow(2.0))
-            return distance < (field.rad + robotRadius)
+            var robotRadius = 8
+            val point = field.point ?: return false
+            val y = pose.x ?: return false
+            val x = pose.y ?: return false
+            val centerX = point.x ?: return false
+            val centerY = point.y ?: return false
+            val distance = sqrt((x - centerX).pow(2.0) + (y - centerY).pow(2.0))
+            return distance < field.rad + robotRadius
         }
 
-
         private fun closestFree(pose: Point, field: VectorField): Point {
-            val x = pose.x!!
-            val y = pose.y!!
-            val x0 = field.point.x!!
-            val y0 = field.point.y!!
+            val point = field.point ?: return Point()
+            val x = pose.x ?: return Point()
+            val y = pose.y ?: return Point()
+            val x0 = point.x ?: return Point()
+            val y0 = point.y ?: return Point()
             val r = field.rad
             val d = sqrt((x - x0).pow(2.0) + (y - y0).pow(2.0))
             val x1 = x0 + r * (x - x0) / d

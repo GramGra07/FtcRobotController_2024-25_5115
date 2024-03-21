@@ -10,8 +10,10 @@ class DriveConfig {
     companion object {
         @JvmField
         val TICKS_PER_REV = 28.0
+
         @JvmField
         val MAX_RPM = 400.0
+
         @JvmField
         var WHEEL_RADIUS = 1.88 // in (96mm)
 
@@ -25,6 +27,7 @@ class DriveConfig {
         var LOGO_FACING_DIR: RevHubOrientationOnRobot.LogoFacingDirection =
             RevHubOrientationOnRobot.LogoFacingDirection.BACKWARD
         const val RUN_USING_ENCODER = true
+
         @JvmField
         var MOTOR_VELO_PID = PIDFCoefficients(
             0.0, 0.0, 0.0,
@@ -33,16 +36,22 @@ class DriveConfig {
 
         @JvmField
         var kV = 0.004
+
         @JvmField
         var kA = 0.0002
+
         @JvmField
         var kStatic = 0.005
+
         @JvmField
         var MAX_VEL = 55.0
+
         @JvmField
         var MAX_ACCEL = 60.0
+
         @JvmField
         var MAX_ANG_VEL = 3.0935962200164795
+
         @JvmField
         var MAX_ANG_ACCEL = Math.toRadians(360.0)
 

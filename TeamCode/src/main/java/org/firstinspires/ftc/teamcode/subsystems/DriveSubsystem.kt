@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems
 
+import VectorField.Companion.getCorrectionByAvoidance
 import com.acmerobotics.dashboard.config.Config
 import com.acmerobotics.roadrunner.Pose2d
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
@@ -9,9 +10,9 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.robotcore.external.Telemetry
-import org.firstinspires.ftc.teamcode.UtilClass.DriverAid.cMPTurnVect
 import org.firstinspires.ftc.teamcode.UtilClass.FileWriterFTC
 import org.firstinspires.ftc.teamcode.UtilClass.varStorage.varConfig
+import org.firstinspires.ftc.teamcode.UtilClass.varStorage.varConfig.usingAvoidance
 import org.firstinspires.ftc.teamcode.extensions.MotorExtensions
 import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.getMotorCurrent
 import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toPoint
@@ -20,7 +21,6 @@ import org.firstinspires.ftc.teamcode.opModes.HardwareConfig
 import org.firstinspires.ftc.teamcode.opModes.PoseStorage
 import org.firstinspires.ftc.teamcode.rr.MecanumDrive
 import org.firstinspires.ftc.teamcode.subsystems.avoidance.AvoidanceSubsystem
-import org.firstinspires.ftc.teamcode.subsystems.avoidance.VectorField.Companion.getCorrectionByAvoidance
 import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.cos
@@ -212,16 +212,22 @@ class DriveSubsystem(ahwMap: HardwareMap) {
                 rlP = addedPowers["RL"] ?: 0.0
                 rrP = addedPowers["RR"] ?: 0.0
             }
-            val driveAidPowers: Map<String, Double> =
-                cMPTurnVect(Math.toRadians(0.0) - drive!!.pose.heading.toDouble())
-            val flP2: Double = driveAidPowers["FL"] ?: 0.0
-            val frP2: Double = driveAidPowers["FR"] ?: 0.0
-            val rlP2: Double = driveAidPowers["RL"] ?: 0.0
-            val rrP2: Double = driveAidPowers["RR"] ?: 0.0
-            flP += flP2
-            frP += frP2
-            rlP += rlP2
-            rrP += rrP2
+//            val driveAidPowers: Map<String, Double> =
+//                cMPTurnVect(Math.toRadians(0.0) - drive!!.pose.heading.toDouble())
+//            val flP2: Double = driveAidPowers["FL"] ?: 0.0
+//            val frP2: Double = driveAidPowers["FR"] ?: 0.0
+//            val rlP2: Double = driveAidPowers["RL"] ?: 0.0
+//            val rrP2: Double = driveAidPowers["RR"] ?: 0.0
+//            flP += flP2
+//            frP += frP2
+//            rlP += rlP2
+//            rrP += rrP2
+            if (!usingAvoidance) {
+                flP = 0.0
+                frP = 0.0
+                rlP = 0.0
+                rrP = 0.0
+            }
 
             frontLeftPower = Range.clip(frontLeftPower + flP, -1.0, 1.0)
             frontRightPower = Range.clip(frontRightPower + frP, -1.0, 1.0)
