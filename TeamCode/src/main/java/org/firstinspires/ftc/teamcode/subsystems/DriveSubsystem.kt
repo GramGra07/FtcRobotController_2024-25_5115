@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode.subsystems
 
+import CancelableFollowTrajectoryAction
 import VectorField.Companion.getCorrectionByAvoidance
 import com.acmerobotics.dashboard.config.Config
 import com.acmerobotics.roadrunner.Pose2d
+import com.acmerobotics.roadrunner.Vector2d
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
@@ -28,6 +30,7 @@ import kotlin.math.hypot
 import kotlin.math.sin
 import kotlin.math.sqrt
 
+
 @Config
 class DriveSubsystem(ahwMap: HardwareMap) {
 
@@ -41,6 +44,7 @@ class DriveSubsystem(ahwMap: HardwareMap) {
 
     //    var odometrySubsystem: OdometrySubsystem3Wheel? = null
     var avoidanceSubsystem: AvoidanceSubsystem? = null
+    var cancelableFollowing: CancelableFollowTrajectoryAction? = null
 
     init {
 //        if (odometrySubsystem == null) {
@@ -88,6 +92,10 @@ class DriveSubsystem(ahwMap: HardwareMap) {
                 )
             motorList.plus(motorBackRight!!)
         }
+        val goZero = drive!!.actionBuilder(drive!!.pose)
+            .splineTo(Vector2d(0.0, 0.0), 0.0)
+            .build()
+        cancelableFollowing = CancelableFollowTrajectoryAction(goZero)
     }
 
     private var thisDist = 0.0
@@ -168,7 +176,6 @@ class DriveSubsystem(ahwMap: HardwareMap) {
             drive!!.pose.position.y.toInt()
         )
         PoseStorage.currentPose = drive!!.pose
-
     }
 
     private fun updateDistTraveled(before: Pose2d, after: Pose2d) {

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode
 
 import com.acmerobotics.dashboard.config.Config
+import com.acmerobotics.roadrunner.ftc.runBlocking
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import org.firstinspires.ftc.teamcode.UtilClass.varStorage.LoopTime
 import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem
@@ -22,11 +23,6 @@ object Operator {
         driveSubsystem: DriveSubsystem,
     ) {
         // "Camden", "Grady", "Michael","Graden", "Delaney", "Child"
-//        if (!airplaneArmed && timer.seconds() > 80) {
-//            airplaneArmed = true;
-//            myOpMode.gamepad2.runRumbleEffect(cRE);
-//        }
-//        Blink.selectLights(myOpMode);
         val otherControls = Drivers.otherControls
         val currOther = Drivers.currOther
         if (currOther === otherControls[0]) { //Camden
@@ -37,45 +33,45 @@ object Operator {
             }
             touchPressed = myOpMode.gamepad2.touchpad
             if (myOpMode.gamepad2.right_bumper) {
-                clawSubsystem.closeLeft()
+//                clawSubsystem.closeLeft()
+                runBlocking(clawSubsystem.closeLeftAction())
 //                ServoUtil.closeClaw(HardwareConfig.claw1)
             }
             if (myOpMode.gamepad2.left_bumper) {
-                clawSubsystem.closeRight()
+                runBlocking(clawSubsystem.closeRightAction())
+//                clawSubsystem.closeRight()
 //                ServoUtil.closeClaw(HardwareConfig.claw2)
             }
             if (myOpMode.gamepad2.right_trigger > 0) {
-                clawSubsystem.openLeft()
+//                clawSubsystem.openLeft()
+                runBlocking(clawSubsystem.openLeftAction())
 //                ServoUtil.openClaw(HardwareConfig.claw1)
             }
             if (myOpMode.gamepad2.left_trigger > 0) {
                 clawSubsystem.openRight()
+                runBlocking(clawSubsystem.openRightAction())
 //                ServoUtil.openClaw(HardwareConfig.claw2)
             }
 
             //
             if (myOpMode.gamepad2.dpad_left) {
-                clawSubsystem.flipBack()
+//                clawSubsystem.flipBack()
+                runBlocking(clawSubsystem.flipBackAction())
             } else if (myOpMode.gamepad2.dpad_up) {
-                clawSubsystem.flipHigh()
+//                clawSubsystem.flipHigh()
+                runBlocking(clawSubsystem.flipHighAction())
             } else if (myOpMode.gamepad2.dpad_down) {
-                clawSubsystem.flipZero()
+//                clawSubsystem.flipZero()
+                runBlocking(clawSubsystem.flipZeroAction())
             }
             if (myOpMode.gamepad2.right_stick_y < -deadZone && extendoSubsystem.usePIDF) {
                 extendoSubsystem.setPowerR(extendoSubsystem.maxRotationTicks.toDouble())
-//                HardwareConfig.rotationPower = Range.clip(
-//                    HardwareConfig.rotationPIDF.calculate(
-//                        HardwareConfig.motorRotation.currentPosition.toDouble(),
-//                        Limits.maxRotationTicks.toDouble()
-//                    ), -1.0, 1.0
-//                )
             } else if (myOpMode.gamepad2.right_stick_y > deadZone && extendoSubsystem.usePIDF) {
                 extendoSubsystem.setPowerR(extendoSubsystem.minRotationTicks.toDouble())
             } else {
                 extendoSubsystem.stopR()
 //                HardwareConfig.rotationPower = 0.0
             }
-            //            rotationPower = Range.clip(-myOpMode.gamepad2.right_stick_y, flipperMin, flipperMax);
             if (myOpMode.gamepad2.cross && !xPressed && extendoSubsystem.usePIDF) {
                 extendoSubsystem.usePIDF = false
             } else if (myOpMode.gamepad2.cross && !xPressed && !extendoSubsystem.usePIDF) {
@@ -97,16 +93,6 @@ object Operator {
                 extendoSubsystem.setPowerR(
                     -myOpMode.gamepad2.right_stick_y.toDouble()
                 )
-//                HardwareConfig.extensionPower = Range.clip(
-//                    -myOpMode.gamepad2.left_stick_y.toDouble(),
-//                    Limits.slideMin,
-//                    Limits.slideMax
-//                )
-//                HardwareConfig.rotationPower = Range.clip(
-//                    -myOpMode.gamepad2.right_stick_y.toDouble(),
-//                    Limits.flipperMin,
-//                    Limits.flipperMax
-//                )
             }
         }
         if (currOther === otherControls[1]) { //Grady
@@ -118,8 +104,10 @@ object Operator {
         if (currOther === otherControls[4]) { // Delaney
         }
         if (currOther === otherControls[5]) { // Child
-            clawSubsystem.flipBack()
-            clawSubsystem.closeBoth()
+//            clawSubsystem.flipBack()
+            runBlocking(clawSubsystem.flipBackAction())
+            runBlocking(clawSubsystem.closeBothAction())
+//            clawSubsystem.closeBoth()
             clawSubsystem.update()
         }
     }

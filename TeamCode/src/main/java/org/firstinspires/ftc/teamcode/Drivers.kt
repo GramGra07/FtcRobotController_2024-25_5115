@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode
 
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import org.firstinspires.ftc.teamcode.UtilClass.DriverAid
 import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.EndgameSubsystem
+
 
 object Drivers {
     private val driverControls =
@@ -79,6 +81,15 @@ object Drivers {
 
         if (currDriver === driverControls[0]) { //Camden
             fieldCentric = false
+            if (myOpMode.gamepad1.right_bumper) {
+                val packet = TelemetryPacket()
+                driveSubsystem.cancelableFollowing?.run(packet)
+//                runBlocking(
+//                    drive.actionBuilder(drive.pose)
+//                        .splineTo(Vector2d(0.0, 0.0), 0.0)
+//                        .build()
+//                )
+            }
         }
         if (currDriver === driverControls[2]) { //Michael
             fieldCentric = false

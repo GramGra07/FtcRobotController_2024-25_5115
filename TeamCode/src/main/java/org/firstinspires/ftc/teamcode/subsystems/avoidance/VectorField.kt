@@ -30,12 +30,12 @@ class VectorField(point: Point? = Point(), radius: Double) {
             val yError = pose.y!! - newPose.y!!
             val theta = atan2(yError, xError)
             val magnitude = sqrt(xError.pow(2.0) + yError.pow(2.0))
-            val forwardCorrection = fieldStrengthCoefficient * magnitude * sin(theta) * -1
-            val strafeCorrection = fieldStrengthCoefficient * magnitude * cos(theta) * -1
+            val forwardCorrection = fieldStrengthCoefficient * magnitude * sin(theta)
+            val strafeCorrection = fieldStrengthCoefficient * magnitude * cos(theta)
             val flVelocity = forwardCorrection + strafeCorrection  // Front-left wheel
-            val frVelocity = forwardCorrection - strafeCorrection * -1 // Front-right wheel
+            val frVelocity = forwardCorrection - strafeCorrection * -1  // Front-right wheel
             val rlVelocity = forwardCorrection + strafeCorrection  // Rear-left wheel
-            val rrVelocity = forwardCorrection - strafeCorrection * -1 // Rear-right wheel
+            val rrVelocity = forwardCorrection - strafeCorrection * -1  // Rear-right wheel
 
             return mapOf(
                 "FL" to flVelocity,
@@ -53,8 +53,8 @@ class VectorField(point: Point? = Point(), radius: Double) {
             return fields
         }
 
-        fun poseInField(pose: Point, field: VectorField): Boolean {
-            var robotRadius = 8
+        private fun poseInField(pose: Point, field: VectorField): Boolean {
+            var robotRadius = varConfig.robotRadiusAvoidance
             val point = field.point ?: return false
             val y = pose.x ?: return false
             val x = pose.y ?: return false
@@ -65,15 +65,22 @@ class VectorField(point: Point? = Point(), radius: Double) {
         }
 
         private fun closestFree(pose: Point, field: VectorField): Point {
-            val point = field.point ?: return Point()
-            val x = pose.x ?: return Point()
-            val y = pose.y ?: return Point()
-            val x0 = point.x ?: return Point()
-            val y0 = point.y ?: return Point()
+            val x0 = field.point!!.x!!
+            val y0 = field.point!!.y!!
+            val x = pose.x!!
+            val y = pose.y!!
             val r = field.rad
-            val d = sqrt((x - x0).pow(2.0) + (y - y0).pow(2.0))
-            val x1 = x0 + r * (x - x0) / d
-            val y1 = y0 + r * (y - y0) / d
+
+            // Calculate the unit vector from the field center to the pose
+            val dx = x - x0
+            val dy = y - y0
+            val d = sqrt(dx.pow(2.0) + dy.pow(2.0))
+            val ux = dx / d
+            val uy = dy / d
+
+            // Calculate the closest point outside the field radius
+            val x1 = x0 + r * ux
+            val y1 = y0 + r * uy
             return Point(x1, y1)
         }
     }

@@ -1,7 +1,6 @@
 //import
 package org.firstinspires.ftc.teamcode.opModes
 
-import VectorField
 import android.os.Environment
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
@@ -223,13 +222,6 @@ open class HardwareConfig() {
         teleSpace()
         telemetry.addData("Version", CURRENT_VERSION)
 
-        for (field in driveSubsystem!!.avoidanceSubsystem!!.fields) {
-            if (VectorField.poseInField(drive.pose.toPoint(), field)) {
-                telemetry.addData("pose in", "field")
-            }
-        }
-
-
         telemetry.update()
         drawPackets()
     }
@@ -245,21 +237,21 @@ open class HardwareConfig() {
             packet.fieldOverlay()
                 .fillCircle(field.point?.y!!, field.point!!.x!!, rad)
         }
-        val ROBOT_RADIUS = 9.0
+        val roboRad = varConfig.robotRadiusAvoidance
         val t = drive.pose
-        val halfv: Vector2d = t.heading.vec().times(0.5 * ROBOT_RADIUS)
+        val halfv: Vector2d = t.heading.vec().times(0.5 * roboRad)
         val p1: Vector2d = t.position.plus(halfv)
         val (x, y) = p1.plus(halfv)
         packet.fieldOverlay()
             .setStrokeWidth(1)
-            .setFill("green")
+            .setFill("DeepPink")
             .setAlpha(1.0)
-            .strokeCircle(t.position.x, t.position.y, ROBOT_RADIUS).strokeLine(p1.x, p1.y, x, y)
+            .strokeCircle(t.position.x, t.position.y, roboRad).strokeLine(p1.x, p1.y, x, y)
 //        val poseX = driveSubsystem!!.odometrySubsystem!!.poseX
 //        val poseY = driveSubsystem!!.odometrySubsystem!!.poseY
 //        val heading = driveSubsystem!!.odometrySubsystem!!.heading
 //        packet.fieldOverlay()
-//            .setFill("pink")
+//            .setFill("DeepPink")
 //            .setAlpha(1.0)
 //            .strokeCircle(poseX,poseY, rad)
 //            .strokeLine(

@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems
 
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket
+import com.acmerobotics.roadrunner.Action
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.Servo
 import org.firstinspires.ftc.teamcode.UtilClass.ServoUtil
@@ -9,6 +11,7 @@ import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.potentAngle
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.calcFlipPose
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.initServo
+import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.clawSubsystem
 import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.potentiometer
 
 
@@ -26,21 +29,18 @@ class ClawSubsystem(ahwMap: HardwareMap) {
         DOWN
     }
 
-    var claw1: Servo? = null
-    var claw2: Servo? = null
+    private var claw1: Servo? = null
+    private var claw2: Servo? = null
     private var flipServo: Servo? = null
 
     init {
         if (claw1 == null) {
-//            claw1 = ahwMap.get(Servo::class.java, "claw1")
             claw1 = initServo(ahwMap, "claw1")
         }
         if (claw2 == null) {
-//            claw2 = ahwMap.get(Servo::class.java, "claw2")
             claw2 = initServo(ahwMap, "claw2")
         }
         if (flipServo == null) {
-//            flipServo = ahwMap.get(Servo::class.java, "flipServo")
             flipServo = initServo(ahwMap, "flipServo")
         }
         closeBoth()
@@ -51,6 +51,130 @@ class ClawSubsystem(ahwMap: HardwareMap) {
     private var rightState = ClawStates.CLOSED
     private var leftState = ClawStates.CLOSED
     private var flipState = FlipStates.BACK
+
+
+    private class CloseBoth : Action {
+        override fun run(p: TelemetryPacket): Boolean {
+            clawSubsystem!!.openBoth()
+            return false
+        }
+    }
+
+    fun closeBothAction(): Action {
+        return CloseBoth()
+    }
+
+    private class OpenBoth : Action {
+        override fun run(p: TelemetryPacket): Boolean {
+            clawSubsystem!!.openBoth()
+            return false
+        }
+    }
+
+    fun openBothAction(): Action {
+        return OpenBoth()
+    }
+
+    private class OpenLeft : Action {
+        override fun run(p: TelemetryPacket): Boolean {
+            clawSubsystem!!.openLeft()
+            return false
+        }
+    }
+
+    fun openLeftAction(): Action {
+        return OpenLeft()
+    }
+
+    private class OpenRight : Action {
+        override fun run(p: TelemetryPacket): Boolean {
+            clawSubsystem!!.openRight()
+            return false
+        }
+    }
+
+    fun openRightAction(): Action {
+        return OpenRight()
+    }
+
+    private class CloseLeft : Action {
+        override fun run(p: TelemetryPacket): Boolean {
+            clawSubsystem!!.closeLeft()
+            return false
+        }
+    }
+
+    fun closeLeftAction(): Action {
+        return CloseLeft()
+    }
+
+    private class CloseRight : Action {
+        override fun run(p: TelemetryPacket): Boolean {
+            clawSubsystem!!.closeRight()
+            return false
+        }
+    }
+
+    fun closeRightAction(): Action {
+        return CloseRight()
+    }
+
+    private class FlipHigh : Action {
+        override fun run(p: TelemetryPacket): Boolean {
+            clawSubsystem!!.flipHigh()
+            return false
+        }
+    }
+
+    fun flipHighAction(): Action {
+        return FlipHigh()
+    }
+
+    private class FlipUp : Action {
+        override fun run(p: TelemetryPacket): Boolean {
+            clawSubsystem!!.flipUp()
+            return false
+        }
+    }
+
+    fun flipUpAction(): Action {
+        return FlipUp()
+    }
+
+    private class FlipBack : Action {
+        override fun run(p: TelemetryPacket): Boolean {
+            clawSubsystem!!.flipBack()
+            return false
+        }
+    }
+
+    fun flipBackAction(): Action {
+        return FlipBack()
+    }
+
+    private class FlipDown : Action {
+        override fun run(p: TelemetryPacket): Boolean {
+            clawSubsystem!!.flipDown()
+            return false
+        }
+    }
+
+    fun flipDownAction(): Action {
+        return FlipDown()
+    }
+
+    private class FlipZero : Action {
+        override fun run(p: TelemetryPacket): Boolean {
+            clawSubsystem!!.flipZero()
+            return false
+        }
+    }
+
+    fun flipZeroAction(): Action {
+        return FlipZero()
+    }
+
+
     fun openBoth() {
         rightState = ClawStates.OPEN
         leftState = ClawStates.OPEN
@@ -64,36 +188,36 @@ class ClawSubsystem(ahwMap: HardwareMap) {
         rightState = ClawStates.OPEN
     }
 
-    fun closeBoth() {
+    private fun closeBoth() {
         leftState = ClawStates.CLOSED
         rightState = ClawStates.CLOSED
     }
 
-    fun closeLeft() {
+    private fun closeLeft() {
         leftState = ClawStates.CLOSED
     }
 
-    fun closeRight() {
+    private fun closeRight() {
         rightState = ClawStates.CLOSED
     }
 
-    fun flipHigh() {
+    private fun flipHigh() {
         flipState = FlipStates.HIGH
     }
 
-    fun flipUp() {
+    private fun flipUp() {
         flipState = FlipStates.UP
     }
 
-    fun flipBack() {
+    private fun flipBack() {
         flipState = FlipStates.BACK
     }
 
-    fun flipDown() {
+    private fun flipDown() {
         flipState = FlipStates.DOWN
     }
 
-    fun flipZero() {
+    private fun flipZero() {
         flipState = FlipStates.ZERO
     }
 
@@ -117,12 +241,4 @@ class ClawSubsystem(ahwMap: HardwareMap) {
             flipServo!!.calcFlipPose(ServoExtensions.lastSetVal.toDouble())
         }
     }
-//    var flipHigh: Action = Action {
-//        flipServo!!.calcFlipPose(70.0)
-//        return@Action true
-//    }
-//    var drive: MecanumDrive = MecanumDrive(hardwareMap, Pose2d(11.8, 61.7, Math.toRadians(90.0)))
-//    var trajectoryAction1:Action = drive.actionBuilder(drive.pose)
-//        .lineToX(32.0)
-//        .build()
 }

@@ -30,8 +30,11 @@ object varConfig {
     var usingAvoidance = true
 
     @JvmField
-    var fieldRadius = 15.0
+    var fieldRadius = 8.0
 
     @JvmField
-    var correctionSpeedAvoid = 0.1
+    var correctionSpeedAvoid = 0.02
+
+    @JvmField
+    var robotRadiusAvoidance: Double = 8.0
 }

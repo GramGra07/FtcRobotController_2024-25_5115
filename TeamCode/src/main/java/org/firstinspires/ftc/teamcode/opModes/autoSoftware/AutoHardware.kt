@@ -47,9 +47,7 @@ class AutoHardware(opmode: LinearOpMode, ahwMap: HardwareMap, auto: Boolean) // 
         FtcDashboard.getInstance()
             .startCameraStream(objProcessor, 0.0) // start the camera stream on FTC Dash
         timer.reset()
-        //        ServoUtil.closeClaw(HardwareConfig.claw1);
-//        ServoUtil.closeClaw(HardwareConfig.claw2);
-        clawSubsystem!!.flipHigh()
+//        clawSubsystem!!.flipHigh()
         clawSubsystem!!.update()
 //        flipServo.calcFlipPose(80.0)
         telemetry.update()
@@ -60,7 +58,7 @@ class AutoHardware(opmode: LinearOpMode, ahwMap: HardwareMap, auto: Boolean) // 
         green2.ledIND(red2, false)
         green3.ledIND(red3, false)
         green4.ledIND(red4, false)
-        clawSubsystem!!.closeBoth()
+//        clawSubsystem!!.closeBoth()
         clawSubsystem!!.update()
         myOpMode.waitForStart() // wait for the start button to be pressed
 //        HardwareConfig.Companion.rotationPIDF.setPIDF(
