@@ -6,6 +6,7 @@ import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.acmerobotics.roadrunner.Vector2d
+import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
@@ -87,6 +88,8 @@ open class HardwareConfig() {
 
         //        lateinit var startDist: StartDist
         const val CURRENT_VERSION = "7.0.0"
+
+        var allHubs: List<LynxModule> = ArrayList<LynxModule>()
     }
 
     fun init(
@@ -105,6 +108,11 @@ open class HardwareConfig() {
         red2 = initDigiChan(ahwMap, "red2")
         red3 = initDigiChan(ahwMap, "red3")
         red4 = initDigiChan(ahwMap, "red4")
+        allHubs = ahwMap.getAll(LynxModule::class.java)
+
+        for (hub in allHubs) {
+            hub.bulkCachingMode = LynxModule.BulkCachingMode.MANUAL
+        }
         if (driveSubsystem == null) {
             driveSubsystem = DriveSubsystem(ahwMap)
         }
@@ -153,6 +161,7 @@ open class HardwareConfig() {
 
     //code to run all drive functions
     fun doBulk() {
+        lynxModules()
         once(myOpMode) //runs once
         periodically() //runs every loop
         loopTimeCalculations()
@@ -162,13 +171,18 @@ open class HardwareConfig() {
             switchProfile(myOpMode)
         }
         driveSubsystem!!.driveByGamepads(fieldCentric, myOpMode) //runs drive
-//        drive(fieldCentric)
         update() //sets power to power variables
         buildTelemetry() //makes telemetry
         loops++
     }
 
-    fun once(myOpMode: OpMode) {
+    private fun lynxModules() {
+        for (hub in allHubs) {
+            hub.clearBulkCache()
+        }
+    }
+
+    private fun once(myOpMode: OpMode) {
         if (!once) {
             timer.reset()
             val telemetry: Telemetry =
