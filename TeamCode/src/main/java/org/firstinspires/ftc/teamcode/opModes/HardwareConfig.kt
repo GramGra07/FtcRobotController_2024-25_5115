@@ -50,12 +50,24 @@ open class HardwareConfig() {
     }
 
     companion object {
+        fun once(myOpMode: OpMode) {
+            if (!once) {
+                timer.reset()
+                myOpMode.gamepad1.setLedColor(229.0, 74.0, 161.0, -1)
+                myOpMode.gamepad2.setLedColor(0.0, 0.0, 0.0, -1)
+                once = true
+            }
+        }
+
+        lateinit var telemetry: Telemetry
+        lateinit var dashboard: FtcDashboard
+        lateinit var packet: TelemetryPacket
         val timer: ElapsedTime = ElapsedTime()
 
-        var driveSubsystem: DriveSubsystem? = null
-        var clawSubsystem: ClawSubsystem? = null
-        var endgameSubsystem: EndgameSubsystem? = null
-        var extendoSubsystem: ExtendoSubsystem? = null
+        lateinit var driveSubsystem: DriveSubsystem
+        lateinit var clawSubsystem: ClawSubsystem
+        lateinit var endgameSubsystem: EndgameSubsystem
+        lateinit var extendoSubsystem: ExtendoSubsystem
 
         var useFileWriter: Boolean = varConfig.useFileWriter
         var multipleDrivers: Boolean = varConfig.multipleDrivers
@@ -66,6 +78,7 @@ open class HardwareConfig() {
         var LPS = 0.0
         var refreshRate = 0.0
         var rrPS = 0.0
+        var currentTime = 0.0
         private var pastRefreshRate = refreshRate
         private var pastSecondLoops = 0.0
         private var pastTimeRR = 0.0
@@ -82,14 +95,14 @@ open class HardwareConfig() {
         lateinit var potentiometer: AnalogInput
         lateinit var vSensor: VoltageSensor
         lateinit var drive: MecanumDrive
-        var fileWriter: FileWriter? = null
+        lateinit var fileWriter: FileWriter
         private lateinit var myOpMode: LinearOpMode
         var once = false
 
         //        lateinit var startDist: StartDist
         const val CURRENT_VERSION = "7.0.0"
 
-        var allHubs: List<LynxModule> = ArrayList<LynxModule>()
+        var allHubs: List<LynxModule> = ArrayList()
     }
 
     fun init(
@@ -109,44 +122,40 @@ open class HardwareConfig() {
         red3 = initDigiChan(ahwMap, "red3")
         red4 = initDigiChan(ahwMap, "red4")
         allHubs = ahwMap.getAll(LynxModule::class.java)
-
         for (hub in allHubs) {
             hub.bulkCachingMode = LynxModule.BulkCachingMode.MANUAL
         }
-        if (driveSubsystem == null) {
-            driveSubsystem = DriveSubsystem(ahwMap)
-        }
-        if (clawSubsystem == null) {
-            clawSubsystem = ClawSubsystem(ahwMap)
-        }
-        if (endgameSubsystem == null) {
-            endgameSubsystem = EndgameSubsystem(ahwMap)
-        }
-        if (extendoSubsystem == null) {
-            extendoSubsystem = ExtendoSubsystem(ahwMap)
-        }
+        driveSubsystem = DriveSubsystem(ahwMap)
+        clawSubsystem = ClawSubsystem(ahwMap)
+        endgameSubsystem = EndgameSubsystem(ahwMap)
+        extendoSubsystem = ExtendoSubsystem(ahwMap)
 
-        val telemetry: Telemetry =
-            MultipleTelemetry(myOpMode.telemetry, FtcDashboard.getInstance().telemetry)
+//        CommandScheduler.getInstance().registerSubsystem(driveSubsystem)
+//        CommandScheduler.getInstance().registerSubsystem(clawSubsystem)
+//        CommandScheduler.getInstance().registerSubsystem(endgameSubsystem)
+//        CommandScheduler.getInstance().registerSubsystem(extendoSubsystem)
+//        CommandScheduler.getInstance().setDefaultCommand(driveSubsystem, DriveSubsystem.driveDefault())
+//        CommandScheduler.getInstance().setDefaultCommand(clawSubsystem, ClawSubsystem.clawDefault())
+//        CommandScheduler.getInstance().setDefaultCommand(endgameSubsystem, EndgameSubsystem.endGameDefault())
+//        CommandScheduler.getInstance().setDefaultCommand(extendoSubsystem, ExtendoSubsystem.extendoDefault())
 
-        driveSubsystem!!.reset()
-        drive = driveSubsystem!!.drive!!
+        drive = driveSubsystem.drive
+        telemetry = MultipleTelemetry(myOpMode.telemetry, FtcDashboard.getInstance().telemetry)
+        dashboard = FtcDashboard.getInstance()
 
-//        thisDist = 0.0
         once = false
         val file = String.format(
             "%s/FIRST/matchlogs/log.txt",
             Environment.getExternalStorageDirectory().absolutePath
         )
         fileWriter = FileWriter(file, true)
-        setUpFile(fileWriter!!)
+        setUpFile(fileWriter)
         val timer = ElapsedTime()
         timer.reset()
         green1.ledIND(red1, true)
         green2.ledIND(red2, true)
         green3.ledIND(red3, true)
         green4.ledIND(red4, true)
-        telemetry.addData("Status", "Initialized")
         telemetry.addData("Color", lights.currentColor())
         telemetry.addData("Version", CURRENT_VERSION)
         telemetry.addData("Voltage", "%.2f", vSensor.currentVoltage())
@@ -161,18 +170,23 @@ open class HardwareConfig() {
 
     //code to run all drive functions
     fun doBulk() {
-        lynxModules()
-        once(myOpMode) //runs once
-        periodically() //runs every loop
+        currentTime = timer.seconds()
         loopTimeCalculations()
-        bindDriverButtons(myOpMode, driveSubsystem!!, clawSubsystem!!, endgameSubsystem!!)
-        bindOtherButtons(myOpMode, clawSubsystem!!, extendoSubsystem!!, driveSubsystem!!)
+        bindDriverButtons(myOpMode, driveSubsystem, clawSubsystem, endgameSubsystem)
+        bindOtherButtons(myOpMode, clawSubsystem, extendoSubsystem, driveSubsystem)
         if (multipleDrivers) {
             switchProfile(myOpMode)
         }
-        driveSubsystem!!.driveByGamepads(fieldCentric, myOpMode) //runs drive
-        update() //sets power to power variables
+        driveSubsystem.driveByGamepads(
+            fieldCentric,
+            myOpMode
+        ) //runs drive
+//        driveSubsystem.update()
+//        endgameSubsystem.update()
+//        clawSubsystem.update()
+//        extendoSubsystem.update()
         buildTelemetry() //makes telemetry
+        lynxModules()
         loops++
     }
 
@@ -182,35 +196,7 @@ open class HardwareConfig() {
         }
     }
 
-    private fun once(myOpMode: OpMode) {
-        if (!once) {
-            timer.reset()
-            val telemetry: Telemetry =
-                MultipleTelemetry(myOpMode.telemetry, FtcDashboard.getInstance().telemetry)
-            // Telemetry telemetry = myOpMode.telemetry;
-            telemetry.clearAll()
-            myOpMode.gamepad1.setLedColor(229.0, 74.0, 161.0, -1)
-            myOpMode.gamepad2.setLedColor(0.0, 0.0, 0.0, -1)
-            once = true
-        }
-    }
-
-    private fun periodically() {
-        if (LoopTime.useLoopTime && loops % LoopTime.loopInterval == 0.0) {
-            refreshRate++
-        }
-    }
-
-    fun update() {
-        driveSubsystem!!.update()
-        endgameSubsystem!!.update()
-        clawSubsystem!!.update()
-        extendoSubsystem!!.update()
-    }
-
     private fun buildTelemetry() {
-        val telemetry: Telemetry =
-            MultipleTelemetry(myOpMode.telemetry, FtcDashboard.getInstance().telemetry)
         telemetry.addData("Drivers", Drivers.currDriver + " " + Drivers.currOther)
         telemetry.addData(
             "Voltage",
@@ -221,13 +207,11 @@ open class HardwareConfig() {
             telemetry.addData("", "We have a low battery")
         }
         telemetry.addData("Pose: ", drive.pose.toPoint().toString())
-        //        telemetry.addData("Speed",drive.getWheelVelocities()[0])
-        // get potent with extension
         telemetry.addData("potentiometer", "%.1f", potentiometer.potentAngle())
-        driveSubsystem!!.telemetry(telemetry)
-        extendoSubsystem!!.telemetry(telemetry)
+        driveSubsystem.telemetry(telemetry)
+        extendoSubsystem.telemetry(telemetry)
         teleSpace()
-        telemetry.addData("Timer", "%.1f", timer.seconds()) //shows current time
+        telemetry.addData("Timer", "%.1f", currentTime) //shows current time
         telemetry.addData("Loops", "%.1f", loops)
         telemetry.addData("Current LPS", "%.1f", LPS)
         telemetry.addData("Refresh Rate", "%.1f", rrPS)
@@ -241,17 +225,16 @@ open class HardwareConfig() {
     }
 
     private fun drawPackets() {
-        val dashboard: FtcDashboard = FtcDashboard.getInstance()
-        val packet = TelemetryPacket()
-        val rad = driveSubsystem!!.avoidanceSubsystem!!.rad
+        packet = TelemetryPacket()
+        val rad = driveSubsystem.avoidanceSubsystem.rad
+        val roboRad = varConfig.robotRadiusAvoidance
         packet.fieldOverlay()
             .setFill("red")
             .setAlpha(0.3)
-        for (field in driveSubsystem!!.avoidanceSubsystem!!.fields) {
+        for (field in driveSubsystem.avoidanceSubsystem.fields) {
             packet.fieldOverlay()
                 .fillCircle(field.point?.y!!, field.point!!.x!!, rad)
         }
-        val roboRad = varConfig.robotRadiusAvoidance
         val t = drive.pose
         val halfv: Vector2d = t.heading.vec().times(0.5 * roboRad)
         val p1: Vector2d = t.position.plus(halfv)
@@ -279,9 +262,6 @@ open class HardwareConfig() {
     }
 
     private fun teleSpace() {
-        val telemetry: Telemetry =
-            MultipleTelemetry(myOpMode.telemetry, FtcDashboard.getInstance().telemetry)
-        //Telemetry telemetry = myOpMode.telemetry;
         telemetry.addLine(" ")
     }
 
@@ -298,14 +278,18 @@ open class HardwareConfig() {
             refreshRate = 0.0
             pastUseLoopTime = LoopTime.useLoopTime
         }
-        LPS = loops / timer.seconds()
+        LPS = loops / currentTime
         if (refreshRate != pastRefreshRate) {
-            rrPS = timer.seconds() - pastTimeRR
+            rrPS = currentTime - pastTimeRR
             pastRefreshRate = refreshRate
-            pastTimeRR = timer.seconds()
+            pastTimeRR = currentTime
+        }
+
+        //periodic
+
+        if (LoopTime.useLoopTime && loops % LoopTime.loopInterval == 0.0) {
+            refreshRate++
         }
     }
-
-
 }
 

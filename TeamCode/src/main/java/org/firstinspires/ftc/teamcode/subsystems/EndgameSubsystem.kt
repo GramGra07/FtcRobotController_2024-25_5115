@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems
 
+import com.arcrobotics.ftclib.command.CommandBase
+import com.arcrobotics.ftclib.command.SubsystemBase
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.HardwareMap
@@ -10,7 +12,7 @@ import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.initMotor
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.initServo
 
 
-class EndgameSubsystem(ahwMap: HardwareMap) {
+class EndgameSubsystem(ahwMap: HardwareMap) : SubsystemBase() {
     enum class ShooterState {
         OPEN,
         CLOSED
@@ -25,9 +27,9 @@ class EndgameSubsystem(ahwMap: HardwareMap) {
     private var shootState: ShooterState = ShooterState.CLOSED
     private var liftState: LiftStates = LiftStates.STOP
 
-    private var motorLift: DcMotor? = null
+    private var motorLift: DcMotor
 
-    private var airplaneServo: Servo? = null
+    private var airplaneServo: Servo
 
     var planeReleased = false
 
@@ -35,16 +37,23 @@ class EndgameSubsystem(ahwMap: HardwareMap) {
 
 
     init {
-        if (motorLift == null) {
-            motorLift = initMotor(
-                ahwMap,
-                "lift",
-                DcMotor.RunMode.RUN_WITHOUT_ENCODER,
-                DcMotorSimple.Direction.REVERSE
-            )
+        motorLift = initMotor(
+            ahwMap,
+            "lift",
+            DcMotor.RunMode.RUN_WITHOUT_ENCODER,
+            DcMotorSimple.Direction.REVERSE
+        )
+        airplaneServo = initServo(ahwMap, "airplaneServo")
+
+    }
+
+    class endGameDefault : CommandBase() {
+        private fun update() {
+            this.update()
         }
-        if (airplaneServo == null) {
-            airplaneServo = initServo(ahwMap, "airplaneServo")
+
+        override fun execute() {
+            update()
         }
     }
 
@@ -71,15 +80,15 @@ class EndgameSubsystem(ahwMap: HardwareMap) {
     private fun power() {
         when (liftState) {
             LiftStates.RETRACT -> {
-                motorLift!!.power = liftMax
+                motorLift.power = liftMax
             }
 
             LiftStates.EXTEND -> {
-                motorLift!!.power = -liftMax
+                motorLift.power = -liftMax
             }
 
             LiftStates.STOP -> {
-                motorLift!!.power = 0.0
+                motorLift.power = 0.0
             }
         }
     }
@@ -88,11 +97,11 @@ class EndgameSubsystem(ahwMap: HardwareMap) {
         power()
         when (shootState) {
             ShooterState.OPEN -> {
-                releaseAirplane(airplaneServo!!)
+                releaseAirplane(airplaneServo)
             }
 
             ShooterState.CLOSED -> {
-                resetAirplane(airplaneServo!!)
+                resetAirplane(airplaneServo)
             }
         }
     }

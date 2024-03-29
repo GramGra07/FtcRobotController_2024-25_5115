@@ -1,8 +1,11 @@
 package org.firstinspires.ftc.teamcode.subsystems.avoidance
 
 import VectorField
+import VectorField.Companion.getCorrectionByAvoidance
 import org.firstinspires.ftc.teamcode.Point
 import org.firstinspires.ftc.teamcode.UtilClass.varStorage.varConfig
+import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toPoint
+import org.firstinspires.ftc.teamcode.rr.MecanumDrive
 
 //@Config
 class AvoidanceSubsystem {
@@ -32,5 +35,14 @@ class AvoidanceSubsystem {
 
     init {
         fields = VectorField.massCreate(createFields())
+    }
+
+    var powers: Map<String, Double?>? = null
+
+    fun update(drive: MecanumDrive) {
+        powers = getCorrectionByAvoidance(
+            fields,
+            drive.pose.position.toPoint(),
+        )
     }
 }

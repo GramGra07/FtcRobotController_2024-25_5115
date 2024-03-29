@@ -33,7 +33,7 @@ object Drivers {
         clawSubsystem: ClawSubsystem,
         endgameSubsystem: EndgameSubsystem
     ) {
-        val drive = driveSubsystem.drive!!
+        val drive = driveSubsystem.drive
         // "Camden", "Grady", "Michael","Graden", "Delaney", "Child"
         if (currDriver === driverControls[1]) { //grady
             fieldCentric = true
@@ -75,7 +75,8 @@ object Drivers {
                 driveSubsystem,
                 myOpMode.gamepad1.right_bumper,
                 myOpMode.gamepad1.dpad_up,
-                myOpMode.gamepad1.dpad_right
+                myOpMode.gamepad1.dpad_right,
+                myOpMode.gamepad1.cross,
             )
         }
 
@@ -83,7 +84,7 @@ object Drivers {
             fieldCentric = false
             if (myOpMode.gamepad1.right_bumper) {
                 val packet = TelemetryPacket()
-                driveSubsystem.cancelableFollowing?.run(packet)
+                driveSubsystem.cancelableFollowing.run(packet)
 //                runBlocking(
 //                    drive.actionBuilder(drive.pose)
 //                        .splineTo(Vector2d(0.0, 0.0), 0.0)
@@ -134,7 +135,8 @@ object Drivers {
                 driveSubsystem,
                 myOpMode.gamepad1.right_bumper,
                 myOpMode.gamepad1.dpad_up,
-                myOpMode.gamepad1.dpad_right
+                myOpMode.gamepad1.dpad_right,
+                myOpMode.gamepad1.cross
             )
         }
         if (currDriver === driverControls[4]) { //Delaney

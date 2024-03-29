@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems
 
+import com.arcrobotics.ftclib.command.CommandBase
+import com.arcrobotics.ftclib.command.SubsystemBase
 import com.arcrobotics.ftclib.controller.PIDFController
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorSimple
@@ -10,7 +12,7 @@ import org.firstinspires.ftc.teamcode.UtilClass.varStorage.PIDVals
 import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.initMotor
 import kotlin.math.abs
 
-class ExtendoSubsystem(ahwMap: HardwareMap) {
+class ExtendoSubsystem(ahwMap: HardwareMap) : SubsystemBase() {
     enum class RotateState {
         CONTROLLED_PID,
         CONTROL,
@@ -23,10 +25,20 @@ class ExtendoSubsystem(ahwMap: HardwareMap) {
         STOPPED
     }
 
+    class extendoDefault : CommandBase() {
+        private fun update() {
+            this.update()
+        }
+
+        override fun execute() {
+            update()
+        }
+    }
+
     private var rotateState: RotateState = RotateState.STOPPED
     private var extendState: ExtendState = ExtendState.STOPPED
-    private var motorExtension: DcMotor? = null
-    private var motorRotation: DcMotor? = null
+    private var motorExtension: DcMotor
+    private var motorRotation: DcMotor
     private var ePower = 0.0
     private var rPower = 0.0
     var usePIDF = true
@@ -67,17 +79,14 @@ class ExtendoSubsystem(ahwMap: HardwareMap) {
     var minRotationTicks = 0
 
     init {
-        if (motorExtension == null) {
-            motorExtension = initMotor(ahwMap, "slideMotor", DcMotor.RunMode.RUN_USING_ENCODER)
-        }
-        if (motorRotation == null) {
-            motorRotation = initMotor(
-                ahwMap,
-                "flipperMotor",
-                DcMotor.RunMode.RUN_USING_ENCODER,
-                DcMotorSimple.Direction.REVERSE
-            )
-        }
+        motorExtension = initMotor(ahwMap, "slideMotor", DcMotor.RunMode.RUN_USING_ENCODER)
+        motorRotation = initMotor(
+            ahwMap,
+            "flipperMotor",
+            DcMotor.RunMode.RUN_USING_ENCODER,
+            DcMotorSimple.Direction.REVERSE
+        )
+
         updatePID()
     }
 
@@ -86,7 +95,7 @@ class ExtendoSubsystem(ahwMap: HardwareMap) {
         updatePID()
         rPower = when (rotateState) {
             RotateState.CONTROLLED_PID -> {
-                calculatePID(rotationPIDF, motorRotation!!.currentPosition.toDouble(), input)
+                calculatePID(rotationPIDF, motorRotation.currentPosition.toDouble(), input)
             }
 
             RotateState.CONTROL -> {
@@ -107,7 +116,7 @@ class ExtendoSubsystem(ahwMap: HardwareMap) {
         updatePID()
         ePower = when (extendState) {
             ExtendState.CONTROLLED_PID -> {
-                calculatePID(extensionPIDF, motorExtension!!.currentPosition.toDouble(), input)
+                calculatePID(extensionPIDF, motorExtension.currentPosition.toDouble(), input)
             }
 
             ExtendState.CONTROL -> {
@@ -137,50 +146,50 @@ class ExtendoSubsystem(ahwMap: HardwareMap) {
     }
 
     fun autoExtend(position: Int, driveSubsystem: DriveSubsystem) {
-        val drive = driveSubsystem.drive!!
-        motorExtension!!.mode = DcMotor.RunMode.RUN_USING_ENCODER
-        motorExtension!!.targetPosition = (motorExtension!!.currentPosition + position)
+        val drive = driveSubsystem.drive
+        motorExtension.mode = DcMotor.RunMode.RUN_USING_ENCODER
+        motorExtension.targetPosition = (motorExtension.currentPosition + position)
         drive.updatePoseEstimate()
-        motorExtension!!.mode = DcMotor.RunMode.RUN_TO_POSITION
-        motorExtension!!.power = abs(1).toDouble()
-        while (motorExtension!!.isBusy) {
+        motorExtension.mode = DcMotor.RunMode.RUN_TO_POSITION
+        motorExtension.power = abs(1).toDouble()
+        while (motorExtension.isBusy) {
             drive.updatePoseEstimate()
         }
-        motorExtension!!.power = 0.0
+        motorExtension.power = 0.0
     }
 
     fun autoRotate(position: Int, driveSubsystem: DriveSubsystem) {
-        val drive = driveSubsystem.drive!!
-        motorRotation!!.mode = DcMotor.RunMode.RUN_USING_ENCODER
-        motorRotation!!.targetPosition = (motorRotation!!.currentPosition + position)
+        val drive = driveSubsystem.drive
+        motorRotation.mode = DcMotor.RunMode.RUN_USING_ENCODER
+        motorRotation.targetPosition = (motorRotation.currentPosition + position)
         drive.updatePoseEstimate()
-        motorRotation!!.mode = DcMotor.RunMode.RUN_TO_POSITION
-        motorRotation!!.power = abs(1).toDouble()
-        while (motorRotation!!.isBusy) {
+        motorRotation.mode = DcMotor.RunMode.RUN_TO_POSITION
+        motorRotation.power = abs(1).toDouble()
+        while (motorRotation.isBusy) {
             drive.updatePoseEstimate()
         }
-        motorRotation!!.power = 0.0
+        motorRotation.power = 0.0
     }
 
     private fun power() {
         when (rotateState) {
             RotateState.CONTROL,
             RotateState.CONTROLLED_PID -> {
-                motorExtension!!.power = ePower
+                motorExtension.power = ePower
             }
 
             RotateState.STOPPED -> {
-                motorExtension!!.power = 0.0
+                motorExtension.power = 0.0
             }
         }
         when (extendState) {
             ExtendState.CONTROL,
             ExtendState.CONTROLLED_PID -> {
-                motorRotation!!.power = rPower
+                motorRotation.power = rPower
             }
 
             ExtendState.STOPPED -> {
-                motorRotation!!.power = 0.0
+                motorRotation.power = 0.0
             }
         }
     }
@@ -222,7 +231,7 @@ class ExtendoSubsystem(ahwMap: HardwareMap) {
     }
 
     fun telemetry(telemetry: Telemetry) {
-        telemetry.addData("Extension Position", motorExtension!!.currentPosition)
-        telemetry.addData("Rotation Position", motorRotation!!.currentPosition)
+        telemetry.addData("Extension Position", motorExtension.currentPosition)
+        telemetry.addData("Rotation Position", motorRotation.currentPosition)
     }
 }

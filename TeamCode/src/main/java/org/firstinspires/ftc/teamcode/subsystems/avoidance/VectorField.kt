@@ -9,11 +9,13 @@ import kotlin.math.sqrt
 //@Config
 class VectorField(point: Point? = Point(), radius: Double) {
     var point: Point? = point
+
     @JvmField
     var rad = radius
 
     companion object {
         private var fieldStrengthCoefficient: Double = varConfig.correctionSpeedAvoid
+        private val correctionMap = mutableMapOf<String, Double>()
 
         fun getCorrectionByAvoidance(fields: List<VectorField>, pose: Point): Map<String, Double>? {
             fieldStrengthCoefficient = varConfig.correctionSpeedAvoid
@@ -21,6 +23,7 @@ class VectorField(point: Point? = Point(), radius: Double) {
             for (field in fields) {
                 if (poseInField(pose, field)) {
                     newPose = closestFree(pose, field)
+                    break
                 }
             }
             if (newPose == null) {
@@ -37,13 +40,14 @@ class VectorField(point: Point? = Point(), radius: Double) {
             val rlVelocity = forwardCorrection + strafeCorrection  // Rear-left wheel
             val rrVelocity = forwardCorrection - strafeCorrection * -1  // Rear-right wheel
 
-            return mapOf(
-                "FL" to flVelocity,
-                "FR" to frVelocity,
-                "RL" to rlVelocity,
-                "RR" to rrVelocity
-            )
+            correctionMap["FL"] = flVelocity
+            correctionMap["FR"] = frVelocity
+            correctionMap["RL"] = rlVelocity
+            correctionMap["RR"] = rrVelocity
+
+            return correctionMap
         }
+
 
         fun massCreate(fieldList: HashMap<Point, Double>): List<VectorField> {
             val fields = mutableListOf<VectorField>()
@@ -54,7 +58,7 @@ class VectorField(point: Point? = Point(), radius: Double) {
         }
 
         private fun poseInField(pose: Point, field: VectorField): Boolean {
-            var robotRadius = varConfig.robotRadiusAvoidance
+            val robotRadius = varConfig.robotRadiusAvoidance
             val point = field.point ?: return false
             val y = pose.x ?: return false
             val x = pose.y ?: return false

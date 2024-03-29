@@ -1,9 +1,9 @@
 package org.firstinspires.ftc.teamcode.UtilClass
 
+import CancelableFollowTrajectoryAction
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.acmerobotics.roadrunner.Action
-import com.acmerobotics.roadrunner.SequentialAction
 import org.firstinspires.ftc.teamcode.rr.MecanumDrive
 import org.firstinspires.ftc.teamcode.subsystems.DriveConfig
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
@@ -18,46 +18,37 @@ object DriverAid {
         goToDrone: Boolean,
         turnStraight: Boolean,
         turnWing: Boolean,
-        drive: MecanumDrive = driveSubsystem.drive!!
+        cancel: Boolean,
+        drive: MecanumDrive = driveSubsystem.drive
     ) {
         val packet = TelemetryPacket()
 
+        val cancelableFollowing = CancelableFollowTrajectoryAction(
+            drive.actionBuilder(drive.pose)
+//            .splineToConstantHeading(Vector2d(x = 0.0,y=0.0),0.0)
+                .build()
+        )
         if (goToDrone) {
             driveSubsystem.slowModeIsOn = false
             driveSubsystem.isAutoInTeleop = true
             drive.updatePoseEstimate()
+            cancelableFollowing.run(packet)
             // go to drone scoring position]
         }
         if (turnStraight) {
             driveSubsystem.slowModeIsOn = false
             driveSubsystem.isAutoInTeleop = true
-//!            turnAngle = normDelta(Math.toRadians(0.0) - drive.pose.heading.real) TODO test this
-
-            runningActions.plus(
-                SequentialAction(
-                    drive.actionBuilder(drive.pose).turnTo(Math.toRadians(90.0)).build()
-                )
-            )
+//!            turnAngle = normDelta(Math.toRadians(0.0) - drive.pose.heading.real)
         }
         if (turnWing) {
             driveSubsystem.slowModeIsOn = false
             driveSubsystem.isAutoInTeleop = true
-            runningActions.plus(
-                SequentialAction(
-                    drive.actionBuilder(drive.pose).turnTo(Math.toRadians(90.0)).build()
-                )
-            )
         }
-
-        val newActions: MutableList<Action> = ArrayList()
-        for (action in runningActions) {
-            action.preview(packet.fieldOverlay())
-            if (action.run(packet)) {
-                newActions.add(action)
-            }
+        if (cancel) {
+            driveSubsystem.slowModeIsOn = false
+            driveSubsystem.isAutoInTeleop = false
+            cancelableFollowing.cancelAbruptly()
         }
-        runningActions = newActions
-        dash.sendTelemetryPacket(packet)
     }
 
     fun cMPTurnVect(thetaError: Double): Map<String, Double> {

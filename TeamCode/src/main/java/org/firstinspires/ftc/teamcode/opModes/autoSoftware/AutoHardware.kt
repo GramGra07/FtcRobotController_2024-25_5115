@@ -48,7 +48,7 @@ class AutoHardware(opmode: LinearOpMode, ahwMap: HardwareMap, auto: Boolean) // 
             .startCameraStream(objProcessor, 0.0) // start the camera stream on FTC Dash
         timer.reset()
 //        clawSubsystem!!.flipHigh()
-        clawSubsystem!!.update()
+        clawSubsystem.update()
 //        flipServo.calcFlipPose(80.0)
         telemetry.update()
         if (myOpMode.isStopRequested) {
@@ -59,7 +59,7 @@ class AutoHardware(opmode: LinearOpMode, ahwMap: HardwareMap, auto: Boolean) // 
         green3.ledIND(red3, false)
         green4.ledIND(red4, false)
 //        clawSubsystem!!.closeBoth()
-        clawSubsystem!!.update()
+        clawSubsystem.update()
         myOpMode.waitForStart() // wait for the start button to be pressed
 //        HardwareConfig.Companion.rotationPIDF.setPIDF(
 //            rotationPIDFCo.p,
@@ -91,7 +91,7 @@ class AutoHardware(opmode: LinearOpMode, ahwMap: HardwareMap, auto: Boolean) // 
         //        var autonomousRandom: AutoRandom =
 //            AutoRandom.MID // default autonomous choice for spike mark
 //        var autoRandomReliable: AutoRandom? = null // tracker for the AutoRandom enum
-        var visionPortal: VisionPortal? = null // vision portal for the webcam
+        lateinit var visionPortal: VisionPortal // vision portal for the webcam
         var objProcessor: VPObjectDetect? = null // april tag processor for the vision portal
         var aprilTagProcessor: AprilTagProcessor? =
             null // april tag processor for the vision portal
