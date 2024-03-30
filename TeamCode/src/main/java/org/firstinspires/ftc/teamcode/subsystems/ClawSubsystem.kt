@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.subsystems
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.acmerobotics.roadrunner.Action
 import com.arcrobotics.ftclib.command.CommandBase
-import com.arcrobotics.ftclib.command.SubsystemBase
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.Servo
 import org.firstinspires.ftc.teamcode.UtilClass.ServoUtil
@@ -17,10 +16,11 @@ import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.clawSubsy
 import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.potentiometer
 
 
-class ClawSubsystem(ahwMap: HardwareMap) : SubsystemBase() {
+class ClawSubsystem(ahwMap: HardwareMap) {
     enum class ClawStates {
         OPEN,
-        CLOSED
+        CLOSED,
+        IDLE
     }
 
     enum class FlipStates {
@@ -28,7 +28,8 @@ class ClawSubsystem(ahwMap: HardwareMap) : SubsystemBase() {
         BACK,
         ZERO,
         UP,
-        DOWN
+        DOWN,
+        IDLE
     }
 
     private var claw1: Servo
@@ -226,19 +227,58 @@ class ClawSubsystem(ahwMap: HardwareMap) : SubsystemBase() {
 
     fun update() {
         when (rightState) {
-            ClawStates.OPEN -> ServoUtil.openClaw1(claw1)
-            ClawStates.CLOSED -> ServoUtil.closeClaw1(claw1)
+            ClawStates.OPEN -> {
+                ServoUtil.openClaw1(claw1)
+                rightState = ClawStates.IDLE
+            }
+
+            ClawStates.CLOSED -> {
+                ServoUtil.closeClaw1(claw1)
+                rightState = ClawStates.IDLE
+            }
+
+            ClawStates.IDLE -> {}
         }
         when (leftState) {
-            ClawStates.OPEN -> ServoUtil.openClaw2(claw2)
-            ClawStates.CLOSED -> ServoUtil.closeClaw2(claw2)
+            ClawStates.OPEN -> {
+                ServoUtil.openClaw2(claw2)
+                leftState = ClawStates.IDLE
+            }
+
+            ClawStates.CLOSED -> {
+                ServoUtil.closeClaw2(claw2)
+                leftState = ClawStates.IDLE
+            }
+
+            ClawStates.IDLE -> {}
         }
         when (flipState) {
-            FlipStates.HIGH -> flipServo.calcFlipPose(70.0)
-            FlipStates.BACK -> flipServo.calcFlipPose(ServoUtil.backClaw.toDouble())
-            FlipStates.ZERO -> flipServo.calcFlipPose(0.0)
-            FlipStates.UP -> flipServo.calcFlipPose(AutoServoPositions.flipUp.toDouble())
-            FlipStates.DOWN -> flipServo.calcFlipPose((AutoServoPositions.flipDown - 10).toDouble())
+            FlipStates.HIGH -> {
+                flipServo.calcFlipPose(70.0)
+                flipState = FlipStates.IDLE
+            }
+
+            FlipStates.BACK -> {
+                flipServo.calcFlipPose(ServoUtil.backClaw.toDouble())
+                flipState = FlipStates.IDLE
+            }
+
+            FlipStates.ZERO -> {
+                flipServo.calcFlipPose(0.0)
+                flipState = FlipStates.IDLE
+            }
+
+            FlipStates.UP -> {
+                flipServo.calcFlipPose(AutoServoPositions.flipUp.toDouble())
+                flipState = FlipStates.IDLE
+            }
+
+            FlipStates.DOWN -> {
+                flipServo.calcFlipPose((AutoServoPositions.flipDown - 10).toDouble())
+                flipState = FlipStates.IDLE
+            }
+
+            FlipStates.IDLE -> {}
         }
         if (PotentPositions.pastAngleVal != potentiometer.potentAngle()) {
             flipServo.calcFlipPose(ServoExtensions.lastSetVal.toDouble())

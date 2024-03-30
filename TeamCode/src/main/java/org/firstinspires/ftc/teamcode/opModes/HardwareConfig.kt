@@ -39,6 +39,7 @@ import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.EndgameSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.ExtendoSubsystem
+import org.firstinspires.ftc.teamcode.subsystems.LocalizationSubsystem
 import java.io.FileWriter
 
 
@@ -68,6 +69,7 @@ open class HardwareConfig() {
         lateinit var clawSubsystem: ClawSubsystem
         lateinit var endgameSubsystem: EndgameSubsystem
         lateinit var extendoSubsystem: ExtendoSubsystem
+        lateinit var localizationSubsystem: LocalizationSubsystem
 
         var useFileWriter: Boolean = varConfig.useFileWriter
         var multipleDrivers: Boolean = varConfig.multipleDrivers
@@ -98,8 +100,8 @@ open class HardwareConfig() {
         lateinit var fileWriter: FileWriter
         private lateinit var myOpMode: LinearOpMode
         var once = false
+        var correctedLPS = 5
 
-        //        lateinit var startDist: StartDist
         const val CURRENT_VERSION = "7.0.0"
 
         var allHubs: List<LynxModule> = ArrayList()
@@ -129,6 +131,7 @@ open class HardwareConfig() {
         clawSubsystem = ClawSubsystem(ahwMap)
         endgameSubsystem = EndgameSubsystem(ahwMap)
         extendoSubsystem = ExtendoSubsystem(ahwMap)
+        localizationSubsystem = LocalizationSubsystem(ahwMap)
 
 //        CommandScheduler.getInstance().registerSubsystem(driveSubsystem)
 //        CommandScheduler.getInstance().registerSubsystem(clawSubsystem)
@@ -180,14 +183,18 @@ open class HardwareConfig() {
         driveSubsystem.driveByGamepads(
             fieldCentric,
             myOpMode
-        ) //runs drive
-//        driveSubsystem.update()
-//        endgameSubsystem.update()
-//        clawSubsystem.update()
-//        extendoSubsystem.update()
+        )
+        driveSubsystem.update()
+        endgameSubsystem.update()
+        clawSubsystem.update()
+        extendoSubsystem.update()
+        driveSubsystem.avoidanceSubsystem.update(drive)
+        localizationSubsystem.relocalize(drive)
         buildTelemetry() //makes telemetry
         lynxModules()
-        loops++
+        if (currentTime > correctedLPS) {
+            loops++
+        }
     }
 
     private fun lynxModules() {
@@ -219,6 +226,8 @@ open class HardwareConfig() {
         telemetry.addData("Color", lights.currentColor())
         teleSpace()
         telemetry.addData("Version", CURRENT_VERSION)
+
+        localizationSubsystem.telemetry(telemetry)
 
         telemetry.update()
         drawPackets()
@@ -278,7 +287,7 @@ open class HardwareConfig() {
             refreshRate = 0.0
             pastUseLoopTime = LoopTime.useLoopTime
         }
-        LPS = loops / currentTime
+        LPS = loops / (currentTime - correctedLPS)
         if (refreshRate != pastRefreshRate) {
             rrPS = currentTime - pastTimeRR
             pastRefreshRate = refreshRate
@@ -289,6 +298,8 @@ open class HardwareConfig() {
 
         if (LoopTime.useLoopTime && loops % LoopTime.loopInterval == 0.0) {
             refreshRate++
+            // Update pose estimate
+            drive.updatePoseEstimate()
         }
     }
 }

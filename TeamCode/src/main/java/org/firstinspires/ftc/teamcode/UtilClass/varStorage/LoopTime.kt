@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.teamcode.UtilClass.varStorage
 
-//@Config
+import com.acmerobotics.dashboard.config.Config
+
+@Config
 object LoopTime {
     @JvmField
-    var loopInterval = 18.0
+    var loopInterval = 3.0
 
     @JvmField
     var useLoopTime = true

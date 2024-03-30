@@ -61,18 +61,6 @@ class AutoHardware(opmode: LinearOpMode, ahwMap: HardwareMap, auto: Boolean) // 
 //        clawSubsystem!!.closeBoth()
         clawSubsystem.update()
         myOpMode.waitForStart() // wait for the start button to be pressed
-//        HardwareConfig.Companion.rotationPIDF.setPIDF(
-//            rotationPIDFCo.p,
-//            rotationPIDFCo.i,
-//            rotationPIDFCo.d,
-//            rotationPIDFCo.f
-//        )
-//        HardwareConfig.Companion.extensionPIDF.setPIDF(
-//            extensionPIDFCo.p,
-//            extensionPIDFCo.i,
-//            extensionPIDFCo.d,
-//            extensionPIDFCo.f
-//        )
         //        visionPortal.setProcessorEnabled(objProcessor, false);
         lights.setPatternCo()
     }

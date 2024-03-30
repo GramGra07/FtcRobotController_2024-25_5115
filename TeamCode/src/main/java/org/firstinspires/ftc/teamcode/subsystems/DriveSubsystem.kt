@@ -4,8 +4,6 @@ import CancelableFollowTrajectoryAction
 import com.acmerobotics.dashboard.config.Config
 import com.acmerobotics.roadrunner.Action
 import com.acmerobotics.roadrunner.Pose2d
-import com.arcrobotics.ftclib.command.CommandBase
-import com.arcrobotics.ftclib.command.SubsystemBase
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
@@ -31,7 +29,7 @@ import kotlin.math.sqrt
 
 
 @Config
-class DriveSubsystem(ahwMap: HardwareMap) : SubsystemBase() {
+class DriveSubsystem(ahwMap: HardwareMap) {
 
     var drive: MecanumDrive
 
@@ -93,6 +91,7 @@ class DriveSubsystem(ahwMap: HardwareMap) : SubsystemBase() {
         val leftStickX = myOpMode.gamepad1.left_stick_x.toDouble()
         val leftStickY = -myOpMode.gamepad1.left_stick_y.toDouble()
         val rightStickX = -myOpMode.gamepad1.right_stick_x.toDouble()
+//        if ((leftStickX !=0.0)||(leftStickY!=0.0)||(rightStickX!=0.0)) {
 
         // Determine slow power based on slowModeIsOn
         val slowPower = if (slowModeIsOn) slowMult else 1
@@ -116,7 +115,8 @@ class DriveSubsystem(ahwMap: HardwareMap) : SubsystemBase() {
                 (yControl * abs(yControl) + xControl * abs(xControl) + turn) / slowPower
             frontLeftPower =
                 (yControl * abs(yControl) + xControl * abs(xControl) - turn) / slowPower
-            backLeftPower = (yControl * abs(yControl) - xControl * abs(xControl) - turn) / slowPower
+            backLeftPower =
+                (yControl * abs(yControl) - xControl * abs(xControl) - turn) / slowPower
         } else {
             // Compute powers for non-field centric mode
             val turn = rightStickX
@@ -129,9 +129,7 @@ class DriveSubsystem(ahwMap: HardwareMap) : SubsystemBase() {
             backLeftPower =
                 (leftStickY * abs(leftStickY) - leftStickX * abs(leftStickX) - turn) / slowPower
         }
-
-        // Update pose estimate
-        drive.updatePoseEstimate()
+//        }
 
         // Update distance traveled
         updateDistTraveled(PoseStorage.currentPose, drive.pose)
@@ -175,17 +173,16 @@ class DriveSubsystem(ahwMap: HardwareMap) : SubsystemBase() {
 
     private fun power() {
         if (!isAutoInTeleop) {
-            val addedPowers: Map<String, Double?>? = avoidanceSubsystem.powers
-            var flP = addedPowers?.getOrDefault("FL", 0.0) ?: 0.0
-            var frP = addedPowers?.getOrDefault("FR", 0.0) ?: 0.0
-            var rlP = addedPowers?.getOrDefault("RL", 0.0) ?: 0.0
-            var rrP = addedPowers?.getOrDefault("RR", 0.0) ?: 0.0
-
-            if (!usingAvoidance) {
-                flP = 0.0
-                frP = 0.0
-                rlP = 0.0
-                rrP = 0.0
+            var flP = 0.0
+            var frP = 0.0
+            var rrP = 0.0
+            var rlP = 0.0
+            if (avoidanceSubsystem.powers != null && usingAvoidance) {
+                val addedPowers: Map<String, Double?>? = avoidanceSubsystem.powers
+                flP = addedPowers?.getOrDefault("FL", 0.0) ?: 0.0
+                frP = addedPowers?.getOrDefault("FR", 0.0) ?: 0.0
+                rlP = addedPowers?.getOrDefault("RL", 0.0) ?: 0.0
+                rrP = addedPowers?.getOrDefault("RR", 0.0) ?: 0.0
             }
 
             frontLeftPower = Range.clip(frontLeftPower + flP, -1.0, 1.0)
@@ -201,21 +198,9 @@ class DriveSubsystem(ahwMap: HardwareMap) : SubsystemBase() {
     }
 
 
-    private fun update() {
+    fun update() {
         power()
-        drive.updatePoseEstimate()
-        avoidanceSubsystem.update(drive)
 //        odometrySubsystem!!.update()
-    }
-
-    class driveDefault : CommandBase() {
-        private fun update() {
-            this.update()
-        }
-
-        override fun execute() {
-            update()
-        }
     }
 
     fun telemetry(telemetry: Telemetry) {

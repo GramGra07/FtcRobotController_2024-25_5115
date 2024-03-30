@@ -48,7 +48,7 @@ object Operator {
 //                ServoUtil.openClaw(HardwareConfig.claw1)
             }
             if (myOpMode.gamepad2.left_trigger > 0) {
-                clawSubsystem.openRight()
+                clawSubsystem.openRightAction()
                 runBlocking(clawSubsystem.openRightAction())
 //                ServoUtil.openClaw(HardwareConfig.claw2)
             }
@@ -70,6 +70,7 @@ object Operator {
                 extendoSubsystem.setPowerR(extendoSubsystem.minRotationTicks.toDouble())
             } else {
                 extendoSubsystem.stopR()
+                extendoSubsystem.idleR()
 //                HardwareConfig.rotationPower = 0.0
             }
             if (myOpMode.gamepad2.cross && !xPressed && extendoSubsystem.usePIDF) {
@@ -85,6 +86,7 @@ object Operator {
             } else {
 //                extensionPower = 0.0
                 extendoSubsystem.stopE()
+                extendoSubsystem.idleE()
             }
             if (!extendoSubsystem.usePIDF) {
                 extendoSubsystem.setPowerE(

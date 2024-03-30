@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems
 
 import com.arcrobotics.ftclib.command.CommandBase
-import com.arcrobotics.ftclib.command.SubsystemBase
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.HardwareMap
@@ -12,10 +11,11 @@ import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.initMotor
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.initServo
 
 
-class EndgameSubsystem(ahwMap: HardwareMap) : SubsystemBase() {
+class EndgameSubsystem(ahwMap: HardwareMap) {
     enum class ShooterState {
         OPEN,
-        CLOSED
+        CLOSED,
+        IDLE
     }
 
     enum class LiftStates {
@@ -98,11 +98,15 @@ class EndgameSubsystem(ahwMap: HardwareMap) : SubsystemBase() {
         when (shootState) {
             ShooterState.OPEN -> {
                 releaseAirplane(airplaneServo)
+                shootState = ShooterState.IDLE
             }
 
             ShooterState.CLOSED -> {
                 resetAirplane(airplaneServo)
+                shootState = ShooterState.IDLE
             }
+
+            ShooterState.IDLE -> {}
         }
     }
 }

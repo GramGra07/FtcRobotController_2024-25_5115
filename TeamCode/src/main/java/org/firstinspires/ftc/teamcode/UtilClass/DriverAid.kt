@@ -31,7 +31,7 @@ object DriverAid {
         if (goToDrone) {
             driveSubsystem.slowModeIsOn = false
             driveSubsystem.isAutoInTeleop = true
-            drive.updatePoseEstimate()
+//            drive.updatePoseEstimate()
             cancelableFollowing.run(packet)
             // go to drone scoring position]
         }

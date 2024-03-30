@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.subsystems
 
-import com.arcrobotics.ftclib.command.CommandBase
-import com.arcrobotics.ftclib.command.SubsystemBase
 import com.arcrobotics.ftclib.controller.PIDFController
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorSimple
@@ -12,27 +10,19 @@ import org.firstinspires.ftc.teamcode.UtilClass.varStorage.PIDVals
 import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.initMotor
 import kotlin.math.abs
 
-class ExtendoSubsystem(ahwMap: HardwareMap) : SubsystemBase() {
+class ExtendoSubsystem(ahwMap: HardwareMap) {
     enum class RotateState {
         CONTROLLED_PID,
         CONTROL,
-        STOPPED
+        STOPPED,
+        IDLE
     }
 
     enum class ExtendState {
         CONTROLLED_PID,
         CONTROL,
-        STOPPED
-    }
-
-    class extendoDefault : CommandBase() {
-        private fun update() {
-            this.update()
-        }
-
-        override fun execute() {
-            update()
-        }
+        STOPPED,
+        IDLE
     }
 
     private var rotateState: RotateState = RotateState.STOPPED
@@ -93,13 +83,13 @@ class ExtendoSubsystem(ahwMap: HardwareMap) : SubsystemBase() {
 
     fun setPowerR(input: Double) {
         updatePID()
-        rPower = when (rotateState) {
+        when (rotateState) {
             RotateState.CONTROLLED_PID -> {
-                calculatePID(rotationPIDF, motorRotation.currentPosition.toDouble(), input)
+                rPower = calculatePID(rotationPIDF, motorRotation.currentPosition.toDouble(), input)
             }
 
             RotateState.CONTROL -> {
-                Range.clip(
+                rPower = Range.clip(
                     input,
                     flipperMin,
                     flipperMax
@@ -107,20 +97,24 @@ class ExtendoSubsystem(ahwMap: HardwareMap) : SubsystemBase() {
             }
 
             RotateState.STOPPED -> {
-                0.0
+                rPower = 0.0
             }
+
+            RotateState.IDLE -> {}
+
         }
     }
 
     fun setPowerE(input: Double) {
         updatePID()
-        ePower = when (extendState) {
+        when (extendState) {
             ExtendState.CONTROLLED_PID -> {
-                calculatePID(extensionPIDF, motorExtension.currentPosition.toDouble(), input)
+                ePower =
+                    calculatePID(extensionPIDF, motorExtension.currentPosition.toDouble(), input)
             }
 
             ExtendState.CONTROL -> {
-                Range.clip(
+                ePower = Range.clip(
                     input,
                     slideMin,
                     slideMax
@@ -128,8 +122,10 @@ class ExtendoSubsystem(ahwMap: HardwareMap) : SubsystemBase() {
             }
 
             ExtendState.STOPPED -> {
-                0.0
+                ePower = 0.0
             }
+
+            ExtendState.IDLE -> {}
         }
     }
 
@@ -181,6 +177,8 @@ class ExtendoSubsystem(ahwMap: HardwareMap) : SubsystemBase() {
             RotateState.STOPPED -> {
                 motorExtension.power = 0.0
             }
+
+            RotateState.IDLE -> {}
         }
         when (extendState) {
             ExtendState.CONTROL,
@@ -191,6 +189,8 @@ class ExtendoSubsystem(ahwMap: HardwareMap) : SubsystemBase() {
             ExtendState.STOPPED -> {
                 motorRotation.power = 0.0
             }
+
+            ExtendState.IDLE -> {}
         }
     }
 
@@ -228,6 +228,14 @@ class ExtendoSubsystem(ahwMap: HardwareMap) : SubsystemBase() {
                 target
             ), -1.0, 1.0
         )
+    }
+
+    fun idleE() {
+        extendState = ExtendState.IDLE
+    }
+
+    fun idleR() {
+        rotateState = RotateState.IDLE
     }
 
     fun telemetry(telemetry: Telemetry) {
