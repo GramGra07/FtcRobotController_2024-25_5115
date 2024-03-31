@@ -2,15 +2,24 @@ package org.firstinspires.ftc.teamcode.UtilClass.camUtil
 
 import android.util.Size
 import com.acmerobotics.dashboard.FtcDashboard
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver
 import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource
+import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.setPatternCo
+import org.firstinspires.ftc.teamcode.opModes.HardwareConfig
 import org.firstinspires.ftc.teamcode.opModes.camera.VPObjectDetect
+import org.firstinspires.ftc.teamcode.pub.AssumedDetectionBuilder
+import org.firstinspires.ftc.teamcode.pub.DetectionBuilder
+import org.firstinspires.ftc.teamcode.pub.pubObjDetection
 import org.firstinspires.ftc.vision.VisionPortal
 import org.firstinspires.ftc.vision.apriltag.AprilTagGameDatabase
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor
+import org.opencv.core.Point
+import org.opencv.core.Rect
+import org.opencv.core.Scalar
 
 object CameraUtilities {
     fun startCameraStream(streamSource: CameraStreamSource) {
@@ -27,6 +36,7 @@ object CameraUtilities {
     private lateinit var visionPortal: VisionPortal
     lateinit var aprilTag: AprilTagProcessor
     private lateinit var objProcessor: VPObjectDetect
+    private lateinit var pubProcessor: pubObjDetection
 
     fun initializeProcessor(
         processor: Processor? = Processor.APRIL_TAG,
@@ -61,6 +71,20 @@ object CameraUtilities {
                 objProcessor = VPObjectDetect()
             }
 
+            Processor.PUB_TEST -> {
+                pubProcessor = pubObjDetection(
+                    Scalar(0.0, 0.0, 0.0), Scalar(0.0, 0.0, 0.0),
+                    DetectionBuilder(
+                        Rect(Point(120.0, 50.0), Point(230.0, 150.0)), "left"
+                    ) { HardwareConfig.lights.setPatternCo(RevBlinkinLedDriver.BlinkinPattern.GOLD) },
+                    DetectionBuilder(
+                        Rect(Point(570.0, 70.0), Point(680.0, 170.0)), "right"
+                    ) { HardwareConfig.lights.setPatternCo(RevBlinkinLedDriver.BlinkinPattern.WHITE) },
+                    AssumedDetectionBuilder("middle",
+                        { HardwareConfig.lights.setPatternCo(RevBlinkinLedDriver.BlinkinPattern.CONFETTI) })
+                )
+            }
+
             null -> {
                 throw Exception("Processor cannot be null")
             }
@@ -80,6 +104,7 @@ object CameraUtilities {
                 when (processor) {
                     Processor.OBJECT_DETECT -> objProcessor
                     Processor.APRIL_TAG -> aprilTag
+                    Processor.PUB_TEST -> pubProcessor
                 }
             )
             .build()

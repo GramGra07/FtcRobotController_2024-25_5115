@@ -1,25 +1,16 @@
-package org.firstinspires.ftc.teamcode.ggutil.blank
+package org.firstinspires.ftc.teamcode.pub
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
-import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.firstinspires.ftc.teamcode.UtilClass.camUtil.Processor
 import org.firstinspires.ftc.teamcode.opModes.autoSoftware.AutoHardware
 import org.firstinspires.ftc.teamcode.startEnums.Alliance
 import org.firstinspires.ftc.teamcode.startEnums.StartSide
-import org.firstinspires.ftc.teamcode.storage.PoseStorage
 
 @Autonomous
-@Disabled
-class blankAuto : LinearOpMode() {
+class testCameraAuto : LinearOpMode() {
     private lateinit var robot: AutoHardware
-
-    @Throws(InterruptedException::class)
     override fun runOpMode() {
-        robot =
-            AutoHardware(this, hardwareMap, Processor.OBJECT_DETECT, Alliance.RED, StartSide.LEFT)
-        if (opModeIsActive()) {
-            PoseStorage.currentPose = robot.drive.pose
-        }
+        robot = AutoHardware(this, hardwareMap, Processor.PUB_TEST, Alliance.RED, StartSide.LEFT)
     }
 }

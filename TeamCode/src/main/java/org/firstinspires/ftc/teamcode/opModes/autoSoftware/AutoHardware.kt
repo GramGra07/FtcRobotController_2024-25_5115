@@ -19,6 +19,7 @@ import org.firstinspires.ftc.teamcode.storage.PoseStorage
 class AutoHardware(
     opmode: LinearOpMode,
     ahwMap: HardwareMap,
+    processor: Processor,
     alliance: Alliance,
     startSide: StartSide
 ) // constructor
@@ -33,7 +34,7 @@ class AutoHardware(
         drive = MecanumDrive(ahwMap, getStartPose(alliance, startSide))
         initAutoVars(alliance, startSide)
         autoVars[AutoVarEnums.VISION_READY] =
-            initializeProcessor(Processor.OBJECT_DETECT, ahwMap, cam2_N, true)
+            initializeProcessor(processor, ahwMap, cam2_N, true)
         green1.ledIND(red1, false)
         green2.ledIND(red2, false)
         green3.ledIND(red3, false)
