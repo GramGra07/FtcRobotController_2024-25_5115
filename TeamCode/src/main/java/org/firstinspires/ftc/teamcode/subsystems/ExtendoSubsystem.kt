@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.robotcore.external.Telemetry
-import org.firstinspires.ftc.teamcode.UtilClass.varStorage.PIDVals
+import org.firstinspires.ftc.teamcode.UtilClass.varConfigurations.PIDVals
 import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.initMotor
 import kotlin.math.abs
 

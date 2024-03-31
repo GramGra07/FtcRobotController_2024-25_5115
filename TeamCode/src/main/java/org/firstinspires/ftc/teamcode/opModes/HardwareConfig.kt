@@ -16,14 +16,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.VoltageSensor
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.Telemetry
-import org.firstinspires.ftc.teamcode.Drivers
-import org.firstinspires.ftc.teamcode.Drivers.bindDriverButtons
-import org.firstinspires.ftc.teamcode.Drivers.fieldCentric
-import org.firstinspires.ftc.teamcode.Drivers.switchProfile
-import org.firstinspires.ftc.teamcode.Operator.bindOtherButtons
 import org.firstinspires.ftc.teamcode.UtilClass.FileWriterFTC.setUpFile
-import org.firstinspires.ftc.teamcode.UtilClass.varStorage.LoopTime
-import org.firstinspires.ftc.teamcode.UtilClass.varStorage.varConfig
+import org.firstinspires.ftc.teamcode.UtilClass.varConfigurations.LoopTime
+import org.firstinspires.ftc.teamcode.UtilClass.varConfigurations.varConfig
 import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.currentColor
 import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.initLights
 import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toPoint
@@ -34,12 +29,18 @@ import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.initVSensor
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.ledIND
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.lowVoltage
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.potentAngle
+import org.firstinspires.ftc.teamcode.humanInput.Drivers
+import org.firstinspires.ftc.teamcode.humanInput.Drivers.bindDriverButtons
+import org.firstinspires.ftc.teamcode.humanInput.Drivers.fieldCentric
+import org.firstinspires.ftc.teamcode.humanInput.Drivers.switchProfile
+import org.firstinspires.ftc.teamcode.humanInput.Operator.bindOtherButtons
 import org.firstinspires.ftc.teamcode.rr.MecanumDrive
 import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.EndgameSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.ExtendoSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.LocalizationSubsystem
+import org.firstinspires.ftc.teamcode.subsystems.avoidance.AvoidanceSubsystem
 import java.io.FileWriter
 
 
@@ -47,7 +48,7 @@ open class HardwareConfig() {
 
     constructor(opMode: LinearOpMode, ahwMap: HardwareMap, auto: Boolean) : this() {
         myOpMode = opMode
-        this.init(ahwMap, auto)
+        this.initRobot(ahwMap, auto)
     }
 
     companion object {
@@ -70,6 +71,7 @@ open class HardwareConfig() {
         lateinit var endgameSubsystem: EndgameSubsystem
         lateinit var extendoSubsystem: ExtendoSubsystem
         lateinit var localizationSubsystem: LocalizationSubsystem
+        lateinit var avoidanceSubsystem: AvoidanceSubsystem
 
         var useFileWriter: Boolean = varConfig.useFileWriter
         var multipleDrivers: Boolean = varConfig.multipleDrivers
@@ -107,7 +109,7 @@ open class HardwareConfig() {
         var allHubs: List<LynxModule> = ArrayList()
     }
 
-    fun init(
+    fun initRobot(
         ahwMap: HardwareMap,
         auto: Boolean,
     ) {
@@ -132,6 +134,7 @@ open class HardwareConfig() {
         endgameSubsystem = EndgameSubsystem(ahwMap)
         extendoSubsystem = ExtendoSubsystem(ahwMap)
         localizationSubsystem = LocalizationSubsystem(ahwMap)
+        avoidanceSubsystem = AvoidanceSubsystem()
 
 //        CommandScheduler.getInstance().registerSubsystem(driveSubsystem)
 //        CommandScheduler.getInstance().registerSubsystem(clawSubsystem)
@@ -184,11 +187,11 @@ open class HardwareConfig() {
             fieldCentric,
             myOpMode
         )
-        driveSubsystem.update()
+        driveSubsystem.update(avoidanceSubsystem)
         endgameSubsystem.update()
         clawSubsystem.update()
         extendoSubsystem.update()
-        driveSubsystem.avoidanceSubsystem.update(drive)
+        avoidanceSubsystem.update(drive)
         localizationSubsystem.relocalize(drive)
         buildTelemetry() //makes telemetry
         lynxModules()
@@ -216,6 +219,7 @@ open class HardwareConfig() {
         telemetry.addData("Pose: ", drive.pose.toPoint().toString())
         telemetry.addData("potentiometer", "%.1f", potentiometer.potentAngle())
         driveSubsystem.telemetry(telemetry)
+        avoidanceSubsystem.telemetry(telemetry)
         extendoSubsystem.telemetry(telemetry)
         teleSpace()
         telemetry.addData("Timer", "%.1f", currentTime) //shows current time
@@ -235,12 +239,12 @@ open class HardwareConfig() {
 
     private fun drawPackets() {
         packet = TelemetryPacket()
-        val rad = driveSubsystem.avoidanceSubsystem.rad
+        val rad = avoidanceSubsystem.rad
         val roboRad = varConfig.robotRadiusAvoidance
         packet.fieldOverlay()
             .setFill("red")
             .setAlpha(0.3)
-        for (field in driveSubsystem.avoidanceSubsystem.fields) {
+        for (field in avoidanceSubsystem.fields) {
             packet.fieldOverlay()
                 .fillCircle(field.point?.y!!, field.point!!.x!!, rad)
         }

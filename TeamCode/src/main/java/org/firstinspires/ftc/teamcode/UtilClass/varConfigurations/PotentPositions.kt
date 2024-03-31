@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.UtilClass.varStorage
+package org.firstinspires.ftc.teamcode.UtilClass.varConfigurations
 
 object PotentPositions {
     var potentiometerBase = 51

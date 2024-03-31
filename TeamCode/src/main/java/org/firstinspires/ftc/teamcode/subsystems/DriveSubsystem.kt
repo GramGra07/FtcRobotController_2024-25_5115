@@ -12,13 +12,13 @@ import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.UtilClass.FileWriterFTC
-import org.firstinspires.ftc.teamcode.UtilClass.varStorage.varConfig
-import org.firstinspires.ftc.teamcode.UtilClass.varStorage.varConfig.usingAvoidance
+import org.firstinspires.ftc.teamcode.UtilClass.varConfigurations.varConfig
+import org.firstinspires.ftc.teamcode.UtilClass.varConfigurations.varConfig.usingAvoidance
 import org.firstinspires.ftc.teamcode.extensions.MotorExtensions
-import org.firstinspires.ftc.teamcode.opModes.DistanceStorage
 import org.firstinspires.ftc.teamcode.opModes.HardwareConfig
-import org.firstinspires.ftc.teamcode.opModes.PoseStorage
 import org.firstinspires.ftc.teamcode.rr.MecanumDrive
+import org.firstinspires.ftc.teamcode.storage.DistanceStorage
+import org.firstinspires.ftc.teamcode.storage.PoseStorage
 import org.firstinspires.ftc.teamcode.subsystems.avoidance.AvoidanceSubsystem
 import kotlin.math.abs
 import kotlin.math.atan2
@@ -39,7 +39,6 @@ class DriveSubsystem(ahwMap: HardwareMap) {
     private var motorBackRight: DcMotorEx
 
     //    var odometrySubsystem: OdometrySubsystem3Wheel? = null
-    var avoidanceSubsystem: AvoidanceSubsystem = AvoidanceSubsystem()
     lateinit var cancelableFollowing: CancelableFollowTrajectoryAction
 
     init {
@@ -171,7 +170,7 @@ class DriveSubsystem(ahwMap: HardwareMap) {
         drive.pose = Pose2d(drive.pose.position.x, drive.pose.position.y, 0.0)
     }
 
-    private fun power() {
+    private fun power(avoidanceSubsystem: AvoidanceSubsystem) {
         if (!isAutoInTeleop) {
             var flP = 0.0
             var frP = 0.0
@@ -198,8 +197,8 @@ class DriveSubsystem(ahwMap: HardwareMap) {
     }
 
 
-    fun update() {
-        power()
+    fun update(avoidanceSubsystem: AvoidanceSubsystem) {
+        power(avoidanceSubsystem)
 //        odometrySubsystem!!.update()
     }
 
@@ -212,7 +211,6 @@ class DriveSubsystem(ahwMap: HardwareMap) {
         }
         telemetry.addData("thisDistance (in)", "%.1f", thisDist)
         telemetry.addData("totalDistance (in)", "%.1f", DistanceStorage.totalDist)
-        telemetry.addData("addPowers", avoidanceSubsystem.powers)
 //        odometrySubsystem!!.telemetry(telemetry)
     }
 }

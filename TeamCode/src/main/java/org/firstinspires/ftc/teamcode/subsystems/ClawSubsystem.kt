@@ -6,8 +6,8 @@ import com.arcrobotics.ftclib.command.CommandBase
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.Servo
 import org.firstinspires.ftc.teamcode.UtilClass.ServoUtil
-import org.firstinspires.ftc.teamcode.UtilClass.varStorage.AutoServoPositions
-import org.firstinspires.ftc.teamcode.UtilClass.varStorage.PotentPositions
+import org.firstinspires.ftc.teamcode.UtilClass.varConfigurations.AutoServoPositions
+import org.firstinspires.ftc.teamcode.UtilClass.varConfigurations.PotentPositions
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.potentAngle
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.calcFlipPose
@@ -104,6 +104,7 @@ class ClawSubsystem(ahwMap: HardwareMap) {
     private fun flipZero() {
         flipState = FlipStates.ZERO
     }
+
     private class CloseBoth : Action {
         override fun run(p: TelemetryPacket): Boolean {
             clawSubsystem.openBoth()

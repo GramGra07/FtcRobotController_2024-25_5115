@@ -1,9 +1,10 @@
 package org.firstinspires.ftc.teamcode.subsystems.avoidance
 
-import VectorField
-import VectorField.Companion.getCorrectionByAvoidance
+import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.Point
-import org.firstinspires.ftc.teamcode.UtilClass.varStorage.varConfig
+import org.firstinspires.ftc.teamcode.UtilClass.varConfigurations.varConfig
+import org.firstinspires.ftc.teamcode.VectorField
+import org.firstinspires.ftc.teamcode.VectorField.Companion.getCorrectionByAvoidance
 import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toPoint
 import org.firstinspires.ftc.teamcode.rr.MecanumDrive
 
@@ -44,5 +45,9 @@ class AvoidanceSubsystem {
             fields,
             drive.pose.position.toPoint(),
         )
+    }
+
+    fun telemetry(telemetry: Telemetry) {
+        telemetry.addData("addPowers", powers)
     }
 }

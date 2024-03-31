@@ -1,5 +1,6 @@
-import org.firstinspires.ftc.teamcode.Point
-import org.firstinspires.ftc.teamcode.UtilClass.varStorage.varConfig
+package org.firstinspires.ftc.teamcode
+
+import org.firstinspires.ftc.teamcode.UtilClass.varConfigurations.varConfig
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.pow

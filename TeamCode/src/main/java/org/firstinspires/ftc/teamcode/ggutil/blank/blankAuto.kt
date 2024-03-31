@@ -1,25 +1,23 @@
 package org.firstinspires.ftc.teamcode.ggutil.blank
 
-import com.acmerobotics.roadrunner.Pose2d
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
-import org.firstinspires.ftc.teamcode.opModes.PoseStorage
 import org.firstinspires.ftc.teamcode.opModes.autoSoftware.AutoHardware
-import org.firstinspires.ftc.teamcode.rr.MecanumDrive
+import org.firstinspires.ftc.teamcode.startEnums.Alliance
+import org.firstinspires.ftc.teamcode.startEnums.StartSide
+import org.firstinspires.ftc.teamcode.storage.PoseStorage
 
 @Autonomous
 @Disabled
 class blankAuto : LinearOpMode() {
-    var startPose: Pose2d = AutoHardware.startPose
-    var robot = AutoHardware(this, hardwareMap, true)
+    private lateinit var robot: AutoHardware
 
     @Throws(InterruptedException::class)
     override fun runOpMode() {
-        val drive = MecanumDrive(hardwareMap, startPose)
-        robot.initAuto(hardwareMap, this)
+        robot = AutoHardware(this, hardwareMap, Alliance.RED, StartSide.LEFT)
         if (opModeIsActive()) {
-            PoseStorage.currentPose = drive.pose
+            PoseStorage.currentPose = robot.drive.pose
         }
     }
 }

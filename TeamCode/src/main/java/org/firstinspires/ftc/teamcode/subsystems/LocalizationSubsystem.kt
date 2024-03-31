@@ -1,56 +1,48 @@
 package org.firstinspires.ftc.teamcode.subsystems
 
-import android.util.Size
-import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.roadrunner.Pose2d
 import com.acmerobotics.roadrunner.Rotation2d
 import com.acmerobotics.roadrunner.Vector2d
 import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.robotcore.external.Telemetry
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
+import org.firstinspires.ftc.teamcode.UtilClass.camUtil.CameraUtilities.aprilTag
+import org.firstinspires.ftc.teamcode.UtilClass.camUtil.CameraUtilities.initializeProcessor
 import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.cam2_N
 import org.firstinspires.ftc.teamcode.rr.MecanumDrive
-import org.firstinspires.ftc.vision.VisionPortal
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection
-import org.firstinspires.ftc.vision.apriltag.AprilTagGameDatabase
-import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor
 
 class LocalizationSubsystem(ahwMap: HardwareMap) {
-    var visionPortal: VisionPortal
-    var aprilTag: AprilTagProcessor
     private var currentDetections: List<AprilTagDetection> = emptyList()
     private var numDetections: Int = 0
 
     init {
-        aprilTag =
-            AprilTagProcessor.Builder() // The following default settings are available to un-comment and edit as needed.
-                .setDrawAxes(false)
-                .setDrawCubeProjection(false)
-                .setDrawTagOutline(true)
-                .setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)
-                .setTagLibrary(AprilTagGameDatabase.getCenterStageTagLibrary())
-                .setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
-                .setLensIntrinsics(972.571, 972.571, 667.598, 309.012)
-                .build()
-
-        // Adjust Image Decimation to trade-off detection-range for detection-rate.
-        // eg: Some typical detection data using a Logitech C920 WebCam
-        // Decimation = 1 ..  Detect 2" Tag from 10 feet away at 10 Frames per second
-        // Decimation = 2 ..  Detect 2" Tag from 6  feet away at 22 Frames per second
-        // Decimation = 3 ..  Detect 2" Tag from 4  feet away at 30 Frames Per Second (default)
-        // Decimation = 3 ..  Detect 5" Tag from 10 feet away at 30 Frames Per Second (default)
-        // Note: Decimation can be changed on-the-fly to adapt during a match.
-        aprilTag.setDecimation(3.0F)
-        val builder = VisionPortal.Builder()
-        builder.setCamera(ahwMap.get(WebcamName::class.java, cam2_N))
-            .setCameraResolution(Size(1280, 720))
-        builder.addProcessor(aprilTag)
-        visionPortal = builder.build()
-        visionPortal.setProcessorEnabled(aprilTag, true);
-        FtcDashboard.getInstance()
-            .startCameraStream(visionPortal, 0.0)
+        initializeProcessor(null, ahwMap, cam2_N, true)
+//        aprilTag =
+//            AprilTagProcessor.Builder() // The following default settings are available to un-comment and edit as needed.
+//                .setDrawAxes(false)
+//                .setDrawCubeProjection(false)
+//                .setDrawTagOutline(true)
+//                .setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)
+//                .setTagLibrary(AprilTagGameDatabase.getCenterStageTagLibrary())
+//                .setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
+//                .setLensIntrinsics(972.571, 972.571, 667.598, 309.012)
+//                .build()
+//
+//        // Adjust Image Decimation to trade-off detection-range for detection-rate.
+//        // eg: Some typical detection data using a Logitech C920 WebCam
+//        // Decimation = 1 ..  Detect 2" Tag from 10 feet away at 10 Frames per second
+//        // Decimation = 2 ..  Detect 2" Tag from 6  feet away at 22 Frames per second
+//        // Decimation = 3 ..  Detect 2" Tag from 4  feet away at 30 Frames Per Second (default)
+//        // Decimation = 3 ..  Detect 5" Tag from 10 feet away at 30 Frames Per Second (default)
+//        // Note: Decimation can be changed on-the-fly to adapt during a match.
+//        aprilTag.setDecimation(3.0F)
+//        val builder = VisionPortal.Builder()
+//        builder.setCamera(ahwMap.get(WebcamName::class.java, cam2_N))
+//            .setCameraResolution(Size(1280, 720))
+//        builder.addProcessor(aprilTag)
+//        visionPortal = builder.build()
+//        visionPortal.setProcessorEnabled(aprilTag, true)
+//        startCameraStream(visionPortal)
     }
 
     private fun getDetections(): Map<String, Double?>? {
