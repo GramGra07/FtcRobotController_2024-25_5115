@@ -11,7 +11,7 @@ import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource
 import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.setPatternCo
 import org.firstinspires.ftc.teamcode.opModes.HardwareConfig
 import org.firstinspires.ftc.teamcode.opModes.camera.VPObjectDetect
-import org.firstinspires.ftc.teamcode.pub.AssumedDetectionBuilder
+import org.firstinspires.ftc.teamcode.pub.AssumedBuilder
 import org.firstinspires.ftc.teamcode.pub.DetectionBuilder
 import org.firstinspires.ftc.teamcode.pub.pubObjDetection
 import org.firstinspires.ftc.vision.VisionPortal
@@ -73,15 +73,19 @@ object CameraUtilities {
 
             Processor.PUB_TEST -> {
                 pubProcessor = pubObjDetection(
-                    Scalar(0.0, 0.0, 0.0), Scalar(0.0, 0.0, 0.0),
                     DetectionBuilder(
-                        Rect(Point(120.0, 50.0), Point(230.0, 150.0)), "left"
+                        Rect(Point(120.0, 50.0), Point(230.0, 150.0)), "left",
+                        Scalar(0.0, 140.0, 0.0),
+                        Scalar(255.0, 255.0, 255.0),
                     ) { HardwareConfig.lights.setPatternCo(RevBlinkinLedDriver.BlinkinPattern.GOLD) },
                     DetectionBuilder(
-                        Rect(Point(570.0, 70.0), Point(680.0, 170.0)), "right"
+                        Rect(Point(570.0, 70.0), Point(680.0, 170.0)), "right",
+                        Scalar(0.0, 140.0, 0.0),
+                        Scalar(255.0, 255.0, 255.0),
                     ) { HardwareConfig.lights.setPatternCo(RevBlinkinLedDriver.BlinkinPattern.WHITE) },
-                    AssumedDetectionBuilder("middle",
-                        { HardwareConfig.lights.setPatternCo(RevBlinkinLedDriver.BlinkinPattern.CONFETTI) })
+                    AssumedBuilder(
+                        "middle"
+                    ) { HardwareConfig.lights.setPatternCo(RevBlinkinLedDriver.BlinkinPattern.CONFETTI) }
                 )
             }
 

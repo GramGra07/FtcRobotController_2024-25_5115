@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.firstinspires.ftc.teamcode.UtilClass.camUtil.Processor
 import org.firstinspires.ftc.teamcode.opModes.autoSoftware.AutoHardware
+import org.firstinspires.ftc.teamcode.opModes.autoSoftware.autoClasses.StartLocation
 import org.firstinspires.ftc.teamcode.startEnums.Alliance
 import org.firstinspires.ftc.teamcode.startEnums.StartSide
 import org.firstinspires.ftc.teamcode.storage.PoseStorage
@@ -17,7 +18,12 @@ class blankAuto : LinearOpMode() {
     @Throws(InterruptedException::class)
     override fun runOpMode() {
         robot =
-            AutoHardware(this, hardwareMap, Processor.OBJECT_DETECT, Alliance.RED, StartSide.LEFT)
+            AutoHardware(
+                this,
+                hardwareMap,
+                Processor.OBJECT_DETECT,
+                StartLocation(Alliance.RED, StartSide.LEFT)
+            )
         if (opModeIsActive()) {
             PoseStorage.currentPose = robot.drive.pose
         }

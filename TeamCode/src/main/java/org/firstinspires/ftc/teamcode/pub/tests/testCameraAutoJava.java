@@ -1,9 +1,10 @@
-package org.firstinspires.ftc.teamcode.pub;
+package org.firstinspires.ftc.teamcode.pub.tests;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.UtilClass.camUtil.Processor;
 import org.firstinspires.ftc.teamcode.opModes.autoSoftware.AutoHardware;
+import org.firstinspires.ftc.teamcode.opModes.autoSoftware.autoClasses.StartLocation;
 import org.firstinspires.ftc.teamcode.startEnums.Alliance;
 import org.firstinspires.ftc.teamcode.startEnums.StartSide;
 
@@ -12,6 +13,6 @@ public class testCameraAutoJava extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        robot = new AutoHardware(this, hardwareMap, Processor.PUB_TEST, Alliance.RED, StartSide.LEFT);
+        robot = new AutoHardware(this, hardwareMap, Processor.PUB_TEST, new StartLocation(Alliance.RED, StartSide.LEFT));
     }
 }

@@ -8,6 +8,7 @@ import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration
 import org.firstinspires.ftc.teamcode.pub.DetectionExtensions.first
 import org.firstinspires.ftc.teamcode.pub.DetectionExtensions.second
+import org.firstinspires.ftc.teamcode.pub.builderInterfaces.AssumedDetectionBuilder
 import org.firstinspires.ftc.vision.VisionProcessor
 import org.opencv.android.Utils
 import org.opencv.core.Core
@@ -18,25 +19,19 @@ import org.opencv.imgproc.Imgproc
 import java.util.concurrent.atomic.AtomicReference
 
 class pubObjDetection(
-    scalarLow: Scalar,
-    scalarHigh: Scalar,
     builder: DetectionBuilder,
     builder2: DetectionBuilder,
-    assumption: AssumedDetectionBuilder
+    assumption: AssumedBuilder
 ) : VisionProcessor, CameraStreamSource { //var alliance: Alliance
 
     private val lastFrame = AtomicReference(Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565))
     private var ycrcbMat = Mat()
     private var submatOne = Mat()
     private var submatTwo = Mat()
-    private var scalarLow: Scalar
-    private var scalarHigh: Scalar
     private val builders: List<DetectionBuilder>
-    private val assumption: AssumedDetectionBuilder
+    private val assumption: AssumedBuilder
 
     init {
-        this.scalarLow = scalarLow
-        this.scalarHigh = scalarHigh
         this.builders = listOf(builder, builder2)
         this.assumption = assumption
     }
@@ -66,10 +61,10 @@ class pubObjDetection(
         val twoMean = Core.mean(submatTwo).`val`
         submatOne.release()
         submatTwo.release()
-        if (executeIfInRange(oneMean)) {
+        if (executeIfInRange(firstBuilder.scalarLow, firstBuilder.scalarHigh, oneMean)) {
             drawRectangleAndText(firstBuilder, frame)
             assumedBuilder.execute()
-        } else if (executeIfInRange(twoMean)) {
+        } else if (executeIfInRange(secondBuilder.scalarLow, secondBuilder.scalarHigh, twoMean)) {
             drawRectangleAndText(secondBuilder, frame)
             assumedBuilder.execute()
         } else {
@@ -107,13 +102,17 @@ class pubObjDetection(
         }
     }
 
-    fun executeIfInRange(mean: DoubleArray): Boolean {
+    private fun executeIfInRange(
+        scalarLow: Scalar,
+        scalarHigh: Scalar,
+        mean: DoubleArray
+    ): Boolean {
         return (mean[0] > scalarLow.`val`[0] && mean[0] < scalarHigh.`val`[0]) &&
                 (mean[1] > scalarLow.`val`[1] && mean[1] < scalarHigh.`val`[1]) &&
                 (mean[2] > scalarLow.`val`[2] && mean[2] < scalarHigh.`val`[2])
     }
 
-    fun drawRectangleAndText(builder: DetectionBuilder, frame: Mat) {
+    private fun drawRectangleAndText(builder: DetectionBuilder, frame: Mat) {
         Imgproc.rectangle(
             frame, builder.rectangle.br(), builder.rectangle.tl(), Scalar(0.0, 255.0, 0.0), 1
         )
