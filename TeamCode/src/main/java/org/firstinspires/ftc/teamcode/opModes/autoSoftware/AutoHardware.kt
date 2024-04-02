@@ -25,7 +25,7 @@ class AutoHardware(
     : HardwareConfig(opmode, ahwMap, true) {
 
     var startPose = StartPose(startLocation)
-    private lateinit var autoVars: HashMap<AutoVarEnums, Boolean>
+    private var autoVars: HashMap<AutoVarEnums, Boolean> = hashMapOf()
     var drive: MecanumDrive
 
     init {
@@ -38,9 +38,8 @@ class AutoHardware(
         green2.ledIND(red2, false)
         green3.ledIND(red3, false)
         green4.ledIND(red4, false)
-        while (!opmode.isStarted && !opmode.isStopRequested) {
-            showAutoTelemetry()
-        }
+        showAutoTelemetry()
+        opmode.waitForStart()
         timer.reset()
         lights.setPatternCo()
     }

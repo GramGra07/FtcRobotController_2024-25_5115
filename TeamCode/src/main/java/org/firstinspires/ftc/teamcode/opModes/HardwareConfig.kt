@@ -136,15 +136,6 @@ open class HardwareConfig() {
         localizationSubsystem = LocalizationSubsystem(ahwMap)
         avoidanceSubsystem = AvoidanceSubsystem()
 
-//        CommandScheduler.getInstance().registerSubsystem(driveSubsystem)
-//        CommandScheduler.getInstance().registerSubsystem(clawSubsystem)
-//        CommandScheduler.getInstance().registerSubsystem(endgameSubsystem)
-//        CommandScheduler.getInstance().registerSubsystem(extendoSubsystem)
-//        CommandScheduler.getInstance().setDefaultCommand(driveSubsystem, DriveSubsystem.driveDefault())
-//        CommandScheduler.getInstance().setDefaultCommand(clawSubsystem, ClawSubsystem.clawDefault())
-//        CommandScheduler.getInstance().setDefaultCommand(endgameSubsystem, EndgameSubsystem.endGameDefault())
-//        CommandScheduler.getInstance().setDefaultCommand(extendoSubsystem, ExtendoSubsystem.extendoDefault())
-
         drive = driveSubsystem.drive
         telemetry = MultipleTelemetry(myOpMode.telemetry, FtcDashboard.getInstance().telemetry)
         dashboard = FtcDashboard.getInstance()

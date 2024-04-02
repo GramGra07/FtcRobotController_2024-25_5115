@@ -18,7 +18,7 @@ import org.opencv.core.Scalar
 import org.opencv.imgproc.Imgproc
 import java.util.concurrent.atomic.AtomicReference
 
-class pubObjDetection(
+class MeanColorOfAreaDetector(
     builder: DetectionBuilder,
     builder2: DetectionBuilder,
     assumption: AssumedBuilder
@@ -63,10 +63,10 @@ class pubObjDetection(
         submatTwo.release()
         if (executeIfInRange(firstBuilder.scalarLow, firstBuilder.scalarHigh, oneMean)) {
             drawRectangleAndText(firstBuilder, frame)
-            assumedBuilder.execute()
+            firstBuilder.execute()
         } else if (executeIfInRange(secondBuilder.scalarLow, secondBuilder.scalarHigh, twoMean)) {
             drawRectangleAndText(secondBuilder, frame)
-            assumedBuilder.execute()
+            secondBuilder.execute()
         } else {
             Imgproc.putText(
                 frame,
