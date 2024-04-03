@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.UtilClass.camUtil.ATLocations.Companion.ge
 import org.firstinspires.ftc.teamcode.UtilClass.camUtil.CameraUtilities.aprilTag
 import org.firstinspires.ftc.teamcode.UtilClass.camUtil.CameraUtilities.initializeProcessor
 import org.firstinspires.ftc.teamcode.UtilClass.camUtil.Processor
-import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.cam2_N
+import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.cam1_N
 import org.firstinspires.ftc.teamcode.rr.MecanumDrive
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection
 
@@ -19,7 +19,7 @@ class LocalizationSubsystem(ahwMap: HardwareMap) {
     private var numDetections: Int = 0
 
     init {
-        initializeProcessor(Processor.APRIL_TAG, ahwMap, cam2_N, true)
+        initializeProcessor(Processor.APRIL_TAG, ahwMap, cam1_N, true)
     }
 
     private fun getDetections(): Map<String, Double?>? {
@@ -47,7 +47,7 @@ class LocalizationSubsystem(ahwMap: HardwareMap) {
                 poseY = avgY
                 id = currentDetections[numDetections - 1].id
             }
-            val correctedPose = getCorrectedPose(getLocation(id), poseX, poseY)
+            val correctedPose = getCorrectedPose(getLocation(id - 1), poseX, poseY)
             poseX = correctedPose.x
             poseY = correctedPose.y
             returnable = mapOf("X" to poseX, "Y" to poseY).toMutableMap()
@@ -56,8 +56,12 @@ class LocalizationSubsystem(ahwMap: HardwareMap) {
     }
 
     private fun getCorrectedPose(point: Point, x: Double, y: Double): Point {
-        val newX = point.x!! - x
-        val newY = point.y!! - y
+        var newX = point.x!! + x
+        var newY = point.y!! + y
+        val xDirOnRobot = 6
+        val yDirOnRobot = 7
+        newX += xDirOnRobot
+        newY += yDirOnRobot
         return Point(newX, newY)
     }
 
@@ -74,7 +78,7 @@ class LocalizationSubsystem(ahwMap: HardwareMap) {
         if (parsed != null) {
             telemetry.addLine(
                 String.format(
-                    "XYZ %6.1f %6.1f %6.1f  (inch)",
+                    "XYZ %6.1f %6.1f (inch)",
                     parsed.first,
                     parsed.second,
                     //                        detection.ftcPose.z
@@ -93,7 +97,7 @@ class LocalizationSubsystem(ahwMap: HardwareMap) {
                 )
             }
         }
-        telemetry.addLine("\nkey:\nXYZ = X (Right), Y (Forward), Z (Up) dist.")
+//        telemetry.addLine("\nkey:\nXYZ = X (Right), Y (Forward), Z (Up) dist.")
     }
 
     fun relocalize(drive: MecanumDrive) {
