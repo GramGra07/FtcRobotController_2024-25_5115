@@ -2,16 +2,25 @@ package org.firstinspires.ftc.teamcode.UtilClass.camUtil
 
 import android.util.Size
 import com.acmerobotics.dashboard.FtcDashboard
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver
 import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource
+import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.setPatternCo
+import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.lights
 import org.firstinspires.ftc.teamcode.opModes.camera.VPObjectDetect
 import org.firstinspires.ftc.vision.VisionPortal
 import org.firstinspires.ftc.vision.VisionProcessor
 import org.firstinspires.ftc.vision.apriltag.AprilTagGameDatabase
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor
+import org.gentrifiedApps.velocityvision.AssumedBuilder
+import org.gentrifiedApps.velocityvision.DetectionBuilder
+import org.gentrifiedApps.velocityvision.MeanColorOfAreaDetector
+import org.opencv.core.Point
+import org.opencv.core.Rect
+import org.opencv.core.Scalar
 
 object CameraUtilities {
     fun startCameraStream(streamSource: CameraStreamSource) {
@@ -24,12 +33,12 @@ object CameraUtilities {
             .stopCameraStream()
     }
 
-    var runningProcessors: MutableList<VisionProcessor> =
+    private var runningProcessors: MutableList<VisionProcessor> =
         emptyList<VisionProcessor>().toMutableList()
-    lateinit var visionPortal: VisionPortal
+    private lateinit var visionPortal: VisionPortal
     lateinit var aprilTag: AprilTagProcessor
     private lateinit var objProcessor: VPObjectDetect
-//    private lateinit var pubProcessor: MeanColorOfAreaDetector
+    private lateinit var pubProcessor: MeanColorOfAreaDetector
 
     fun initializeProcessor(
         processor: Processor? = Processor.APRIL_TAG,
@@ -63,20 +72,20 @@ object CameraUtilities {
             objProcessor = VPObjectDetect()
             runningProcessors.add(objProcessor)
         } else if (processor == Processor.PUB_TEST) {
-//            pubProcessor = MeanColorOfAreaDetector(
-//                DetectionBuilder(
-//                    Rect(Point(120.0, 50.0), Point(230.0, 150.0)), "left",
-//                    Scalar(0.0, 140.0, 0.0),
-//                    Scalar(255.0, 255.0, 255.0)
-//                ) { HardwareConfig.lights.setPatternCo(RevBlinkinLedDriver.BlinkinPattern.CONFETTI) },
-//                DetectionBuilder(
-//                    Rect(Point(570.0, 70.0), Point(680.0, 170.0)), "right",
-//                    Scalar(0.0, 140.0, 0.0),
-//                    Scalar(255.0, 255.0, 255.0)
-//                ) { HardwareConfig.lights.setPatternCo(RevBlinkinLedDriver.BlinkinPattern.WHITE) },
-//                AssumedBuilder("middle") { HardwareConfig.lights.setPatternCo(RevBlinkinLedDriver.BlinkinPattern.GOLD) }
-//            )
-//            runningProcessors.add(pubProcessor)
+            pubProcessor = MeanColorOfAreaDetector(
+                DetectionBuilder(
+                    Rect(Point(120.0, 50.0), Point(230.0, 150.0)), "left",
+                    Scalar(0.0, 140.0, 0.0),
+                    Scalar(255.0, 255.0, 255.0)
+                ) { lights.setPatternCo(RevBlinkinLedDriver.BlinkinPattern.CONFETTI) },
+                DetectionBuilder(
+                    Rect(Point(570.0, 70.0), Point(680.0, 170.0)), "right",
+                    Scalar(0.0, 140.0, 0.0),
+                    Scalar(255.0, 255.0, 255.0)
+                ) { lights.setPatternCo(RevBlinkinLedDriver.BlinkinPattern.WHITE) },
+                AssumedBuilder("middle") { lights.setPatternCo(RevBlinkinLedDriver.BlinkinPattern.GOLD) }
+            )
+            runningProcessors.add(pubProcessor)
         }
         val builder = VisionPortal.Builder()
         builder.setCamera(ahwMap.get(WebcamName::class.java, camera))
@@ -90,7 +99,7 @@ object CameraUtilities {
         } else if (processor == Processor.OBJECT_DETECT) {
             builder.addProcessor(objProcessor)
         } else if (processor == Processor.PUB_TEST) {
-//            builder.addProcessor(pubProcessor)
+            builder.addProcessor(pubProcessor)
         }
         visionPortal = builder.build()
         if (ftcDashboard) {

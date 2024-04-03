@@ -45,5 +45,5 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.7'
 
     implementation 'com.github.GramGra07:StateMachineFTC:1.1.1'
-//    implementation 'com.github.GramGra07:VelocityVision:1.0.1'
+    implementation 'com.github.GramGra07:VelocityVision:1.0.0'
 }
