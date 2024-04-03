@@ -8,9 +8,12 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource
+import org.firstinspires.ftc.teamcode.camera.VPObjectDetect
+import org.firstinspires.ftc.teamcode.camera.setupClasses.Camera
+import org.firstinspires.ftc.teamcode.camera.setupClasses.CameraType
+import org.firstinspires.ftc.teamcode.camera.setupClasses.LensIntrinsics
 import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.setPatternCo
 import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.lights
-import org.firstinspires.ftc.teamcode.opModes.camera.VPObjectDetect
 import org.firstinspires.ftc.vision.VisionPortal
 import org.firstinspires.ftc.vision.VisionProcessor
 import org.firstinspires.ftc.vision.apriltag.AprilTagGameDatabase
@@ -33,6 +36,8 @@ object CameraUtilities {
             .stopCameraStream()
     }
 
+    var mainCamera: Camera = setupCameras(CameraType.ARDU_CAM)
+
     private var runningProcessors: MutableList<VisionProcessor> =
         emptyList<VisionProcessor>().toMutableList()
     private lateinit var visionPortal: VisionPortal
@@ -46,7 +51,7 @@ object CameraUtilities {
         camera: String,
         ftcDashboard: Boolean
     ): Boolean {
-        if (processor == Processor.APRIL_TAG) {
+        if (processor == Processor.APRIL_TAG && (!runningProcessors.contains(aprilTag))) {
             aprilTag =
                 AprilTagProcessor.Builder() // The following default settings are available to un-comment and edit as needed.
                     .setDrawAxes(false)
@@ -57,6 +62,10 @@ object CameraUtilities {
                     .setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)
                     .setTagLibrary(AprilTagGameDatabase.getCenterStageTagLibrary())
                     .setLensIntrinsics(972.571, 972.571, 667.598, 309.012)
+//                    .setLensIntrinsics(
+//                        mainCamera.lensIntrinsics.fx, mainCamera.lensIntrinsics.fy,
+//                        mainCamera.lensIntrinsics.cx, mainCamera.lensIntrinsics.cy
+//                    )
                     .build()
 
             // Adjust Image Decimation to trade-off detection-range for detection-rate.
@@ -68,13 +77,13 @@ object CameraUtilities {
             // Note: Decimation can be changed on-the-fly to adapt during a match.
             aprilTag.setDecimation(3.0F)
             runningProcessors.add(aprilTag)
-        } else if (processor == Processor.OBJECT_DETECT) {
+        } else if (processor == Processor.OBJECT_DETECT && (!runningProcessors.contains(objProcessor))) {
             objProcessor = VPObjectDetect()
             runningProcessors.add(objProcessor)
-        } else if (processor == Processor.PUB_TEST) {
+        } else if (processor == Processor.PUB_TEST && (!runningProcessors.contains(pubProcessor))) {
             pubProcessor = MeanColorOfAreaDetector(
                 DetectionBuilder(
-                    Rect(Point(120.0, 50.0), Point(230.0, 150.0)), "left",
+                    Rect(Point(120.0, 50.0), Point(230.0, 150.0)), "middle",
                     Scalar(0.0, 140.0, 0.0),
                     Scalar(255.0, 255.0, 255.0)
                 ) { lights.setPatternCo(RevBlinkinLedDriver.BlinkinPattern.CONFETTI) },
@@ -83,16 +92,16 @@ object CameraUtilities {
                     Scalar(0.0, 140.0, 0.0),
                     Scalar(255.0, 255.0, 255.0)
                 ) { lights.setPatternCo(RevBlinkinLedDriver.BlinkinPattern.WHITE) },
-                AssumedBuilder("middle") { lights.setPatternCo(RevBlinkinLedDriver.BlinkinPattern.GOLD) }
+                AssumedBuilder("left") { lights.setPatternCo(RevBlinkinLedDriver.BlinkinPattern.GOLD) }
             )
             runningProcessors.add(pubProcessor)
         }
         val builder = VisionPortal.Builder()
         builder.setCamera(ahwMap.get(WebcamName::class.java, camera))
             .setCameraResolution(Size(1280, 720))
+//            .setCameraResolution(mainCamera.size)
         if (runningProcessors.size > 1) {
-            builder
-                .setLiveViewContainerId(0)
+            builder.setLiveViewContainerId(0)
         }
         if (processor == Processor.APRIL_TAG) {
             builder.addProcessor(aprilTag)
@@ -106,5 +115,20 @@ object CameraUtilities {
             startCameraStream(visionPortal)
         }
         return true
+    }
+
+    private fun setupCameras(cameraType: CameraType): Camera {
+        return when (cameraType) {
+            CameraType.ARDU_CAM -> {
+                val ArduCam: Camera =
+                    Camera(Size(1280, 720), LensIntrinsics(972.571, 972.571, 667.598, 309.012))
+                ArduCam
+            }
+
+            CameraType.LOGITECH -> {
+                val LogiC270: Camera = Camera(Size(640, 480), LensIntrinsics())
+                LogiC270
+            }
+        }
     }
 }

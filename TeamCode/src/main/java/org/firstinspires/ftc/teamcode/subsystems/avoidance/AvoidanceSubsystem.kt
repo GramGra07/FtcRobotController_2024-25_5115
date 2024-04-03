@@ -4,12 +4,22 @@ import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.Point
 import org.firstinspires.ftc.teamcode.UtilClass.varConfigurations.varConfig
 import org.firstinspires.ftc.teamcode.VectorField
-import org.firstinspires.ftc.teamcode.VectorField.Companion.getCorrectionByAvoidance
+import org.firstinspires.ftc.teamcode.VectorField.Companion.getCorrectionByAvoidancePUSH
 import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toPoint
 import org.firstinspires.ftc.teamcode.rr.MecanumDrive
 
 //@Config
-class AvoidanceSubsystem {
+class AvoidanceSubsystem(avoidanceTypes: AvoidanceTypes) {
+    enum class AvoidanceTypes {
+        PUSH,
+        STOP
+    }
+
+    private var avoidanceType: AvoidanceTypes
+
+    init {
+        this.avoidanceType = avoidanceTypes
+    }
 
     var rad: Double = varConfig.fieldRadius
 
@@ -41,13 +51,18 @@ class AvoidanceSubsystem {
     var powers: Map<String, Double?>? = null
 
     fun update(drive: MecanumDrive) {
-        powers = getCorrectionByAvoidance(
-            fields,
-            drive.pose.position.toPoint(),
-        )
+        if (avoidanceType == AvoidanceTypes.PUSH) {
+            powers = getCorrectionByAvoidancePUSH(
+                fields,
+                drive.pose.position.toPoint(),
+            )
+        } else if (avoidanceType == AvoidanceTypes.STOP) {
+
+        }
     }
 
     fun telemetry(telemetry: Telemetry) {
         telemetry.addData("addPowers", powers)
+        telemetry.addData("Avoidance Type", avoidanceType.name)
     }
 }

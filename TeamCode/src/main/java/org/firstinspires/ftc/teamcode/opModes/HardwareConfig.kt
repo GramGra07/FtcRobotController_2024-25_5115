@@ -134,7 +134,7 @@ open class HardwareConfig() {
         endgameSubsystem = EndgameSubsystem(ahwMap)
         extendoSubsystem = ExtendoSubsystem(ahwMap)
         localizationSubsystem = LocalizationSubsystem(ahwMap)
-        avoidanceSubsystem = AvoidanceSubsystem()
+        avoidanceSubsystem = AvoidanceSubsystem(AvoidanceSubsystem.AvoidanceTypes.PUSH)
 
         drive = driveSubsystem.drive
         telemetry = MultipleTelemetry(myOpMode.telemetry, FtcDashboard.getInstance().telemetry)

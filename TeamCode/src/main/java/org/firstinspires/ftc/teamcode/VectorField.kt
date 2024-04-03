@@ -18,7 +18,10 @@ class VectorField(point: Point? = Point(), radius: Double) {
         private var fieldStrengthCoefficient: Double = varConfig.correctionSpeedAvoid
         private val correctionMap = mutableMapOf<String, Double>()
 
-        fun getCorrectionByAvoidance(fields: List<VectorField>, pose: Point): Map<String, Double>? {
+        fun getCorrectionByAvoidancePUSH(
+            fields: List<VectorField>,
+            pose: Point
+        ): Map<String, Double>? {
             fieldStrengthCoefficient = varConfig.correctionSpeedAvoid
             var newPose: Point? = null
             for (field in fields) {

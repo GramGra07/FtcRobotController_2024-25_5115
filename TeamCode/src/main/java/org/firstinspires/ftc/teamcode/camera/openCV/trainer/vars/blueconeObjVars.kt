@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opModes.camera.openCV.trainer.vars
+package org.firstinspires.ftc.teamcode.camera.openCV.trainer.vars
 
 //@Config
 object blueconeObjVars {

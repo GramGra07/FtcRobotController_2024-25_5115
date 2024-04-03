@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opModes.camera
+package org.firstinspires.ftc.teamcode.camera
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
