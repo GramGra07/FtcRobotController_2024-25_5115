@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode;
 
 import android.util.Size;
 
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
@@ -44,6 +45,7 @@ public class testAuto extends LinearOpMode {
                 .setCameraResolution(new Size(1280, 720))
                 .addProcessor(processor)
                 .build();
+        FtcDashboard.getInstance().startCameraStream(portal,0.0);
         waitForStart();
     }
 }
