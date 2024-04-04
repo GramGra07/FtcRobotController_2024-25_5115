@@ -1,0 +1,1 @@
+Don't open testGraphing.py in android studio, open it in pycharm or something else
