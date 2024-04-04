@@ -51,7 +51,7 @@ object CameraUtilities {
         camera: String,
         ftcDashboard: Boolean
     ): Boolean {
-        if (processor == Processor.APRIL_TAG && (!runningProcessors.contains(aprilTag))) {
+        if (processor == Processor.APRIL_TAG ) {
             aprilTag =
                 AprilTagProcessor.Builder() // The following default settings are available to un-comment and edit as needed.
                     .setDrawAxes(false)
@@ -77,10 +77,10 @@ object CameraUtilities {
             // Note: Decimation can be changed on-the-fly to adapt during a match.
             aprilTag.setDecimation(3.0F)
             runningProcessors.add(aprilTag)
-        } else if (processor == Processor.OBJECT_DETECT && (!runningProcessors.contains(objProcessor))) {
+        } else if (processor == Processor.OBJECT_DETECT) {
             objProcessor = VPObjectDetect()
             runningProcessors.add(objProcessor)
-        } else if (processor == Processor.PUB_TEST && (!runningProcessors.contains(pubProcessor))) {
+        } else if (processor == Processor.PUB_TEST) {
             pubProcessor = MeanColorOfAreaDetector(
                 DetectionBuilder(
                     Rect(Point(120.0, 50.0), Point(230.0, 150.0)), "middle",
@@ -99,7 +99,6 @@ object CameraUtilities {
         val builder = VisionPortal.Builder()
         builder.setCamera(ahwMap.get(WebcamName::class.java, camera))
             .setCameraResolution(Size(1280, 720))
-//            .setCameraResolution(mainCamera.size)
         if (runningProcessors.size > 1) {
             builder.setLiveViewContainerId(0)
         }

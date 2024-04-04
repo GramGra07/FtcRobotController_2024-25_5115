@@ -41,7 +41,7 @@ public class testAuto extends LinearOpMode {
 
         portal = new VisionPortal.Builder()
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))
-                .setCameraResolution(new Size(640, 480))
+                .setCameraResolution(new Size(1280, 720))
                 .addProcessor(processor)
                 .build();
         waitForStart();
