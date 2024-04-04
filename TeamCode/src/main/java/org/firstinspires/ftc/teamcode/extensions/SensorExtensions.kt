@@ -6,25 +6,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.TouchSensor
 import com.qualcomm.robotcore.hardware.VoltageSensor
 import com.qualcomm.robotcore.util.Range
-import org.firstinspires.ftc.teamcode.UtilClass.varConfigurations.PotentPositions
 import kotlin.math.min
 
 object SensorExtensions {
-    fun initDigiChan(
-        hw: HardwareMap,
-        name: String,
-        mode: DigitalChannel.Mode = DigitalChannel.Mode.OUTPUT
-    ): DigitalChannel {
-        val t = hw.get(DigitalChannel::class.java, name)
-        t.mode = mode
-        return t
-    }
-
-    fun initPotent(hw: HardwareMap, name: String): AnalogInput {
-        val t = hw.get(AnalogInput::class.java, name)
-        PotentPositions.pastAngleVal = t.potentAngle()
-        return t
-    }
 
 
     // extend the AnalogInput class to include a method to get the angle of the potentiometer
