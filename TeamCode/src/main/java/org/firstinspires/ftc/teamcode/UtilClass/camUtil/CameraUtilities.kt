@@ -95,7 +95,7 @@ object CameraUtilities {
                 AssumedBuilder("left") { lights.setPatternCo(RevBlinkinLedDriver.BlinkinPattern.GOLD) }
             )
             runningProcessors.add(pubProcessor)
-        }
+        }//test
         val builder = VisionPortal.Builder()
         builder.setCamera(ahwMap.get(WebcamName::class.java, camera))
             .setCameraResolution(Size(1280, 720))
