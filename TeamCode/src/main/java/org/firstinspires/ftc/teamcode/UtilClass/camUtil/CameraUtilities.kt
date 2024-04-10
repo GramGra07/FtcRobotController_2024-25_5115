@@ -18,15 +18,16 @@ import org.firstinspires.ftc.vision.VisionPortal
 import org.firstinspires.ftc.vision.VisionProcessor
 import org.firstinspires.ftc.vision.apriltag.AprilTagGameDatabase
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor
-import org.gentrifiedApps.velocityvision.AssumedBuilder
-import org.gentrifiedApps.velocityvision.DetectionBuilder
-import org.gentrifiedApps.velocityvision.MeanColorOfAreaDetector
+import org.gentrifiedApps.velocityvision.enums.CSpace
+import org.gentrifiedApps.velocityvision.pipelines.moa.AssumedBuilder
+import org.gentrifiedApps.velocityvision.pipelines.moa.DetectionBuilder
+import org.gentrifiedApps.velocityvision.pipelines.moa.MeanColorOfAreaDetector
 import org.opencv.core.Point
 import org.opencv.core.Rect
 import org.opencv.core.Scalar
 
 object CameraUtilities {
-    fun startCameraStream(streamSource: CameraStreamSource) {
+    private fun startCameraStream(streamSource: CameraStreamSource) {
         FtcDashboard.getInstance()
             .startCameraStream(streamSource, 0.0)
     }
@@ -51,7 +52,7 @@ object CameraUtilities {
         camera: String,
         ftcDashboard: Boolean
     ): Boolean {
-        if (processor == Processor.APRIL_TAG ) {
+        if (processor == Processor.APRIL_TAG) {
             aprilTag =
                 AprilTagProcessor.Builder() // The following default settings are available to un-comment and edit as needed.
                     .setDrawAxes(false)
@@ -61,11 +62,11 @@ object CameraUtilities {
                     .setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
                     .setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)
                     .setTagLibrary(AprilTagGameDatabase.getCenterStageTagLibrary())
-                    .setLensIntrinsics(972.571, 972.571, 667.598, 309.012)
-//                    .setLensIntrinsics(
-//                        mainCamera.lensIntrinsics.fx, mainCamera.lensIntrinsics.fy,
-//                        mainCamera.lensIntrinsics.cx, mainCamera.lensIntrinsics.cy
-//                    )
+//                    .setLensIntrinsics(972.571, 972.571, 667.598, 309.012)
+                    .setLensIntrinsics(
+                        mainCamera.lensIntrinsics.fx, mainCamera.lensIntrinsics.fy,
+                        mainCamera.lensIntrinsics.cx, mainCamera.lensIntrinsics.cy
+                    )
                     .build()
 
             // Adjust Image Decimation to trade-off detection-range for detection-rate.
@@ -82,6 +83,7 @@ object CameraUtilities {
             runningProcessors.add(objProcessor)
         } else if (processor == Processor.PUB_TEST) {
             pubProcessor = MeanColorOfAreaDetector(
+                CSpace.YCrCb,
                 DetectionBuilder(
                     Rect(Point(120.0, 50.0), Point(230.0, 150.0)), "middle",
                     Scalar(0.0, 140.0, 0.0),
@@ -98,7 +100,7 @@ object CameraUtilities {
         }
         val builder = VisionPortal.Builder()
         builder.setCamera(ahwMap.get(WebcamName::class.java, camera))
-            .setCameraResolution(Size(1280, 720))
+            .setCameraResolution(mainCamera.size)
         if (runningProcessors.size > 1) {
             builder.setLiveViewContainerId(0)
         }

@@ -17,6 +17,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.UtilClass.FileWriterFTC.setUpFile
+import org.firstinspires.ftc.teamcode.UtilClass.camUtil.ATLocations
 import org.firstinspires.ftc.teamcode.UtilClass.varConfigurations.LoopTime
 import org.firstinspires.ftc.teamcode.UtilClass.varConfigurations.varConfig
 import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.currentColor
@@ -230,10 +231,15 @@ open class HardwareConfig() {
 
     private fun drawPackets() {
         packet = TelemetryPacket()
+
+        localizationSubsystem.draw(packet)
+
+
         val rad = avoidanceSubsystem.rad
         val roboRad = varConfig.robotRadiusAvoidance
         packet.fieldOverlay()
             .setFill("red")
+            .setStroke("red")
             .setAlpha(0.3)
         for (field in avoidanceSubsystem.fields) {
             packet.fieldOverlay()
@@ -245,7 +251,8 @@ open class HardwareConfig() {
         val (x, y) = p1.plus(halfv)
         packet.fieldOverlay()
             .setStrokeWidth(1)
-            .setFill("DeepPink")
+            .setStroke("black")
+            .setFill("black")
             .setAlpha(1.0)
             .strokeCircle(t.position.x, t.position.y, roboRad).strokeLine(p1.x, p1.y, x, y)
 //        val poseX = driveSubsystem!!.odometrySubsystem!!.poseX

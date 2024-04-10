@@ -8,9 +8,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.vision.VisionPortal;
-import org.gentrifiedApps.velocityvision.AssumedBuilder;
-import org.gentrifiedApps.velocityvision.DetectionBuilder;
-import org.gentrifiedApps.velocityvision.MeanColorOfAreaDetector;
+import org.gentrifiedApps.velocityvision.enums.CSpace;
+import org.gentrifiedApps.velocityvision.pipelines.moa.AssumedBuilder;
+import org.gentrifiedApps.velocityvision.pipelines.moa.DetectionBuilder;
+import org.gentrifiedApps.velocityvision.pipelines.moa.MeanColorOfAreaDetector;
 import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
@@ -24,6 +25,7 @@ public class testAuto extends LinearOpMode {
     @Override
     public void runOpMode() {
         processor = new MeanColorOfAreaDetector(
+                CSpace.YCrCb,
                 new DetectionBuilder(
                         new Rect(new Point(120.0, 50.0), new Point(230.0, 150.0)),
                         "left",
@@ -45,7 +47,7 @@ public class testAuto extends LinearOpMode {
                 .setCameraResolution(new Size(1280, 720))
                 .addProcessor(processor)
                 .build();
-        FtcDashboard.getInstance().startCameraStream(portal,0.0);
+        FtcDashboard.getInstance().startCameraStream(portal, 0.0);
         waitForStart();
     }
 }
