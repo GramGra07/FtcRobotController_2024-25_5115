@@ -1,27 +1,35 @@
 package org.firstinspires.ftc.teamcode.subsystems.avoidance
 
+import com.acmerobotics.dashboard.config.Config
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket
+import com.acmerobotics.roadrunner.Vector2d
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.Point
 import org.firstinspires.ftc.teamcode.UtilClass.varConfigurations.varConfig
 import org.firstinspires.ftc.teamcode.VectorField
+import org.firstinspires.ftc.teamcode.VectorField.Companion.calculateRepulsiveForce
 import org.firstinspires.ftc.teamcode.VectorField.Companion.getCorrectionByAvoidancePUSH
 import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toPoint
 import org.firstinspires.ftc.teamcode.rr.MecanumDrive
 
-//@Config
+@Config
 class AvoidanceSubsystem(avoidanceTypes: AvoidanceTypes) {
     enum class AvoidanceTypes {
         PUSH,
-        STOP
+        STOP,
+        OFF
     }
 
-    private var avoidanceType: AvoidanceTypes
+    @JvmField
+    var avoidanceType: AvoidanceTypes
+    private var fields: List<VectorField> = VectorField.massCreate(createFields())
 
     init {
+        fields = VectorField.massCreate(createFields())
         this.avoidanceType = avoidanceTypes
     }
 
-    var rad: Double = varConfig.fieldRadius
+    private var rad: Double = varConfig.fieldRadius
 
     private var points: List<Point> = listOf(
         Point(24.0, 0.0),
@@ -42,27 +50,62 @@ class AvoidanceSubsystem(avoidanceTypes: AvoidanceTypes) {
         return fields
     }
 
-    var fields: List<VectorField> = VectorField.massCreate(createFields())
-
-    init {
-        fields = VectorField.massCreate(createFields())
-    }
-
     var powers: Map<String, Double?>? = null
 
     fun update(drive: MecanumDrive) {
-        if (avoidanceType == AvoidanceTypes.PUSH) {
-            powers = getCorrectionByAvoidancePUSH(
-                fields,
-                drive.pose.position.toPoint(),
-            )
-        } else if (avoidanceType == AvoidanceTypes.STOP) {
+        updateVars()
+        when (avoidanceType) {
+            AvoidanceTypes.PUSH -> {
+                powers = getCorrectionByAvoidancePUSH(
+                    fields,
+                    drive.pose.position.toPoint(),
+                )
+            }
 
+            AvoidanceTypes.STOP -> {
+                val repulsiveForce = calculateRepulsiveForce(fields, drive.pose.position.toPoint())
+                // Apply the repulsive force to stop the robot
+                powers = mapOf(
+                    "frontLeft" to -repulsiveForce,
+                    "frontRight" to -repulsiveForce,
+                    "backLeft" to -repulsiveForce,
+                    "backRight" to -repulsiveForce
+                )
+            }
+
+            AvoidanceTypes.OFF -> {}
         }
     }
 
     fun telemetry(telemetry: Telemetry) {
         telemetry.addData("addPowers", powers)
         telemetry.addData("Avoidance Type", avoidanceType.name)
+    }
+
+    fun draw(packet: TelemetryPacket, drive: MecanumDrive) {
+        val rad = rad
+        val roboRad = varConfig.robotRadiusAvoidance
+        packet.fieldOverlay()
+            .setFill("red")
+            .setStroke("red")
+            .setAlpha(0.3)
+        for (field in fields) {
+            packet.fieldOverlay()
+                .fillCircle(field.point?.y!!, field.point!!.x!!, rad)
+        }
+        val t = drive.pose
+        val halfv: Vector2d = t.heading.vec().times(0.5 * roboRad)
+        val p1: Vector2d = t.position.plus(halfv)
+        val (x, y) = p1.plus(halfv)
+        packet.fieldOverlay()
+            .setStrokeWidth(1)
+            .setStroke("black")
+            .setFill("black")
+            .setAlpha(1.0)
+            .strokeCircle(t.position.x, t.position.y, roboRad).strokeLine(p1.x, p1.y, x, y)
+    }
+
+    private fun updateVars() {
+        rad = varConfig.fieldRadius
     }
 }

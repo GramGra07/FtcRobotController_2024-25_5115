@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode
 
 import org.firstinspires.ftc.teamcode.UtilClass.varConfigurations.varConfig
+import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.distanceTo
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.pow
@@ -50,6 +51,18 @@ class VectorField(point: Point? = Point(), radius: Double) {
             correctionMap["RR"] = rrVelocity
 
             return correctionMap
+        }
+
+        fun calculateRepulsiveForce(
+            fields: List<VectorField>,
+            pose: Point
+        ): Double {
+            var repulsiveForce = 0.0
+            for (field in fields) {
+                val distance = field.point?.distanceTo(pose) ?: 0.0
+                repulsiveForce += 1 / distance.pow(2)
+            }
+            return repulsiveForce
         }
 
 

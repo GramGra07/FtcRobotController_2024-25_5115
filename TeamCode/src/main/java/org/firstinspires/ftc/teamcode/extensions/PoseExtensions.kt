@@ -13,4 +13,9 @@ object PoseExtensions {
         return Point(this.x, this.y)
     }
 
+    fun Point.distanceTo(point: Point): Double {
+        val dx = point.x!! - this.x!!
+        val dy = point.y!! - this.y!!
+        return kotlin.math.sqrt(dx * dx + dy * dy)
+    }
 }

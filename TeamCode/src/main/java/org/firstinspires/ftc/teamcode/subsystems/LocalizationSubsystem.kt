@@ -23,6 +23,8 @@ class LocalizationSubsystem(ahwMap: HardwareMap) {
     private var parsedData: Pair<Double, Double>? = null
     private var currentSeenID: MutableList<Int>? = mutableListOf()
     private var localizingID: MutableList<Int>? = mutableListOf()
+    private val acceptableIDs = listOf(5, 8, 2, 9)
+    private val rejectedIDs = listOf(7)
 
     init {
         initializeProcessor(Processor.APRIL_TAG, ahwMap, cam1_N, true)
@@ -40,43 +42,39 @@ class LocalizationSubsystem(ahwMap: HardwareMap) {
         val id: Int
         numDetections = currentDetections.size
         var returnable: MutableMap<String, Double?>? = mutableMapOf()
-        var poseX: Double?
-        var poseY: Double?
-        var correctedPose: Point
-        val xThresh = 24 // inches
+        var xDif: Double?
+        var yDif: Double?
+        val correctedPose: Point
+        val xThresh = 24
         val yThresh = 36
-        if (numDetections > 0 && (currentDetections[0].id != 7) &&
-            (((currentSeenID!!.contains(5)) || (currentSeenID!!.contains(8))) || (currentSeenID!!.contains(
-                2
-            ) || (currentSeenID!!.contains(9))))
+        if (numDetections > 0 &&
+            rejectedIDs.any { currentSeenID?.contains(it) == false } &&
+            acceptableIDs.any { currentSeenID?.contains(it) == true }
         ) {
             if ((numDetections == 1)) {
                 id = currentDetections[0].id
-                poseX = currentDetections[0].ftcPose.x
-                poseY = currentDetections[0].ftcPose.y
-                if (abs(poseX)<xThresh || abs(poseY)<yThresh) {
+                xDif = currentDetections[0].ftcPose.x
+                yDif = currentDetections[0].ftcPose.y
+                if (abs(xDif) < xThresh || abs(yDif) < yThresh) {
                     localizingID!!.add(id)
-                    correctedPose = getCorrectedPose(getLocation(id - 1), poseX, poseY, id - 1)
-                    poseX = correctedPose.x
-                    poseY = correctedPose.y
-                    returnable = mapOf("X" to poseX, "Y" to poseY).toMutableMap()
+                    correctedPose = getCorrectedPose(getLocation(id - 1), xDif, yDif, id - 1)
+                    xDif = correctedPose.x
+                    yDif = correctedPose.y
+                    returnable = mapOf("X" to xDif, "Y" to yDif).toMutableMap()
                 }
             } else {
-                val id: Int
-                for (detection in currentDetections) {
-                    if (detection.id == 5 || detection.id == 8 || detection.id == 2 || detection.id == 9) {
-                        id = detection.id
-                        poseX = detection.ftcPose.x
-                        poseY = detection.ftcPose.y
-                        if (abs(poseX)<xThresh || abs(poseY)<yThresh) {
-                            localizingID!!.add(id)
-                            correctedPose = getCorrectedPose(getLocation(id), poseX, poseY, id)
-                            poseX = correctedPose.x
-                            poseY = correctedPose.y
-                            returnable = mapOf("X" to poseX, "Y" to poseY).toMutableMap()
-                        }
-                        break
-                    }
+                val detection =
+                    currentDetections.find { acceptableIDs.contains(it.id) }
+                        ?: return null
+                id = detection.id
+                xDif = detection.ftcPose.x
+                yDif = detection.ftcPose.y
+                if (abs(xDif) < xThresh || abs(yDif) < yThresh) {
+                    localizingID!!.add(id)
+                    correctedPose = getCorrectedPose(getLocation(id), xDif, yDif, id)
+                    xDif = correctedPose.x
+                    yDif = correctedPose.y
+                    returnable = mapOf("X" to xDif, "Y" to yDif).toMutableMap()
                 }
             }
         }
@@ -111,55 +109,44 @@ class LocalizationSubsystem(ahwMap: HardwareMap) {
     }
 
     fun telemetry(telemetry: Telemetry) {
-//        val parsed = parsedData
-//        telemetry.addData("# AprilTags Detected", numDetections)
-//        if (parsed != null) {
-//            telemetry.addLine(
-//                String.format(
-//                    "XYZ %6.1f %6.1f (inch)",
-//                    parsed.first,
-//                    parsed.second,
-//                    //                        detection.ftcPose.z
-//                )
-//            )
-//        }
-//        // Step through the list of detections and display info for each one.
-//        for (detection in currentDetections) {
-//            if (detection.metadata != null && parsed != null) {
-//                telemetry.addLine(
-//                    String.format(
-//                        "\n==== (ID %d) %s",
-//                        detection.id,
-//                        detection.metadata.name
-//                    )
-//                )
-//            }
-//        }
         val currentSeenID = currentSeenID
         telemetry.addData("IDS", currentSeenID)
     }
 
     fun draw(packet: TelemetryPacket) {
-        for (id in ATLocations.allLocations) {
-            packet.fieldOverlay().setStroke("blue").setAlpha(0.5)
-                .strokeRect(id.second.location.y!!, id.second.location.x!!, 0.5, 0.5)
-        }
-        val currentSeenID = currentSeenID
-        if (!currentSeenID.isNullOrEmpty()) {
-            for (id in currentSeenID) {
-                val point = getLocation(id - 1)
-                packet.fieldOverlay().setAlpha(1.0).setStroke("green")
-                    .strokeRect(point.y!!, point.x!!, 1.0, 1.0)
+        val fieldOverlay = packet.fieldOverlay()
+        ATLocations.allLocations.forEach { (id, locationData) ->
+            if (localizingID!!.contains(id)) {
+                fieldOverlay.setStroke("green").setAlpha(1.0)
+            } else if (currentSeenID!!.contains(id)) {
+                fieldOverlay.setStroke("orange").setAlpha(1.0)
+            } else {
+                val location = locationData.location
+                fieldOverlay.setStroke("blue").setAlpha(0.5)
+                fieldOverlay.strokeRect(location.y!!, location.x!!, 0.5, 0.5)
             }
         }
-        val localizingID = localizingID
-        if (!localizingID.isNullOrEmpty()) {
-            for (id in localizingID) {
-                val point = getLocation(id - 1)
-                packet.fieldOverlay().setAlpha(1.0).setStroke("orange")
-                    .strokeRect(point.y!!, point.x!!, 1.0, 1.0)
-            }
-        }
+//
+//        for (id in ATLocations.allLocations) {
+//            packet.fieldOverlay().setStroke("blue").setAlpha(0.5)
+//                .strokeRect(id.second.location.y!!, id.second.location.x!!, 0.5, 0.5)
+//        }
+//        val currentSeenID = currentSeenID
+//        if (!currentSeenID.isNullOrEmpty()) {
+//            for (id in currentSeenID) {
+//                val point = getLocation(id - 1)
+//                packet.fieldOverlay().setAlpha(1.0).setStroke("green")
+//                    .strokeRect(point.y!!, point.x!!, 1.0, 1.0)
+//            }
+//        }
+//        val localizingID = localizingID
+//        if (!localizingID.isNullOrEmpty()) {
+//            for (id in localizingID) {
+//                val point = getLocation(id - 1)
+//                packet.fieldOverlay().setAlpha(1.0).setStroke("orange")
+//                    .strokeRect(point.y!!, point.x!!, 1.0, 1.0)
+//            }
+//        }
     }
 
     fun relocalize(drive: MecanumDrive) {

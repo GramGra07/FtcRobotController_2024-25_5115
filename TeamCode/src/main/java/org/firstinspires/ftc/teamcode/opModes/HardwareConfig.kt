@@ -5,7 +5,6 @@ import android.os.Environment
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
-import com.acmerobotics.roadrunner.Vector2d
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
@@ -17,7 +16,6 @@ import com.qualcomm.robotcore.hardware.VoltageSensor
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.UtilClass.FileWriterFTC.setUpFile
-import org.firstinspires.ftc.teamcode.UtilClass.camUtil.ATLocations
 import org.firstinspires.ftc.teamcode.UtilClass.varConfigurations.LoopTime
 import org.firstinspires.ftc.teamcode.UtilClass.varConfigurations.varConfig
 import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.currentColor
@@ -53,15 +51,6 @@ open class HardwareConfig() {
     }
 
     companion object {
-        fun once(myOpMode: OpMode) {
-            if (!once) {
-                timer.reset()
-                myOpMode.gamepad1.setLedColor(229.0, 74.0, 161.0, -1)
-                myOpMode.gamepad2.setLedColor(0.0, 0.0, 0.0, -1)
-                once = true
-            }
-        }
-
         lateinit var telemetry: Telemetry
         lateinit var dashboard: FtcDashboard
         lateinit var packet: TelemetryPacket
@@ -192,6 +181,16 @@ open class HardwareConfig() {
         }
     }
 
+    fun once(myOpMode: OpMode) {
+        if (!once) {
+            telemetry.clearAll()
+            timer.reset()
+            myOpMode.gamepad1.setLedColor(229.0, 74.0, 161.0, -1)
+            myOpMode.gamepad2.setLedColor(0.0, 0.0, 0.0, -1)
+            once = true
+        }
+    }
+
     private fun lynxModules() {
         for (hub in allHubs) {
             hub.clearBulkCache()
@@ -199,15 +198,15 @@ open class HardwareConfig() {
     }
 
     private fun buildTelemetry() {
+        if (vSensor.lowVoltage()) {
+            telemetry.addData("", "We have a low battery:")
+        }
         telemetry.addData("Drivers", Drivers.currDriver + " " + Drivers.currOther)
         telemetry.addData(
             "Voltage",
             "%.1f",
             vSensor.currentVoltage()
-        ) //shows current battery voltage
-        if (vSensor.lowVoltage()) {
-            telemetry.addData("", "We have a low battery")
-        }
+        )
         telemetry.addData("Pose: ", drive.pose.toPoint().toString())
         telemetry.addData("potentiometer", "%.1f", potentiometer.potentAngle())
         driveSubsystem.telemetry(telemetry)
@@ -215,12 +214,12 @@ open class HardwareConfig() {
         extendoSubsystem.telemetry(telemetry)
         teleSpace()
         telemetry.addData("Timer", "%.1f", currentTime) //shows current time
-        telemetry.addData("Loops", "%.1f", loops)
+//        telemetry.addData("Loops", "%.1f", loops)
         telemetry.addData("Current LPS", "%.1f", LPS)
-        telemetry.addData("Refresh Rate", "%.1f", rrPS)
+//        telemetry.addData("Refresh Rate", "%.1f", rrPS)
         teleSpace()
-        telemetry.addData("Color", lights.currentColor())
-        teleSpace()
+//        telemetry.addData("Color", lights.currentColor())
+//        teleSpace()
         telemetry.addData("Version", CURRENT_VERSION)
 
         localizationSubsystem.telemetry(telemetry)
@@ -235,26 +234,7 @@ open class HardwareConfig() {
         localizationSubsystem.draw(packet)
 
 
-        val rad = avoidanceSubsystem.rad
-        val roboRad = varConfig.robotRadiusAvoidance
-        packet.fieldOverlay()
-            .setFill("red")
-            .setStroke("red")
-            .setAlpha(0.3)
-        for (field in avoidanceSubsystem.fields) {
-            packet.fieldOverlay()
-                .fillCircle(field.point?.y!!, field.point!!.x!!, rad)
-        }
-        val t = drive.pose
-        val halfv: Vector2d = t.heading.vec().times(0.5 * roboRad)
-        val p1: Vector2d = t.position.plus(halfv)
-        val (x, y) = p1.plus(halfv)
-        packet.fieldOverlay()
-            .setStrokeWidth(1)
-            .setStroke("black")
-            .setFill("black")
-            .setAlpha(1.0)
-            .strokeCircle(t.position.x, t.position.y, roboRad).strokeLine(p1.x, p1.y, x, y)
+        avoidanceSubsystem.draw(packet, drive)
 //        val poseX = driveSubsystem!!.odometrySubsystem!!.poseX
 //        val poseY = driveSubsystem!!.odometrySubsystem!!.poseY
 //        val heading = driveSubsystem!!.odometrySubsystem!!.heading
