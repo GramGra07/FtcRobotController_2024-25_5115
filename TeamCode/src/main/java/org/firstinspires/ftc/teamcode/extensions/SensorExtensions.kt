@@ -7,6 +7,8 @@ import com.qualcomm.robotcore.hardware.TouchSensor
 import com.qualcomm.robotcore.hardware.VoltageSensor
 import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.teamcode.UtilClass.varConfigurations.PotentPositions
+import org.firstinspires.ftc.teamcode.customHardware.sensors.BeamBreakSensor
+import org.firstinspires.ftc.teamcode.customHardware.servos.AxonServo
 import kotlin.math.min
 
 object SensorExtensions {
@@ -25,6 +27,14 @@ object SensorExtensions {
         PotentPositions.pastAngleVal = t.potentAngle()
         return t
     }
+
+
+    fun AxonServo.getEncoderPosition(): Double {
+        val position = (this.encoder.voltage / 3.3) * 360
+        this.position = position
+        return position
+    }
+
 
 
     // extend the AnalogInput class to include a method to get the angle of the potentiometer

@@ -14,8 +14,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.UtilClass.FileWriterFTC
 import org.firstinspires.ftc.teamcode.UtilClass.varConfigurations.varConfig
 import org.firstinspires.ftc.teamcode.UtilClass.varConfigurations.varConfig.usingAvoidance
-import org.firstinspires.ftc.teamcode.extensions.MotorExtensions
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
+import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.initMotor
 import org.firstinspires.ftc.teamcode.rr.MecanumDrive
 import org.firstinspires.ftc.teamcode.storage.DistanceStorage
 import org.firstinspires.ftc.teamcode.storage.PoseStorage
@@ -49,25 +49,25 @@ class DriveSubsystem(ahwMap: HardwareMap) {
         drive = MecanumDrive(ahwMap, Pose2d(0.0, 0.0, 0.0))
 
         motorFrontLeft =
-            MotorExtensions.initMotor(
+            initMotor(
                 ahwMap,
                 "motorFrontLeft",
                 DcMotor.RunMode.RUN_WITHOUT_ENCODER
             )
-        motorBackLeft = MotorExtensions.initMotor(
+        motorBackLeft = initMotor(
             ahwMap,
             "motorBackLeft",
             DcMotor.RunMode.RUN_WITHOUT_ENCODER,
         )
         motorBackLeft.direction = DcMotorSimple.Direction.REVERSE
         motorFrontRight =
-            MotorExtensions.initMotor(
+            initMotor(
                 ahwMap,
                 "motorFrontRight",
                 DcMotor.RunMode.RUN_WITHOUT_ENCODER
             )
         motorBackRight =
-            MotorExtensions.initMotor(
+            initMotor(
                 ahwMap,
                 "motorBackRight",
                 DcMotor.RunMode.RUN_WITHOUT_ENCODER

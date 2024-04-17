@@ -18,10 +18,13 @@ import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.UtilClass.FileWriterFTC.setUpFile
 import org.firstinspires.ftc.teamcode.UtilClass.varConfigurations.LoopTime
 import org.firstinspires.ftc.teamcode.UtilClass.varConfigurations.varConfig
+import org.firstinspires.ftc.teamcode.customHardware.sensors.BeamBreakSensor
+import org.firstinspires.ftc.teamcode.customHardware.servos.AxonServo
 import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.currentColor
 import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.initLights
 import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toPoint
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.currentVoltage
+import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.getEncoderPosition
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.initDigiChan
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.initPotent
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.initVSensor
@@ -153,6 +156,12 @@ open class HardwareConfig() {
             telemetry.update()
         }
         drawPackets()
+
+
+        var servo: AxonServo = AxonServo(ahwMap,"servo")
+        servo.getEncoderPosition()
+        var beamBreakSensor: BeamBreakSensor = BeamBreakSensor(ahwMap,"beamBreak")
+        beamBreakSensor.isBroken()
     }
 
     //code to run all drive functions
