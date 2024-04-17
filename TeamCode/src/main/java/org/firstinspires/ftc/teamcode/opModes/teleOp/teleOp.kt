@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.opModes.teleOp
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
-import org.firstinspires.ftc.teamcode.opModes.HardwareConfig
+import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
 
 @TeleOp(group = "a") //@Disabled//disabling the opmode
 

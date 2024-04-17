@@ -1,5 +1,5 @@
 //import
-package org.firstinspires.ftc.teamcode.opModes
+package org.firstinspires.ftc.teamcode.customHardware
 
 import android.os.Environment
 import com.acmerobotics.dashboard.FtcDashboard

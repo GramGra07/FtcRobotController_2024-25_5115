@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.UtilClass.camUtil.ATLocations.Companion.ge
 import org.firstinspires.ftc.teamcode.UtilClass.camUtil.CameraUtilities.aprilTag
 import org.firstinspires.ftc.teamcode.UtilClass.camUtil.CameraUtilities.initializeProcessor
 import org.firstinspires.ftc.teamcode.UtilClass.camUtil.Processor
-import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.cam1_N
+import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig.Companion.cam1_N
 import org.firstinspires.ftc.teamcode.rr.MecanumDrive
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection
 import kotlin.math.abs

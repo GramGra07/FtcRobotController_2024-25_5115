@@ -8,7 +8,7 @@ import org.firstinspires.ftc.robotcore.external.function.Continuation
 import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration
 import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.setPatternCo
-import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.lights
+import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig.Companion.lights
 import org.firstinspires.ftc.vision.VisionProcessor
 import org.opencv.android.Utils
 import org.opencv.core.Core

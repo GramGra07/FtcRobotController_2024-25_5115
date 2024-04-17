@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.camera.setupClasses
+package org.firstinspires.ftc.teamcode.customHardware.camera
 
 class LensIntrinsics(fx: Double? = 0.0, fy: Double? = 0.0, cx: Double? = 0.0, cy: Double? = 0.0) {
     val fx: Double

@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.UtilClass
 
 import android.os.Environment
-import org.firstinspires.ftc.teamcode.opModes.HardwareConfig
+import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
 import java.io.File
 import java.io.FileWriter
 

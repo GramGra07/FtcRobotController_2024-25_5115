@@ -12,8 +12,8 @@ import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.potentAngle
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.calcFlipPose
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.initServo
-import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.clawSubsystem
-import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.potentiometer
+import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig.Companion.clawSubsystem
+import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig.Companion.potentiometer
 
 
 class ClawSubsystem(ahwMap: HardwareMap) {

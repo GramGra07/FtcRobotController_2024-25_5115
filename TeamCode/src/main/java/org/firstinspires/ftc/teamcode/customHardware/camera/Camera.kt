@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.camera.setupClasses
+package org.firstinspires.ftc.teamcode.customHardware.camera
 
 import android.util.Size
 

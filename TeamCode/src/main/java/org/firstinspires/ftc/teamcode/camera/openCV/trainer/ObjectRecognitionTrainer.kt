@@ -9,7 +9,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
 import org.firstinspires.ftc.teamcode.extensions.ScalarUtil.fetchScalar
 import org.firstinspires.ftc.teamcode.extensions.ScalarUtil.scalarVals
-import org.firstinspires.ftc.teamcode.opModes.HardwareConfig.Companion.cam1_N
+import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig.Companion.cam1_N
 import org.opencv.core.Core
 import org.opencv.core.Mat
 import org.opencv.core.MatOfPoint
