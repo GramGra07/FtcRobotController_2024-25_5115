@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.initServo
 
 class AxonServo(hw: HardwareMap, name: String) {
     val encoder: AnalogInput
-    val servo: Servo
+    private val servo: Servo
     val name: String
     var position: Double? = null
 

@@ -6,9 +6,13 @@ import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.TouchSensor
 import com.qualcomm.robotcore.hardware.VoltageSensor
 import com.qualcomm.robotcore.util.Range
+import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.UtilClass.varConfigurations.PotentPositions
+import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
 import org.firstinspires.ftc.teamcode.customHardware.sensors.BeamBreakSensor
 import org.firstinspires.ftc.teamcode.customHardware.servos.AxonServo
+import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.currentVoltage
+import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.lowVoltage
 import kotlin.math.min
 
 object SensorExtensions {
@@ -86,5 +90,22 @@ object SensorExtensions {
     fun VoltageSensor.currentVoltage(): Double {
         this.getVoltageCorrected()
         return Voltage.currentVoltage
+    }
+    fun VoltageSensor.telemetry(telemetry:Telemetry){
+        if (this.lowVoltage()) {
+            telemetry.addData("", "We have a low battery:")
+        }
+        telemetry.addData(
+            "Voltage",
+            "%.1f",
+            this.currentVoltage()
+        )
+    }
+    fun AnalogInput.telemetryPotent(telemetry: Telemetry) {
+        telemetry.addData(
+            "Potentiometer",
+            "%.2f",
+            this.potentAngle()
+        )
     }
 }

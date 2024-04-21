@@ -19,6 +19,7 @@ import org.firstinspires.ftc.teamcode.UtilClass.FileWriterFTC.setUpFile
 import org.firstinspires.ftc.teamcode.UtilClass.varConfigurations.LoopTime
 import org.firstinspires.ftc.teamcode.UtilClass.varConfigurations.varConfig
 import org.firstinspires.ftc.teamcode.customHardware.sensors.BeamBreakSensor
+import org.firstinspires.ftc.teamcode.customHardware.sensors.LEDIndicator
 import org.firstinspires.ftc.teamcode.customHardware.servos.AxonServo
 import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.currentColor
 import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.initLights
@@ -30,7 +31,8 @@ import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.initPotent
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.initVSensor
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.ledIND
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.lowVoltage
-import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.potentAngle
+import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.telemetry
+import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.telemetryPotent
 import org.firstinspires.ftc.teamcode.humanInput.Drivers
 import org.firstinspires.ftc.teamcode.humanInput.Drivers.bindDriverButtons
 import org.firstinspires.ftc.teamcode.humanInput.Drivers.fieldCentric
@@ -43,6 +45,8 @@ import org.firstinspires.ftc.teamcode.subsystems.EndgameSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.ExtendoSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.LocalizationSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.avoidance.AvoidanceSubsystem
+import org.firstinspires.ftc.teamcode.subsystems.loopTime.LoopTimeController
+import org.firstinspires.ftc.teamcode.subsystems.loopTime.PeriodicLoopTimeObject
 import java.io.FileWriter
 
 
@@ -93,6 +97,7 @@ open class HardwareConfig() {
         lateinit var vSensor: VoltageSensor
         lateinit var drive: MecanumDrive
         lateinit var fileWriter: FileWriter
+        lateinit var loopTimeController: LoopTimeController
         private lateinit var myOpMode: LinearOpMode
         var once = false
         var correctedLPS = 5
@@ -158,16 +163,27 @@ open class HardwareConfig() {
         drawPackets()
 
 
-        var servo: AxonServo = AxonServo(ahwMap,"servo")
+        loopTimeController = LoopTimeController(
+            timer, listOf(PeriodicLoopTimeObject(
+                "Drive", 3
+            ) { drive.updatePoseEstimate() })
+        )
+
+        var servo: AxonServo = AxonServo(ahwMap, "servo")
         servo.getEncoderPosition()
-        var beamBreakSensor: BeamBreakSensor = BeamBreakSensor(ahwMap,"beamBreak")
+        var beamBreakSensor: BeamBreakSensor = BeamBreakSensor(ahwMap, "beamBreak")
         beamBreakSensor.isBroken()
+        var led1: LEDIndicator = LEDIndicator(ahwMap, 1)
+        led1.turnGreen()
     }
 
     //code to run all drive functions
     fun doBulk() {
-        currentTime = timer.seconds()
-        loopTimeCalculations()
+//        currentTime = timer.seconds()
+//        loopTimeCalculations()
+
+
+//        updateDashboardVariables()
         bindDriverButtons(myOpMode, driveSubsystem, clawSubsystem, endgameSubsystem)
         bindOtherButtons(myOpMode, clawSubsystem, extendoSubsystem, driveSubsystem)
         if (multipleDrivers) {
@@ -188,6 +204,8 @@ open class HardwareConfig() {
         if (currentTime > correctedLPS) {
             loops++
         }
+
+        loopTimeController.update()
     }
 
     fun once(myOpMode: OpMode) {
@@ -207,17 +225,10 @@ open class HardwareConfig() {
     }
 
     private fun buildTelemetry() {
-        if (vSensor.lowVoltage()) {
-            telemetry.addData("", "We have a low battery:")
-        }
         telemetry.addData("Drivers", Drivers.currDriver + " " + Drivers.currOther)
-        telemetry.addData(
-            "Voltage",
-            "%.1f",
-            vSensor.currentVoltage()
-        )
+        vSensor.telemetry(telemetry)
         telemetry.addData("Pose: ", drive.pose.toPoint().toString())
-        telemetry.addData("potentiometer", "%.1f", potentiometer.potentAngle())
+        potentiometer.telemetryPotent(telemetry)
         driveSubsystem.telemetry(telemetry)
         avoidanceSubsystem.telemetry(telemetry)
         extendoSubsystem.telemetry(telemetry)
@@ -230,8 +241,9 @@ open class HardwareConfig() {
 //        telemetry.addData("Color", lights.currentColor())
 //        teleSpace()
         telemetry.addData("Version", CURRENT_VERSION)
-
         localizationSubsystem.telemetry(telemetry)
+
+        loopTimeController.telemetry(telemetry)
 
         telemetry.update()
         drawPackets()
@@ -242,21 +254,9 @@ open class HardwareConfig() {
 
         localizationSubsystem.draw(packet)
 
-
         avoidanceSubsystem.draw(packet, drive)
-//        val poseX = driveSubsystem!!.odometrySubsystem!!.poseX
-//        val poseY = driveSubsystem!!.odometrySubsystem!!.poseY
-//        val heading = driveSubsystem!!.odometrySubsystem!!.heading
-//        packet.fieldOverlay()
-//            .setFill("DeepPink")
-//            .setAlpha(1.0)
-//            .strokeCircle(poseX,poseY, rad)
-//            .strokeLine(
-//                poseX,
-//                poseY,
-//                poseX + rad/2 * cos(Math.toRadians(heading)),
-//                poseY + rad/2 * sin(Math.toRadians(heading))
-//            )
+
+//        driveSubsystem.odometrySubsystem.draw(packet, robotRad)
 
         dashboard.sendTelemetryPacket(packet)
     }
@@ -265,33 +265,33 @@ open class HardwareConfig() {
         telemetry.addLine(" ")
     }
 
-    private fun loopTimeCalculations() {
-        if (pastSecondLoops != LoopTime.loopInterval) {
-            timer.reset()
-            loops = 0.0
-            refreshRate = 0.0
-            pastSecondLoops = LoopTime.loopInterval
-        }
-        if (LoopTime.useLoopTime != pastUseLoopTime) {
-            timer.reset()
-            loops = 0.0
-            refreshRate = 0.0
-            pastUseLoopTime = LoopTime.useLoopTime
-        }
-        LPS = loops / (currentTime - correctedLPS)
-        if (refreshRate != pastRefreshRate) {
-            rrPS = currentTime - pastTimeRR
-            pastRefreshRate = refreshRate
-            pastTimeRR = currentTime
-        }
-
-        //periodic
-
-        if (LoopTime.useLoopTime && loops % LoopTime.loopInterval == 0.0) {
-            refreshRate++
-            // Update pose estimate
-            drive.updatePoseEstimate()
-        }
-    }
+//    private fun loopTimeCalculations() {
+//        if (pastSecondLoops != LoopTime.loopInterval) {
+//            timer.reset()
+//            loops = 0.0
+//            refreshRate = 0.0
+//            pastSecondLoops = LoopTime.loopInterval
+//        }
+//        if (LoopTime.useLoopTime != pastUseLoopTime) {
+//            timer.reset()
+//            loops = 0.0
+//            refreshRate = 0.0
+//            pastUseLoopTime = LoopTime.useLoopTime
+//        }
+//        LPS = loops / (currentTime - correctedLPS)
+//        if (refreshRate != pastRefreshRate) {
+//            rrPS = currentTime - pastTimeRR
+//            pastRefreshRate = refreshRate
+//            pastTimeRR = currentTime
+//        }
+//
+//        //periodic
+//
+//        if (LoopTime.useLoopTime && loops % LoopTime.loopInterval == 0.0) {
+//            refreshRate++
+//            // Update pose estimate
+//            drive.updatePoseEstimate()
+//        }
+//    }
 }
 

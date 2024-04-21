@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems
 
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.qualcomm.hardware.bosch.BNO055IMU
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
@@ -190,5 +191,22 @@ class OdometrySubsystem3Wheel(
         telemetry.addData("X", poseX)
         telemetry.addData("Y", poseY)
         telemetry.addData("Heading", heading)
+    }
+    fun draw(packet: TelemetryPacket, rad: Double){
+
+        val poseX =poseX
+        val poseY = poseY
+        val heading = heading
+        packet.fieldOverlay()
+            .setFill("deepPink")
+            .setStroke("deepPink")
+            .setAlpha(1.0)
+            .strokeCircle(poseX,poseY, rad)
+            .strokeLine(
+                poseX,
+                poseY,
+                poseX + rad/2 * cos(Math.toRadians(heading)),
+                poseY + rad/2 * sin(Math.toRadians(heading))
+            )
     }
 }
