@@ -2,14 +2,14 @@ package org.firstinspires.ftc.teamcode.UtilClass
 
 import com.acmerobotics.dashboard.config.Config
 import com.qualcomm.robotcore.hardware.Servo
-import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.ledIND
-import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.setPose
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig.Companion.green1
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig.Companion.green2
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig.Companion.lastTimeOpen
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig.Companion.red1
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig.Companion.red2
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig.Companion.timer
+import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.ledIND
+import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.setPose
 
 @Config
 object ServoUtil {

@@ -192,21 +192,22 @@ class OdometrySubsystem3Wheel(
         telemetry.addData("Y", poseY)
         telemetry.addData("Heading", heading)
     }
-    fun draw(packet: TelemetryPacket, rad: Double){
 
-        val poseX =poseX
+    fun draw(packet: TelemetryPacket, rad: Double) {
+
+        val poseX = poseX
         val poseY = poseY
         val heading = heading
         packet.fieldOverlay()
             .setFill("deepPink")
             .setStroke("deepPink")
             .setAlpha(1.0)
-            .strokeCircle(poseX,poseY, rad)
+            .strokeCircle(poseX, poseY, rad)
             .strokeLine(
                 poseX,
                 poseY,
-                poseX + rad/2 * cos(Math.toRadians(heading)),
-                poseY + rad/2 * sin(Math.toRadians(heading))
+                poseX + rad / 2 * cos(Math.toRadians(heading)),
+                poseY + rad / 2 * sin(Math.toRadians(heading))
             )
     }
 }

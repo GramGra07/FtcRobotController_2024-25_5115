@@ -23,10 +23,11 @@ class AxonServo(hw: HardwareMap, name: String) {
     private fun initAEncoder(hw: HardwareMap): AnalogInput {
         return hw.get(AnalogInput::class.java, name + "Encoder")
     }
-    fun telemetry(telemetry: Telemetry){
-        if (position == null){
+
+    fun telemetry(telemetry: Telemetry) {
+        if (position == null) {
             this.getEncoderPosition()
         }
-        telemetry.addData(name,position)
+        telemetry.addData(name, position)
     }
 }
