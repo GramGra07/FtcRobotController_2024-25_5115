@@ -6,7 +6,7 @@ import com.acmerobotics.roadrunner.Rotation2d
 import com.acmerobotics.roadrunner.Vector2d
 import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.robotcore.external.Telemetry
-import org.firstinspires.ftc.teamcode.Point
+import org.firstinspires.ftc.teamcode.UtilClass.objects.Point
 import org.firstinspires.ftc.teamcode.UtilClass.camUtil.ATLocations
 import org.firstinspires.ftc.teamcode.UtilClass.camUtil.ATLocations.Companion.getLocation
 import org.firstinspires.ftc.teamcode.UtilClass.camUtil.CameraUtilities.aprilTag

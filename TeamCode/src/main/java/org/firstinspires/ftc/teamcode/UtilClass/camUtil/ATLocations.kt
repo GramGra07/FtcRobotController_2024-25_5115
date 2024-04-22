@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.UtilClass.camUtil
 
-import org.firstinspires.ftc.teamcode.Point
+import org.firstinspires.ftc.teamcode.UtilClass.objects.Point
 
 class ATLocations {
     companion object {

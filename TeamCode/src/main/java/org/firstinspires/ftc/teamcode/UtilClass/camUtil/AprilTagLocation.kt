@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.UtilClass.camUtil
 
 import com.acmerobotics.roadrunner.Vector2d
-import org.firstinspires.ftc.teamcode.Point
+import org.firstinspires.ftc.teamcode.UtilClass.objects.Point
 
 class AprilTagLocation(val location: Point) {
 

@@ -20,7 +20,7 @@ class PeriodicLoopTimeObject(name: String, everyLoopNum: Int, func: Runnable) {
     }
 
     fun run() {
-        func
+        func.run()
     }
 
     fun check(loops: Int): Boolean {

@@ -4,11 +4,11 @@ import com.acmerobotics.dashboard.config.Config
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.acmerobotics.roadrunner.Vector2d
 import org.firstinspires.ftc.robotcore.external.Telemetry
-import org.firstinspires.ftc.teamcode.Point
+import org.firstinspires.ftc.teamcode.UtilClass.objects.Point
 import org.firstinspires.ftc.teamcode.UtilClass.varConfigurations.varConfig
-import org.firstinspires.ftc.teamcode.VectorField
-import org.firstinspires.ftc.teamcode.VectorField.Companion.calculateRepulsiveForce
-import org.firstinspires.ftc.teamcode.VectorField.Companion.getCorrectionByAvoidancePUSH
+import org.firstinspires.ftc.teamcode.UtilClass.objects.VectorField
+import org.firstinspires.ftc.teamcode.UtilClass.objects.VectorField.Companion.calculateRepulsiveForce
+import org.firstinspires.ftc.teamcode.UtilClass.objects.VectorField.Companion.getCorrectionByAvoidancePUSH
 import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toPoint
 import org.firstinspires.ftc.teamcode.rr.MecanumDrive
 

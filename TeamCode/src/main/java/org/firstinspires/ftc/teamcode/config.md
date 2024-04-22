@@ -49,8 +49,8 @@ Servo
 4 - airplaneRotation
 5 -
 Digital
-0 -
-1 -
+0 - beamBreak
+1 - beamBreak
 2 -
 3 -
 4 -

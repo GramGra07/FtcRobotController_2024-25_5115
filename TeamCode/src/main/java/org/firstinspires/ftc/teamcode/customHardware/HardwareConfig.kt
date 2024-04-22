@@ -47,6 +47,7 @@ import org.firstinspires.ftc.teamcode.subsystems.LocalizationSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.avoidance.AvoidanceSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.loopTime.LoopTimeController
 import org.firstinspires.ftc.teamcode.subsystems.loopTime.PeriodicLoopTimeObject
+import org.firstinspires.ftc.teamcode.subsystems.loopTime.SpacedBooleanObject
 import java.io.FileWriter
 
 
@@ -145,7 +146,6 @@ open class HardwareConfig() {
         )
         fileWriter = FileWriter(file, true)
         setUpFile(fileWriter)
-        val timer = ElapsedTime()
         timer.reset()
         green1.ledIND(red1, true)
         green2.ledIND(red2, true)
@@ -162,14 +162,19 @@ open class HardwareConfig() {
         }
         drawPackets()
 
-
-        loopTimeController = LoopTimeController(
-            timer, listOf(PeriodicLoopTimeObject(
-                "Drive", 3
-            ) { drive.updatePoseEstimate() })
+        val loopTimePeriodics = listOf(PeriodicLoopTimeObject(
+            "Drive", 3
+        ) { drive.updatePoseEstimate() },)
+        val spacedObjects = listOf(
+            SpacedBooleanObject("Drive", 3.0) { driveSubsystem.update(avoidanceSubsystem) },
         )
 
-        var servo: AxonServo = AxonServo(ahwMap, "servo")
+        loopTimeController = LoopTimeController(
+            timer, loopTimePeriodics,spacedObjects
+        )
+        loopTimeController.spacedObjectOf("Drive")!!.run(currentTime)
+
+        var servo: AxonServo = AxonServo(ahwMap, "airplaneServo")
         servo.getEncoderPosition()
         var beamBreakSensor: BeamBreakSensor = BeamBreakSensor(ahwMap, "beamBreak")
         beamBreakSensor.isBroken()
@@ -181,7 +186,6 @@ open class HardwareConfig() {
     fun doBulk() {
 //        currentTime = timer.seconds()
 //        loopTimeCalculations()
-
 
 //        updateDashboardVariables()
         bindDriverButtons(myOpMode, driveSubsystem, clawSubsystem, endgameSubsystem)
