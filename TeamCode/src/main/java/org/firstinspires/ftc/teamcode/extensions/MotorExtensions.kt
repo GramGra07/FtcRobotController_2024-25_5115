@@ -7,40 +7,22 @@ import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit
 
 object MotorExtensions {
-//    fun initMotor(
-//        hw: HardwareMap,
-//        name: String,
-//        runMode: DcMotor.RunMode,
-//        direction: DcMotorSimple.Direction? = DcMotorSimple.Direction.FORWARD
-//    ): DcMotorEx {
-//        val t = hw.get(DcMotorEx::class.java, name)
-//        t.brake()
-//        t.direction = direction
-//        if (runMode == DcMotor.RunMode.RUN_USING_ENCODER) {
-//            t.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-//            t.runUsingEncoder()
-//        } else {
-//            t.mode = runMode
-//        }
-//        return t
-//    }
-
-    inline fun <reified T : DcMotorEx> initMotor(
+    fun initMotor(
         hw: HardwareMap,
         name: String,
         runMode: DcMotor.RunMode,
         direction: DcMotorSimple.Direction? = DcMotorSimple.Direction.FORWARD
-    ): T {
-        val motor = hw.get(T::class.java, name)
-        motor.brake()
-        motor.direction = direction
+    ): DcMotorEx {
+        val t = hw.get(DcMotorEx::class.java, name)
+        t.brake()
+        t.direction = direction
         if (runMode == DcMotor.RunMode.RUN_USING_ENCODER) {
-            motor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-            motor.runUsingEncoder()
+            t.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+            t.runUsingEncoder()
         } else {
-            motor.mode = runMode
+            t.mode = runMode
         }
-        return motor
+        return t
     }
 
     fun DcMotorEx.brake() {

@@ -10,26 +10,20 @@ import com.qualcomm.hardware.rev.RevBlinkinLedDriver
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.hardware.AnalogInput
-import com.qualcomm.robotcore.hardware.DigitalChannel
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.VoltageSensor
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.UtilClass.FileWriterFTC.setUpFile
-import org.firstinspires.ftc.teamcode.UtilClass.varConfigurations.LoopTime
 import org.firstinspires.ftc.teamcode.UtilClass.varConfigurations.varConfig
 import org.firstinspires.ftc.teamcode.customHardware.sensors.BeamBreakSensor
 import org.firstinspires.ftc.teamcode.customHardware.sensors.LEDIndicator
 import org.firstinspires.ftc.teamcode.customHardware.servos.AxonServo
-import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.currentColor
 import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.initLights
 import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toPoint
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.currentVoltage
-import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.getEncoderPosition
-import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.initDigiChan
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.initPotent
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.initVSensor
-import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.ledIND
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.lowVoltage
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.telemetry
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.telemetryPotent
@@ -71,29 +65,29 @@ open class HardwareConfig() {
         lateinit var localizationSubsystem: LocalizationSubsystem
         lateinit var avoidanceSubsystem: AvoidanceSubsystem
 
+        lateinit var axonServo: AxonServo
+        lateinit var beamBreakSensor: BeamBreakSensor
+
         var useFileWriter: Boolean = varConfig.useFileWriter
         var multipleDrivers: Boolean = varConfig.multipleDrivers
         const val cam1_N = "Webcam 1"
         const val cam2_N = "Webcam 2"
         lateinit var lights: RevBlinkinLedDriver
-        var loops = 0.0
-        var LPS = 0.0
-        var refreshRate = 0.0
-        var rrPS = 0.0
-        var currentTime = 0.0
-        private var pastRefreshRate = refreshRate
-        private var pastSecondLoops = 0.0
-        private var pastTimeRR = 0.0
         var lastTimeOpen = 0.0
-        private var pastUseLoopTime: Boolean = LoopTime.useLoopTime
-        lateinit var green1: DigitalChannel
-        lateinit var green2: DigitalChannel
-        lateinit var green3: DigitalChannel
-        lateinit var green4: DigitalChannel
-        lateinit var red1: DigitalChannel
-        lateinit var red2: DigitalChannel
-        lateinit var red3: DigitalChannel
-        lateinit var red4: DigitalChannel
+
+        //        lateinit var green1: DigitalChannel
+//        lateinit var green2: DigitalChannel
+//        lateinit var green3: DigitalChannel
+//        lateinit var green4: DigitalChannel
+//        lateinit var red1: DigitalChannel
+//        lateinit var red2: DigitalChannel
+//        lateinit var red3: DigitalChannel
+//        lateinit var red4: DigitalChannel
+        lateinit var led1: LEDIndicator
+        lateinit var led2: LEDIndicator
+        lateinit var led3: LEDIndicator
+        lateinit var led4: LEDIndicator
+
         lateinit var potentiometer: AnalogInput
         lateinit var vSensor: VoltageSensor
         lateinit var drive: MecanumDrive
@@ -101,7 +95,6 @@ open class HardwareConfig() {
         lateinit var loopTimeController: LoopTimeController
         private lateinit var myOpMode: LinearOpMode
         var once = false
-        var correctedLPS = 5
 
         const val CURRENT_VERSION = "7.0.0"
 
@@ -116,14 +109,14 @@ open class HardwareConfig() {
         lights = initLights(ahwMap, "blinkin")
         // rev potentiometer //analog
         potentiometer = initPotent(ahwMap, "potent")
-        green1 = initDigiChan(ahwMap, "green1")
-        green2 = initDigiChan(ahwMap, "green2")
-        green3 = initDigiChan(ahwMap, "green3")
-        green4 = initDigiChan(ahwMap, "green4")
-        red1 = initDigiChan(ahwMap, "red1")
-        red2 = initDigiChan(ahwMap, "red2")
-        red3 = initDigiChan(ahwMap, "red3")
-        red4 = initDigiChan(ahwMap, "red4")
+//        green1 = initDigiChan(ahwMap, "green1")
+//        green2 = initDigiChan(ahwMap, "green2")
+//        green3 = initDigiChan(ahwMap, "green3")
+//        green4 = initDigiChan(ahwMap, "green4")
+//        red1 = initDigiChan(ahwMap, "red1")
+//        red2 = initDigiChan(ahwMap, "red2")
+//        red3 = initDigiChan(ahwMap, "red3")
+//        red4 = initDigiChan(ahwMap, "red4")
         allHubs = ahwMap.getAll(LynxModule::class.java)
         for (hub in allHubs) {
             hub.bulkCachingMode = LynxModule.BulkCachingMode.MANUAL
@@ -146,12 +139,31 @@ open class HardwareConfig() {
         )
         fileWriter = FileWriter(file, true)
         setUpFile(fileWriter)
-        timer.reset()
-        green1.ledIND(red1, true)
-        green2.ledIND(red2, true)
-        green3.ledIND(red3, true)
-        green4.ledIND(red4, true)
-        telemetry.addData("Color", lights.currentColor())
+
+
+        val loopTimePeriodics = listOf(
+            PeriodicLoopTimeObject(
+                "Drive", 3
+            ) { drive.updatePoseEstimate() },
+        )
+        val spacedObjects: List<SpacedBooleanObject> = emptyList()
+
+        loopTimeController = LoopTimeController(
+            timer, loopTimePeriodics, spacedObjects
+        )
+
+        led1 = LEDIndicator(ahwMap, 1)
+        led2 = LEDIndicator(ahwMap, 2)
+        led3 = LEDIndicator(ahwMap, 3)
+        led4 = LEDIndicator(ahwMap, 4)
+        led1.turnGreen()
+        led2.turnGreen()
+        led3.turnGreen()
+        led4.turnGreen()
+//        green1.ledIND(red1, true)
+//        green2.ledIND(red2, true)
+//        green3.ledIND(red3, true)
+//        green4.ledIND(red4, true)
         telemetry.addData("Version", CURRENT_VERSION)
         telemetry.addData("Voltage", "%.2f", vSensor.currentVoltage())
         if (vSensor.lowVoltage()) {
@@ -161,32 +173,13 @@ open class HardwareConfig() {
             telemetry.update()
         }
         drawPackets()
-
-        val loopTimePeriodics = listOf(PeriodicLoopTimeObject(
-            "Drive", 3
-        ) { drive.updatePoseEstimate() },)
-        val spacedObjects = listOf(
-            SpacedBooleanObject("Drive", 3.0) { driveSubsystem.update(avoidanceSubsystem) },
-        )
-
-        loopTimeController = LoopTimeController(
-            timer, loopTimePeriodics,spacedObjects
-        )
-        loopTimeController.spacedObjectOf("Drive")!!.run(currentTime)
-
-        var servo: AxonServo = AxonServo(ahwMap, "airplaneServo")
-        servo.getEncoderPosition()
-        var beamBreakSensor: BeamBreakSensor = BeamBreakSensor(ahwMap, "beamBreak")
-        beamBreakSensor.isBroken()
-        var led1: LEDIndicator = LEDIndicator(ahwMap, 1)
-        led1.turnGreen()
+        axonServo = AxonServo(ahwMap, "airplaneRotation")
+        axonServo.setPosition(90.0)
+        beamBreakSensor = BeamBreakSensor(ahwMap, "beamBreak")
     }
 
     //code to run all drive functions
     fun doBulk() {
-//        currentTime = timer.seconds()
-//        loopTimeCalculations()
-
 //        updateDashboardVariables()
         bindDriverButtons(myOpMode, driveSubsystem, clawSubsystem, endgameSubsystem)
         bindOtherButtons(myOpMode, clawSubsystem, extendoSubsystem, driveSubsystem)
@@ -205,10 +198,6 @@ open class HardwareConfig() {
         localizationSubsystem.relocalize(drive)
         buildTelemetry() //makes telemetry
         lynxModules()
-        if (currentTime > correctedLPS) {
-            loops++
-        }
-
         loopTimeController.update()
     }
 
@@ -229,26 +218,24 @@ open class HardwareConfig() {
     }
 
     private fun buildTelemetry() {
-        telemetry.addData("Drivers", Drivers.currDriver + " " + Drivers.currOther)
+        if (multipleDrivers) {
+            telemetry.addData("Drivers", Drivers.currDriver + " " + Drivers.currOther)
+        }
         vSensor.telemetry(telemetry)
+        loopTimeController.telemetry(telemetry)
         telemetry.addData("Pose: ", drive.pose.toPoint().toString())
-        potentiometer.telemetryPotent(telemetry)
         driveSubsystem.telemetry(telemetry)
         avoidanceSubsystem.telemetry(telemetry)
         extendoSubsystem.telemetry(telemetry)
         teleSpace()
-        telemetry.addData("Timer", "%.1f", currentTime) //shows current time
-//        telemetry.addData("Loops", "%.1f", loops)
-        telemetry.addData("Current LPS", "%.1f", LPS)
-//        telemetry.addData("Refresh Rate", "%.1f", rrPS)
-        teleSpace()
-//        telemetry.addData("Color", lights.currentColor())
-//        teleSpace()
-        telemetry.addData("Version", CURRENT_VERSION)
         localizationSubsystem.telemetry(telemetry)
 
-        loopTimeController.telemetry(telemetry)
+        potentiometer.telemetryPotent(telemetry)
+        axonServo.telemetry(telemetry)
+        beamBreakSensor.telemetry(telemetry)
 
+        teleSpace()
+        telemetry.addData("Version", CURRENT_VERSION)
         telemetry.update()
         drawPackets()
     }
@@ -268,34 +255,5 @@ open class HardwareConfig() {
     private fun teleSpace() {
         telemetry.addLine(" ")
     }
-
-//    private fun loopTimeCalculations() {
-//        if (pastSecondLoops != LoopTime.loopInterval) {
-//            timer.reset()
-//            loops = 0.0
-//            refreshRate = 0.0
-//            pastSecondLoops = LoopTime.loopInterval
-//        }
-//        if (LoopTime.useLoopTime != pastUseLoopTime) {
-//            timer.reset()
-//            loops = 0.0
-//            refreshRate = 0.0
-//            pastUseLoopTime = LoopTime.useLoopTime
-//        }
-//        LPS = loops / (currentTime - correctedLPS)
-//        if (refreshRate != pastRefreshRate) {
-//            rrPS = currentTime - pastTimeRR
-//            pastRefreshRate = refreshRate
-//            pastTimeRR = currentTime
-//        }
-//
-//        //periodic
-//
-//        if (LoopTime.useLoopTime && loops % LoopTime.loopInterval == 0.0) {
-//            refreshRate++
-//            // Update pose estimate
-//            drive.updatePoseEstimate()
-//        }
-//    }
 }
 

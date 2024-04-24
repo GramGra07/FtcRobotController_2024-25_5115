@@ -11,6 +11,8 @@ class BeamBreakSensor(hw: HardwareMap, name: String) {
     init {
         this.name = name
         beamBreak = initBeamBreak(hw)
+        beamBreak.mode = DigitalChannel.Mode.INPUT
+        beamBreak.state = true
     }
 
     private fun initBeamBreak(hw: HardwareMap): DigitalChannel {
@@ -21,10 +23,9 @@ class BeamBreakSensor(hw: HardwareMap, name: String) {
         return !this.beamBreak.state
     }
 
-    fun isBroken(): Boolean = this.getPressed()
+    fun isBroken(): Boolean = beamBreak.state
     private fun isOpen(): Boolean = !this.getPressed()
     fun telemetry(telemetry: Telemetry) {
-        telemetry.addData(name, isBroken())
-        telemetry.addData("is open", isOpen())
+        telemetry.addData("$name is broken", isBroken())
     }
 }

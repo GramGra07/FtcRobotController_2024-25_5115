@@ -5,10 +5,10 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.acmerobotics.roadrunner.Vector2d
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.UtilClass.objects.Point
-import org.firstinspires.ftc.teamcode.UtilClass.varConfigurations.varConfig
 import org.firstinspires.ftc.teamcode.UtilClass.objects.VectorField
 import org.firstinspires.ftc.teamcode.UtilClass.objects.VectorField.Companion.calculateRepulsiveForce
 import org.firstinspires.ftc.teamcode.UtilClass.objects.VectorField.Companion.getCorrectionByAvoidancePUSH
+import org.firstinspires.ftc.teamcode.UtilClass.varConfigurations.varConfig
 import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toPoint
 import org.firstinspires.ftc.teamcode.rr.MecanumDrive
 
@@ -20,7 +20,6 @@ class AvoidanceSubsystem(avoidanceTypes: AvoidanceTypes) {
         OFF
     }
 
-    @JvmField
     var avoidanceType: AvoidanceTypes
     private var fields: List<VectorField> = VectorField.massCreate(createFields())
 
@@ -31,19 +30,29 @@ class AvoidanceSubsystem(avoidanceTypes: AvoidanceTypes) {
 
     private var rad: Double = varConfig.fieldRadius
 
-    private var points: List<Point> = listOf(
-        Point(24.0, 0.0),
-        Point(48.0, 0.0),
-        Point(-24.0, 0.0),
-        Point(-48.0, 0.0),
-        Point(24.0, -24.0),
-        Point(48.0, -24.0),
-        Point(-24.0, -24.0),
-        Point(-48.0, -24.0)
-    )
+//    private var points: List<Point> = listOf(
+//        Point(24.0, 0.0),
+//        Point(48.0, 0.0),
+//        Point(-24.0, 0.0),
+//        Point(-48.0, 0.0),
+//        Point(24.0, -24.0),
+//        Point(48.0, -24.0),
+//        Point(-24.0, -24.0),
+//        Point(-48.0, -24.0)
+//    )
 
     private fun createFields(): HashMap<Point, Double> {
         val fields = hashMapOf<Point, Double>()
+        val points = listOf(
+            Point(24.0, 0.0),
+            Point(48.0, 0.0),
+            Point(-24.0, 0.0),
+            Point(-48.0, 0.0),
+            Point(24.0, -24.0),
+            Point(48.0, -24.0),
+            Point(-24.0, -24.0),
+            Point(-48.0, -24.0)
+        )
         for (point in points) {
             fields[point] = rad
         }

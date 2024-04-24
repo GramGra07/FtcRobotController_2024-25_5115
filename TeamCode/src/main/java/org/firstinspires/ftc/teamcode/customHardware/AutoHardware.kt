@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.teamcode.UtilClass.camUtil.CameraUtilities.initializeProcessor
 import org.firstinspires.ftc.teamcode.UtilClass.camUtil.Processor
 import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.setPatternCo
-import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.ledIND
 import org.firstinspires.ftc.teamcode.opModes.autoSoftware.autoClasses.AutoVarEnums
 import org.firstinspires.ftc.teamcode.opModes.autoSoftware.autoClasses.StartLocation
 import org.firstinspires.ftc.teamcode.opModes.autoSoftware.autoClasses.StartPose
@@ -33,10 +32,10 @@ class AutoHardware(
         initAutoVars(startPose.startLocation)
         autoVars[AutoVarEnums.VISION_READY] =
             initializeProcessor(processor, ahwMap, cam2_N, true)
-        green1.ledIND(red1, false)
-        green2.ledIND(red2, false)
-        green3.ledIND(red3, false)
-        green4.ledIND(red4, false)
+//        green1.ledIND(red1, false)
+//        green2.ledIND(red2, false)
+//        green3.ledIND(red3, false)
+//        green4.ledIND(red4, false)
         showAutoTelemetry()
         opmode.waitForStart()
         timer.reset()

@@ -3,12 +3,10 @@ package org.firstinspires.ftc.teamcode.extensions
 import com.qualcomm.robotcore.hardware.AnalogInput
 import com.qualcomm.robotcore.hardware.DigitalChannel
 import com.qualcomm.robotcore.hardware.HardwareMap
-import com.qualcomm.robotcore.hardware.TouchSensor
 import com.qualcomm.robotcore.hardware.VoltageSensor
 import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.UtilClass.varConfigurations.PotentPositions
-import org.firstinspires.ftc.teamcode.customHardware.servos.AxonServo
 import kotlin.math.min
 
 object SensorExtensions {
@@ -29,13 +27,6 @@ object SensorExtensions {
     }
 
 
-    fun AxonServo.getEncoderPosition(): Double {
-        val position = (this.encoder.voltage / 3.3) * 360
-        this.position = position
-        return position
-    }
-
-
     // extend the AnalogInput class to include a method to get the angle of the potentiometer
     fun AnalogInput.potentAngle(): Double {
         val potentMax = 270.0
@@ -47,12 +38,6 @@ object SensorExtensions {
     }
 
     fun DigitalChannel.getPressed(): Boolean = !this.state
-    fun DigitalChannel.ledIND(red: DigitalChannel, greenOn: Boolean) {
-        this.state = greenOn
-        red.state = !greenOn
-    }
-
-    fun TouchSensor.getTouchSensor(): Boolean = this.isPressed
 
     fun initVSensor(hw: HardwareMap, name: String): VoltageSensor {
         return hw.get(VoltageSensor::class.java, name)
