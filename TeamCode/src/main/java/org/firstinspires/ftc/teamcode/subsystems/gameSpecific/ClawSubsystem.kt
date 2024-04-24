@@ -5,9 +5,9 @@ import com.acmerobotics.roadrunner.Action
 import com.arcrobotics.ftclib.command.CommandBase
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.Servo
-import org.firstinspires.ftc.teamcode.UtilClass.ServoUtil
-import org.firstinspires.ftc.teamcode.UtilClass.varConfigurations.AutoServoPositions
-import org.firstinspires.ftc.teamcode.UtilClass.varConfigurations.PotentPositions
+import org.firstinspires.ftc.teamcode.utilClass.ServoUtil
+import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.AutoServoPositions
+import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.PotentPositions
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig.Companion.clawSubsystem
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig.Companion.potentiometer
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.potentAngle

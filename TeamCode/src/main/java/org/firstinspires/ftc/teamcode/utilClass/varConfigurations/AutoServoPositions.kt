@@ -1,7 +1,7 @@
-package org.firstinspires.ftc.teamcode.UtilClass.varConfigurations
+package org.firstinspires.ftc.teamcode.utilClass.varConfigurations
 
 import com.acmerobotics.dashboard.config.Config
-import org.firstinspires.ftc.teamcode.UtilClass.ServoUtil.backClaw
+import org.firstinspires.ftc.teamcode.utilClass.ServoUtil.backClaw
 
 @Config
 object AutoServoPositions {

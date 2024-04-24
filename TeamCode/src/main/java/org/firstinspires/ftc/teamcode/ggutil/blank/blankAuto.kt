@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.ggutil.blank
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
-import org.firstinspires.ftc.teamcode.UtilClass.camUtil.Processor
+import org.firstinspires.ftc.teamcode.utilClass.camUtil.Processor
 import org.firstinspires.ftc.teamcode.customHardware.AutoHardware
 import org.firstinspires.ftc.teamcode.opModes.autoSoftware.autoClasses.StartLocation
 import org.firstinspires.ftc.teamcode.startEnums.Alliance

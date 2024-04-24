@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.UtilClass.varConfigurations
+package org.firstinspires.ftc.teamcode.utilClass.varConfigurations
 
 import com.acmerobotics.dashboard.config.Config
 import com.qualcomm.robotcore.hardware.PIDFCoefficients

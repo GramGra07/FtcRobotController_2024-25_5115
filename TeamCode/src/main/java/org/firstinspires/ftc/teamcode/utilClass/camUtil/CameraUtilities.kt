@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.UtilClass.camUtil
+package org.firstinspires.ftc.teamcode.utilClass.camUtil
 
 import android.util.Size
 import com.acmerobotics.dashboard.FtcDashboard

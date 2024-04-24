@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.UtilClass.camUtil
+package org.firstinspires.ftc.teamcode.utilClass.camUtil
 
 enum class Processor {
     APRIL_TAG,

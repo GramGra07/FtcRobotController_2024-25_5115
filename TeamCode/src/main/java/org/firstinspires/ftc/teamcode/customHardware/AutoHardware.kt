@@ -2,8 +2,8 @@ package org.firstinspires.ftc.teamcode.customHardware
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.HardwareMap
-import org.firstinspires.ftc.teamcode.UtilClass.camUtil.CameraUtilities.initializeProcessor
-import org.firstinspires.ftc.teamcode.UtilClass.camUtil.Processor
+import org.firstinspires.ftc.teamcode.utilClass.camUtil.CameraUtilities.initializeProcessor
+import org.firstinspires.ftc.teamcode.utilClass.camUtil.Processor
 import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.setPatternCo
 import org.firstinspires.ftc.teamcode.opModes.autoSoftware.autoClasses.AutoVarEnums
 import org.firstinspires.ftc.teamcode.opModes.autoSoftware.autoClasses.StartLocation

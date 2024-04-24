@@ -1,6 +1,6 @@
-package org.firstinspires.ftc.teamcode.UtilClass.objects
+package org.firstinspires.ftc.teamcode.utilClass.objects
 
-import org.firstinspires.ftc.teamcode.UtilClass.varConfigurations.varConfig
+import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.varConfig
 import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.distanceTo
 import kotlin.math.atan2
 import kotlin.math.cos

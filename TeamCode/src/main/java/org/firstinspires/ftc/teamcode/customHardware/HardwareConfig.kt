@@ -14,8 +14,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.VoltageSensor
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.Telemetry
-import org.firstinspires.ftc.teamcode.UtilClass.FileWriterFTC.setUpFile
-import org.firstinspires.ftc.teamcode.UtilClass.varConfigurations.varConfig
+import org.firstinspires.ftc.teamcode.utilClass.FileWriterFTC.setUpFile
+import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.varConfig
 import org.firstinspires.ftc.teamcode.customHardware.sensors.BeamBreakSensor
 import org.firstinspires.ftc.teamcode.customHardware.sensors.LEDIndicator
 import org.firstinspires.ftc.teamcode.customHardware.servos.AxonServo

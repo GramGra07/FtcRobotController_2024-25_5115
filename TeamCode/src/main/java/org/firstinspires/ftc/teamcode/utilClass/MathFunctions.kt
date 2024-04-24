@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.UtilClass
+package org.firstinspires.ftc.teamcode.utilClass
 
 import com.acmerobotics.roadrunner.Pose2d
 import kotlin.math.abs
@@ -60,8 +60,9 @@ class MathFunctions {
         fun inRange(value: Double, min: Double, max: Double): Boolean {
             return value in min..max
         }
-        fun inTolerance(value:Double, value2:Double, tolerance:Double):Boolean{
-            return value in value2-tolerance..value2+tolerance
+
+        fun inTolerance(value: Double, value2: Double, tolerance: Double): Boolean {
+            return value in value2 - tolerance..value2 + tolerance
         }
     }
 }

@@ -11,9 +11,9 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.robotcore.external.Telemetry
-import org.firstinspires.ftc.teamcode.UtilClass.FileWriterFTC
-import org.firstinspires.ftc.teamcode.UtilClass.varConfigurations.varConfig
-import org.firstinspires.ftc.teamcode.UtilClass.varConfigurations.varConfig.usingAvoidance
+import org.firstinspires.ftc.teamcode.utilClass.FileWriterFTC
+import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.varConfig
+import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.varConfig.usingAvoidance
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
 import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.initMotor
 import org.firstinspires.ftc.teamcode.rr.MecanumDrive

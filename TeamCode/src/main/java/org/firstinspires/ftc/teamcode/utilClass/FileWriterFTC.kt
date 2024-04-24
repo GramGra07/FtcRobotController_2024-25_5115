@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.UtilClass
+package org.firstinspires.ftc.teamcode.utilClass
 
 import android.os.Environment
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig

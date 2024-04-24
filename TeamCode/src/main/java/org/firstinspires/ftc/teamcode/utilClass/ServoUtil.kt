@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.UtilClass
+package org.firstinspires.ftc.teamcode.utilClass
 
 //import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig.Companion.green1
 //import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig.Companion.green2

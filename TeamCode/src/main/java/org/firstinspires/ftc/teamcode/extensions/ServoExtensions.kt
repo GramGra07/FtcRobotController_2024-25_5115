@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.extensions
 import com.acmerobotics.dashboard.config.Config
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.Servo
-import org.firstinspires.ftc.teamcode.UtilClass.varConfigurations.PotentPositions
+import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.PotentPositions
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig.Companion.potentiometer
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.potentAngle
 import kotlin.math.ceil

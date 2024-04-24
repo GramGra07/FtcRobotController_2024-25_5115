@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.camera.openCV
 
 import com.acmerobotics.dashboard.FtcDashboard
 import org.firstinspires.ftc.robotcore.external.Telemetry
-import org.firstinspires.ftc.teamcode.UtilClass.varConfigurations.varConfig
+import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.varConfig
 import org.firstinspires.ftc.teamcode.camera.openCV.trainer.vars.blueconeObjVars
 import org.firstinspires.ftc.teamcode.camera.openCV.trainer.vars.redconeObjVars
 import org.firstinspires.ftc.teamcode.camera.openCV.trainer.vars.redpropObjVars

@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.UtilClass
+package org.firstinspires.ftc.teamcode.utilClass
 
 import CancelableFollowTrajectoryAction
 import com.acmerobotics.dashboard.FtcDashboard
