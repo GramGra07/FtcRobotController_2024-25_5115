@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.UtilClass.camUtil.CameraUtilities.aprilTag
 import org.firstinspires.ftc.teamcode.UtilClass.camUtil.CameraUtilities.initializeProcessor
 import org.firstinspires.ftc.teamcode.UtilClass.camUtil.Processor
 import org.firstinspires.ftc.teamcode.UtilClass.objects.Point
-import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig.Companion.cam1_N
+import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig.Companion.CAM1
 import org.firstinspires.ftc.teamcode.rr.MecanumDrive
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection
 import kotlin.math.abs
@@ -27,7 +27,7 @@ class LocalizationSubsystem(ahwMap: HardwareMap) {
     private val rejectedIDs = listOf(7)
 
     init {
-        initializeProcessor(Processor.APRIL_TAG, ahwMap, cam1_N, true)
+        initializeProcessor(Processor.APRIL_TAG, ahwMap, CAM1, true)
     }
 
     private fun getDetections(): Map<String, Double?>? {

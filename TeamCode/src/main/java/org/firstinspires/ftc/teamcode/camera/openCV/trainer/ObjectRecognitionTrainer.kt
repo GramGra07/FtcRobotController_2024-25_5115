@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
-import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig.Companion.cam1_N
+import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig.Companion.CAM1
 import org.firstinspires.ftc.teamcode.extensions.ScalarUtil.fetchScalar
 import org.firstinspires.ftc.teamcode.extensions.ScalarUtil.scalarVals
 import org.opencv.core.Core
@@ -64,7 +64,7 @@ class ObjectRecognitionTrainer : LinearOpMode() {
             .getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.packageName)
         webcam = OpenCvCameraFactory.getInstance().createWebcam(
             hardwareMap.get<WebcamName>(
-                WebcamName::class.java, cam1_N
+                WebcamName::class.java, CAM1
             ), cameraMonitorViewId
         )
         webcam.setPipeline(pipeline)

@@ -27,16 +27,16 @@ import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.initVSensor
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.lowVoltage
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.telemetry
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.telemetryPotent
-import org.firstinspires.ftc.teamcode.humanInput.Drivers
-import org.firstinspires.ftc.teamcode.humanInput.Drivers.bindDriverButtons
-import org.firstinspires.ftc.teamcode.humanInput.Drivers.fieldCentric
-import org.firstinspires.ftc.teamcode.humanInput.Drivers.switchProfile
-import org.firstinspires.ftc.teamcode.humanInput.Operator.bindOtherButtons
+import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers
+import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers.bindDriverButtons
+import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers.fieldCentric
+import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers.switchProfile
+import org.firstinspires.ftc.teamcode.subsystems.humanInput.Operator.bindOtherButtons
 import org.firstinspires.ftc.teamcode.rr.MecanumDrive
-import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem
+import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ClawSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
-import org.firstinspires.ftc.teamcode.subsystems.EndgameSubsystem
-import org.firstinspires.ftc.teamcode.subsystems.ExtendoSubsystem
+import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.EndgameSubsystem
+import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ExtendoSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.LocalizationSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.avoidance.AvoidanceSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.loopTime.LoopTimeController
@@ -70,8 +70,8 @@ open class HardwareConfig() {
 
         var useFileWriter: Boolean = varConfig.useFileWriter
         var multipleDrivers: Boolean = varConfig.multipleDrivers
-        const val cam1_N = "Webcam 1"
-        const val cam2_N = "Webcam 2"
+        const val CAM1 = "Webcam 1"
+        const val CAM2 = "Webcam 2"
         lateinit var lights: RevBlinkinLedDriver
         var lastTimeOpen = 0.0
 
@@ -96,7 +96,7 @@ open class HardwareConfig() {
         private lateinit var myOpMode: LinearOpMode
         var once = false
 
-        const val CURRENT_VERSION = "7.0.0"
+        private const val CURRENT_VERSION = "7.1.0"
 
         var allHubs: List<LynxModule> = ArrayList()
     }

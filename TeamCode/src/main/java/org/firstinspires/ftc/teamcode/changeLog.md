@@ -1,3 +1,7 @@
+7.1.0 April 24th, 2024
+Added and now have Axon Servo class for all uses there, as well as loop time controller to manage
+all loop time activities.
+
 7.0.0 March 16th, 2024
 Completely switched to subsystem control with sights set on RR 1.0 and avoidance subsystems
 

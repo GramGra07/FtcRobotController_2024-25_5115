@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.subsystems
+package org.firstinspires.ftc.teamcode.subsystems.gameSpecific
 
 import com.arcrobotics.ftclib.command.CommandBase
 import com.qualcomm.robotcore.hardware.DcMotor

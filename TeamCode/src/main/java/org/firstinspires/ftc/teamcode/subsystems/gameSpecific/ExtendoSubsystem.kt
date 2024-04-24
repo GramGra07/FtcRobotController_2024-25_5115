@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.subsystems
+package org.firstinspires.ftc.teamcode.subsystems.gameSpecific
 
 import com.arcrobotics.ftclib.controller.PIDFController
 import com.qualcomm.robotcore.hardware.DcMotor
@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.UtilClass.varConfigurations.PIDVals
 import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.initMotor
+import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
 import kotlin.math.abs
 
 class ExtendoSubsystem(ahwMap: HardwareMap) {

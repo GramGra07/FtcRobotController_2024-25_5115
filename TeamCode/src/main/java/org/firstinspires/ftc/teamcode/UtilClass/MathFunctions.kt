@@ -1,15 +1,15 @@
-package org.firstinspires.ftc.teamcode
+package org.firstinspires.ftc.teamcode.UtilClass
 
 import com.acmerobotics.roadrunner.Pose2d
 import kotlin.math.abs
 
 class MathFunctions {
-    var position = 0.0 //sets servo position to 0-1 multiplier
-    val degree_mult = 0.00555555554 // = 100/180
-    fun calcServo(degrees: Int): Double {
-        position = degree_mult * degrees
-        return position
-    }
+//    var position = 0.0 //sets servo position to 0-1 multiplier
+//    val degree_mult = 0.00555555554 // = 100/180
+//    fun calcServo(degrees: Int): Double {
+//        position = degree_mult * degrees
+//        return position
+//    }
 
     fun averageOf(values: DoubleArray): Double {
         var sum = 0.0
@@ -17,10 +17,6 @@ class MathFunctions {
             sum += value
         }
         return sum / values.size
-    }
-
-    fun inRange(value: Double, min: Double, max: Double): Boolean {
-        return value >= min && value <= max
     }
 
     fun getQuadrant(pose: Pose2d): Int {
@@ -59,6 +55,13 @@ class MathFunctions {
             while (result >= 180.0) result -= 360.0
             while (result < -180.0) result += 360.0
             return result
+        }
+
+        fun inRange(value: Double, min: Double, max: Double): Boolean {
+            return value in min..max
+        }
+        fun inTolerance(value:Double, value2:Double, tolerance:Double):Boolean{
+            return value in value2-tolerance..value2+tolerance
         }
     }
 }

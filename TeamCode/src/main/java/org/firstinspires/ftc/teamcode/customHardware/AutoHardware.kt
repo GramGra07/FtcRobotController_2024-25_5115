@@ -31,7 +31,7 @@ class AutoHardware(
         drive = MecanumDrive(ahwMap, startPose.getPose())
         initAutoVars(startPose.startLocation)
         autoVars[AutoVarEnums.VISION_READY] =
-            initializeProcessor(processor, ahwMap, cam2_N, true)
+            initializeProcessor(processor, ahwMap, CAM2, true)
 //        green1.ledIND(red1, false)
 //        green2.ledIND(red2, false)
 //        green3.ledIND(red3, false)

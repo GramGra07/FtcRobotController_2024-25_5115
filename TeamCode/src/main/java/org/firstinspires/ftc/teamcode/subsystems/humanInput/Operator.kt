@@ -1,12 +1,12 @@
-package org.firstinspires.ftc.teamcode.humanInput
+package org.firstinspires.ftc.teamcode.subsystems.humanInput
 
 import com.acmerobotics.dashboard.config.Config
 import com.acmerobotics.roadrunner.ftc.runBlocking
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import org.firstinspires.ftc.teamcode.UtilClass.varConfigurations.LoopTime
-import org.firstinspires.ftc.teamcode.subsystems.ClawSubsystem
+import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ClawSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
-import org.firstinspires.ftc.teamcode.subsystems.ExtendoSubsystem
+import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ExtendoSubsystem
 
 @Config
 object Operator {
