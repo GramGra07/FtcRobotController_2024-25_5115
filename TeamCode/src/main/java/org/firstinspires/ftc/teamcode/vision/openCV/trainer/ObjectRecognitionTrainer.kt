@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.camera.openCV.trainer
+package org.firstinspires.ftc.teamcode.vision.openCV.trainer
 
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry

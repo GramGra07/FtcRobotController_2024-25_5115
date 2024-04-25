@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.camera
+package org.firstinspires.ftc.teamcode.vision
 
 import android.graphics.Bitmap
 import android.graphics.Canvas

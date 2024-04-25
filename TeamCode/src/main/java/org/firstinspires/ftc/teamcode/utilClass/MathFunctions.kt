@@ -12,11 +12,7 @@ class MathFunctions {
 //    }
 
     fun averageOf(values: DoubleArray): Double {
-        var sum = 0.0
-        for (value in values) {
-            sum += value
-        }
-        return sum / values.size
+        return values.average()
     }
 
     fun getQuadrant(pose: Pose2d): Int {
