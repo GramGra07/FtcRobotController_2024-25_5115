@@ -39,6 +39,7 @@ import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.EndgameSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ExtendoSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.LocalizationSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.avoidance.AvoidanceSubsystem
+import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers.currDriver
 import org.firstinspires.ftc.teamcode.subsystems.loopTime.LoopTimeController
 import org.firstinspires.ftc.teamcode.subsystems.loopTime.PeriodicLoopTimeObject
 import org.firstinspires.ftc.teamcode.subsystems.loopTime.SpacedBooleanObject
@@ -75,14 +76,6 @@ open class HardwareConfig() {
         lateinit var lights: RevBlinkinLedDriver
         var lastTimeOpen = 0.0
 
-        //        lateinit var green1: DigitalChannel
-//        lateinit var green2: DigitalChannel
-//        lateinit var green3: DigitalChannel
-//        lateinit var green4: DigitalChannel
-//        lateinit var red1: DigitalChannel
-//        lateinit var red2: DigitalChannel
-//        lateinit var red3: DigitalChannel
-//        lateinit var red4: DigitalChannel
         lateinit var led1: LEDIndicator
         lateinit var led2: LEDIndicator
         lateinit var led3: LEDIndicator
@@ -109,18 +102,14 @@ open class HardwareConfig() {
         lights = initLights(ahwMap, "blinkin")
         // rev potentiometer //analog
         potentiometer = initPotent(ahwMap, "potent")
-//        green1 = initDigiChan(ahwMap, "green1")
-//        green2 = initDigiChan(ahwMap, "green2")
-//        green3 = initDigiChan(ahwMap, "green3")
-//        green4 = initDigiChan(ahwMap, "green4")
-//        red1 = initDigiChan(ahwMap, "red1")
-//        red2 = initDigiChan(ahwMap, "red2")
-//        red3 = initDigiChan(ahwMap, "red3")
-//        red4 = initDigiChan(ahwMap, "red4")
         allHubs = ahwMap.getAll(LynxModule::class.java)
         for (hub in allHubs) {
             hub.bulkCachingMode = LynxModule.BulkCachingMode.MANUAL
         }
+        led1 = LEDIndicator(ahwMap, 1)
+        led2 = LEDIndicator(ahwMap, 2)
+        led3 = LEDIndicator(ahwMap, 3)
+        led4 = LEDIndicator(ahwMap, 4)
         driveSubsystem = DriveSubsystem(ahwMap)
         clawSubsystem = ClawSubsystem(ahwMap)
         endgameSubsystem = EndgameSubsystem(ahwMap)
@@ -152,18 +141,10 @@ open class HardwareConfig() {
             timer, loopTimePeriodics, spacedObjects
         )
 
-        led1 = LEDIndicator(ahwMap, 1)
-        led2 = LEDIndicator(ahwMap, 2)
-        led3 = LEDIndicator(ahwMap, 3)
-        led4 = LEDIndicator(ahwMap, 4)
         led1.turnGreen()
         led2.turnGreen()
         led3.turnGreen()
         led4.turnGreen()
-//        green1.ledIND(red1, true)
-//        green2.ledIND(red2, true)
-//        green3.ledIND(red3, true)
-//        green4.ledIND(red4, true)
         telemetry.addData("Version", CURRENT_VERSION)
         telemetry.addData("Voltage", "%.2f", vSensor.currentVoltage())
         if (vSensor.lowVoltage()) {

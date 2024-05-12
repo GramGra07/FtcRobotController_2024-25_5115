@@ -2,9 +2,11 @@ package org.firstinspires.ftc.teamcode.subsystems.humanInput
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
+import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
 import org.firstinspires.ftc.teamcode.utilClass.DriverAid
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ClawSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
+import org.firstinspires.ftc.teamcode.subsystems.avoidance.AvoidanceSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.EndgameSubsystem
 
 
@@ -151,6 +153,7 @@ object Drivers {
         }
         if (currDriver === driverControls[5]) { //Child
             fieldCentric = false
+            HardwareConfig.avoidanceSubsystem.avoidanceType = AvoidanceSubsystem.AvoidanceTypes.OFF
             driveSubsystem.slowModeIsOn = true
         }
     }

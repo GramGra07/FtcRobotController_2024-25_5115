@@ -9,6 +9,8 @@ import org.firstinspires.ftc.teamcode.utilClass.ServoUtil
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.AutoServoPositions
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.PotentPositions
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig.Companion.clawSubsystem
+import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig.Companion.led1
+import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig.Companion.led2
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig.Companion.potentiometer
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.potentAngle
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions
@@ -64,11 +66,11 @@ class ClawSubsystem(ahwMap: HardwareMap) {
         leftState = ClawStates.OPEN
     }
 
-    private fun openLeft() {
+    fun openLeft() {
         leftState = ClawStates.OPEN
     }
 
-    private fun openRight() {
+    fun openRight() {
         rightState = ClawStates.OPEN
     }
 
@@ -77,15 +79,15 @@ class ClawSubsystem(ahwMap: HardwareMap) {
         rightState = ClawStates.CLOSED
     }
 
-    private fun closeLeft() {
+    fun closeLeft() {
         leftState = ClawStates.CLOSED
     }
 
-    private fun closeRight() {
+    fun closeRight() {
         rightState = ClawStates.CLOSED
     }
 
-    private fun flipHigh() {
+    fun flipHigh() {
         flipState = FlipStates.HIGH
     }
 
@@ -93,7 +95,7 @@ class ClawSubsystem(ahwMap: HardwareMap) {
         flipState = FlipStates.UP
     }
 
-    private fun flipBack() {
+    fun flipBack() {
         flipState = FlipStates.BACK
     }
 
@@ -101,7 +103,7 @@ class ClawSubsystem(ahwMap: HardwareMap) {
         flipState = FlipStates.DOWN
     }
 
-    private fun flipZero() {
+    fun flipZero() {
         flipState = FlipStates.ZERO
     }
 
@@ -230,11 +232,13 @@ class ClawSubsystem(ahwMap: HardwareMap) {
         when (rightState) {
             ClawStates.OPEN -> {
                 ServoUtil.openClaw1(claw1)
+                led1.turnRed()
                 rightState = ClawStates.IDLE
             }
 
             ClawStates.CLOSED -> {
                 ServoUtil.closeClaw1(claw1)
+                led1.turnGreen()
                 rightState = ClawStates.IDLE
             }
 
@@ -243,11 +247,13 @@ class ClawSubsystem(ahwMap: HardwareMap) {
         when (leftState) {
             ClawStates.OPEN -> {
                 ServoUtil.openClaw2(claw2)
+                led2.turnRed()
                 leftState = ClawStates.IDLE
             }
 
             ClawStates.CLOSED -> {
                 ServoUtil.closeClaw2(claw2)
+                led2.turnGreen()
                 leftState = ClawStates.IDLE
             }
 

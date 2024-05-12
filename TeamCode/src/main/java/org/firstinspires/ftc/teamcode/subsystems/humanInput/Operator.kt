@@ -33,36 +33,36 @@ object Operator {
             }
             touchPressed = myOpMode.gamepad2.touchpad
             if (myOpMode.gamepad2.right_bumper) {
-//                clawSubsystem.closeLeft()
-                runBlocking(clawSubsystem.closeLeftAction())
+                clawSubsystem.closeLeft()
+//                runBlocking(clawSubsystem.closeLeftAction())
 //                ServoUtil.closeClaw(HardwareConfig.claw1)
             }
             if (myOpMode.gamepad2.left_bumper) {
-                runBlocking(clawSubsystem.closeRightAction())
-//                clawSubsystem.closeRight()
+//                runBlocking(clawSubsystem.closeRightAction())
+                clawSubsystem.closeRight()
 //                ServoUtil.closeClaw(HardwareConfig.claw2)
             }
             if (myOpMode.gamepad2.right_trigger > 0) {
-//                clawSubsystem.openLeft()
-                runBlocking(clawSubsystem.openLeftAction())
+                clawSubsystem.openLeft()
+//                runBlocking(clawSubsystem.openLeftAction())
 //                ServoUtil.openClaw(HardwareConfig.claw1)
             }
             if (myOpMode.gamepad2.left_trigger > 0) {
-                clawSubsystem.openRightAction()
-                runBlocking(clawSubsystem.openRightAction())
+                clawSubsystem.openRight()
+//                runBlocking(clawSubsystem.openRightAction())
 //                ServoUtil.openClaw(HardwareConfig.claw2)
             }
 
             //
             if (myOpMode.gamepad2.dpad_left) {
-//                clawSubsystem.flipBack()
-                runBlocking(clawSubsystem.flipBackAction())
+                clawSubsystem.flipBack()
+//                runBlocking(clawSubsystem.flipBackAction())
             } else if (myOpMode.gamepad2.dpad_up) {
-//                clawSubsystem.flipHigh()
-                runBlocking(clawSubsystem.flipHighAction())
+                clawSubsystem.flipHigh()
+//                runBlocking(clawSubsystem.flipHighAction())
             } else if (myOpMode.gamepad2.dpad_down) {
-//                clawSubsystem.flipZero()
-                runBlocking(clawSubsystem.flipZeroAction())
+                clawSubsystem.flipZero()
+//                runBlocking(clawSubsystem.flipZeroAction())
             }
             if (myOpMode.gamepad2.right_stick_y < -deadZone && extendoSubsystem.usePIDF) {
                 extendoSubsystem.setPowerR(extendoSubsystem.maxRotationTicks.toDouble())
