@@ -48,7 +48,11 @@ class AvoidanceSubsystem {
     var powers: Map<String, Double?>? = null
     private var currentAvoidanceTypes: AvoidanceTypes = AvoidanceTypes.OFF
 
-    fun update(driveSubsystem: DriveSubsystem, type: AvoidanceTypes,drive: MecanumDrive=driveSubsystem.drive) {
+    fun update(
+        driveSubsystem: DriveSubsystem,
+        type: AvoidanceTypes,
+        drive: MecanumDrive = driveSubsystem.drive
+    ) {
         updateVars(type)
         when (type) {
             AvoidanceTypes.PUSH -> {
@@ -59,7 +63,13 @@ class AvoidanceSubsystem {
             }
 
             AvoidanceTypes.STOP -> {
-                powers = getCorrectionByAvoidanceSTOP(fields,drive.pose,driveSubsystem.leftStickY,driveSubsystem.leftStickX,driveSubsystem.rightStickX)
+                powers = getCorrectionByAvoidanceSTOP(
+                    fields,
+                    drive.pose,
+                    driveSubsystem.leftStickY,
+                    driveSubsystem.leftStickX,
+                    driveSubsystem.rightStickX
+                )
             }
 
             AvoidanceTypes.OFF -> {}

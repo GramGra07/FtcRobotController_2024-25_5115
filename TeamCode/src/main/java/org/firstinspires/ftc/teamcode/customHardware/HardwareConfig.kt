@@ -153,14 +153,12 @@ open class HardwareConfig() {
             telemetry.update()
         }
         drawPackets()
-        axonServo = AxonServo(ahwMap, "airplaneRotation")
-        axonServo.setPosition(90.0)
+        axonServo = AxonServo(ahwMap, "airplaneRotation",90.0)
         beamBreakSensor = BeamBreakSensor(ahwMap, "beamBreak")
     }
 
     //code to run all drive functions
     fun doBulk() {
-//        updateDashboardVariables()
         val currentAvoidanceType =
             bindDriverButtons(myOpMode, driveSubsystem, clawSubsystem, endgameSubsystem)
         bindOtherButtons(myOpMode, clawSubsystem, extendoSubsystem, driveSubsystem)

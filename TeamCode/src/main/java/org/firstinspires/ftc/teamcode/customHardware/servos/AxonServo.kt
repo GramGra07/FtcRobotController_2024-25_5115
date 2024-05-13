@@ -8,13 +8,14 @@ import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.initServo
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.setPose
 import org.firstinspires.ftc.teamcode.utilClass.MathFunctions.Companion.inTolerance
 
-class AxonServo(hw: HardwareMap, val name: String) {
+class AxonServo(hw: HardwareMap, val name: String, private val defaultPose:Double) {
     private val encoder: AnalogInput
     private val servo: Servo
 
     init {
         encoder = initAEncoder(hw)
         servo = initServo(hw, name)
+        servo.setPose(this.defaultPose)
     }
 
     private fun initAEncoder(hw: HardwareMap): AnalogInput {
