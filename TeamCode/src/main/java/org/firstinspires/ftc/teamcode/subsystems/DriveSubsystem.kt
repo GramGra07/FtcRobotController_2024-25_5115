@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems
 
 import CancelableFollowTrajectoryAction
-import com.acmerobotics.dashboard.config.Config
 import com.acmerobotics.roadrunner.Action
 import com.acmerobotics.roadrunner.Pose2d
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
@@ -11,15 +10,15 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.robotcore.external.Telemetry
-import org.firstinspires.ftc.teamcode.utilClass.FileWriterFTC
-import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.varConfig
-import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.varConfig.usingAvoidance
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
 import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.initMotor
 import org.firstinspires.ftc.teamcode.rr.MecanumDrive
 import org.firstinspires.ftc.teamcode.storage.DistanceStorage
 import org.firstinspires.ftc.teamcode.storage.PoseStorage
 import org.firstinspires.ftc.teamcode.subsystems.avoidance.AvoidanceSubsystem
+import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers
+import org.firstinspires.ftc.teamcode.utilClass.FileWriterFTC
+import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.varConfig
 import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.cos
@@ -28,7 +27,7 @@ import kotlin.math.sin
 import kotlin.math.sqrt
 
 
-@Config
+//@Config
 class DriveSubsystem(ahwMap: HardwareMap) {
 
     var drive: MecanumDrive
@@ -85,11 +84,14 @@ class DriveSubsystem(ahwMap: HardwareMap) {
     var reverse = false
     var isAutoInTeleop = false
     var goZero: Action? = null
+    var leftStickX = 0.0
+    var leftStickY = 0.0
+    var rightStickX = 0.0
     fun driveByGamepads(fieldCentric: Boolean, myOpMode: OpMode) {
         // Retrieve gamepad values
-        val leftStickX = myOpMode.gamepad1.left_stick_x.toDouble()
-        val leftStickY = -myOpMode.gamepad1.left_stick_y.toDouble()
-        val rightStickX = -myOpMode.gamepad1.right_stick_x.toDouble()
+        leftStickX = myOpMode.gamepad1.left_stick_x.toDouble()
+        leftStickY = -myOpMode.gamepad1.left_stick_y.toDouble()
+        rightStickX = -myOpMode.gamepad1.right_stick_x.toDouble()
 //        if ((leftStickX !=0.0)||(leftStickY!=0.0)||(rightStickX!=0.0)) {
 
         // Determine slow power based on slowModeIsOn
@@ -128,7 +130,6 @@ class DriveSubsystem(ahwMap: HardwareMap) {
             backLeftPower =
                 (leftStickY * abs(leftStickY) - leftStickX * abs(leftStickX) - turn) / slowPower
         }
-//        }
 
         // Update distance traveled
         updateDistTraveled(PoseStorage.currentPose, drive.pose)
@@ -176,7 +177,7 @@ class DriveSubsystem(ahwMap: HardwareMap) {
             var frP = 0.0
             var rrP = 0.0
             var rlP = 0.0
-            if (avoidanceSubsystem.powers != null && usingAvoidance) {
+            if (avoidanceSubsystem.powers != null) {
                 val addedPowers: Map<String, Double?>? = avoidanceSubsystem.powers
                 flP = addedPowers?.getOrDefault("FL", 0.0) ?: 0.0
                 frP = addedPowers?.getOrDefault("FR", 0.0) ?: 0.0
@@ -197,7 +198,8 @@ class DriveSubsystem(ahwMap: HardwareMap) {
     }
 
 
-    fun update(avoidanceSubsystem: AvoidanceSubsystem) {
+    fun update(avoidanceSubsystem: AvoidanceSubsystem, type: AvoidanceSubsystem.AvoidanceTypes) {
+        avoidanceSubsystem.update(this, type)
         power(avoidanceSubsystem)
 //        odometrySubsystem!!.update()
     }
@@ -209,7 +211,10 @@ class DriveSubsystem(ahwMap: HardwareMap) {
         if (slowModeIsOn) {
             telemetry.addData("slowMode", "")
         }
-        telemetry.addData("thisDistance (in)", "%.1f", thisDist)
+        if (Drivers.currentFieldCentric){
+            telemetry.addData("fieldCentric","")
+        }
+//        telemetry.addData("thisDistance (in)", "%.1f", thisDist)
         telemetry.addData("totalDistance (in)", "%.1f", DistanceStorage.totalDist)
 //        odometrySubsystem!!.telemetry(telemetry)
     }

@@ -1,7 +1,8 @@
 package org.firstinspires.ftc.teamcode.utilClass.objects
 
+import com.acmerobotics.roadrunner.Pose2d
+import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toPoint
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.varConfig
-import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.distanceTo
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.pow
@@ -52,18 +53,52 @@ class VectorField(point: Point? = Point(), radius: Double) {
 
             return correctionMap
         }
-
-        fun calculateRepulsiveForce(
+        fun getCorrectionByAvoidanceSTOP(
             fields: List<VectorField>,
-            pose: Point
-        ): Double {
-            var repulsiveForce = 0.0
+            pose: Pose2d,
+            forwardPower: Double,
+            strafePower: Double,
+            turnPower: Double
+        ): Map<String, Double>? {
+            fieldStrengthCoefficient = varConfig.correctionSpeedAvoid
+            val correctionMap = mutableMapOf<String, Double>()
+
+            val projectedPose = Pose2d(
+                pose.position.x + forwardPower * cos(pose.heading.toDouble()) - strafePower * sin(pose.heading.toDouble()),
+                pose.position.y + forwardPower * sin(pose.heading.toDouble()) + strafePower * cos(pose.heading.toDouble()),
+                pose.heading.toDouble() + turnPower
+            )
+
+            var projectedInRestrictedZone = false
             for (field in fields) {
-                val distance = field.point?.distanceTo(pose) ?: 0.0
-                repulsiveForce += 1 / distance.pow(2)
+                if (poseInField(projectedPose.toPoint(), field)) {
+                    projectedInRestrictedZone = true
+                    break
+                }
             }
-            return repulsiveForce
+
+            if (!projectedInRestrictedZone) {
+                return null
+            }
+
+            val adjustedForwardPower = -forwardPower
+            val adjustedStrafePower = -strafePower
+            val adjustedTurnPower = -turnPower
+
+            val flVelocity = adjustedForwardPower + adjustedStrafePower + adjustedTurnPower // Front-left wheel
+            val frVelocity = adjustedForwardPower - adjustedStrafePower - adjustedTurnPower // Front-right wheel
+            val rlVelocity = adjustedForwardPower - adjustedStrafePower // Rear-left wheel
+            val rrVelocity = adjustedForwardPower + adjustedStrafePower // Rear-right wheel
+
+            correctionMap["FL"] = flVelocity
+            correctionMap["FR"] = frVelocity
+            correctionMap["RL"] = rlVelocity
+            correctionMap["RR"] = rrVelocity
+
+            return correctionMap
         }
+
+
 
 
         fun massCreate(fieldList: HashMap<Point, Double>): List<VectorField> {

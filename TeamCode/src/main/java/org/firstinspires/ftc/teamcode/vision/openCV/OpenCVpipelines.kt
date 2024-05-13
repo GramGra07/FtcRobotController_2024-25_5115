@@ -2,12 +2,12 @@ package org.firstinspires.ftc.teamcode.vision.openCV
 
 import com.acmerobotics.dashboard.FtcDashboard
 import org.firstinspires.ftc.robotcore.external.Telemetry
+import org.firstinspires.ftc.teamcode.extensions.ScalarUtil.fetchScalar
+import org.firstinspires.ftc.teamcode.extensions.ScalarUtil.scalarVals
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.varConfig
 import org.firstinspires.ftc.teamcode.vision.openCV.trainer.vars.blueconeObjVars
 import org.firstinspires.ftc.teamcode.vision.openCV.trainer.vars.redconeObjVars
 import org.firstinspires.ftc.teamcode.vision.openCV.trainer.vars.redpropObjVars
-import org.firstinspires.ftc.teamcode.extensions.ScalarUtil.fetchScalar
-import org.firstinspires.ftc.teamcode.extensions.ScalarUtil.scalarVals
 import org.opencv.core.Core
 import org.opencv.core.CvType
 import org.opencv.core.Mat

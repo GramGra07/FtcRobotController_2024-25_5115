@@ -4,13 +4,11 @@ import com.qualcomm.robotcore.hardware.DigitalChannel
 import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.initDigiChan
 
-class LEDIndicator(hw: HardwareMap, number: Int) {
+class LEDIndicator(hw: HardwareMap, private val number: Int) {
     private val green: DigitalChannel
     private val red: DigitalChannel
-    private val number: Int
 
     init {
-        this.number = number
         green = initDigiChan(hw, "green$number")
         red = initDigiChan(hw, "red$number")
     }

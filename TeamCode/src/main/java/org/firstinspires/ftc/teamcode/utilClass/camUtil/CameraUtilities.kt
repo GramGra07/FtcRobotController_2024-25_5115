@@ -8,12 +8,12 @@ import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource
-import org.firstinspires.ftc.teamcode.vision.VPObjectDetect
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig.Companion.lights
 import org.firstinspires.ftc.teamcode.customHardware.camera.Camera
 import org.firstinspires.ftc.teamcode.customHardware.camera.CameraType
 import org.firstinspires.ftc.teamcode.customHardware.camera.LensIntrinsics
 import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.setPatternCo
+import org.firstinspires.ftc.teamcode.vision.VPObjectDetect
 import org.firstinspires.ftc.vision.VisionPortal
 import org.firstinspires.ftc.vision.VisionProcessor
 import org.firstinspires.ftc.vision.apriltag.AprilTagGameDatabase

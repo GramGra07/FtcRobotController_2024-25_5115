@@ -14,8 +14,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.VoltageSensor
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.Telemetry
-import org.firstinspires.ftc.teamcode.utilClass.FileWriterFTC.setUpFile
-import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.varConfig
 import org.firstinspires.ftc.teamcode.customHardware.sensors.BeamBreakSensor
 import org.firstinspires.ftc.teamcode.customHardware.sensors.LEDIndicator
 import org.firstinspires.ftc.teamcode.customHardware.servos.AxonServo
@@ -27,22 +25,23 @@ import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.initVSensor
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.lowVoltage
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.telemetry
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.telemetryPotent
-import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers
-import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers.bindDriverButtons
-import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers.fieldCentric
-import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers.switchProfile
-import org.firstinspires.ftc.teamcode.subsystems.humanInput.Operator.bindOtherButtons
 import org.firstinspires.ftc.teamcode.rr.MecanumDrive
-import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ClawSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
-import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.EndgameSubsystem
-import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ExtendoSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.LocalizationSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.avoidance.AvoidanceSubsystem
-import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers.currDriver
+import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ClawSubsystem
+import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.EndgameSubsystem
+import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ExtendoSubsystem
+import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers
+import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers.bindDriverButtons
+import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers.currentFieldCentric
+import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers.switchProfile
+import org.firstinspires.ftc.teamcode.subsystems.humanInput.Operator.bindOtherButtons
 import org.firstinspires.ftc.teamcode.subsystems.loopTime.LoopTimeController
 import org.firstinspires.ftc.teamcode.subsystems.loopTime.PeriodicLoopTimeObject
 import org.firstinspires.ftc.teamcode.subsystems.loopTime.SpacedBooleanObject
+import org.firstinspires.ftc.teamcode.utilClass.FileWriterFTC.setUpFile
+import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.varConfig
 import java.io.FileWriter
 
 
@@ -115,7 +114,7 @@ open class HardwareConfig() {
         endgameSubsystem = EndgameSubsystem(ahwMap)
         extendoSubsystem = ExtendoSubsystem(ahwMap)
         localizationSubsystem = LocalizationSubsystem(ahwMap)
-        avoidanceSubsystem = AvoidanceSubsystem(AvoidanceSubsystem.AvoidanceTypes.PUSH)
+        avoidanceSubsystem = AvoidanceSubsystem()
 
         drive = driveSubsystem.drive
         telemetry = MultipleTelemetry(myOpMode.telemetry, FtcDashboard.getInstance().telemetry)
@@ -162,20 +161,20 @@ open class HardwareConfig() {
     //code to run all drive functions
     fun doBulk() {
 //        updateDashboardVariables()
-        bindDriverButtons(myOpMode, driveSubsystem, clawSubsystem, endgameSubsystem)
+        val currentAvoidanceType =
+            bindDriverButtons(myOpMode, driveSubsystem, clawSubsystem, endgameSubsystem)
         bindOtherButtons(myOpMode, clawSubsystem, extendoSubsystem, driveSubsystem)
         if (multipleDrivers) {
             switchProfile(myOpMode)
         }
         driveSubsystem.driveByGamepads(
-            fieldCentric,
+            currentFieldCentric,
             myOpMode
         )
-        driveSubsystem.update(avoidanceSubsystem)
+        driveSubsystem.update(avoidanceSubsystem, currentAvoidanceType)
         endgameSubsystem.update()
         clawSubsystem.update()
         extendoSubsystem.update()
-        avoidanceSubsystem.update(drive)
         localizationSubsystem.relocalize(drive)
         buildTelemetry() //makes telemetry
         lynxModules()
@@ -200,10 +199,17 @@ open class HardwareConfig() {
 
     private fun buildTelemetry() {
         if (multipleDrivers) {
-            telemetry.addData("Drivers", Drivers.currDriver + " " + Drivers.currOther)
+            telemetry.addData(
+                "Drivers",
+                Drivers.currDriver.name.toString() + " " + Drivers.currOther.name.toString()
+            )
         }
-        vSensor.telemetry(telemetry)
+        if (vSensor.lowVoltage()) {
+            vSensor.telemetry(telemetry)
+            teleSpace()
+        }
         loopTimeController.telemetry(telemetry)
+        teleSpace()
         telemetry.addData("Pose: ", drive.pose.toPoint().toString())
         driveSubsystem.telemetry(telemetry)
         avoidanceSubsystem.telemetry(telemetry)

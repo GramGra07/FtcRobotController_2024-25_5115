@@ -4,17 +4,15 @@ import com.qualcomm.robotcore.hardware.AnalogInput
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.Servo
 import org.firstinspires.ftc.robotcore.external.Telemetry
-import org.firstinspires.ftc.teamcode.utilClass.MathFunctions.Companion.inTolerance
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.initServo
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.setPose
+import org.firstinspires.ftc.teamcode.utilClass.MathFunctions.Companion.inTolerance
 
-class AxonServo(hw: HardwareMap, name: String) {
-    val encoder: AnalogInput
+class AxonServo(hw: HardwareMap, val name: String) {
+    private val encoder: AnalogInput
     private val servo: Servo
-    val name: String
 
     init {
-        this.name = name
         encoder = initAEncoder(hw)
         servo = initServo(hw, name)
     }
@@ -38,6 +36,7 @@ class AxonServo(hw: HardwareMap, name: String) {
     private fun getExpectedEnc(position: Double): Double {
         return ((position * 4) - 180)
     }
+
     // y(encoder position) = 4x(degree position) - 180
     private fun getExpectedPosition(encPosition: Double): Double { // gets expected servo position from an encoder position
         return ((encPosition + 180) / 4)

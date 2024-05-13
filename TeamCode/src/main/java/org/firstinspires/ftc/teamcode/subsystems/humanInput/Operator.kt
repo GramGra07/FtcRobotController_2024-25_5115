@@ -3,10 +3,10 @@ package org.firstinspires.ftc.teamcode.subsystems.humanInput
 import com.acmerobotics.dashboard.config.Config
 import com.acmerobotics.roadrunner.ftc.runBlocking
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
-import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.LoopTime
-import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ClawSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
+import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ClawSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ExtendoSubsystem
+import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.LoopTime
 
 @Config
 object Operator {
@@ -23,7 +23,7 @@ object Operator {
         driveSubsystem: DriveSubsystem,
     ) {
         // "Camden", "Grady", "Michael","Graden", "Delaney", "Child"
-        val otherControls = Drivers.otherControls
+        val otherControls = Drivers.others
         val currOther = Drivers.currOther
         if (currOther === otherControls[0]) { //Camden
             if (!touchPressed && myOpMode.gamepad2.touchpad && LoopTime.useLoopTime) {
@@ -106,10 +106,10 @@ object Operator {
         if (currOther === otherControls[4]) { // Delaney
         }
         if (currOther === otherControls[5]) { // Child
-//            clawSubsystem.flipBack()
-            runBlocking(clawSubsystem.flipBackAction())
-            runBlocking(clawSubsystem.closeBothAction())
-//            clawSubsystem.closeBoth()
+            clawSubsystem.flipBack()
+//            runBlocking(clawSubsystem.flipBackAction())
+//            runBlocking(clawSubsystem.closeBothAction())
+            clawSubsystem.closeBoth()
             clawSubsystem.update()
         }
     }

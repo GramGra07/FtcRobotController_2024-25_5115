@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.utilClass.objects
 
 import com.acmerobotics.roadrunner.Pose2d
+import kotlin.math.roundToInt
 
 class Point(var x: Double? = 0.0, var y: Double? = 0.0) {
     fun setPoint(x: Double, y: Double) {
@@ -13,6 +14,6 @@ class Point(var x: Double? = 0.0, var y: Double? = 0.0) {
     }
 
     override fun toString(): String {
-        return "x: $x, y: $y"
+        return "x: ${x?.roundToInt()}, y: ${y?.roundToInt()}"
     }
 }

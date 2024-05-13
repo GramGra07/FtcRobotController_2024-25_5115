@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.setPose
 
 @Config
 object ServoUtil {
+    @JvmField
     var backClaw = 20
 
     @JvmField

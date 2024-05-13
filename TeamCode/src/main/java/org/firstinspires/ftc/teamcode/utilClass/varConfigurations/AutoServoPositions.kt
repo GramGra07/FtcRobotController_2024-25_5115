@@ -1,9 +1,8 @@
 package org.firstinspires.ftc.teamcode.utilClass.varConfigurations
 
-import com.acmerobotics.dashboard.config.Config
 import org.firstinspires.ftc.teamcode.utilClass.ServoUtil.backClaw
 
-@Config
+//@Config
 object AutoServoPositions {
     //AutoServoPositions.flipUp
     @JvmField

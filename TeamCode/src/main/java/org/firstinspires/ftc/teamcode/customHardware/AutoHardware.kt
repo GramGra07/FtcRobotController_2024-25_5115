@@ -2,8 +2,6 @@ package org.firstinspires.ftc.teamcode.customHardware
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.HardwareMap
-import org.firstinspires.ftc.teamcode.utilClass.camUtil.CameraUtilities.initializeProcessor
-import org.firstinspires.ftc.teamcode.utilClass.camUtil.Processor
 import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.setPatternCo
 import org.firstinspires.ftc.teamcode.opModes.autoSoftware.autoClasses.AutoVarEnums
 import org.firstinspires.ftc.teamcode.opModes.autoSoftware.autoClasses.StartLocation
@@ -11,6 +9,8 @@ import org.firstinspires.ftc.teamcode.opModes.autoSoftware.autoClasses.StartPose
 import org.firstinspires.ftc.teamcode.rr.MecanumDrive
 import org.firstinspires.ftc.teamcode.startEnums.Alliance
 import org.firstinspires.ftc.teamcode.startEnums.StartSide
+import org.firstinspires.ftc.teamcode.utilClass.camUtil.CameraUtilities.initializeProcessor
+import org.firstinspires.ftc.teamcode.utilClass.camUtil.Processor
 
 //config can be enabled to change variables in real time through FTC Dash
 //@Config

@@ -5,10 +5,10 @@ import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.Servo
-import org.firstinspires.ftc.teamcode.utilClass.ServoUtil.releaseAirplane
-import org.firstinspires.ftc.teamcode.utilClass.ServoUtil.resetAirplane
 import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.initMotor
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.initServo
+import org.firstinspires.ftc.teamcode.utilClass.ServoUtil.releaseAirplane
+import org.firstinspires.ftc.teamcode.utilClass.ServoUtil.resetAirplane
 
 
 class EndgameSubsystem(ahwMap: HardwareMap) {
