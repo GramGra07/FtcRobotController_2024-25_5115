@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.HardwareMap
+import com.qualcomm.robotcore.util.ElapsedTime
 import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
@@ -36,6 +37,8 @@ class DriveSubsystem(ahwMap: HardwareMap) {
     private var motorBackLeft: DcMotorEx
     private var motorFrontRight: DcMotorEx
     private var motorBackRight: DcMotorEx
+
+    private var currentSpeed: Double = 0.0
 
     //    var odometrySubsystem: OdometrySubsystem3Wheel? = null
     lateinit var cancelableFollowing: CancelableFollowTrajectoryAction
@@ -75,19 +78,20 @@ class DriveSubsystem(ahwMap: HardwareMap) {
     }
 
     private var thisDist = 0.0
+    private var lastTime = 0.0
     private var slowMult: Int = varConfig.slowMult
     private var frontRightPower = 0.0
     private var frontLeftPower = 0.0
     private var backRightPower = 0.0
     private var backLeftPower = 0.0
     var slowModeIsOn = false
-    var reverse = false
+    private var reverse = false
     var isAutoInTeleop = false
     var goZero: Action? = null
     var leftStickX = 0.0
     var leftStickY = 0.0
     var rightStickX = 0.0
-    fun driveByGamepads(fieldCentric: Boolean, myOpMode: OpMode) {
+    fun driveByGamepads(fieldCentric: Boolean, myOpMode: OpMode,timer: ElapsedTime) {
         // Retrieve gamepad values
         leftStickX = myOpMode.gamepad1.left_stick_x.toDouble()
         leftStickY = -myOpMode.gamepad1.left_stick_y.toDouble()
@@ -132,7 +136,7 @@ class DriveSubsystem(ahwMap: HardwareMap) {
         }
 
         // Update distance traveled
-        updateDistTraveled(PoseStorage.currentPose, drive.pose)
+        updateDistTraveled(PoseStorage.currentPose, drive.pose, timer)
         FileWriterFTC.writeToFile(
             HardwareConfig.fileWriter,
             drive.pose.position.x.toInt(),
@@ -142,15 +146,13 @@ class DriveSubsystem(ahwMap: HardwareMap) {
     }
 
 
-    private fun updateDistTraveled(before: Pose2d, after: Pose2d) {
-        // Calculate the change in position along x and y axes
+    private fun updateDistTraveled(before: Pose2d, after: Pose2d,timer: ElapsedTime) {
         val deltaX = after.position.x - before.position.x
         val deltaY = after.position.y - before.position.y
-
-        // Calculate the distance traveled using Euclidean distance formula
         val dist = sqrt(deltaX * deltaX + deltaY * deltaY)
-
-        // Update the distance traveled
+        val deltaTime = timer.seconds() - lastTime
+        lastTime = timer.seconds()
+        currentSpeed = (dist/deltaTime)*0.0568
         thisDist += dist
         DistanceStorage.totalDist += dist
     }
@@ -216,6 +218,7 @@ class DriveSubsystem(ahwMap: HardwareMap) {
         }
 //        telemetry.addData("thisDistance (in)", "%.1f", thisDist)
         telemetry.addData("totalDistance (in)", "%.1f", DistanceStorage.totalDist)
+        telemetry.addData("Current Speed (mph)", "%.1f", currentSpeed)
 //        odometrySubsystem!!.telemetry(telemetry)
     }
 }

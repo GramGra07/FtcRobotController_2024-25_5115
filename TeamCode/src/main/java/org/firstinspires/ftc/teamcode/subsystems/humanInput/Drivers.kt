@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ClawSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.EndgameSubsystem
 import org.firstinspires.ftc.teamcode.utilClass.Driver
 import org.firstinspires.ftc.teamcode.utilClass.DriverAid
+import org.firstinspires.ftc.teamcode.utilClass.Operator
 
 
 object Drivers {
@@ -20,7 +21,14 @@ object Drivers {
         Driver(AllDrivers.Delaney, AvoidanceSubsystem.AvoidanceTypes.OFF, false),
         Driver(AllDrivers.Child, AvoidanceSubsystem.AvoidanceTypes.OFF, false)
     )
-    val others = drivers
+    val others = mutableListOf(
+        Operator(AllDrivers.Camden),
+        Operator(AllDrivers.Grady),
+        Operator(AllDrivers.Michael),
+        Operator(AllDrivers.Graden),
+        Operator(AllDrivers.Delaney),
+        Operator(AllDrivers.Child)
+    )
     private val baseDriver = drivers.indexOfFirst { it.name == AllDrivers.Grady }
     private val baseOther =
         others.indexOfFirst { it.name == AllDrivers.Camden } //list integer of base driver and other controls

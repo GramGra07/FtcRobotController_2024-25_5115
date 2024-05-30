@@ -1,4 +1,3 @@
-//import
 package org.firstinspires.ftc.teamcode.customHardware
 
 import android.os.Environment
@@ -36,7 +35,7 @@ import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers.bindDriverButtons
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers.currentFieldCentric
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers.switchProfile
-import org.firstinspires.ftc.teamcode.subsystems.humanInput.Operator.bindOtherButtons
+import org.firstinspires.ftc.teamcode.subsystems.humanInput.Operators.bindOtherButtons
 import org.firstinspires.ftc.teamcode.subsystems.loopTime.LoopTimeController
 import org.firstinspires.ftc.teamcode.subsystems.loopTime.PeriodicLoopTimeObject
 import org.firstinspires.ftc.teamcode.subsystems.loopTime.SpacedBooleanObject
@@ -99,7 +98,7 @@ open class HardwareConfig() {
     ) {
         vSensor = initVSensor(ahwMap, "Expansion Hub 2")
         lights = initLights(ahwMap, "blinkin")
-        // rev potentiometer //analog
+
         potentiometer = initPotent(ahwMap, "potent")
         allHubs = ahwMap.getAll(LynxModule::class.java)
         for (hub in allHubs) {
@@ -167,7 +166,8 @@ open class HardwareConfig() {
         }
         driveSubsystem.driveByGamepads(
             currentFieldCentric,
-            myOpMode
+            myOpMode,
+            timer,
         )
         driveSubsystem.update(avoidanceSubsystem, currentAvoidanceType)
         endgameSubsystem.update()
@@ -231,8 +231,6 @@ open class HardwareConfig() {
         localizationSubsystem.draw(packet)
 
         avoidanceSubsystem.draw(packet, drive)
-
-//        driveSubsystem.odometrySubsystem.draw(packet, robotRad)
 
         dashboard.sendTelemetryPacket(packet)
     }
