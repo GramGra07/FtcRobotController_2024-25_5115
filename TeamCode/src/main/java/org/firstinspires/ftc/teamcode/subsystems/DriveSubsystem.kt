@@ -91,7 +91,7 @@ class DriveSubsystem(ahwMap: HardwareMap) {
     var leftStickX = 0.0
     var leftStickY = 0.0
     var rightStickX = 0.0
-    fun driveByGamepads(fieldCentric: Boolean, myOpMode: OpMode,timer: ElapsedTime) {
+    fun driveByGamepads(fieldCentric: Boolean, myOpMode: OpMode,timer: Double) {
         // Retrieve gamepad values
         leftStickX = myOpMode.gamepad1.left_stick_x.toDouble()
         leftStickY = -myOpMode.gamepad1.left_stick_y.toDouble()
@@ -146,12 +146,12 @@ class DriveSubsystem(ahwMap: HardwareMap) {
     }
 
 
-    private fun updateDistTraveled(before: Pose2d, after: Pose2d,timer: ElapsedTime) {
+    private fun updateDistTraveled(before: Pose2d, after: Pose2d,timer: Double) {
         val deltaX = after.position.x - before.position.x
         val deltaY = after.position.y - before.position.y
         val dist = sqrt(deltaX * deltaX + deltaY * deltaY)
-        val deltaTime = timer.seconds() - lastTime
-        lastTime = timer.seconds()
+        val deltaTime = timer - lastTime
+        lastTime = timer
         currentSpeed = (dist/deltaTime)*0.0568
         thisDist += dist
         DistanceStorage.totalDist += dist

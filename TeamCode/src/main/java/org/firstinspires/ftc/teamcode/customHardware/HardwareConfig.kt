@@ -167,7 +167,7 @@ open class HardwareConfig() {
         driveSubsystem.driveByGamepads(
             currentFieldCentric,
             myOpMode,
-            timer,
+            loopTimeController.currentTime,
         )
         driveSubsystem.update(avoidanceSubsystem, currentAvoidanceType)
         endgameSubsystem.update()
