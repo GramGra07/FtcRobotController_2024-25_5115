@@ -152,7 +152,7 @@ open class HardwareConfig() {
             telemetry.update()
         }
         drawPackets()
-        axonServo = AxonServo(ahwMap, "airplaneRotation",90.0)
+        axonServo = AxonServo(ahwMap, "airplaneRotation", 90.0)
         beamBreakSensor = BeamBreakSensor(ahwMap, "beamBreak")
     }
 

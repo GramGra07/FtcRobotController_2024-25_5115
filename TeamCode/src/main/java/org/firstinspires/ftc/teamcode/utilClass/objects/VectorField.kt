@@ -53,6 +53,7 @@ class VectorField(point: Point? = Point(), radius: Double) {
 
             return correctionMap
         }
+
         fun getCorrectionByAvoidanceSTOP(
             fields: List<VectorField>,
             pose: Pose2d,
@@ -64,8 +65,12 @@ class VectorField(point: Point? = Point(), radius: Double) {
             val correctionMap = mutableMapOf<String, Double>()
 
             val projectedPose = Pose2d(
-                pose.position.x + forwardPower * cos(pose.heading.toDouble()) - strafePower * sin(pose.heading.toDouble()),
-                pose.position.y + forwardPower * sin(pose.heading.toDouble()) + strafePower * cos(pose.heading.toDouble()),
+                pose.position.x + forwardPower * cos(pose.heading.toDouble()) - strafePower * sin(
+                    pose.heading.toDouble()
+                ),
+                pose.position.y + forwardPower * sin(pose.heading.toDouble()) + strafePower * cos(
+                    pose.heading.toDouble()
+                ),
                 pose.heading.toDouble() + turnPower
             )
 
@@ -85,8 +90,10 @@ class VectorField(point: Point? = Point(), radius: Double) {
             val adjustedStrafePower = -strafePower
             val adjustedTurnPower = -turnPower
 
-            val flVelocity = adjustedForwardPower + adjustedStrafePower + adjustedTurnPower // Front-left wheel
-            val frVelocity = adjustedForwardPower - adjustedStrafePower - adjustedTurnPower // Front-right wheel
+            val flVelocity =
+                adjustedForwardPower + adjustedStrafePower + adjustedTurnPower // Front-left wheel
+            val frVelocity =
+                adjustedForwardPower - adjustedStrafePower - adjustedTurnPower // Front-right wheel
             val rlVelocity = adjustedForwardPower - adjustedStrafePower // Rear-left wheel
             val rrVelocity = adjustedForwardPower + adjustedStrafePower // Rear-right wheel
 
@@ -97,8 +104,6 @@ class VectorField(point: Point? = Point(), radius: Double) {
 
             return correctionMap
         }
-
-
 
 
         fun massCreate(fieldList: HashMap<Point, Double>): List<VectorField> {

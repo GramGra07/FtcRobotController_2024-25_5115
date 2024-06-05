@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.HardwareMap
-import com.qualcomm.robotcore.util.ElapsedTime
 import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
@@ -91,7 +90,7 @@ class DriveSubsystem(ahwMap: HardwareMap) {
     var leftStickX = 0.0
     var leftStickY = 0.0
     var rightStickX = 0.0
-    fun driveByGamepads(fieldCentric: Boolean, myOpMode: OpMode,timer: Double) {
+    fun driveByGamepads(fieldCentric: Boolean, myOpMode: OpMode, timer: Double) {
         // Retrieve gamepad values
         leftStickX = myOpMode.gamepad1.left_stick_x.toDouble()
         leftStickY = -myOpMode.gamepad1.left_stick_y.toDouble()
@@ -146,13 +145,13 @@ class DriveSubsystem(ahwMap: HardwareMap) {
     }
 
 
-    private fun updateDistTraveled(before: Pose2d, after: Pose2d,timer: Double) {
+    private fun updateDistTraveled(before: Pose2d, after: Pose2d, timer: Double) {
         val deltaX = after.position.x - before.position.x
         val deltaY = after.position.y - before.position.y
         val dist = sqrt(deltaX * deltaX + deltaY * deltaY)
         val deltaTime = timer - lastTime
         lastTime = timer
-        currentSpeed = (dist/deltaTime)*0.0568
+        currentSpeed = (dist / deltaTime) * 0.0568
         thisDist += dist
         DistanceStorage.totalDist += dist
     }
@@ -213,8 +212,8 @@ class DriveSubsystem(ahwMap: HardwareMap) {
         if (slowModeIsOn) {
             telemetry.addData("slowMode", "")
         }
-        if (Drivers.currentFieldCentric){
-            telemetry.addData("fieldCentric","")
+        if (Drivers.currentFieldCentric) {
+            telemetry.addData("fieldCentric", "")
         }
 //        telemetry.addData("thisDistance (in)", "%.1f", thisDist)
         telemetry.addData("totalDistance (in)", "%.1f", DistanceStorage.totalDist)

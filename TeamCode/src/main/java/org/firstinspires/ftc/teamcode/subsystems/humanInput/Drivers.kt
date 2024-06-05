@@ -19,7 +19,7 @@ object Drivers {
         Driver(AllDrivers.Michael, AvoidanceSubsystem.AvoidanceTypes.OFF, false),
         Driver(AllDrivers.Graden, AvoidanceSubsystem.AvoidanceTypes.PUSH, false),
         Driver(AllDrivers.Delaney, AvoidanceSubsystem.AvoidanceTypes.OFF, false),
-        Driver(AllDrivers.Child, AvoidanceSubsystem.AvoidanceTypes.OFF, false)
+        Driver(AllDrivers.Child, AvoidanceSubsystem.AvoidanceTypes.OFF, false),
     )
     val others = mutableListOf(
         Operator(AllDrivers.Camden),

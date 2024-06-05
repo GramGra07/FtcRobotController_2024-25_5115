@@ -21,7 +21,7 @@ object Operators {
         extendoSubsystem: ExtendoSubsystem,
         driveSubsystem: DriveSubsystem,
     ) {
-        
+
         // "Camden", "Grady", "Michael","Graden", "Delaney", "Child"
         val otherControls = Drivers.others
         val currOther = Drivers.currOther
