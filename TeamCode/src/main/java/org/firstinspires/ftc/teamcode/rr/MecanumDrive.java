@@ -54,6 +54,7 @@ import org.firstinspires.ftc.teamcode.rr.messages.DriveCommandMessage;
 import org.firstinspires.ftc.teamcode.rr.messages.MecanumCommandMessage;
 import org.firstinspires.ftc.teamcode.rr.messages.MecanumLocalizerInputsMessage;
 import org.firstinspires.ftc.teamcode.rr.messages.PoseMessage;
+import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -183,38 +184,36 @@ public final class MecanumDrive {
         // IMU orientation
         // TODO: fill in these values based on
         //   see https://ftc-docs.firstinspires.org/en/latest/programming_resources/imu/imu.html?highlight=imu#physical-hub-mounting
-        public RevHubOrientationOnRobot.LogoFacingDirection logoFacingDirection =
-                RevHubOrientationOnRobot.LogoFacingDirection.RIGHT;
-        public RevHubOrientationOnRobot.UsbFacingDirection usbFacingDirection =
-                RevHubOrientationOnRobot.UsbFacingDirection.UP;
+        public RevHubOrientationOnRobot.LogoFacingDirection logoFacingDirection = CurrentDrivetrain.Companion.getCurrentDrivetrain().getLogoFacingDirection();
+        public RevHubOrientationOnRobot.UsbFacingDirection usbFacingDirection = CurrentDrivetrain.Companion.getCurrentDrivetrain().getUsbFacingDirection();
 
         // drive model parameters
-        public double inPerTick = 0.0029780281585;
-        public double lateralInPerTick = 0.0019808842928630615;
-        public double trackWidthTicks = 4581.065265532445;
+        public double inPerTick = CurrentDrivetrain.Companion.getCurrentDrivetrain().getDrivePARAMS().getInPerTick();
+        public double lateralInPerTick = CurrentDrivetrain.Companion.getCurrentDrivetrain().getDrivePARAMS().getLateralInPerTick();
+        public double trackWidthTicks = CurrentDrivetrain.Companion.getCurrentDrivetrain().getDrivePARAMS().getTrackWidthTicks();
 
         // feedforward parameters (in tick units)
-        public double kS = 1.4685147318880003;
-        public double kV = 0.0004545805461853856;
-        public double kA = 0.000088;
+        public double kS = CurrentDrivetrain.Companion.getCurrentDrivetrain().getDrivePARAMS().getKS();
+        public double kV = CurrentDrivetrain.Companion.getCurrentDrivetrain().getDrivePARAMS().getKV();
+        public double kA = CurrentDrivetrain.Companion.getCurrentDrivetrain().getDrivePARAMS().getKA();
 
         // path profile parameters (in inches)
-        public double maxWheelVel = 50;
-        public double minProfileAccel = -30;
-        public double maxProfileAccel = 50;
+        public double maxWheelVel = CurrentDrivetrain.Companion.getCurrentDrivetrain().getDrivePARAMS().getMaxWheelVel();
+        public double minProfileAccel = CurrentDrivetrain.Companion.getCurrentDrivetrain().getDrivePARAMS().getMinProfileAccel();
+        public double maxProfileAccel = CurrentDrivetrain.Companion.getCurrentDrivetrain().getDrivePARAMS().getMaxProfileAccel();
 
         // turn profile parameters (in radians)
-        public double maxAngVel = Math.PI; // shared with path
-        public double maxAngAccel = Math.PI;
+        public double maxAngVel = CurrentDrivetrain.Companion.getCurrentDrivetrain().getDrivePARAMS().getMaxAngVel();
+        public double maxAngAccel = CurrentDrivetrain.Companion.getCurrentDrivetrain().getDrivePARAMS().getMaxAngAccel();
 
         // path controller gains
-        public double axialGain = 5.0;
-        public double lateralGain = 3.0;
-        public double headingGain = 1.0; // shared with turn
+        public double axialGain = CurrentDrivetrain.Companion.getCurrentDrivetrain().getDrivePARAMS().getAxialGain();
+        public double lateralGain = CurrentDrivetrain.Companion.getCurrentDrivetrain().getDrivePARAMS().getLateralGain();
+        public double headingGain = CurrentDrivetrain.Companion.getCurrentDrivetrain().getDrivePARAMS().getHeadingGain();
 
-        public double axialVelGain = 0.0;
-        public double lateralVelGain = 0.0;
-        public double headingVelGain = 0.0; // shared with turn
+        public double axialVelGain = CurrentDrivetrain.Companion.getCurrentDrivetrain().getDrivePARAMS().getAxialVelGain();
+        public double lateralVelGain = CurrentDrivetrain.Companion.getCurrentDrivetrain().getDrivePARAMS().getLateralVelGain();
+        public double headingVelGain = CurrentDrivetrain.Companion.getCurrentDrivetrain().getDrivePARAMS().getHeadingVelGain();
     }
 
     public class DriveLocalizer implements Localizer {

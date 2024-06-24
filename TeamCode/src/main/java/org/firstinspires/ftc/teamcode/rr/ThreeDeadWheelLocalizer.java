@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.rr;
 
-import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.DualNum;
 import com.acmerobotics.roadrunner.Time;
 import com.acmerobotics.roadrunner.Twist2dDual;
@@ -16,7 +15,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.teamcode.rr.messages.ThreeDeadWheelInputsMessage;
 
-@Config
+//@Config
 public final class ThreeDeadWheelLocalizer implements Localizer {
     public static Params PARAMS = new Params();
     public final Encoder par0, par1, perp;

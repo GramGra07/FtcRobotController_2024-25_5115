@@ -3,9 +3,6 @@ package org.firstinspires.ftc.teamcode.extensions
 import com.acmerobotics.dashboard.config.Config
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.Servo
-import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig.Companion.potentiometer
-import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.potentAngle
-import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.PotentPositions
 import kotlin.math.ceil
 
 @Config
@@ -26,13 +23,12 @@ object ServoExtensions {
     var hcalc = 96.0
 
     @JvmField
-    var flipOffset = 40.0
-
-    @JvmField
     var lastSetVal: Int = 0
+
     fun Servo.calcFlipPose(pose: Double) {
-        val theta: Double = potentiometer.potentAngle() + flipOffset
-        PotentPositions.pastAngleVal = theta
+        val theta = 0
+//        val theta: Double = potentiometer.potentAngle()
+//        PotentPositions.pastAngleVal = theta
         val sig = ceil(-0.26 * theta + hcalc) + pose / 2
         this.setPose(sig)
         servoFlipVal = sig.toInt()

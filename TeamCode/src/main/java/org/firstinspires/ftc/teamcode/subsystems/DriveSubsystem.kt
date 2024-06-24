@@ -13,11 +13,15 @@ import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
 import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.initMotor
 import org.firstinspires.ftc.teamcode.rr.MecanumDrive
+import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain
 import org.firstinspires.ftc.teamcode.storage.DistanceStorage
 import org.firstinspires.ftc.teamcode.storage.PoseStorage
 import org.firstinspires.ftc.teamcode.subsystems.avoidance.AvoidanceSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers
 import org.firstinspires.ftc.teamcode.utilClass.FileWriterFTC
+import org.firstinspires.ftc.teamcode.utilClass.drivetrain.Drivetrain
+import org.firstinspires.ftc.teamcode.utilClass.drivetrain.DrivetrainType
+import org.firstinspires.ftc.teamcode.utilClass.objects.DriveType
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.varConfig
 import kotlin.math.abs
 import kotlin.math.atan2
@@ -29,8 +33,9 @@ import kotlin.math.sqrt
 
 //@Config
 class DriveSubsystem(ahwMap: HardwareMap) {
-
     var drive: MecanumDrive
+
+    var drivetrain = CurrentDrivetrain.currentDrivetrain
 
     private var motorFrontLeft: DcMotorEx
     private var motorBackLeft: DcMotorEx
@@ -60,7 +65,6 @@ class DriveSubsystem(ahwMap: HardwareMap) {
             "motorBackLeft",
             DcMotor.RunMode.RUN_WITHOUT_ENCODER,
         )
-        motorBackLeft.direction = DcMotorSimple.Direction.REVERSE
         motorFrontRight =
             initMotor(
                 ahwMap,
@@ -73,12 +77,23 @@ class DriveSubsystem(ahwMap: HardwareMap) {
                 "motorBackRight",
                 DcMotor.RunMode.RUN_WITHOUT_ENCODER
             )
+        if (drivetrain.reversedMotors.contains(Drivetrain.motorNames.FRONT_LEFT)) {
+            motorFrontLeft.direction = DcMotorSimple.Direction.REVERSE
+        }
+        if (drivetrain.reversedMotors.contains(Drivetrain.motorNames.BACK_LEFT)) {
+            motorBackLeft.direction = DcMotorSimple.Direction.REVERSE
+        }
+        if (drivetrain.reversedMotors.contains(Drivetrain.motorNames.FRONT_RIGHT)) {
+            motorFrontRight.direction = DcMotorSimple.Direction.REVERSE
+        }
+        if (drivetrain.reversedMotors.contains(Drivetrain.motorNames.BACK_RIGHT)) {
+            motorBackRight.direction = DcMotorSimple.Direction.REVERSE
+        }
         reset()
     }
 
     private var thisDist = 0.0
     private var lastTime = 0.0
-    private var slowMult: Int = varConfig.slowMult
     private var frontRightPower = 0.0
     private var frontLeftPower = 0.0
     private var backRightPower = 0.0
@@ -90,48 +105,77 @@ class DriveSubsystem(ahwMap: HardwareMap) {
     var leftStickX = 0.0
     var leftStickY = 0.0
     var rightStickX = 0.0
-    fun driveByGamepads(fieldCentric: Boolean, myOpMode: OpMode, timer: Double) {
+    fun driveByGamepads(type: DriveType, myOpMode: OpMode, timer: Double) {
         // Retrieve gamepad values
         leftStickX = myOpMode.gamepad1.left_stick_x.toDouble()
         leftStickY = -myOpMode.gamepad1.left_stick_y.toDouble()
         rightStickX = -myOpMode.gamepad1.right_stick_x.toDouble()
-//        if ((leftStickX !=0.0)||(leftStickY!=0.0)||(rightStickX!=0.0)) {
 
-        // Determine slow power based on slowModeIsOn
-        val slowPower = if (slowModeIsOn) slowMult else 1
+        val slowPower = if (slowModeIsOn) varConfig.slowMult else 1
 
-        if (fieldCentric) {
-            // Compute controller angle
-            val controllerAngle = Math.toDegrees(atan2(leftStickY, leftStickX))
-            val robotDegree = Math.toDegrees(drive.pose.heading.toDouble())
-            val movementDegree = controllerAngle - robotDegree
-            val gamepadHypot = Range.clip(hypot(leftStickX, leftStickY), 0.0, 1.0)
+        when (type) {
+            DriveType.FIELD_CENTRIC -> {
+                when (drivetrain.type) {
+                    DrivetrainType.MECANUM -> {
+                        // Compute controller angle
+                        val controllerAngle = Math.toDegrees(atan2(leftStickY, leftStickX))
+                        val robotDegree = Math.toDegrees(drive.pose.heading.toDouble())
+                        val movementDegree = controllerAngle - robotDegree
+                        val gamepadHypot = Range.clip(hypot(leftStickX, leftStickY), 0.0, 1.0)
 
-            // Compute x and y controls
-            val xControl = cos(Math.toRadians(movementDegree)) * gamepadHypot
-            val yControl = sin(Math.toRadians(movementDegree)) * gamepadHypot
+                        // Compute x and y controls
+                        val xControl = cos(Math.toRadians(movementDegree)) * gamepadHypot
+                        val yControl = sin(Math.toRadians(movementDegree)) * gamepadHypot
 
-            // Compute powers
-            val turn = rightStickX
-            frontRightPower =
-                (yControl * abs(yControl) - xControl * abs(xControl) + turn) / slowPower
-            backRightPower =
-                (yControl * abs(yControl) + xControl * abs(xControl) + turn) / slowPower
-            frontLeftPower =
-                (yControl * abs(yControl) + xControl * abs(xControl) - turn) / slowPower
-            backLeftPower =
-                (yControl * abs(yControl) - xControl * abs(xControl) - turn) / slowPower
-        } else {
-            // Compute powers for non-field centric mode
-            val turn = rightStickX
-            frontRightPower =
-                (leftStickY * abs(leftStickY) - leftStickX * abs(leftStickX) + turn) / slowPower
-            backRightPower =
-                (leftStickY * abs(leftStickY) + leftStickX * abs(leftStickX) + turn) / slowPower
-            frontLeftPower =
-                (leftStickY * abs(leftStickY) + leftStickX * abs(leftStickX) - turn) / slowPower
-            backLeftPower =
-                (leftStickY * abs(leftStickY) - leftStickX * abs(leftStickX) - turn) / slowPower
+                        // Compute powers
+                        val turn = rightStickX
+                        frontRightPower =
+                            (yControl * abs(yControl) - xControl * abs(xControl) + turn) / slowPower
+                        backRightPower =
+                            (yControl * abs(yControl) + xControl * abs(xControl) + turn) / slowPower
+                        frontLeftPower =
+                            (yControl * abs(yControl) + xControl * abs(xControl) - turn) / slowPower
+                        backLeftPower =
+                            (yControl * abs(yControl) - xControl * abs(xControl) - turn) / slowPower
+                    }
+
+                    else -> {
+
+                    }
+                }
+
+            }
+
+            DriveType.ROBOT_CENTRIC -> {
+                when (drivetrain.type) {
+                    DrivetrainType.MECANUM -> {
+                        // Compute powers for non-field centric mode
+                        val turn = rightStickX
+                        frontRightPower =
+                            (leftStickY * abs(leftStickY) - leftStickX * abs(leftStickX) + turn) / slowPower
+                        backRightPower =
+                            (leftStickY * abs(leftStickY) + leftStickX * abs(leftStickX) + turn) / slowPower
+                        frontLeftPower =
+                            (leftStickY * abs(leftStickY) + leftStickX * abs(leftStickX) - turn) / slowPower
+                        backLeftPower =
+                            (leftStickY * abs(leftStickY) - leftStickX * abs(leftStickX) - turn) / slowPower
+                    }
+
+                    DrivetrainType.TANK -> {
+                        frontLeftPower = Range.clip(leftStickY + rightStickX, -1.0, 1.0)
+                        backLeftPower = frontLeftPower
+                        frontRightPower = Range.clip(leftStickY - rightStickX, -1.0, 1.0)
+                        backRightPower = frontRightPower
+                    }
+
+                    else -> {
+                        frontLeftPower = Range.clip(leftStickY + rightStickX, -1.0, 1.0)
+                        backLeftPower = frontLeftPower
+                        frontRightPower = Range.clip(leftStickY - rightStickX, -1.0, 1.0)
+                        backRightPower = frontRightPower
+                    }
+                }
+            }
         }
 
         // Update distance traveled
@@ -141,6 +185,7 @@ class DriveSubsystem(ahwMap: HardwareMap) {
             drive.pose.position.x.toInt(),
             drive.pose.position.y.toInt()
         )
+
         PoseStorage.currentPose = drive.pose
     }
 
@@ -156,15 +201,7 @@ class DriveSubsystem(ahwMap: HardwareMap) {
         DistanceStorage.totalDist += dist
     }
 
-
-    fun stop() {
-        motorFrontLeft.power = 0.0
-        motorBackLeft.power = 0.0
-        motorFrontRight.power = 0.0
-        motorBackRight.power = 0.0
-    }
-
-    fun reset() {
+    private fun reset() {
         thisDist = 0.0
     }
 
@@ -199,23 +236,27 @@ class DriveSubsystem(ahwMap: HardwareMap) {
     }
 
 
-    fun update(avoidanceSubsystem: AvoidanceSubsystem, type: AvoidanceSubsystem.AvoidanceTypes) {
+    fun update(
+        avoidanceSubsystem: AvoidanceSubsystem,
+        type: AvoidanceSubsystem.AvoidanceTypes
+    ) {
         avoidanceSubsystem.update(this, type)
         power(avoidanceSubsystem)
 //        odometrySubsystem!!.update()
     }
 
     fun telemetry(telemetry: Telemetry) {
+        drivetrain.telemetry(telemetry)
         if (reverse) {
             telemetry.addData("reversed", "")
         }
         if (slowModeIsOn) {
             telemetry.addData("slowMode", "")
         }
-        if (Drivers.currentFieldCentric) {
-            telemetry.addData("fieldCentric", "")
+        when (Drivers.currentFieldCentric) {
+            DriveType.FIELD_CENTRIC -> telemetry.addData("fieldCentric", "")
+            DriveType.ROBOT_CENTRIC -> telemetry.addData("robotCentric", "")
         }
-//        telemetry.addData("thisDistance (in)", "%.1f", thisDist)
         telemetry.addData("totalDistance (in)", "%.1f", DistanceStorage.totalDist)
         telemetry.addData("Current Speed (mph)", "%.1f", currentSpeed)
 //        odometrySubsystem!!.telemetry(telemetry)

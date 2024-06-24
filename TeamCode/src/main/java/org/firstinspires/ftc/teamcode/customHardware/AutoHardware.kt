@@ -12,17 +12,14 @@ import org.firstinspires.ftc.teamcode.startEnums.StartSide
 import org.firstinspires.ftc.teamcode.utilClass.camUtil.CameraUtilities.initializeProcessor
 import org.firstinspires.ftc.teamcode.utilClass.camUtil.Processor
 
-//config can be enabled to change variables in real time through FTC Dash
-//@Config
 class AutoHardware(
     opmode: LinearOpMode,
     ahwMap: HardwareMap,
     processor: Processor,
     startLocation: StartLocation
-) // constructor
-    : HardwareConfig(opmode, ahwMap, true) {
+) : HardwareConfig(opmode, ahwMap, true) {
 
-    var startPose = StartPose(startLocation)
+    private var startPose = StartPose(startLocation)
     private var autoVars: HashMap<AutoVarEnums, Boolean> = hashMapOf()
     var drive: MecanumDrive
 
@@ -32,10 +29,6 @@ class AutoHardware(
         initAutoVars(startPose.startLocation)
         autoVars[AutoVarEnums.VISION_READY] =
             initializeProcessor(processor, ahwMap, CAM2, true)
-//        green1.ledIND(red1, false)
-//        green2.ledIND(red2, false)
-//        green3.ledIND(red3, false)
-//        green4.ledIND(red4, false)
         showAutoTelemetry()
         opmode.waitForStart()
         timer.reset()

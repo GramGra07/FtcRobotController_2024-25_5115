@@ -9,17 +9,18 @@ import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.EndgameSubsystem
 import org.firstinspires.ftc.teamcode.utilClass.Driver
 import org.firstinspires.ftc.teamcode.utilClass.DriverAid
 import org.firstinspires.ftc.teamcode.utilClass.Operator
+import org.firstinspires.ftc.teamcode.utilClass.objects.DriveType
 
 
 object Drivers {
 
     private var drivers = mutableListOf(
-        Driver(AllDrivers.Camden, AvoidanceSubsystem.AvoidanceTypes.STOP, false),
-        Driver(AllDrivers.Grady, AvoidanceSubsystem.AvoidanceTypes.PUSH, true),
-        Driver(AllDrivers.Michael, AvoidanceSubsystem.AvoidanceTypes.OFF, false),
-        Driver(AllDrivers.Graden, AvoidanceSubsystem.AvoidanceTypes.PUSH, false),
-        Driver(AllDrivers.Delaney, AvoidanceSubsystem.AvoidanceTypes.OFF, false),
-        Driver(AllDrivers.Child, AvoidanceSubsystem.AvoidanceTypes.OFF, false),
+        Driver(AllDrivers.Camden, AvoidanceSubsystem.AvoidanceTypes.STOP, DriveType.ROBOT_CENTRIC),
+        Driver(AllDrivers.Grady, AvoidanceSubsystem.AvoidanceTypes.PUSH, DriveType.FIELD_CENTRIC),
+        Driver(AllDrivers.Michael, AvoidanceSubsystem.AvoidanceTypes.OFF, DriveType.ROBOT_CENTRIC),
+        Driver(AllDrivers.Graden, AvoidanceSubsystem.AvoidanceTypes.PUSH, DriveType.ROBOT_CENTRIC),
+        Driver(AllDrivers.Delaney, AvoidanceSubsystem.AvoidanceTypes.OFF, DriveType.ROBOT_CENTRIC),
+        Driver(AllDrivers.Child, AvoidanceSubsystem.AvoidanceTypes.OFF, DriveType.ROBOT_CENTRIC),
     )
     val others = mutableListOf(
         Operator(AllDrivers.Camden),

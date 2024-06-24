@@ -46,21 +46,4 @@ object ServoUtil {
         servo.setPose((closeClaw2.toDouble()))
 //        green2.ledIND(red2, true)
     }
-
-    @JvmField
-    var releaseAirplane = 120
-
-    fun releaseAirplane(servo: Servo) {
-        servo.setPose(releaseAirplane.toDouble())
-    }
-
-    @JvmField
-    var raiseAirplaneVal = 40
-
-    @JvmField
-    var airplaneReset = 30
-
-    fun resetAirplane(servo: Servo) {
-        servo.setPose(airplaneReset.toDouble())
-    }
 }

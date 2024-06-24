@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.subsystems
+package org.firstinspires.ftc.teamcode.ggutil
 
 import com.acmerobotics.dashboard.config.Config
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot
@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients
 
 
 @Config
-class DriveConfig {
+class DriveConfig private constructor() {
     companion object {
         @JvmField
         val TICKS_PER_REV = 28.0

@@ -5,7 +5,6 @@ import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.acmerobotics.roadrunner.Action
 import org.firstinspires.ftc.teamcode.rr.MecanumDrive
-import org.firstinspires.ftc.teamcode.subsystems.DriveConfig
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
 
 
@@ -49,23 +48,5 @@ object DriverAid {
             driveSubsystem.isAutoInTeleop = false
             cancelableFollowing.cancelAbruptly()
         }
-    }
-
-    fun cMPTurnVect(thetaError: Double): Map<String, Double> {
-        val kpTheta = DriveConfig.MOTOR_VELO_PID.p // Proportional gain for theta error
-
-        // Calculate the correction for each motor based on the theta error
-        val flPower = -kpTheta * thetaError  // Front-left wheel
-        val frPower = kpTheta * thetaError   // Front-right wheel
-        val rlPower = -kpTheta * thetaError  // Rear-left wheel
-        val rrPower = kpTheta * thetaError   // Rear-right wheel
-
-        // Return a map containing the calculated motor powers
-        return mapOf(
-            "FL" to flPower,
-            "FR" to frPower,
-            "RL" to rlPower,
-            "RR" to rrPower
-        )
     }
 }

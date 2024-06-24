@@ -37,7 +37,7 @@ object CameraUtilities {
             .stopCameraStream()
     }
 
-    var mainCamera: Camera = setupCameras(CameraType.ARDU_CAM)
+    private var mainCamera: Camera = setupCameras(CameraType.ARDU_CAM)
 
     private var runningProcessors: MutableList<VisionProcessor> =
         emptyList<VisionProcessor>().toMutableList()
@@ -69,13 +69,10 @@ object CameraUtilities {
                     )
                     .build()
 
-            // Adjust Image Decimation to trade-off detection-range for detection-rate.
-            // eg: Some typical detection data using a Logitech C920 WebCam
             // Decimation = 1 ..  Detect 2" Tag from 10 feet away at 10 Frames per second
             // Decimation = 2 ..  Detect 2" Tag from 6  feet away at 22 Frames per second
             // Decimation = 3 ..  Detect 2" Tag from 4  feet away at 30 Frames Per Second (default)
             // Decimation = 3 ..  Detect 5" Tag from 10 feet away at 30 Frames Per Second (default)
-            // Note: Decimation can be changed on-the-fly to adapt during a match.
             aprilTag.setDecimation(3.0F)
             runningProcessors.add(aprilTag)
         } else if (processor == Processor.OBJECT_DETECT) {
@@ -104,12 +101,21 @@ object CameraUtilities {
         if (runningProcessors.size > 1) {
             builder.setLiveViewContainerId(0)
         }
-        if (processor == Processor.APRIL_TAG) {
-            builder.addProcessor(aprilTag)
-        } else if (processor == Processor.OBJECT_DETECT) {
-            builder.addProcessor(objProcessor)
-        } else if (processor == Processor.PUB_TEST) {
-            builder.addProcessor(pubProcessor)
+        when (processor) {
+            Processor.APRIL_TAG -> {
+
+                builder.addProcessor(aprilTag)
+            }
+
+            Processor.OBJECT_DETECT -> {
+                builder.addProcessor(objProcessor)
+            }
+
+            Processor.PUB_TEST -> {
+                builder.addProcessor(pubProcessor)
+            }
+
+            else -> builder.addProcessor(aprilTag)
         }
         visionPortal = builder.build()
         if (ftcDashboard) {
@@ -121,13 +127,13 @@ object CameraUtilities {
     private fun setupCameras(cameraType: CameraType): Camera {
         return when (cameraType) {
             CameraType.ARDU_CAM -> {
-                val ArduCam: Camera =
+                val ArduCam =
                     Camera(Size(1280, 720), LensIntrinsics(972.571, 972.571, 667.598, 309.012))
                 ArduCam
             }
 
             CameraType.LOGITECH -> {
-                val LogiC270: Camera = Camera(Size(640, 480), LensIntrinsics())
+                val LogiC270 = Camera(Size(640, 480), LensIntrinsics())
                 LogiC270
             }
         }

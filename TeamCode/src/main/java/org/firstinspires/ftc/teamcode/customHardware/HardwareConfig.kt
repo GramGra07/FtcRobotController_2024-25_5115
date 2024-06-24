@@ -8,22 +8,18 @@ import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
-import com.qualcomm.robotcore.hardware.AnalogInput
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.VoltageSensor
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.customHardware.sensors.BeamBreakSensor
-import org.firstinspires.ftc.teamcode.customHardware.sensors.LEDIndicator
 import org.firstinspires.ftc.teamcode.customHardware.servos.AxonServo
 import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.initLights
 import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toPoint
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.currentVoltage
-import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.initPotent
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.initVSensor
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.lowVoltage
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.telemetry
-import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.telemetryPotent
 import org.firstinspires.ftc.teamcode.rr.MecanumDrive
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.LocalizationSubsystem
@@ -40,6 +36,9 @@ import org.firstinspires.ftc.teamcode.subsystems.loopTime.LoopTimeController
 import org.firstinspires.ftc.teamcode.subsystems.loopTime.PeriodicLoopTimeObject
 import org.firstinspires.ftc.teamcode.subsystems.loopTime.SpacedBooleanObject
 import org.firstinspires.ftc.teamcode.utilClass.FileWriterFTC.setUpFile
+import org.firstinspires.ftc.teamcode.utilClass.drivetrain.Drivetrain.Companion.shouldInitialize
+import org.firstinspires.ftc.teamcode.utilClass.drivetrain.Drivetrain.Companion.wasInitialized
+import org.firstinspires.ftc.teamcode.utilClass.drivetrain.Initializations
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.varConfig
 import java.io.FileWriter
 
@@ -68,18 +67,11 @@ open class HardwareConfig() {
         lateinit var beamBreakSensor: BeamBreakSensor
 
         var useFileWriter: Boolean = varConfig.useFileWriter
-        var multipleDrivers: Boolean = varConfig.multipleDrivers
         const val CAM1 = "Webcam 1"
         const val CAM2 = "Webcam 2"
         lateinit var lights: RevBlinkinLedDriver
         var lastTimeOpen = 0.0
 
-        lateinit var led1: LEDIndicator
-        lateinit var led2: LEDIndicator
-        lateinit var led3: LEDIndicator
-        lateinit var led4: LEDIndicator
-
-        lateinit var potentiometer: AnalogInput
         lateinit var vSensor: VoltageSensor
         lateinit var drive: MecanumDrive
         lateinit var fileWriter: FileWriter
@@ -97,29 +89,39 @@ open class HardwareConfig() {
         auto: Boolean,
     ) {
         vSensor = initVSensor(ahwMap, "Expansion Hub 2")
-        lights = initLights(ahwMap, "blinkin")
 
-        potentiometer = initPotent(ahwMap, "potent")
         allHubs = ahwMap.getAll(LynxModule::class.java)
         for (hub in allHubs) {
             hub.bulkCachingMode = LynxModule.BulkCachingMode.MANUAL
         }
-        led1 = LEDIndicator(ahwMap, 1)
-        led2 = LEDIndicator(ahwMap, 2)
-        led3 = LEDIndicator(ahwMap, 3)
-        led4 = LEDIndicator(ahwMap, 4)
         driveSubsystem = DriveSubsystem(ahwMap)
-        clawSubsystem = ClawSubsystem(ahwMap)
-        endgameSubsystem = EndgameSubsystem(ahwMap)
-        extendoSubsystem = ExtendoSubsystem(ahwMap)
-        localizationSubsystem = LocalizationSubsystem(ahwMap)
-        avoidanceSubsystem = AvoidanceSubsystem()
+        val drivetrain = driveSubsystem.drivetrain
+
+        if (shouldInitialize(Initializations.BLINK, drivetrain)) {
+            lights = initLights(ahwMap, "blinkin")
+        }
+        if (shouldInitialize(Initializations.CLAW, drivetrain)) {
+            clawSubsystem = ClawSubsystem(ahwMap)
+        }
+        if (shouldInitialize(Initializations.END, drivetrain)) {
+            endgameSubsystem = EndgameSubsystem(ahwMap)
+        }
+        if (shouldInitialize(Initializations.EXTENDO, drivetrain)) {
+            extendoSubsystem = ExtendoSubsystem(ahwMap)
+        }
+        if (shouldInitialize(Initializations.LOCALIZATION, drivetrain)) {
+            localizationSubsystem = LocalizationSubsystem(ahwMap)
+        }
+        if (shouldInitialize(Initializations.AVOIDANCE, drivetrain)) {
+            avoidanceSubsystem = AvoidanceSubsystem()
+        }
 
         drive = driveSubsystem.drive
         telemetry = MultipleTelemetry(myOpMode.telemetry, FtcDashboard.getInstance().telemetry)
         dashboard = FtcDashboard.getInstance()
-
         once = false
+
+
         val file = String.format(
             "%s/FIRST/matchlogs/log.txt",
             Environment.getExternalStorageDirectory().absolutePath
@@ -138,11 +140,6 @@ open class HardwareConfig() {
         loopTimeController = LoopTimeController(
             timer, loopTimePeriodics, spacedObjects
         )
-
-        led1.turnGreen()
-        led2.turnGreen()
-        led3.turnGreen()
-        led4.turnGreen()
         telemetry.addData("Version", CURRENT_VERSION)
         telemetry.addData("Voltage", "%.2f", vSensor.currentVoltage())
         if (vSensor.lowVoltage()) {
@@ -152,8 +149,10 @@ open class HardwareConfig() {
             telemetry.update()
         }
         drawPackets()
-        axonServo = AxonServo(ahwMap, "airplaneRotation", 90.0)
-        beamBreakSensor = BeamBreakSensor(ahwMap, "beamBreak")
+        if (shouldInitialize(Initializations.EXTRAS, drivetrain)) {
+            axonServo = AxonServo(ahwMap, "airplaneRotation", 90.0)
+            beamBreakSensor = BeamBreakSensor(ahwMap, "beamBreak")
+        }
     }
 
     //code to run all drive functions
@@ -161,7 +160,7 @@ open class HardwareConfig() {
         val currentAvoidanceType =
             bindDriverButtons(myOpMode, driveSubsystem, clawSubsystem, endgameSubsystem)
         bindOtherButtons(myOpMode, clawSubsystem, extendoSubsystem, driveSubsystem)
-        if (multipleDrivers) {
+        if (varConfig.multipleDrivers) {
             switchProfile(myOpMode)
         }
         driveSubsystem.driveByGamepads(
@@ -170,10 +169,10 @@ open class HardwareConfig() {
             loopTimeController.currentTime,
         )
         driveSubsystem.update(avoidanceSubsystem, currentAvoidanceType)
-        endgameSubsystem.update()
-        clawSubsystem.update()
-        extendoSubsystem.update()
-        localizationSubsystem.relocalize(drive)
+        if (wasInitialized(Initializations.END)) endgameSubsystem.update()
+        if (wasInitialized(Initializations.CLAW)) clawSubsystem.update()
+        if (wasInitialized(Initializations.EXTENDO)) extendoSubsystem.update()
+        if (wasInitialized(Initializations.LOCALIZATION)) localizationSubsystem.relocalize(drive)
         buildTelemetry() //makes telemetry
         lynxModules()
         loopTimeController.update()
@@ -196,7 +195,7 @@ open class HardwareConfig() {
     }
 
     private fun buildTelemetry() {
-        if (multipleDrivers) {
+        if (varConfig.multipleDrivers) {
             telemetry.addData(
                 "Drivers",
                 Drivers.currDriver.name.toString() + " " + Drivers.currOther.name.toString()
@@ -210,14 +209,15 @@ open class HardwareConfig() {
         teleSpace()
         telemetry.addData("Pose: ", drive.pose.toPoint().toString())
         driveSubsystem.telemetry(telemetry)
-        avoidanceSubsystem.telemetry(telemetry)
-        extendoSubsystem.telemetry(telemetry)
+        if (wasInitialized(Initializations.AVOIDANCE)) avoidanceSubsystem.telemetry(telemetry)
+        if (wasInitialized(Initializations.EXTENDO)) extendoSubsystem.telemetry(telemetry)
         teleSpace()
-        localizationSubsystem.telemetry(telemetry)
+        if (wasInitialized(Initializations.LOCALIZATION)) localizationSubsystem.telemetry(telemetry)
 
-        potentiometer.telemetryPotent(telemetry)
-        axonServo.telemetry(telemetry)
-        beamBreakSensor.telemetry(telemetry)
+        if (wasInitialized(Initializations.EXTRAS)) {
+            axonServo.telemetry(telemetry)
+            beamBreakSensor.telemetry(telemetry)
+        }
 
         teleSpace()
         telemetry.addData("Version", CURRENT_VERSION)
@@ -228,9 +228,9 @@ open class HardwareConfig() {
     private fun drawPackets() {
         packet = TelemetryPacket()
 
-        localizationSubsystem.draw(packet)
+        if (wasInitialized(Initializations.LOCALIZATION)) localizationSubsystem.draw(packet)
 
-        avoidanceSubsystem.draw(packet, drive)
+        if (wasInitialized(Initializations.AVOIDANCE)) avoidanceSubsystem.draw(packet, drive)
 
         dashboard.sendTelemetryPacket(packet)
     }

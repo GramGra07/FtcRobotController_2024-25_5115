@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ClawSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ExtendoSubsystem
-import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.LoopTime
 
 @Config
 object Operators {
@@ -26,11 +25,6 @@ object Operators {
         val otherControls = Drivers.others
         val currOther = Drivers.currOther
         if (currOther === otherControls[0]) { //Camden
-            if (!touchPressed && myOpMode.gamepad2.touchpad && LoopTime.useLoopTime) {
-                LoopTime.useLoopTime = false
-            } else if (!touchPressed && myOpMode.gamepad2.touchpad && !LoopTime.useLoopTime) {
-                LoopTime.useLoopTime = true
-            }
             touchPressed = myOpMode.gamepad2.touchpad
             if (myOpMode.gamepad2.right_bumper) {
                 clawSubsystem.closeLeft()
