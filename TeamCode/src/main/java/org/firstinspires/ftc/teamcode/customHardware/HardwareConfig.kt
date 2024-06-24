@@ -79,7 +79,7 @@ open class HardwareConfig() {
         private lateinit var myOpMode: LinearOpMode
         var once = false
 
-        private const val CURRENT_VERSION = "7.1.0"
+        private const val CURRENT_VERSION = "7.5.0"
 
         var allHubs: List<LynxModule> = ArrayList()
     }

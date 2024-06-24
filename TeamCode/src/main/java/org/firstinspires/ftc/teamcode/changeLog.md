@@ -1,3 +1,7 @@
+7.5.0 June 24th, 2024
+All drivetrain actions controlled through drive trains setup through the class, inherits to RR and
+everything with the object
+
 7.1.0 April 24th, 2024
 Added and now have Axon Servo class for all uses there, as well as loop time controller to manage
 all loop time activities.
