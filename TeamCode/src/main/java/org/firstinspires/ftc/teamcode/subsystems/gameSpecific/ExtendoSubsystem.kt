@@ -7,9 +7,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.initMotor
-import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.PIDVals
-import kotlin.math.abs
 
 class ExtendoSubsystem(ahwMap: HardwareMap) {
     enum class RotateState {
@@ -140,32 +138,6 @@ class ExtendoSubsystem(ahwMap: HardwareMap) {
         updatePID()
         ePower = 0.0
         extendState = ExtendState.STOPPED
-    }
-
-    fun autoExtend(position: Int, driveSubsystem: DriveSubsystem) {
-        val drive = driveSubsystem.drive
-        motorExtension.mode = DcMotor.RunMode.RUN_USING_ENCODER
-        motorExtension.targetPosition = (motorExtension.currentPosition + position)
-        drive.updatePoseEstimate()
-        motorExtension.mode = DcMotor.RunMode.RUN_TO_POSITION
-        motorExtension.power = abs(1).toDouble()
-        while (motorExtension.isBusy) {
-            drive.updatePoseEstimate()
-        }
-        motorExtension.power = 0.0
-    }
-
-    fun autoRotate(position: Int, driveSubsystem: DriveSubsystem) {
-        val drive = driveSubsystem.drive
-        motorRotation.mode = DcMotor.RunMode.RUN_USING_ENCODER
-        motorRotation.targetPosition = (motorRotation.currentPosition + position)
-        drive.updatePoseEstimate()
-        motorRotation.mode = DcMotor.RunMode.RUN_TO_POSITION
-        motorRotation.power = abs(1).toDouble()
-        while (motorRotation.isBusy) {
-            drive.updatePoseEstimate()
-        }
-        motorRotation.power = 0.0
     }
 
     private fun power() {

@@ -19,7 +19,6 @@ import org.firstinspires.ftc.teamcode.storage.PoseStorage
 import org.firstinspires.ftc.teamcode.subsystems.avoidance.AvoidanceSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers
 import org.firstinspires.ftc.teamcode.utilClass.FileWriterFTC
-import org.firstinspires.ftc.teamcode.utilClass.drivetrain.Drivetrain
 import org.firstinspires.ftc.teamcode.utilClass.drivetrain.DrivetrainType
 import org.firstinspires.ftc.teamcode.utilClass.objects.DriveType
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.varConfig
@@ -35,8 +34,6 @@ import kotlin.math.sqrt
 class DriveSubsystem(ahwMap: HardwareMap) {
     var drive: MecanumDrive
 
-    var drivetrain = CurrentDrivetrain.currentDrivetrain
-
     private var motorFrontLeft: DcMotorEx
     private var motorBackLeft: DcMotorEx
     private var motorFrontRight: DcMotorEx
@@ -51,7 +48,6 @@ class DriveSubsystem(ahwMap: HardwareMap) {
 //        if (odometrySubsystem == null) {
 //            odometrySubsystem = OdometrySubsystem3Wheel(ahwMap, 0.0, 0.0, 0.0)
 //        }
-
         drive = MecanumDrive(ahwMap, Pose2d(0.0, 0.0, 0.0))
 
         motorFrontLeft =
@@ -77,18 +73,9 @@ class DriveSubsystem(ahwMap: HardwareMap) {
                 "motorBackRight",
                 DcMotor.RunMode.RUN_WITHOUT_ENCODER
             )
-        if (drivetrain.reversedMotors.contains(Drivetrain.motorNames.FRONT_LEFT)) {
-            motorFrontLeft.direction = DcMotorSimple.Direction.REVERSE
-        }
-        if (drivetrain.reversedMotors.contains(Drivetrain.motorNames.BACK_LEFT)) {
-            motorBackLeft.direction = DcMotorSimple.Direction.REVERSE
-        }
-        if (drivetrain.reversedMotors.contains(Drivetrain.motorNames.FRONT_RIGHT)) {
-            motorFrontRight.direction = DcMotorSimple.Direction.REVERSE
-        }
-        if (drivetrain.reversedMotors.contains(Drivetrain.motorNames.BACK_RIGHT)) {
-            motorBackRight.direction = DcMotorSimple.Direction.REVERSE
-        }
+        motorBackLeft.direction = DcMotorSimple.Direction.REVERSE
+        motorFrontLeft.direction = DcMotorSimple.Direction.REVERSE
+
         reset()
     }
 
@@ -106,76 +93,51 @@ class DriveSubsystem(ahwMap: HardwareMap) {
     var leftStickY = 0.0
     var rightStickX = 0.0
     fun driveByGamepads(type: DriveType, myOpMode: OpMode, timer: Double) {
+        val drivetrain = CurrentDrivetrain.currentDrivetrain
         // Retrieve gamepad values
         leftStickX = myOpMode.gamepad1.left_stick_x.toDouble()
         leftStickY = -myOpMode.gamepad1.left_stick_y.toDouble()
         rightStickX = -myOpMode.gamepad1.right_stick_x.toDouble()
 
         val slowPower = if (slowModeIsOn) varConfig.slowMult else 1
+//
+        if (drivetrain.type == DrivetrainType.MECANUM) {
+            if (type == DriveType.FIELD_CENTRIC) {
+                val controllerAngle = Math.toDegrees(atan2(leftStickY, leftStickX))
+                val robotDegree = Math.toDegrees(drive.pose.heading.toDouble())
+                val movementDegree = controllerAngle - robotDegree
+                val gamepadHypot = Range.clip(hypot(leftStickX, leftStickY), 0.0, 1.0)
 
-        when (type) {
-            DriveType.FIELD_CENTRIC -> {
-                when (drivetrain.type) {
-                    DrivetrainType.MECANUM -> {
-                        // Compute controller angle
-                        val controllerAngle = Math.toDegrees(atan2(leftStickY, leftStickX))
-                        val robotDegree = Math.toDegrees(drive.pose.heading.toDouble())
-                        val movementDegree = controllerAngle - robotDegree
-                        val gamepadHypot = Range.clip(hypot(leftStickX, leftStickY), 0.0, 1.0)
+                // Compute x and y controls
+                val xControl = cos(Math.toRadians(movementDegree)) * gamepadHypot
+                val yControl = sin(Math.toRadians(movementDegree)) * gamepadHypot
 
-                        // Compute x and y controls
-                        val xControl = cos(Math.toRadians(movementDegree)) * gamepadHypot
-                        val yControl = sin(Math.toRadians(movementDegree)) * gamepadHypot
-
-                        // Compute powers
-                        val turn = rightStickX
-                        frontRightPower =
-                            (yControl * abs(yControl) - xControl * abs(xControl) + turn) / slowPower
-                        backRightPower =
-                            (yControl * abs(yControl) + xControl * abs(xControl) + turn) / slowPower
-                        frontLeftPower =
-                            (yControl * abs(yControl) + xControl * abs(xControl) - turn) / slowPower
-                        backLeftPower =
-                            (yControl * abs(yControl) - xControl * abs(xControl) - turn) / slowPower
-                    }
-
-                    else -> {
-
-                    }
-                }
-
+                // Compute powers
+                val turn = rightStickX
+                frontRightPower =
+                    (yControl * abs(yControl) - xControl * abs(xControl) + turn) / slowPower
+                backRightPower =
+                    (yControl * abs(yControl) + xControl * abs(xControl) + turn) / slowPower
+                frontLeftPower =
+                    (yControl * abs(yControl) + xControl * abs(xControl) - turn) / slowPower
+                backLeftPower =
+                    (yControl * abs(yControl) - xControl * abs(xControl) - turn) / slowPower
+            } else if (type == DriveType.ROBOT_CENTRIC) {
+                val turn = rightStickX
+                frontRightPower =
+                    (leftStickY * abs(leftStickY) - leftStickX * abs(leftStickX) + turn) / slowPower
+                backRightPower =
+                    (leftStickY * abs(leftStickY) + leftStickX * abs(leftStickX) + turn) / slowPower
+                frontLeftPower =
+                    (leftStickY * abs(leftStickY) + leftStickX * abs(leftStickX) - turn) / slowPower
+                backLeftPower =
+                    (leftStickY * abs(leftStickY) - leftStickX * abs(leftStickX) - turn) / slowPower
             }
-
-            DriveType.ROBOT_CENTRIC -> {
-                when (drivetrain.type) {
-                    DrivetrainType.MECANUM -> {
-                        // Compute powers for non-field centric mode
-                        val turn = rightStickX
-                        frontRightPower =
-                            (leftStickY * abs(leftStickY) - leftStickX * abs(leftStickX) + turn) / slowPower
-                        backRightPower =
-                            (leftStickY * abs(leftStickY) + leftStickX * abs(leftStickX) + turn) / slowPower
-                        frontLeftPower =
-                            (leftStickY * abs(leftStickY) + leftStickX * abs(leftStickX) - turn) / slowPower
-                        backLeftPower =
-                            (leftStickY * abs(leftStickY) - leftStickX * abs(leftStickX) - turn) / slowPower
-                    }
-
-                    DrivetrainType.TANK -> {
-                        frontLeftPower = Range.clip(leftStickY + rightStickX, -1.0, 1.0)
-                        backLeftPower = frontLeftPower
-                        frontRightPower = Range.clip(leftStickY - rightStickX, -1.0, 1.0)
-                        backRightPower = frontRightPower
-                    }
-
-                    else -> {
-                        frontLeftPower = Range.clip(leftStickY + rightStickX, -1.0, 1.0)
-                        backLeftPower = frontLeftPower
-                        frontRightPower = Range.clip(leftStickY - rightStickX, -1.0, 1.0)
-                        backRightPower = frontRightPower
-                    }
-                }
-            }
+        } else if (drivetrain.type == DrivetrainType.TANK) {
+            frontLeftPower = Range.clip(leftStickY + rightStickX, -1.0, 1.0)
+            backLeftPower = frontLeftPower
+            frontRightPower = Range.clip(leftStickY - rightStickX, -1.0, 1.0)
+            backRightPower = frontRightPower
         }
 
         // Update distance traveled
@@ -203,10 +165,6 @@ class DriveSubsystem(ahwMap: HardwareMap) {
 
     private fun reset() {
         thisDist = 0.0
-    }
-
-    fun resetHeading() {
-        drive.pose = Pose2d(drive.pose.position.x, drive.pose.position.y, 0.0)
     }
 
     private fun power(avoidanceSubsystem: AvoidanceSubsystem) {
@@ -246,6 +204,7 @@ class DriveSubsystem(ahwMap: HardwareMap) {
     }
 
     fun telemetry(telemetry: Telemetry) {
+        val drivetrain = CurrentDrivetrain.currentDrivetrain
         drivetrain.telemetry(telemetry)
         if (reverse) {
             telemetry.addData("reversed", "")

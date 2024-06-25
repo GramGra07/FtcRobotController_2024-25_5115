@@ -13,7 +13,6 @@ class Drivetrain(
     val localizerPARAMS: LocalizerPARAMS,
     var logoFacingDirection: LogoFacingDirection,
     var usbFacingDirection: UsbFacingDirection,
-    var initializers: MutableList<Initializations>
 ) {
     fun telemetry(telemetry: Telemetry) {
 
@@ -37,32 +36,12 @@ class Drivetrain(
     }
 
     companion object {
-        var initialized: MutableList<Initializations> = mutableListOf()
-        fun shouldInitialize(type: Initializations, drivetrain: Drivetrain): Boolean {
-            if (Initializations.NONE in drivetrain.initializers) {
-                return false
-            } else if (Initializations.ALL in drivetrain.initializers) {
-                initialized.add(Initializations.ALL)
-                return true
-            } else {
-                val tru = type in drivetrain.initializers
-                if (tru) initialized.add(type)
-                return tru
-            }
-        }
-
-        fun wasInitialized(type: Initializations): Boolean {
-            if (Initializations.ALL in initialized) {
-                return true
-            }
-            return type in initialized
-        }
 
         var drivetrains: MutableList<Drivetrain> = mutableListOf(
             Drivetrain(
                 DrivetrainNames.TESTER,
                 DrivetrainType.MECANUM,
-                mutableListOf(motorNames.BACK_LEFT),
+                mutableListOf(motorNames.BACK_LEFT, motorNames.FRONT_LEFT),
                 DrivePARAMS(
                     0.0029780281585,
                     0.0019808842928630615,
@@ -88,14 +67,11 @@ class Drivetrain(
                 ),
                 LogoFacingDirection.RIGHT,
                 UsbFacingDirection.UP,
-                mutableListOf(
-                    Initializations.ALL,
-                )
             ),
             Drivetrain(
                 DrivetrainNames.MAIN,
                 DrivetrainType.MECANUM,
-                mutableListOf(motorNames.FRONT_LEFT),
+                mutableListOf(motorNames.FRONT_RIGHT),
                 DrivePARAMS(
                     0.0029780281585,
                     0.0019808842928630615,
@@ -121,7 +97,6 @@ class Drivetrain(
                 ),
                 LogoFacingDirection.RIGHT,
                 UsbFacingDirection.UP,
-                mutableListOf(Initializations.NONE)
             ),
         )
     }

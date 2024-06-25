@@ -6,6 +6,7 @@ import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain
 import org.firstinspires.ftc.teamcode.utilClass.drivetrain.Drivetrain.Companion.drivetrains
 
 @TeleOp
+//@Disabled
 class drivetrainSwitcher : LinearOpMode() {
     override fun runOpMode() {
         var index = drivetrains.indexOfFirst { it.name == CurrentDrivetrain.currentDrivetrain.name }

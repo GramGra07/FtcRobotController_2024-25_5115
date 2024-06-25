@@ -61,7 +61,6 @@ object Drivers {
         clawSubsystem: ClawSubsystem,
         endgameSubsystem: EndgameSubsystem
     ): AvoidanceSubsystem.AvoidanceTypes {
-        val drive = driveSubsystem.drive
         // "Camden", "Grady", "Michael","Graden", "Delaney", "Child"
         if (currDriver.name == AllDrivers.Grady) { //grady
             //slowmode
