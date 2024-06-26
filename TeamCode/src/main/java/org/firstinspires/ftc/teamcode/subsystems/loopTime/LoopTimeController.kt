@@ -10,7 +10,7 @@ class LoopTimeController(
 ) {
     // loopTimeController.spacedObjectOf("name")!!.run(loopTimeController.currentTime)
     private val timer: ElapsedTime
-    private var loops: Int = 0
+    var loops: Int = 0
     private var lps = 0.0
     var currentTime: Double = 0.0
     private val correctedLPS: Double = 5.0

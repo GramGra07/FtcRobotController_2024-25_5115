@@ -15,6 +15,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.VoltageSensor
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.Telemetry
+import org.firstinspires.ftc.teamcode.customHardware.sensorArray.Sensor
+import org.firstinspires.ftc.teamcode.customHardware.sensorArray.SensorArray
+import org.firstinspires.ftc.teamcode.customHardware.sensorArray.SensorType
 import org.firstinspires.ftc.teamcode.customHardware.sensors.BeamBreakSensor
 import org.firstinspires.ftc.teamcode.customHardware.servos.AxonServo
 import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.initLights
@@ -85,6 +88,7 @@ open class HardwareConfig() {
         lateinit var drive: MecanumDrive
         lateinit var fileWriter: FileWriter
         lateinit var loopTimeController: LoopTimeController
+        lateinit var sensorArray: SensorArray
         private lateinit var myOpMode: LinearOpMode
         var once = false
 
@@ -152,6 +156,16 @@ open class HardwareConfig() {
                 drawPackets()
                 axonServo = AxonServo(ahwMap, "airplaneRotation", 90.0)
                 beamBreakSensor = BeamBreakSensor(ahwMap, "beamBreak")
+                sensorArray = SensorArray()
+                sensorArray.addSensor(
+                    Pair(
+                        "axon", Sensor(
+                            SensorType.ENC,
+                            { axonServo = AxonServo(ahwMap, "airplaneRotation", 90.0) },
+                            1
+                        )
+                    )
+                )
             }
 
             Drivetrain.DrivetrainNames.TESTER -> {
@@ -163,32 +177,22 @@ open class HardwareConfig() {
 //                telemetry.addData("Voltage", "%.2f", vSensor.currentVoltage())
                 drivetrain.telemetry(telemetry)
                 telemetry.update()
-                motorFrontLeft =
-                    MotorExtensions.initMotor(
-                        ahwMap,
-                        "motorFrontLeft",
-                        DcMotor.RunMode.RUN_WITHOUT_ENCODER
-                    )
+                motorFrontLeft = MotorExtensions.initMotor(
+                    ahwMap, "motorFrontLeft", DcMotor.RunMode.RUN_WITHOUT_ENCODER
+                )
                 motorBackLeft = MotorExtensions.initMotor(
                     ahwMap,
                     "motorBackLeft",
                     DcMotor.RunMode.RUN_WITHOUT_ENCODER,
                 )
-                motorFrontRight =
-                    MotorExtensions.initMotor(
-                        ahwMap,
-                        "motorFrontRight",
-                        DcMotor.RunMode.RUN_WITHOUT_ENCODER
-                    )
-                motorBackRight =
-                    MotorExtensions.initMotor(
-                        ahwMap,
-                        "motorBackRight",
-                        DcMotor.RunMode.RUN_WITHOUT_ENCODER
-                    )
+                motorFrontRight = MotorExtensions.initMotor(
+                    ahwMap, "motorFrontRight", DcMotor.RunMode.RUN_WITHOUT_ENCODER
+                )
+                motorBackRight = MotorExtensions.initMotor(
+                    ahwMap, "motorBackRight", DcMotor.RunMode.RUN_WITHOUT_ENCODER
+                )
 
                 motorFrontRight.direction = DcMotorSimple.Direction.REVERSE
-
                 motorBackRight.direction = DcMotorSimple.Direction.REVERSE
             }
 
@@ -220,12 +224,12 @@ open class HardwareConfig() {
                 buildTelemetry() //makes telemetry
                 lynxModules()
                 loopTimeController.update()
+                sensorArray.autoLoop(loopTimeController.loops)
             }
 
             Drivetrain.DrivetrainNames.TESTER -> {
                 // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
-                val axial: Double =
-                    -myOpMode.gamepad1.left_stick_y.toDouble()
+                val axial: Double = -myOpMode.gamepad1.left_stick_y.toDouble()
                 val lateral: Double = myOpMode.gamepad1.left_stick_x.toDouble()
                 val yaw: Double = -myOpMode.gamepad1.right_stick_x.toDouble()
                 val frontLeftPower = axial + lateral + yaw

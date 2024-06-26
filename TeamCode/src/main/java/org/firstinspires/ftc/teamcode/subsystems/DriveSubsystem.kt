@@ -74,7 +74,6 @@ class DriveSubsystem(ahwMap: HardwareMap) {
                 DcMotor.RunMode.RUN_WITHOUT_ENCODER
             )
         motorBackLeft.direction = DcMotorSimple.Direction.REVERSE
-        motorFrontLeft.direction = DcMotorSimple.Direction.REVERSE
 
         reset()
     }
