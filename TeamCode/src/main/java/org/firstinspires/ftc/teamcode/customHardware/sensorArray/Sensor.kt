@@ -13,8 +13,9 @@ class Sensor(private var type: SensorType, private var initializer: Runnable, va
     private lateinit var color: ColorSensor
     private lateinit var touch: TouchSensor
     private lateinit var beamBreak: BeamBreakSensor
+    var value: Double = 0.0
     fun read(): Any {
-        return when (type) {
+        var temp = when (type) {
             SensorType.ENC -> enc.currentPosition
 
             SensorType.DIST -> dist.getDistance(DistanceUnit.INCH)
@@ -24,6 +25,19 @@ class Sensor(private var type: SensorType, private var initializer: Runnable, va
             SensorType.TOUCH -> touch.isPressed
 
             SensorType.BB -> beamBreak.isBroken()
+        }
+        when (type) {
+            SensorType.ENC,
+            SensorType.DIST,
+            SensorType.TOUCH,
+            SensorType.BB -> {
+                value = temp as Double
+                return temp
+            }
+
+            SensorType.COLOR -> {
+                return temp
+            }
         }
     }
 
