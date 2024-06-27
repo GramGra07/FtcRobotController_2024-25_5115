@@ -4,7 +4,6 @@ import android.os.Environment
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
-import com.google.blocks.ftcrobotcontroller.util.CurrentGame
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
@@ -13,7 +12,6 @@ import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.VoltageSensor
 import com.qualcomm.robotcore.util.ElapsedTime
-import org.checkerframework.checker.units.qual.Current
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.customHardware.sensorArray.SensorArray
 import org.firstinspires.ftc.teamcode.customHardware.sensors.BeamBreakSensor
@@ -54,12 +52,14 @@ open class HardwareConfig() {
     }
 
     companion object {
-        fun isMainDrivetrain():Boolean{
+        fun isMainDrivetrain(): Boolean {
             return CurrentDrivetrain.currentDrivetrain.name == Drivetrain.DrivetrainNames.MAIN
         }
-        fun isTesterDrivetrain():Boolean{
+
+        fun isTesterDrivetrain(): Boolean {
             return CurrentDrivetrain.currentDrivetrain.name == Drivetrain.DrivetrainNames.TESTER
         }
+
         lateinit var telemetry: Telemetry
         lateinit var dashboard: FtcDashboard
         lateinit var packet: TelemetryPacket
@@ -187,7 +187,12 @@ open class HardwareConfig() {
         val drivetrain = CurrentDrivetrain.currentDrivetrain
         val currentAvoidanceType =
             bindDriverButtons(myOpMode, driveSubsystem, null)
-        if (isMainDrivetrain()) bindOtherButtons(myOpMode, clawSubsystem, extendoSubsystem, driveSubsystem)
+        if (isMainDrivetrain()) bindOtherButtons(
+            myOpMode,
+            clawSubsystem,
+            extendoSubsystem,
+            driveSubsystem
+        )
         if (varConfig.multipleDrivers) {
             switchProfile(myOpMode)
         }
@@ -244,12 +249,12 @@ open class HardwareConfig() {
         telemetry.addData("Pose: ", drive.pose.toPoint().toString())
         driveSubsystem.telemetry(telemetry)
         avoidanceSubsystem.telemetry(telemetry)
-        if (isMainDrivetrain())extendoSubsystem.telemetry(telemetry)
+        if (isMainDrivetrain()) extendoSubsystem.telemetry(telemetry)
         teleSpace()
-        if (isMainDrivetrain())localizationSubsystem.telemetry(telemetry)
+        if (isMainDrivetrain()) localizationSubsystem.telemetry(telemetry)
 
-        if (isMainDrivetrain())axonServo.telemetry(telemetry)
-        if (isMainDrivetrain())beamBreakSensor.telemetry(telemetry)
+        if (isMainDrivetrain()) axonServo.telemetry(telemetry)
+        if (isMainDrivetrain()) beamBreakSensor.telemetry(telemetry)
 
         teleSpace()
         telemetry.addData("Version", CURRENT_VERSION)
@@ -260,7 +265,7 @@ open class HardwareConfig() {
     private fun drawPackets() {
         packet = TelemetryPacket()
 
-        if (isMainDrivetrain())localizationSubsystem.draw(packet)
+        if (isMainDrivetrain()) localizationSubsystem.draw(packet)
 
         avoidanceSubsystem.draw(packet, drive)
 

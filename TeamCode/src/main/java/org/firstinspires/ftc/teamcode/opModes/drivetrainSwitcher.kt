@@ -12,26 +12,26 @@ class drivetrainSwitcher : LinearOpMode() {
         var index = drivetrains.indexOfFirst { it.name == CurrentDrivetrain.currentDrivetrain.name }
         var rbHeld = false
         var lbHeld = false
-        while (opModeInInit()){
-                telemetry.addData("Current Drivetrain", CurrentDrivetrain.currentDrivetrain.name)
-                telemetry.addData("Current Drivetrain Type", CurrentDrivetrain.currentDrivetrain.type)
-                telemetry.update()
-                if (gamepad1.right_bumper && !rbHeld) {
-                    index++
-                    if (index >= drivetrains.size) {
-                        index = 0
-                    }
-                    CurrentDrivetrain.currentDrivetrain = drivetrains[index]
+        while (opModeInInit()) {
+            telemetry.addData("Current Drivetrain", CurrentDrivetrain.currentDrivetrain.name)
+            telemetry.addData("Current Drivetrain Type", CurrentDrivetrain.currentDrivetrain.type)
+            telemetry.update()
+            if (gamepad1.right_bumper && !rbHeld) {
+                index++
+                if (index >= drivetrains.size) {
+                    index = 0
                 }
-                if (gamepad1.left_bumper && !lbHeld) {
-                    index--
-                    if (index < 0) {
-                        index = drivetrains.size - 1
-                    }
-                    CurrentDrivetrain.currentDrivetrain = drivetrains[index]
+                CurrentDrivetrain.currentDrivetrain = drivetrains[index]
+            }
+            if (gamepad1.left_bumper && !lbHeld) {
+                index--
+                if (index < 0) {
+                    index = drivetrains.size - 1
                 }
-                rbHeld = gamepad1.right_bumper
-                lbHeld = gamepad1.left_bumper
+                CurrentDrivetrain.currentDrivetrain = drivetrains[index]
+            }
+            rbHeld = gamepad1.right_bumper
+            lbHeld = gamepad1.left_bumper
             if (opModeIsActive()) break
         }
 //        waitForStart()

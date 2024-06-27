@@ -12,8 +12,8 @@ class Drivetrain(
     val localizerPARAMS: LocalizerPARAMS,
     var logoFacingDirection: LogoFacingDirection,
     var usbFacingDirection: UsbFacingDirection,
-    var parEncoder : String,
-    var perEncoder:String,
+    var parEncoder: String,
+    var perEncoder: String,
 ) {
     fun telemetry(telemetry: Telemetry) {
 

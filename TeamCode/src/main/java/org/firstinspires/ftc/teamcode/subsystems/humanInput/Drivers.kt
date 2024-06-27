@@ -3,15 +3,12 @@ package org.firstinspires.ftc.teamcode.subsystems.humanInput
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
-import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.avoidance.AvoidanceSubsystem
-import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ClawSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.EndgameSubsystem
 import org.firstinspires.ftc.teamcode.utilClass.Driver
 import org.firstinspires.ftc.teamcode.utilClass.DriverAid
 import org.firstinspires.ftc.teamcode.utilClass.Operator
-import org.firstinspires.ftc.teamcode.utilClass.drivetrain.Drivetrain
 import org.firstinspires.ftc.teamcode.utilClass.objects.DriveType
 
 
@@ -36,7 +33,7 @@ object Drivers {
     private val baseDriver = drivers.indexOfFirst { it.name == AllDrivers.Grady }
     private val baseOther =
         others.indexOfFirst { it.name == AllDrivers.Camden } //list integer of base driver and other controls
-    private var dIndex = baseDriver-1
+    private var dIndex = baseDriver - 1
     private var oIndex = baseOther
     var currDriver = drivers[baseDriver]
     var currOther = others[baseOther] //list string of driver and other controls
