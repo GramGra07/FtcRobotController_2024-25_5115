@@ -19,6 +19,7 @@ import org.firstinspires.ftc.teamcode.storage.PoseStorage
 import org.firstinspires.ftc.teamcode.subsystems.avoidance.AvoidanceSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers
 import org.firstinspires.ftc.teamcode.utilClass.FileWriterFTC
+import org.firstinspires.ftc.teamcode.utilClass.drivetrain.Drivetrain
 import org.firstinspires.ftc.teamcode.utilClass.drivetrain.DrivetrainType
 import org.firstinspires.ftc.teamcode.utilClass.objects.DriveType
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.varConfig
@@ -74,6 +75,7 @@ class DriveSubsystem(ahwMap: HardwareMap) {
                 DcMotor.RunMode.RUN_WITHOUT_ENCODER
             )
         motorBackLeft.direction = DcMotorSimple.Direction.REVERSE
+        if (CurrentDrivetrain.currentDrivetrain.name == Drivetrain.DrivetrainNames.TESTER) motorFrontLeft.direction = DcMotorSimple.Direction.REVERSE
 
         reset()
     }

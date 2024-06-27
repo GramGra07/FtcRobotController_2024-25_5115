@@ -55,6 +55,7 @@ import org.firstinspires.ftc.teamcode.rr.messages.MecanumCommandMessage;
 import org.firstinspires.ftc.teamcode.rr.messages.MecanumLocalizerInputsMessage;
 import org.firstinspires.ftc.teamcode.rr.messages.PoseMessage;
 import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain;
+import org.firstinspires.ftc.teamcode.utilClass.drivetrain.Drivetrain;
 
 import java.util.Arrays;
 import java.util.LinkedList;
@@ -105,6 +106,9 @@ public final class MecanumDrive {
         leftBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightBack.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         rightFront.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        if (CurrentDrivetrain.Companion.getCurrentDrivetrain().getName() == Drivetrain.DrivetrainNames.TESTER)
+            leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+
         leftBack.setDirection(DcMotorSimple.Direction.REVERSE);
 
         //   see https://ftc-docs.firstinspires.org/en/latest/hardware_and_software_configuration/configuring/index.html

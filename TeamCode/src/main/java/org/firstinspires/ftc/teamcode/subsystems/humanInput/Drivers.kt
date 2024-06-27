@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.subsystems.humanInput
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
+import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
+import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.avoidance.AvoidanceSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ClawSubsystem
@@ -9,6 +11,7 @@ import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.EndgameSubsystem
 import org.firstinspires.ftc.teamcode.utilClass.Driver
 import org.firstinspires.ftc.teamcode.utilClass.DriverAid
 import org.firstinspires.ftc.teamcode.utilClass.Operator
+import org.firstinspires.ftc.teamcode.utilClass.drivetrain.Drivetrain
 import org.firstinspires.ftc.teamcode.utilClass.objects.DriveType
 
 
@@ -33,7 +36,7 @@ object Drivers {
     private val baseDriver = drivers.indexOfFirst { it.name == AllDrivers.Grady }
     private val baseOther =
         others.indexOfFirst { it.name == AllDrivers.Camden } //list integer of base driver and other controls
-    private var dIndex = baseDriver
+    private var dIndex = baseDriver-1
     private var oIndex = baseOther
     var currDriver = drivers[baseDriver]
     var currOther = others[baseOther] //list string of driver and other controls
@@ -58,8 +61,7 @@ object Drivers {
     fun bindDriverButtons(
         myOpMode: OpMode,
         driveSubsystem: DriveSubsystem,
-        clawSubsystem: ClawSubsystem,
-        endgameSubsystem: EndgameSubsystem
+        endgameSubsystem: EndgameSubsystem?
     ): AvoidanceSubsystem.AvoidanceTypes {
         // "Camden", "Grady", "Michael","Graden", "Delaney", "Child"
         if (currDriver.name == AllDrivers.Grady) { //grady
@@ -70,20 +72,22 @@ object Drivers {
                 driveSubsystem.slowModeIsOn = false
             }
             slowModeButtonDown = myOpMode.gamepad1.circle
-            if (myOpMode.gamepad1.triangle && !planeButtonDown && !endgameSubsystem.planeReleased) {
-                endgameSubsystem.shoot()
-                endgameSubsystem.planeReleased = true
-            } else if (myOpMode.gamepad1.triangle && !planeButtonDown && endgameSubsystem.planeReleased) {
-                endgameSubsystem.resetAirplane()
-                endgameSubsystem.planeReleased = false
-            }
-            planeButtonDown = myOpMode.gamepad1.triangle
-            if (myOpMode.gamepad1.right_trigger > 0) {
-                endgameSubsystem.retract()
-            } else if (myOpMode.gamepad1.left_trigger > 0) {
-                endgameSubsystem.extend()
-            } else {
-                endgameSubsystem.stopLift()
+            if (HardwareConfig.isMainDrivetrain()) {
+                if (myOpMode.gamepad1.triangle && !planeButtonDown && !endgameSubsystem!!.planeReleased) {
+                    endgameSubsystem.shoot()
+                    endgameSubsystem.planeReleased = true
+                } else if (myOpMode.gamepad1.triangle && !planeButtonDown && endgameSubsystem!!.planeReleased) {
+                    endgameSubsystem.resetAirplane()
+                    endgameSubsystem.planeReleased = false
+                }
+                planeButtonDown = myOpMode.gamepad1.triangle
+                if (myOpMode.gamepad1.right_trigger > 0) {
+                    endgameSubsystem!!.retract()
+                } else if (myOpMode.gamepad1.left_trigger > 0) {
+                    endgameSubsystem!!.extend()
+                } else {
+                    endgameSubsystem!!.stopLift()
+                }
             }
             DriverAid.doDriverAid(
                 driveSubsystem,
@@ -115,20 +119,22 @@ object Drivers {
                 driveSubsystem.slowModeIsOn = false
             }
             slowModeButtonDown = myOpMode.gamepad1.circle
-            if (myOpMode.gamepad1.triangle && !planeButtonDown && !endgameSubsystem.planeReleased) {
-                endgameSubsystem.shoot()
-                endgameSubsystem.planeReleased = true
-            } else if (myOpMode.gamepad1.triangle && !planeButtonDown && endgameSubsystem.planeReleased) {
-                endgameSubsystem.resetAirplane()
-                endgameSubsystem.planeReleased = false
-            }
-            planeButtonDown = myOpMode.gamepad1.triangle
-            if (myOpMode.gamepad1.right_trigger > 0) {
-                endgameSubsystem.retract()
-            } else if (myOpMode.gamepad1.left_trigger > 0) {
-                endgameSubsystem.extend()
-            } else {
-                endgameSubsystem.stopLift()
+            if (HardwareConfig.isMainDrivetrain()) {
+                if (myOpMode.gamepad1.triangle && !planeButtonDown && !endgameSubsystem!!.planeReleased) {
+                    endgameSubsystem.shoot()
+                    endgameSubsystem.planeReleased = true
+                } else if (myOpMode.gamepad1.triangle && !planeButtonDown && endgameSubsystem!!.planeReleased) {
+                    endgameSubsystem.resetAirplane()
+                    endgameSubsystem.planeReleased = false
+                }
+                planeButtonDown = myOpMode.gamepad1.triangle
+                if (myOpMode.gamepad1.right_trigger > 0) {
+                    endgameSubsystem!!.retract()
+                } else if (myOpMode.gamepad1.left_trigger > 0) {
+                    endgameSubsystem!!.extend()
+                } else {
+                    endgameSubsystem!!.stopLift()
+                }
             }
             DriverAid.doDriverAid(
                 driveSubsystem,

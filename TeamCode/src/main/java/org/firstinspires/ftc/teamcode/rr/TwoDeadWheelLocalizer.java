@@ -21,8 +21,10 @@ import com.qualcomm.robotcore.hardware.IMU;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AngularVelocity;
 import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
+import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig;
 import org.firstinspires.ftc.teamcode.rr.messages.TwoDeadWheelInputsMessage;
 import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain;
+import org.firstinspires.ftc.teamcode.utilClass.drivetrain.Drivetrain;
 
 @Config
 public final class TwoDeadWheelLocalizer implements Localizer {
@@ -36,10 +38,10 @@ public final class TwoDeadWheelLocalizer implements Localizer {
     private boolean initialized;
 
     public TwoDeadWheelLocalizer(HardwareMap hardwareMap, IMU imu, double inPerTick) {
-        par = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "parallelEnc")));
-        perp = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, "lift")));
+        par = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, CurrentDrivetrain.Companion.getCurrentDrivetrain().getParEncoder())));
+        perp = new OverflowEncoder(new RawEncoder(hardwareMap.get(DcMotorEx.class, CurrentDrivetrain.Companion.getCurrentDrivetrain().getPerEncoder())));
         perp.setDirection(DcMotorSimple.Direction.REVERSE);
-
+        if (HardwareConfig.Companion.isTesterDrivetrain())par.setDirection(DcMotorSimple.Direction.REVERSE);
         this.imu = imu;
 
         this.inPerTick = inPerTick;
