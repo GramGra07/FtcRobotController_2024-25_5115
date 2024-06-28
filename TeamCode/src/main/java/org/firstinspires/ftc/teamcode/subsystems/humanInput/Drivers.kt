@@ -6,10 +6,10 @@ import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.avoidance.AvoidanceSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.EndgameSubsystem
-import org.firstinspires.ftc.teamcode.utilClass.objects.Driver
 import org.firstinspires.ftc.teamcode.utilClass.DriverAid
-import org.firstinspires.ftc.teamcode.utilClass.objects.Operator
 import org.firstinspires.ftc.teamcode.utilClass.objects.DriveType
+import org.firstinspires.ftc.teamcode.utilClass.objects.Driver
+import org.firstinspires.ftc.teamcode.utilClass.objects.Operator
 
 
 object Drivers {

@@ -2,10 +2,10 @@ package org.firstinspires.ftc.teamcode.customHardware
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.HardwareMap
-import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.setPatternCo
 import org.firstinspires.ftc.teamcode.customHardware.autoHardware.AutoVarEnums
 import org.firstinspires.ftc.teamcode.customHardware.autoHardware.StartLocation
 import org.firstinspires.ftc.teamcode.customHardware.autoHardware.StartPose
+import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.setPatternCo
 import org.firstinspires.ftc.teamcode.rr.MecanumDrive
 import org.firstinspires.ftc.teamcode.startEnums.Alliance
 import org.firstinspires.ftc.teamcode.startEnums.StartSide

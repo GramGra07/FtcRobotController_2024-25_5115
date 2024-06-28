@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.VoltageSensor
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.Telemetry
+import org.firstinspires.ftc.teamcode.customHardware.gamepad.CustomGamepad
 import org.firstinspires.ftc.teamcode.customHardware.sensorArray.SensorArray
 import org.firstinspires.ftc.teamcode.customHardware.sensors.BeamBreakSensor
 import org.firstinspires.ftc.teamcode.customHardware.servos.AxonServo
@@ -93,6 +94,9 @@ open class HardwareConfig() {
         private const val CURRENT_VERSION = "7.5.0"
 
         var allHubs: List<LynxModule> = ArrayList()
+
+        lateinit var gamepad1: CustomGamepad
+        lateinit var gamepad2: CustomGamepad
     }
 
     fun initRobot(
@@ -130,6 +134,8 @@ open class HardwareConfig() {
         dashboard = FtcDashboard.getInstance()
         once = false
 
+        gamepad1 = CustomGamepad(myOpMode.gamepad1)
+        gamepad2 = CustomGamepad(myOpMode.gamepad2)
 
         val file = String.format(
             "%s/FIRST/matchlogs/log.txt",
@@ -209,6 +215,9 @@ open class HardwareConfig() {
         buildTelemetry() //makes telemetry
         lynxModules()
         loopTimeController.update()
+        
+        gamepad1.update()
+        gamepad2.update()
     }
 
     fun once(myOpMode: OpMode) {
