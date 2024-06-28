@@ -4,6 +4,7 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot.LogoFacingDirection
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot.UsbFacingDirection
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain
+import org.firstinspires.ftc.teamcode.utilClass.objects.Permission
 
 class Drivetrain(
     val name: DrivetrainNames,
@@ -14,9 +15,9 @@ class Drivetrain(
     var usbFacingDirection: UsbFacingDirection,
     var parEncoder: String,
     var perEncoder: String,
+    var permissions: MutableList<Permission>,
 ) {
     fun telemetry(telemetry: Telemetry) {
-
         CurrentDrivetrain.currentDrivetrain.let {
             telemetry.addData("Current Drivetrain", it.name)
             telemetry.addData("Current Drivetrain Type", it.type)
@@ -30,6 +31,10 @@ class Drivetrain(
     }
 
     companion object {
+        fun drivetrainHasPermission(permission: Permission): Boolean {
+            return CurrentDrivetrain.currentDrivetrain.permissions.contains(permission)
+        }
+
 
         var drivetrains: MutableList<Drivetrain> = mutableListOf(
             Drivetrain(
@@ -61,7 +66,8 @@ class Drivetrain(
                 LogoFacingDirection.UP,
                 UsbFacingDirection.LEFT,
                 "motorFrontLeft",
-                "motorBackLeft"
+                "motorBackLeft",
+                mutableListOf()
             ),
             Drivetrain(
                 DrivetrainNames.MAIN,
@@ -92,7 +98,15 @@ class Drivetrain(
                 LogoFacingDirection.RIGHT,
                 UsbFacingDirection.UP,
                 "parallelEnc",
-                "lift"
+                "lift",
+                mutableListOf(
+                    Permission.EXTRAS,
+                    Permission.EXTENDO,
+                    Permission.CLAW,
+                    Permission.ENDGAME,
+                    Permission.LOCALIZATION,
+                    Permission.LIGHTS
+                )
             ),
         )
     }

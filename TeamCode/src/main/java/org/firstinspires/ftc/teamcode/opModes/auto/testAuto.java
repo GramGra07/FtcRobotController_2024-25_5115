@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opModes.autoSoftware;
+package org.firstinspires.ftc.teamcode.opModes.auto;
 
 import android.util.Size;
 

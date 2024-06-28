@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opModes.autoSoftware.autoClasses
+package org.firstinspires.ftc.teamcode.customHardware.autoHardware
 
 enum class AutoVarEnums {
     RED_ALLIANCE,

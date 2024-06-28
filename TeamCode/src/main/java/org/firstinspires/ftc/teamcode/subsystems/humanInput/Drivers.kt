@@ -6,9 +6,9 @@ import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.avoidance.AvoidanceSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.EndgameSubsystem
-import org.firstinspires.ftc.teamcode.utilClass.Driver
+import org.firstinspires.ftc.teamcode.utilClass.objects.Driver
 import org.firstinspires.ftc.teamcode.utilClass.DriverAid
-import org.firstinspires.ftc.teamcode.utilClass.Operator
+import org.firstinspires.ftc.teamcode.utilClass.objects.Operator
 import org.firstinspires.ftc.teamcode.utilClass.objects.DriveType
 
 
@@ -39,6 +39,7 @@ object Drivers {
     var currOther = others[baseOther] //list string of driver and other controls
     private var currentAvoidance = currDriver.defaultAvoidance
     var currentFieldCentric = currDriver.fieldCentric
+
     private var optionsHigh1 = false
     private var shareHigh1 = false
     private var optionsHigh2 = false

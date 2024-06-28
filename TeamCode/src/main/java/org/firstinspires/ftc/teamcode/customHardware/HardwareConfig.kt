@@ -8,7 +8,6 @@ import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
-import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.VoltageSensor
 import com.qualcomm.robotcore.util.ElapsedTime
@@ -40,6 +39,8 @@ import org.firstinspires.ftc.teamcode.subsystems.loopTime.PeriodicLoopTimeObject
 import org.firstinspires.ftc.teamcode.subsystems.loopTime.SpacedBooleanObject
 import org.firstinspires.ftc.teamcode.utilClass.FileWriterFTC.setUpFile
 import org.firstinspires.ftc.teamcode.utilClass.drivetrain.Drivetrain
+import org.firstinspires.ftc.teamcode.utilClass.drivetrain.Drivetrain.Companion.drivetrainHasPermission
+import org.firstinspires.ftc.teamcode.utilClass.objects.Permission
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.varConfig
 import java.io.FileWriter
 
@@ -71,12 +72,6 @@ open class HardwareConfig() {
         lateinit var extendoSubsystem: ExtendoSubsystem
         lateinit var localizationSubsystem: LocalizationSubsystem
         lateinit var avoidanceSubsystem: AvoidanceSubsystem
-
-
-        private lateinit var motorFrontLeft: DcMotorEx
-        private lateinit var motorBackLeft: DcMotorEx
-        private lateinit var motorFrontRight: DcMotorEx
-        private lateinit var motorBackRight: DcMotorEx
 
         lateinit var axonServo: AxonServo
         lateinit var beamBreakSensor: BeamBreakSensor
@@ -117,15 +112,15 @@ open class HardwareConfig() {
             initVSensor(ahwMap, "Expansion Hub 2")
         if (isTesterDrivetrain()) vSensor =
             initVSensor(ahwMap, "Control Hub")
-        if (isMainDrivetrain()) lights =
+        if (drivetrainHasPermission(Permission.LIGHTS)) lights =
             initLights(ahwMap, "blinkin")
-        if (isMainDrivetrain()) clawSubsystem =
+        if (drivetrainHasPermission(Permission.CLAW)) clawSubsystem =
             ClawSubsystem(ahwMap)
-        if (isMainDrivetrain()) endgameSubsystem =
+        if (drivetrainHasPermission(Permission.ENDGAME)) endgameSubsystem =
             EndgameSubsystem(ahwMap)
-        if (isMainDrivetrain()) extendoSubsystem =
+        if (drivetrainHasPermission(Permission.EXTENDO)) extendoSubsystem =
             ExtendoSubsystem(ahwMap)
-        if (isMainDrivetrain()) localizationSubsystem =
+        if (drivetrainHasPermission(Permission.LOCALIZATION)) localizationSubsystem =
             LocalizationSubsystem(ahwMap)
         avoidanceSubsystem = AvoidanceSubsystem()
         drive = driveSubsystem.drive
@@ -165,11 +160,13 @@ open class HardwareConfig() {
         }
         drawPackets()
 
-        if (isMainDrivetrain()) axonServo =
-            AxonServo(ahwMap, "airplaneRotation", 90.0)
+        if (drivetrainHasPermission(Permission.EXTRAS)) {
+            axonServo =
+                AxonServo(ahwMap, "airplaneRotation", 90.0)
 
-        if (isMainDrivetrain()) beamBreakSensor =
-            BeamBreakSensor(ahwMap, "beamBreak")
+            beamBreakSensor =
+                BeamBreakSensor(ahwMap, "beamBreak")
+        }
 //                sensorArray = SensorArray()
 //                sensorArray.addSensor(
 //                    Pair(
@@ -184,7 +181,6 @@ open class HardwareConfig() {
 
     //code to run all drive functions
     fun doBulk() {
-        val drivetrain = CurrentDrivetrain.currentDrivetrain
         val currentAvoidanceType =
             bindDriverButtons(myOpMode, driveSubsystem, null)
         if (isMainDrivetrain()) bindOtherButtons(
@@ -203,15 +199,13 @@ open class HardwareConfig() {
         )
         driveSubsystem.update(avoidanceSubsystem, currentAvoidanceType)
 
-        if (isMainDrivetrain()) endgameSubsystem.update()
+        if (drivetrainHasPermission(Permission.ENDGAME)) endgameSubsystem.update()
 
-        if (isMainDrivetrain()) clawSubsystem.update()
+        if (drivetrainHasPermission(Permission.CLAW)) clawSubsystem.update()
 
-        if (isMainDrivetrain()) extendoSubsystem.update()
+        if (drivetrainHasPermission(Permission.EXTENDO)) extendoSubsystem.update()
 
-        if (isMainDrivetrain()) localizationSubsystem.relocalize(
-            drive
-        )
+        if (drivetrainHasPermission(Permission.LOCALIZATION)) localizationSubsystem.relocalize(drive)
         buildTelemetry() //makes telemetry
         lynxModules()
         loopTimeController.update()
@@ -249,12 +243,16 @@ open class HardwareConfig() {
         telemetry.addData("Pose: ", drive.pose.toPoint().toString())
         driveSubsystem.telemetry(telemetry)
         avoidanceSubsystem.telemetry(telemetry)
-        if (isMainDrivetrain()) extendoSubsystem.telemetry(telemetry)
+        if (drivetrainHasPermission(Permission.EXTENDO)) extendoSubsystem.telemetry(telemetry)
         teleSpace()
-        if (isMainDrivetrain()) localizationSubsystem.telemetry(telemetry)
+        if (drivetrainHasPermission(Permission.LOCALIZATION)) localizationSubsystem.telemetry(
+            telemetry
+        )
 
-        if (isMainDrivetrain()) axonServo.telemetry(telemetry)
-        if (isMainDrivetrain()) beamBreakSensor.telemetry(telemetry)
+        if (drivetrainHasPermission(Permission.EXTRAS)) {
+            axonServo.telemetry(telemetry)
+            beamBreakSensor.telemetry(telemetry)
+        }
 
         teleSpace()
         telemetry.addData("Version", CURRENT_VERSION)
@@ -265,7 +263,7 @@ open class HardwareConfig() {
     private fun drawPackets() {
         packet = TelemetryPacket()
 
-        if (isMainDrivetrain()) localizationSubsystem.draw(packet)
+        if (drivetrainHasPermission(Permission.LOCALIZATION)) localizationSubsystem.draw(packet)
 
         avoidanceSubsystem.draw(packet, drive)
 

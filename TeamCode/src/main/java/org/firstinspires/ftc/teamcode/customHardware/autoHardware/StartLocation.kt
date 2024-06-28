@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opModes.autoSoftware.autoClasses
+package org.firstinspires.ftc.teamcode.customHardware.autoHardware
 
 import org.firstinspires.ftc.teamcode.startEnums.Alliance
 import org.firstinspires.ftc.teamcode.startEnums.StartSide

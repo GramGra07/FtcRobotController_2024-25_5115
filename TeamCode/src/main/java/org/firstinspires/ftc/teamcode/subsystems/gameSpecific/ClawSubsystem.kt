@@ -5,7 +5,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.Servo
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.calcFlipPose
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.initServo
-import org.firstinspires.ftc.teamcode.utilClass.ServoUtil
+import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.ServoUtil
 
 
 class ClawSubsystem(ahwMap: HardwareMap) {

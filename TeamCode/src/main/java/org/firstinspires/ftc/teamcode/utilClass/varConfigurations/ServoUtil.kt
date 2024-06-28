@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.utilClass
+package org.firstinspires.ftc.teamcode.utilClass.varConfigurations
 
 //import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig.Companion.green1
 //import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig.Companion.green2

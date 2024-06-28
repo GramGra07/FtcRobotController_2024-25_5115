@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.utilClass
+package org.firstinspires.ftc.teamcode.utilClass.objects
 
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers
 
