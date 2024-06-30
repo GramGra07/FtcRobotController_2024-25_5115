@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.utilClass.camUtil
+package org.firstinspires.ftc.teamcode.customHardware.camera.camUtil
 
 import com.acmerobotics.roadrunner.Vector2d
 import org.firstinspires.ftc.teamcode.utilClass.objects.Point

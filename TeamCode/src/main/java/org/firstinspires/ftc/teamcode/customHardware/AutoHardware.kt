@@ -9,13 +9,13 @@ import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.setPatternCo
 import org.firstinspires.ftc.teamcode.rr.MecanumDrive
 import org.firstinspires.ftc.teamcode.startEnums.Alliance
 import org.firstinspires.ftc.teamcode.startEnums.StartSide
-import org.firstinspires.ftc.teamcode.utilClass.camUtil.CameraUtilities.initializeProcessor
-import org.firstinspires.ftc.teamcode.utilClass.camUtil.Processor
+import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities.initializeProcessor
+import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.Processor
 
 class AutoHardware(
     opmode: LinearOpMode,
     ahwMap: HardwareMap,
-    processor: Processor,
+    processor: Processor?,
     startLocation: StartLocation
 ) : HardwareConfig(opmode, ahwMap, true) {
 
@@ -25,10 +25,11 @@ class AutoHardware(
 
     init {
         initRobot(ahwMap, true)
-        drive = MecanumDrive(ahwMap, startPose.getPose())
         initAutoVars(startPose.startLocation)
+        drive = MecanumDrive(ahwMap, startPose.getPose())
         autoVars[AutoVarEnums.VISION_READY] =
             initializeProcessor(processor, ahwMap, CAM2, true)
+
         showAutoTelemetry()
         opmode.waitForStart()
         timer.reset()
@@ -42,28 +43,24 @@ class AutoHardware(
             Alliance.RED -> {
                 true
             }
-
             Alliance.BLUE -> false
         }
         autoVars[AutoVarEnums.BLUE_ALLIANCE] = when (alliance) {
             Alliance.BLUE -> {
                 true
             }
-
             Alliance.RED -> false
         }
         autoVars[AutoVarEnums.LEFT_SIDE] = when (startSide) {
             StartSide.LEFT -> {
                 true
             }
-
             StartSide.RIGHT -> false
         }
         autoVars[AutoVarEnums.RIGHT_SIDE] = when (startSide) {
             StartSide.RIGHT -> {
                 true
             }
-
             StartSide.LEFT -> false
         }
         autoVars[AutoVarEnums.VISION_READY] = false

@@ -103,10 +103,19 @@ class CustomGamepad(private var gamepad: Gamepad) {
         }
     }
 
-    fun isToggled(button: Button): Boolean {
+    fun justPressed(button: Button): Boolean {
         val out = getCurrentButton(button)
         if (out is Boolean) {
             return out && !getPastButton(button)
+        } else {
+            throw Exception("Button called is not a boolean, " + button.name)
+        }
+    }
+
+    fun justReleased(button: Button): Boolean {
+        val out = getCurrentButton(button)
+        if (out is Boolean) {
+            return !out && getPastButton(button)
         } else {
             throw Exception("Button called is not a boolean, " + button.name)
         }
@@ -124,6 +133,24 @@ class CustomGamepad(private var gamepad: Gamepad) {
     fun getTriggerOverTolerance(button: Button, tolerance: Double): Boolean {
         getTrigger(button).let {
             return it > tolerance
+        }
+    }
+
+    enum class Colors{
+        HOT_PINK,
+        RED,
+        BLACK,
+        BLUE,
+        GREEN
+    }
+
+    fun setColor(colors: Colors){
+        when(colors){
+            Colors.HOT_PINK -> gamepad.setLedColor(229.0, 74.0, 161.0, -1)
+            Colors.RED -> gamepad.setLedColor(255.0, 0.0, 0.0, -1)
+            Colors.BLACK -> gamepad.setLedColor(0.0, 0.0, 0.0, -1)
+            Colors.BLUE -> gamepad.setLedColor(0.0, 0.0, 255.0, -1)
+            Colors.GREEN -> gamepad.setLedColor(0.0, 255.0, 0.0, -1)
         }
     }
 

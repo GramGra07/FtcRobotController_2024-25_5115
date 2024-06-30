@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.customHardware.autoHardware.StartLocation
 import org.firstinspires.ftc.teamcode.startEnums.Alliance
 import org.firstinspires.ftc.teamcode.startEnums.StartSide
 import org.firstinspires.ftc.teamcode.storage.PoseStorage
-import org.firstinspires.ftc.teamcode.utilClass.camUtil.Processor
+import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.Processor
 
 @Autonomous
 @Disabled

@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.storage.PoseStorage
 data class StartPose(
     var startLocation: StartLocation
 ) {
-    var pose2d: Pose2d
+    private var pose2d: Pose2d
     private var location: StartLocation = startLocation
 
     init {
