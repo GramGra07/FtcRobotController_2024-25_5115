@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.utilClass.drivetrain
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot.LogoFacingDirection
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot.UsbFacingDirection
 import org.firstinspires.ftc.robotcore.external.Telemetry
+import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.Pose
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.CustomPIDFCoefficients
 import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain
 import org.firstinspires.ftc.teamcode.utilClass.objects.Permission
@@ -34,7 +35,6 @@ class Drivetrain(
             return CurrentDrivetrain.currentDrivetrain.permissions.contains(permission)
         }
 
-
         var drivetrains: MutableList<Drivetrain> = mutableListOf(
             Drivetrain(
                 DrivetrainNames.TESTER,
@@ -63,37 +63,53 @@ class Drivetrain(
                     -1689.0290452639733
                 ),
                 PedroPathingPARAMS(
-                    10.0, 81.0, 65.0, -34.62719, -78.15554, CustomPIDFCoefficients(
+                    0.002550207204,
+                    -0.0020726061118353043,
+                    Pose(0.0, 0.0, 0.0),
+                    Pose(0.0, 0.0, Math.toRadians(90.0)),
+                    10.0,
+                    81.0,
+                    65.0,
+                    -34.62719,
+                    -78.15554,
+                    CustomPIDFCoefficients(
                         0.3,
                         0.0,
                         0.01,
                         0.0
-                    ), CustomPIDFCoefficients(
+                    ),
+                    CustomPIDFCoefficients(
                         0.1,
                         0.0,
                         0.0,
                         0.0
-                    ), CustomPIDFCoefficients(
+                    ),
+                    CustomPIDFCoefficients(
                         1.0,
                         0.0,
                         0.0,
                         0.0
-                    ), CustomPIDFCoefficients(
+                    ),
+                    CustomPIDFCoefficients(
                         5.0,
                         0.0,
                         0.08,
                         0.0
-                    ), 4.0, CustomPIDFCoefficients(
+                    ),
+                    4.0,
+                    CustomPIDFCoefficients(
                         0.02,
                         0.0,
                         0.000005,
                         0.0
-                    ), CustomPIDFCoefficients(
+                    ),
+                    CustomPIDFCoefficients(
                         0.025,
                         0.0,
                         0.00001,
                         0.0
-                    ), 0.0005
+                    ),
+                    0.0005
                 ),
                 DriveConfigPARAMS(
                     "motorFrontLeft",
@@ -130,7 +146,15 @@ class Drivetrain(
                     -241.8308218367524
                 ),
                 PedroPathingPARAMS(
-                    10.0, 81.0, 65.0, -34.62719, -78.15554,
+                    0.002550207204,
+                    -0.0020726061118353043,
+                    Pose(0.0, 0.0, 0.0),
+                    Pose(0.0, 0.0, Math.toRadians(90.0)),
+                    10.0,
+                    81.0,
+                    65.0,
+                    -34.62719,
+                    -78.15554,
                     CustomPIDFCoefficients(
                         0.3,
                         0.0,
