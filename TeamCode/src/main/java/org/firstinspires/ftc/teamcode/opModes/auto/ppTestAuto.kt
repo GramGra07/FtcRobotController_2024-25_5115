@@ -58,6 +58,7 @@ class ppTestAuto : LinearOpMode() {
                 )
             )
             .build()
+        follower.followPath(circle)
         while (opModeIsActive()) {
             follower.update()
 //            if (follower.atParametricEnd()) {
