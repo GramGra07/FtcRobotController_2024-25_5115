@@ -1,6 +1,8 @@
 package org.firstinspires.ftc.teamcode.utilClass.drivetrain
 
 data class DrivePARAMS(
+    var parYTicks: Double, // y position of the parallel encoder (in tick units)
+    var perpXTicks: Double, // x position of the perpendicular encoder (in tick units)
     // drive model parameters
     var inPerTick: Double,
     var lateralInPerTick: Double,

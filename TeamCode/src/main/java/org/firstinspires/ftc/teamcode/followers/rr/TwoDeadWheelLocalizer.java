@@ -110,8 +110,8 @@ public final class TwoDeadWheelLocalizer implements Localizer {
     }
 
     public static class Params {
-        public double parYTicks = CurrentDrivetrain.Companion.getCurrentDrivetrain().getLocalizerPARAMS().getParYTicks(); // y position of the parallel encoder (in tick units)
-        public double perpXTicks = CurrentDrivetrain.Companion.getCurrentDrivetrain().getLocalizerPARAMS().getParYTicks(); // x position of the perpendicular encoder (in tick units)
+        public double parYTicks = CurrentDrivetrain.Companion.getCurrentDrivetrain().getDrivePARAMS().getParYTicks(); // y position of the parallel encoder (in tick units)
+        public double perpXTicks = CurrentDrivetrain.Companion.getCurrentDrivetrain().getDrivePARAMS().getParYTicks(); // x position of the perpendicular encoder (in tick units)
 
 
     }

@@ -12,7 +12,6 @@ class Drivetrain(
     val name: DrivetrainNames,
     val type: DrivetrainType,
     val drivePARAMS: DrivePARAMS,
-    val localizerPARAMS: LocalizerPARAMS,
     var pedroPathingPARAMS: PedroPathingPARAMS,
     var driveConfigPARAMS: DriveConfigPARAMS,
     var permissions: MutableList<Permission>,
@@ -40,6 +39,8 @@ class Drivetrain(
                 DrivetrainNames.TESTER,
                 DrivetrainType.MECANUM,
                 DrivePARAMS(
+                    724.8676841202279,
+                    -1689.0290452639733,
                     0.002550207204,
                     -0.0020726061118353043,
                     -4768.043260040023,
@@ -57,10 +58,6 @@ class Drivetrain(
                     0.0,
                     0.0,
                     0.0
-                ),
-                LocalizerPARAMS(
-                    724.8676841202279,
-                    -1689.0290452639733
                 ),
                 PedroPathingPARAMS(
                     0.002550207204,
@@ -123,6 +120,8 @@ class Drivetrain(
                 DrivetrainNames.MAIN,
                 DrivetrainType.MECANUM,
                 DrivePARAMS(
+                    -2187.424701924342,
+                    -241.8308218367524,
                     0.0029780281585,
                     0.0019808842928630615,
                     4581.065265532445,
@@ -140,10 +139,6 @@ class Drivetrain(
                     0.0,
                     0.0,
                     0.0
-                ),
-                LocalizerPARAMS(
-                    -2187.424701924342,
-                    -241.8308218367524
                 ),
                 PedroPathingPARAMS(
                     0.002550207204,
