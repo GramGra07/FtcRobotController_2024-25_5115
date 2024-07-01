@@ -9,14 +9,14 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.firstinspires.ftc.teamcode.customHardware.AutoHardware
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig.Companion.isMainDrivetrain
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig.Companion.isTesterDrivetrain
-import org.firstinspires.ftc.teamcode.customHardware.autoHardware.StartLocation
-import org.firstinspires.ftc.teamcode.customHardware.autoHardware.startEnums.Alliance
-import org.firstinspires.ftc.teamcode.customHardware.autoHardware.startEnums.StartSide
+import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
+import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.Alliance
+import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.StartSide
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.Processor
 
 
 @Autonomous
-class testAuto : LinearOpMode() {
+class rrTestAuto : LinearOpMode() {
     private lateinit var robot: AutoHardware
 
     override fun runOpMode() {

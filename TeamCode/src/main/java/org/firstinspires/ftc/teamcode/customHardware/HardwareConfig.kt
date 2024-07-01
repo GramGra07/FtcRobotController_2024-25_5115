@@ -177,15 +177,8 @@ open class HardwareConfig(
             beamBreakSensor =
                 BeamBreakSensor(ahwMap, "beamBreak")
         }
-//                sensorArray = SensorArray()
+        sensorArray = SensorArray()
 //                sensorArray.addSensor(
-//                    Pair(
-//                        "axon", Sensor(
-//                            SensorType.ENC,
-//                            { axonServo = AxonServo(ahwMap, "airplaneRotation", 90.0) },
-//                            1
-//                        )
-//                    )
 //                )
     }
 
@@ -219,6 +212,7 @@ open class HardwareConfig(
         buildTelemetry() //makes telemetry
         lynxModules()
         loopTimeController.update()
+        sensorArray.autoLoop(loopTimeController.loops)
 
         gamepad1.update()
         gamepad2.update()
@@ -228,8 +222,12 @@ open class HardwareConfig(
         if (!once) {
             telemetry.clearAll()
             timer.reset()
-            myOpMode.gamepad1.setLedColor(229.0, 74.0, 161.0, -1)
-            myOpMode.gamepad2.setLedColor(0.0, 0.0, 0.0, -1)
+            gamepad1.setColor(CustomGamepad.Colors.HOT_PINK)
+            gamepad2.setColor(CustomGamepad.Colors.BLACK)
+//            myOpMode.gamepad1.setLedColor(229.0, 74.0, 161.0, -1)
+//            myOpMode.gamepad2.setLedColor(0.0, 0.0, 0.0, -1)
+
+            packet = TelemetryPacket()
             once = true
         }
     }
@@ -262,6 +260,8 @@ open class HardwareConfig(
             telemetry
         )
 
+        sensorArray.allTelemetry(telemetry)
+
         if (drivetrainHasPermission(Permission.EXTRAS)) {
             axonServo.telemetry(telemetry)
             beamBreakSensor.telemetry(telemetry)
@@ -274,8 +274,6 @@ open class HardwareConfig(
     }
 
     private fun drawPackets() {
-        packet = TelemetryPacket()
-
         if (drivetrainHasPermission(Permission.LOCALIZATION)) localizationSubsystem.draw(packet)
 
         avoidanceSubsystem.draw(packet, drive)
