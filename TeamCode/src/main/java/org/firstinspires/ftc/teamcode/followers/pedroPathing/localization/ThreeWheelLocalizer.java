@@ -38,18 +38,18 @@ public class ThreeWheelLocalizer extends Localizer {
     public static double STRAFE_TICKS_TO_INCHES = 0.00052189;//8192 * 1.37795 * 2 * Math.PI * 0.5018874659;
     public static double TURN_TICKS_TO_RADIANS = 0.00053717;//8192 * 1.37795 * 2 * Math.PI * 0.5;
     private final HardwareMap hardwareMap;
-    private Pose startPose;
-    private Pose displacementPose;
-    private Pose currentVelocity;
-    private Matrix prevRotationMatrix;
     private final NanoTimer timer;
-    private long deltaTimeNano;
     private final Encoder leftEncoder;
     private final Encoder rightEncoder;
     private final Encoder strafeEncoder;
     private final Pose leftEncoderPose;
     private final Pose rightEncoderPose;
     private final Pose strafeEncoderPose;
+    private Pose startPose;
+    private Pose displacementPose;
+    private Pose currentVelocity;
+    private Matrix prevRotationMatrix;
+    private long deltaTimeNano;
     private double totalHeading;
 
     /**

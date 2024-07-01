@@ -23,16 +23,16 @@ public class DriveEncoderLocalizer extends Localizer { // todo: make drive encod
     public static double ROBOT_WIDTH = 1;
     public static double ROBOT_LENGTH = 1;
     private final HardwareMap hardwareMap;
-    private Pose startPose;
-    private Pose displacementPose;
-    private Pose currentVelocity;
-    private Matrix prevRotationMatrix;
     private final NanoTimer timer;
-    private long deltaTimeNano;
     private final Encoder leftFront;
     private final Encoder rightFront;
     private final Encoder leftRear;
     private final Encoder rightRear;
+    private Pose startPose;
+    private Pose displacementPose;
+    private Pose currentVelocity;
+    private Matrix prevRotationMatrix;
+    private long deltaTimeNano;
     private double totalHeading;
 
     /**

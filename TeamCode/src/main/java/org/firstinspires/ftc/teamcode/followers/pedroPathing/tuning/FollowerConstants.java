@@ -21,6 +21,12 @@ import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain;
 @Config
 public class FollowerConstants {
 
+    // This section is for setting the actual drive vector for the front left wheel, if the robot
+    // is facing a heading of 0 radians with the wheel centered at (0,0)
+    private static final double xMovement = CurrentDrivetrain.Companion.getCurrentDrivetrain().getPedroPathingPARAMS().getXMovement();
+    private static final double yMovement = CurrentDrivetrain.Companion.getCurrentDrivetrain().getPedroPathingPARAMS().getYMovement();
+    private static final double[] convertToPolar = Point.cartesianToPolar(xMovement, -yMovement);
+    public static Vector frontLeftVector = MathFunctions.normalizeVector(new Vector(convertToPolar[0], convertToPolar[1]));
     // Large translational PIDF coefficients
     public static CustomPIDFCoefficients largeTranslationalPIDFCoefficients = CurrentDrivetrain.Companion.getCurrentDrivetrain().getPedroPathingPARAMS().getLargeTranslationalPIDFCoefficients();
     // Feed forward constant added on to the large translational PIDF
@@ -115,10 +121,4 @@ public class FollowerConstants {
     // accuracy, and this increases at an exponential rate. However, more steps also does take more
     // time.
     public static int BEZIER_CURVE_BINARY_STEP_LIMIT = 10;
-    // This section is for setting the actual drive vector for the front left wheel, if the robot
-    // is facing a heading of 0 radians with the wheel centered at (0,0)
-    private static final double xMovement = CurrentDrivetrain.Companion.getCurrentDrivetrain().getPedroPathingPARAMS().getXMovement();
-    private static final double yMovement = CurrentDrivetrain.Companion.getCurrentDrivetrain().getPedroPathingPARAMS().getYMovement();
-    private static final double[] convertToPolar = Point.cartesianToPolar(xMovement, -yMovement);
-    public static Vector frontLeftVector = MathFunctions.normalizeVector(new Vector(convertToPolar[0], convertToPolar[1]));
 }
