@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
 @TeleOp
 @Disabled
 class blankTele : LinearOpMode() {
-    var robot = HardwareConfig(this, hardwareMap, false)
+    var robot = HardwareConfig(this, false)
 
     @Throws(InterruptedException::class)
     override fun runOpMode() {

@@ -4,6 +4,7 @@ import android.os.Environment
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
+import com.acmerobotics.roadrunner.Pose2d
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
@@ -46,12 +47,22 @@ import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.varConfig
 import java.io.FileWriter
 
 
-open class HardwareConfig() {
+open class HardwareConfig(
+    private val myOpMode: LinearOpMode,
+    auto: Boolean,
+    ahwMap: HardwareMap = myOpMode.hardwareMap
+) {
 
-    constructor(opMode: LinearOpMode, auto: Boolean, ahwMap: HardwareMap = opMode.hardwareMap) : this() {
-        myOpMode = opMode
-        this.initRobot(ahwMap, auto)
+    init {
+        initRobot(ahwMap, auto)
     }
+
+    lateinit var driveSubsystem: DriveSubsystem
+    lateinit var clawSubsystem: ClawSubsystem
+    lateinit var endgameSubsystem: EndgameSubsystem
+    lateinit var extendoSubsystem: ExtendoSubsystem
+    lateinit var localizationSubsystem: LocalizationSubsystem
+    lateinit var avoidanceSubsystem: AvoidanceSubsystem
 
     companion object {
         fun isMainDrivetrain(): Boolean {
@@ -67,13 +78,6 @@ open class HardwareConfig() {
         lateinit var packet: TelemetryPacket
         val timer: ElapsedTime = ElapsedTime()
 
-        lateinit var driveSubsystem: DriveSubsystem
-        lateinit var clawSubsystem: ClawSubsystem
-        lateinit var endgameSubsystem: EndgameSubsystem
-        lateinit var extendoSubsystem: ExtendoSubsystem
-        lateinit var localizationSubsystem: LocalizationSubsystem
-        lateinit var avoidanceSubsystem: AvoidanceSubsystem
-
         lateinit var axonServo: AxonServo
         lateinit var beamBreakSensor: BeamBreakSensor
 
@@ -88,10 +92,9 @@ open class HardwareConfig() {
         lateinit var fileWriter: FileWriter
         lateinit var loopTimeController: LoopTimeController
         lateinit var sensorArray: SensorArray
-        private lateinit var myOpMode: LinearOpMode
         var once = false
 
-        private const val CURRENT_VERSION = "7.5.0"
+        private const val CURRENT_VERSION = "7.6.0"
 
         var allHubs: List<LynxModule> = ArrayList()
 
@@ -102,10 +105,11 @@ open class HardwareConfig() {
     fun initRobot(
         ahwMap: HardwareMap,
         auto: Boolean,
+        startPose: Pose2d = Pose2d(0.0, 0.0, 0.0)
     ) {
         val drivetrain = CurrentDrivetrain.currentDrivetrain
 
-        driveSubsystem = DriveSubsystem(ahwMap)
+        driveSubsystem = DriveSubsystem(ahwMap, startPose)
 
         allHubs = ahwMap.getAll(LynxModule::class.java)
         for (hub in allHubs) {
@@ -215,7 +219,7 @@ open class HardwareConfig() {
         buildTelemetry() //makes telemetry
         lynxModules()
         loopTimeController.update()
-        
+
         gamepad1.update()
         gamepad2.update()
     }

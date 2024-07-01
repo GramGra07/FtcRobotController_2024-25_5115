@@ -136,7 +136,7 @@ class CustomGamepad(private var gamepad: Gamepad) {
         }
     }
 
-    enum class Colors{
+    enum class Colors {
         HOT_PINK,
         RED,
         BLACK,
@@ -144,8 +144,8 @@ class CustomGamepad(private var gamepad: Gamepad) {
         GREEN
     }
 
-    fun setColor(colors: Colors){
-        when(colors){
+    fun setColor(colors: Colors) {
+        when (colors) {
             Colors.HOT_PINK -> gamepad.setLedColor(229.0, 74.0, 161.0, -1)
             Colors.RED -> gamepad.setLedColor(255.0, 0.0, 0.0, -1)
             Colors.BLACK -> gamepad.setLedColor(0.0, 0.0, 0.0, -1)

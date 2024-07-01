@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
 class teleOp : LinearOpMode() {
     //declaring the class
     override fun runOpMode() { //if opmode is started
-        val robot = HardwareConfig(this, hardwareMap, false)
+        val robot = HardwareConfig(this, false)
         waitForStart()
         robot.once(this) //runs once
         while (opModeIsActive()) { //while the op mode is active

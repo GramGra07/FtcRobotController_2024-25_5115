@@ -32,7 +32,7 @@ import kotlin.math.sqrt
 
 
 //@Config
-class DriveSubsystem(ahwMap: HardwareMap) {
+class DriveSubsystem(ahwMap: HardwareMap, pose: Pose2d) {
     var drive: MecanumDrive
 
     private var motorFrontLeft: DcMotorEx
@@ -49,7 +49,7 @@ class DriveSubsystem(ahwMap: HardwareMap) {
 //        if (odometrySubsystem == null) {
 //            odometrySubsystem = OdometrySubsystem3Wheel(ahwMap, 0.0, 0.0, 0.0)
 //        }
-        drive = MecanumDrive(ahwMap, Pose2d(0.0, 0.0, 0.0))
+        drive = MecanumDrive(ahwMap, pose)
 
         motorFrontLeft =
             initMotor(

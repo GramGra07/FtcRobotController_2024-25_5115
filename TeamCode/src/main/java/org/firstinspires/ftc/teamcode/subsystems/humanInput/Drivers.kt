@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.subsystems.humanInput
 
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
 import org.firstinspires.ftc.teamcode.customHardware.gamepad.Button
@@ -62,7 +61,7 @@ object Drivers {
         myOpMode: OpMode,
         driveSubsystem: DriveSubsystem,
         endgameSubsystem: EndgameSubsystem?,
-        gamepad1:CustomGamepad = HardwareConfig.gamepad1,
+        gamepad1: CustomGamepad = HardwareConfig.gamepad1,
         gamepad2: CustomGamepad = HardwareConfig.gamepad2,
     ): AvoidanceSubsystem.AvoidanceTypes {
         // "Camden", "Grady", "Michael","Graden", "Delaney", "Child"
@@ -74,22 +73,22 @@ object Drivers {
 //                driveSubsystem.slowModeIsOn = false
 //            }
 //            slowModeButtonDown = myOpMode.gamepad1.circle
-            if (gamepad1.justPressed(Button.CIRCLE)&& !driveSubsystem.slowModeIsOn){
+            if (gamepad1.justPressed(Button.CIRCLE) && !driveSubsystem.slowModeIsOn) {
                 driveSubsystem.slowModeIsOn = true
-            } else if (gamepad1.justPressed(Button.CIRCLE) && driveSubsystem.slowModeIsOn){
+            } else if (gamepad1.justPressed(Button.CIRCLE) && driveSubsystem.slowModeIsOn) {
                 driveSubsystem.slowModeIsOn = false
             }
             if (HardwareConfig.isMainDrivetrain()) {
-                if (gamepad1.justPressed(Button.TRIANGLE)&& endgameSubsystem!!.planeReleased){
+                if (gamepad1.justPressed(Button.TRIANGLE) && endgameSubsystem!!.planeReleased) {
                     endgameSubsystem.shoot()
                     endgameSubsystem.planeReleased = true
                 } else if (gamepad1.justPressed(Button.TRIANGLE) && endgameSubsystem!!.planeReleased) {
                     endgameSubsystem.resetAirplane()
                     endgameSubsystem.planeReleased = false
                 }
-                if (gamepad1.getTriggerOverTolerance(Button.RIGHT_TRIGGER,0.0)){
+                if (gamepad1.getTriggerOverTolerance(Button.RIGHT_TRIGGER, 0.0)) {
                     endgameSubsystem!!.retract()
-                } else if (gamepad1.getTriggerOverTolerance(Button.LEFT_TRIGGER,0.0)){
+                } else if (gamepad1.getTriggerOverTolerance(Button.LEFT_TRIGGER, 0.0)) {
                     endgameSubsystem!!.extend()
                 } else {
                     endgameSubsystem!!.stopLift()
@@ -121,15 +120,6 @@ object Drivers {
         }
 
         if (currDriver.name === AllDrivers.Camden) { //Camden
-            if (myOpMode.gamepad1.right_bumper) {
-                val packet = TelemetryPacket()
-                driveSubsystem.cancelableFollowing.run(packet)
-//                runBlocking(
-//                    drive.actionBuilder(drive.pose)
-//                        .splineTo(Vector2d(0.0, 0.0), 0.0)
-//                        .build()
-//                )
-            }
         }
         if (currDriver.name == AllDrivers.Michael) { //Michael
         }
@@ -146,13 +136,15 @@ object Drivers {
         return currentAvoidance
     }
 
-    fun switchProfile(myOpMode: OpMode,
-                      gamepad1:CustomGamepad = HardwareConfig.gamepad1,
-                      gamepad2: CustomGamepad = HardwareConfig.gamepad2,) {
+    fun switchProfile(
+        myOpMode: OpMode,
+        gamepad1: CustomGamepad = HardwareConfig.gamepad1,
+        gamepad2: CustomGamepad = HardwareConfig.gamepad2,
+    ) {
         //driver
         var driverChanged = false
         var otherChanged = false
-        if (gamepad1.justPressed(Button.OPTIONS)){
+        if (gamepad1.justPressed(Button.OPTIONS)) {
             if (dIndex == drivers.size - 1) {
                 dIndex = 0
             } else {
@@ -171,7 +163,7 @@ object Drivers {
 //            driverChanged = true
 //        }
 //        optionsHigh1 = myOpMode.gamepad1.options
-        if (gamepad1.justPressed(Button.SHARE)){
+        if (gamepad1.justPressed(Button.SHARE)) {
             if (dIndex == 0) {
                 dIndex = drivers.size - 1
             } else {
@@ -191,7 +183,7 @@ object Drivers {
 //        }
 //        shareHigh1 = myOpMode.gamepad1.share
         //other
-        if (gamepad2.justPressed(Button.OPTIONS)){
+        if (gamepad2.justPressed(Button.OPTIONS)) {
             if (oIndex == others.size - 1) {
                 oIndex = 0
             } else {
@@ -210,7 +202,7 @@ object Drivers {
 //            otherChanged = true
 //        }
 //        optionsHigh2 = myOpMode.gamepad2.options
-        if (gamepad2.justPressed(Button.SHARE)){
+        if (gamepad2.justPressed(Button.SHARE)) {
             if (oIndex == 0) {
                 oIndex = others.size - 1
             } else {

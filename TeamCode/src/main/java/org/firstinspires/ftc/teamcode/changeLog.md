@@ -1,3 +1,6 @@
+7.6.0 June 30th, 2024
+Added the class for CustomGamepad and added more auto classes
+
 7.5.0 June 24th, 2024
 All drivetrain actions controlled through drive trains setup through the class, inherits to RR and
 everything with the object
