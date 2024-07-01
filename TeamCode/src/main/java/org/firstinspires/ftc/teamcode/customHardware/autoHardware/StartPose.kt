@@ -8,16 +8,11 @@ import org.firstinspires.ftc.teamcode.storage.PoseStorage
 data class StartPose(
     var startLocation: StartLocation
 ) {
-    private var pose2d: Pose2d
-    private var location: StartLocation = startLocation
+    var pose: Pose2d
 
     init {
-        this.pose2d = getStartPose(location)
-        PoseStorage.currentPose = pose2d
-    }
-
-    fun getPose(): Pose2d {
-        return getStartPose(location)
+        this.pose = getStartPose(startLocation)
+        PoseStorage.currentPose = pose
     }
 
     private fun getStartPose(startLocation: StartLocation): Pose2d {

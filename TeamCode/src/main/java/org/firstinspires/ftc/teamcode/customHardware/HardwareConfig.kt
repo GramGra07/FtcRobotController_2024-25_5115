@@ -48,7 +48,7 @@ import java.io.FileWriter
 
 open class HardwareConfig() {
 
-    constructor(opMode: LinearOpMode, ahwMap: HardwareMap, auto: Boolean) : this() {
+    constructor(opMode: LinearOpMode, auto: Boolean, ahwMap: HardwareMap = opMode.hardwareMap) : this() {
         myOpMode = opMode
         this.initRobot(ahwMap, auto)
     }

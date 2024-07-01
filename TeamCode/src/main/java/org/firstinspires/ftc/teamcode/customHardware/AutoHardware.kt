@@ -14,10 +14,10 @@ import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.Processor
 
 class AutoHardware(
     opmode: LinearOpMode,
-    ahwMap: HardwareMap,
     processor: Processor?,
-    startLocation: StartLocation
-) : HardwareConfig(opmode, ahwMap, true) {
+    startLocation: StartLocation,
+    ahwMap: HardwareMap = opmode.hardwareMap,
+) : HardwareConfig(opmode, true) {
 
     private var startPose = StartPose(startLocation)
     private var autoVars: HashMap<AutoVarEnums, Boolean> = hashMapOf()
@@ -26,7 +26,7 @@ class AutoHardware(
     init {
         initRobot(ahwMap, true)
         initAutoVars(startPose.startLocation)
-        drive = MecanumDrive(ahwMap, startPose.getPose())
+        drive = MecanumDrive(ahwMap, startPose.pose)
         autoVars[AutoVarEnums.VISION_READY] =
             initializeProcessor(processor, ahwMap, CAM2, true)
 

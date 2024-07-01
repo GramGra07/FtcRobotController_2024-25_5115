@@ -45,16 +45,6 @@ class EndgameSubsystem(ahwMap: HardwareMap) {
 
     }
 
-    class endGameDefault : CommandBase() {
-        private fun update() {
-            this.update()
-        }
-
-        override fun execute() {
-            update()
-        }
-    }
-
     fun retract() {
         liftState = LiftStates.RETRACT
     }
