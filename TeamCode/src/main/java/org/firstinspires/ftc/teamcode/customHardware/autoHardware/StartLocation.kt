@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.customHardware.autoHardware
 
-import org.firstinspires.ftc.teamcode.startEnums.Alliance
-import org.firstinspires.ftc.teamcode.startEnums.StartSide
+import org.firstinspires.ftc.teamcode.customHardware.autoHardware.startEnums.Alliance
+import org.firstinspires.ftc.teamcode.customHardware.autoHardware.startEnums.StartSide
 
 class StartLocation(alliance: Alliance, startSide: StartSide) {
     var alliance: Alliance

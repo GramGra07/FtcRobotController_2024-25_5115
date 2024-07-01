@@ -1,10 +1,10 @@
 package org.firstinspires.ftc.teamcode.utilClass
 
-import CancelableFollowTrajectoryAction
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.acmerobotics.roadrunner.Action
-import org.firstinspires.ftc.teamcode.rr.MecanumDrive
+import org.firstinspires.ftc.teamcode.actions.teleop.CancelableFollowTrajectoryAction
+import org.firstinspires.ftc.teamcode.followers.rr.MecanumDrive
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
 
 
@@ -25,7 +25,7 @@ object DriverAid {
         val cancelableFollowing = CancelableFollowTrajectoryAction(
             drive.actionBuilder(drive.pose)
 //            .splineToConstantHeading(Vector2d(x = 0.0,y=0.0),0.0)
-                .build()
+                .build(), drive
         )
         if (goToDrone) {
             driveSubsystem.slowModeIsOn = false

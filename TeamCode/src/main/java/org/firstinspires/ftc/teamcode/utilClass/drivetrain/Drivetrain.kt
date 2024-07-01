@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.utilClass.drivetrain
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot.LogoFacingDirection
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot.UsbFacingDirection
 import org.firstinspires.ftc.robotcore.external.Telemetry
+import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.CustomPIDFCoefficients
 import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain
 import org.firstinspires.ftc.teamcode.utilClass.objects.Permission
 
@@ -11,10 +12,8 @@ class Drivetrain(
     val type: DrivetrainType,
     val drivePARAMS: DrivePARAMS,
     val localizerPARAMS: LocalizerPARAMS,
-    var logoFacingDirection: LogoFacingDirection,
-    var usbFacingDirection: UsbFacingDirection,
-    var parEncoder: String,
-    var perEncoder: String,
+    var pedroPathingPARAMS: PedroPathingPARAMS,
+    var driveConfigPARAMS: DriveConfigPARAMS,
     var permissions: MutableList<Permission>,
 ) {
     fun telemetry(telemetry: Telemetry) {
@@ -63,11 +62,46 @@ class Drivetrain(
                     724.8676841202279,
                     -1689.0290452639733
                 ),
-                LogoFacingDirection.UP,
-                UsbFacingDirection.LEFT,
-                "motorFrontLeft",
-                "motorBackLeft",
-                mutableListOf()
+                PedroPathingPARAMS(
+                    10.0, 81.0, 65.0, -34.62719, -78.15554, CustomPIDFCoefficients(
+                        0.3,
+                        0.0,
+                        0.01,
+                        0.0
+                    ), CustomPIDFCoefficients(
+                        0.1,
+                        0.0,
+                        0.0,
+                        0.0
+                    ), CustomPIDFCoefficients(
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ), CustomPIDFCoefficients(
+                        5.0,
+                        0.0,
+                        0.08,
+                        0.0
+                    ), 4.0, CustomPIDFCoefficients(
+                        0.02,
+                        0.0,
+                        0.000005,
+                        0.0
+                    ), CustomPIDFCoefficients(
+                        0.025,
+                        0.0,
+                        0.00001,
+                        0.0
+                    ), 0.0005
+                ),
+                DriveConfigPARAMS(
+                    "motorFrontLeft",
+                    "motorBackLeft",
+                    LogoFacingDirection.UP,
+                    UsbFacingDirection.LEFT
+                ),
+                mutableListOf(),
             ),
             Drivetrain(
                 DrivetrainNames.MAIN,
@@ -95,10 +129,53 @@ class Drivetrain(
                     -2187.424701924342,
                     -241.8308218367524
                 ),
-                LogoFacingDirection.RIGHT,
-                UsbFacingDirection.UP,
-                "parallelEnc",
-                "lift",
+                PedroPathingPARAMS(
+                    10.0, 81.0, 65.0, -34.62719, -78.15554,
+                    CustomPIDFCoefficients(
+                        0.3,
+                        0.0,
+                        0.01,
+                        0.0
+                    ),
+                    CustomPIDFCoefficients(
+                        0.1,
+                        0.0,
+                        0.0,
+                        0.0
+                    ),
+                    CustomPIDFCoefficients(
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ),
+                    CustomPIDFCoefficients(
+                        5.0,
+                        0.0,
+                        0.08,
+                        0.0
+                    ),
+                    4.0,
+                    CustomPIDFCoefficients(
+                        0.02,
+                        0.0,
+                        0.000005,
+                        0.0
+                    ),
+                    CustomPIDFCoefficients(
+                        0.025,
+                        0.0,
+                        0.00001,
+                        0.0
+                    ),
+                    0.0005,
+                ),
+                DriveConfigPARAMS(
+                    "parallelEnc",
+                    "lift",
+                    LogoFacingDirection.RIGHT,
+                    UsbFacingDirection.UP
+                ),
                 mutableListOf(
                     Permission.EXTRAS,
                     Permission.EXTENDO,
@@ -106,7 +183,7 @@ class Drivetrain(
                     Permission.ENDGAME,
                     Permission.LOCALIZATION,
                     Permission.LIGHTS
-                )
+                ),
             ),
         )
     }

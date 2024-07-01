@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.customHardware.autoHardware
 
 import com.acmerobotics.roadrunner.Pose2d
-import org.firstinspires.ftc.teamcode.startEnums.Alliance
-import org.firstinspires.ftc.teamcode.startEnums.StartSide
+import org.firstinspires.ftc.teamcode.customHardware.autoHardware.startEnums.Alliance
+import org.firstinspires.ftc.teamcode.customHardware.autoHardware.startEnums.StartSide
 import org.firstinspires.ftc.teamcode.storage.PoseStorage
 
 data class StartPose(

@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.ATLocations.
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities.aprilTag
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities.initializeProcessor
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.Processor
-import org.firstinspires.ftc.teamcode.rr.MecanumDrive
+import org.firstinspires.ftc.teamcode.followers.rr.MecanumDrive
 import org.firstinspires.ftc.teamcode.utilClass.objects.Point
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection
 import kotlin.math.abs

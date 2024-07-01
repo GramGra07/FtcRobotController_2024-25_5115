@@ -23,7 +23,7 @@ import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.currentVoltage
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.initVSensor
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.lowVoltage
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.telemetry
-import org.firstinspires.ftc.teamcode.rr.MecanumDrive
+import org.firstinspires.ftc.teamcode.followers.rr.MecanumDrive
 import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.LocalizationSubsystem
@@ -192,7 +192,7 @@ open class HardwareConfig(
     //code to run all drive functions
     fun doBulk() {
         val currentAvoidanceType =
-            bindDriverButtons(myOpMode, driveSubsystem, null)
+            bindDriverButtons(myOpMode, driveSubsystem, null, packet)
         if (isMainDrivetrain()) bindOtherButtons(
             myOpMode,
             clawSubsystem,

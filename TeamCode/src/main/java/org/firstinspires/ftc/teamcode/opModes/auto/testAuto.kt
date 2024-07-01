@@ -10,9 +10,9 @@ import org.firstinspires.ftc.teamcode.customHardware.AutoHardware
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig.Companion.isMainDrivetrain
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig.Companion.isTesterDrivetrain
 import org.firstinspires.ftc.teamcode.customHardware.autoHardware.StartLocation
+import org.firstinspires.ftc.teamcode.customHardware.autoHardware.startEnums.Alliance
+import org.firstinspires.ftc.teamcode.customHardware.autoHardware.startEnums.StartSide
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.Processor
-import org.firstinspires.ftc.teamcode.startEnums.Alliance
-import org.firstinspires.ftc.teamcode.startEnums.StartSide
 
 
 @Autonomous
@@ -49,7 +49,7 @@ class testAuto : LinearOpMode() {
                 SequentialAction(
                     ParallelAction(
                         trajectoryAction1,
-                        InstantAction { robot.clawSubsystem.closeBoth() }
+                        InstantAction { robot.clawSubsystem.closeBoth() },
                     )
                 )
             )

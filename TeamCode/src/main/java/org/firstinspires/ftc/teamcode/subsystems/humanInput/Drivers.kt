@@ -1,9 +1,13 @@
 package org.firstinspires.ftc.teamcode.subsystems.humanInput
 
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket
+import com.acmerobotics.roadrunner.Vector2d
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
+import org.firstinspires.ftc.teamcode.actions.teleop.CancelableFollowTrajectoryAction
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
 import org.firstinspires.ftc.teamcode.customHardware.gamepad.Button
 import org.firstinspires.ftc.teamcode.customHardware.gamepad.CustomGamepad
+import org.firstinspires.ftc.teamcode.followers.rr.MecanumDrive
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.avoidance.AvoidanceSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.EndgameSubsystem
@@ -61,6 +65,8 @@ object Drivers {
         myOpMode: OpMode,
         driveSubsystem: DriveSubsystem,
         endgameSubsystem: EndgameSubsystem?,
+        packet: TelemetryPacket,
+        drive: MecanumDrive = driveSubsystem.drive,
         gamepad1: CustomGamepad = HardwareConfig.gamepad1,
         gamepad2: CustomGamepad = HardwareConfig.gamepad2,
     ): AvoidanceSubsystem.AvoidanceTypes {
@@ -120,6 +126,15 @@ object Drivers {
         }
 
         if (currDriver.name === AllDrivers.Camden) { //Camden
+            val cancel = CancelableFollowTrajectoryAction(
+                drive.actionBuilder(drive.pose).splineTo(Vector2d(0.0, 0.0), 90.0).build(), drive,
+            )
+            if (gamepad1.justPressed(Button.CIRCLE)) {
+                cancel.preview(packet.fieldOverlay())
+            }
+            if (gamepad1.justPressed(Button.CROSS) || !cancel.run(packet)) {
+                cancel.cancelAbruptly()
+            }
         }
         if (currDriver.name == AllDrivers.Michael) { //Michael
         }

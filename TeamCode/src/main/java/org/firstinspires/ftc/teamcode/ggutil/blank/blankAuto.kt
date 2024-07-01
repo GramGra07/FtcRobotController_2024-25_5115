@@ -5,9 +5,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.firstinspires.ftc.teamcode.customHardware.AutoHardware
 import org.firstinspires.ftc.teamcode.customHardware.autoHardware.StartLocation
+import org.firstinspires.ftc.teamcode.customHardware.autoHardware.startEnums.Alliance
+import org.firstinspires.ftc.teamcode.customHardware.autoHardware.startEnums.StartSide
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.Processor
-import org.firstinspires.ftc.teamcode.startEnums.Alliance
-import org.firstinspires.ftc.teamcode.startEnums.StartSide
 import org.firstinspires.ftc.teamcode.storage.PoseStorage
 
 @Autonomous
