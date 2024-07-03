@@ -36,7 +36,7 @@ import java.util.List;
  * @author Harrison Womack - 10158 Scott's Bots
  * @version 1.0, 3/13/2024
  */
-@Config
+//@Config
 @Autonomous(name = "Forward Zero Power Acceleration Tuner", group = "Autonomous Pathing Tuning")
 public class ForwardZeroPowerAccelerationTuner extends OpMode {
     public static double VELOCITY = 30;
@@ -68,11 +68,10 @@ public class ForwardZeroPowerAccelerationTuner extends OpMode {
         rightRear = hardwareMap.get(DcMotorEx.class, "motorBackRight");
         rightFront = hardwareMap.get(DcMotorEx.class, "motorFrontRight");
 
-        // TODO: Make sure that this is the direction your motors need to be reversed in.
-
-        leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
         if (CurrentDrivetrain.Companion.getCurrentDrivetrain().getName() == Drivetrain.DrivetrainNames.TESTER)
             leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+
+        leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
 
         motors = Arrays.asList(leftFront, leftRear, rightFront, rightRear);
 

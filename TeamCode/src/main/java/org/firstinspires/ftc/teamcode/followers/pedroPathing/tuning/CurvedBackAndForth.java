@@ -25,7 +25,7 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Poin
  * @author Harrison Womack - 10158 Scott's Bots
  * @version 1.0, 3/13/2024
  */
-@Config
+//@Config
 @Autonomous(name = "Curved Back And Forth", group = "Autonomous Pathing Tuning")
 public class CurvedBackAndForth extends OpMode {
     public static double DISTANCE = 20;

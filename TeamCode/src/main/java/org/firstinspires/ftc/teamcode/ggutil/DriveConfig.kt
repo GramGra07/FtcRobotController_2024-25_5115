@@ -5,7 +5,7 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot
 import com.qualcomm.robotcore.hardware.PIDFCoefficients
 
 
-@Config
+//@Config
 class DriveConfig private constructor() {
     companion object {
         @JvmField

@@ -11,7 +11,7 @@ class teleOp : LinearOpMode() {
     override fun runOpMode() { //if opmode is started
         val robot = HardwareConfig(this, false)
         waitForStart()
-        robot.once(this) //runs once
+        robot.once() //runs once
         while (opModeIsActive()) { //while the op mode is active
             robot.doBulk()
         }

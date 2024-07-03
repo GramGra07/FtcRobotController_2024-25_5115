@@ -15,10 +15,10 @@ data class PedroPathingPARAMS(
     var lateralZeroPowerAcceleration: Double,
     var smallTranslationalPIDFCoefficients: CustomPIDFCoefficients,
     var largeTranslationalPIDFCoefficients: CustomPIDFCoefficients,
-    var largeHeadingPIDFCoefficients: CustomPIDFCoefficients,
     var smallHeadingPIDFCoefficients: CustomPIDFCoefficients,
-    var zeroPowerAccelerationMultiplier: Double,
+    var largeHeadingPIDFCoefficients: CustomPIDFCoefficients,
     var smallDrivePIDFCoefficients: CustomPIDFCoefficients,
     var largeDrivePIDFCoefficients: CustomPIDFCoefficients,
+    var zeroPowerAccelerationMultiplier: Double,
     var centripetalScaling: Double,
 )

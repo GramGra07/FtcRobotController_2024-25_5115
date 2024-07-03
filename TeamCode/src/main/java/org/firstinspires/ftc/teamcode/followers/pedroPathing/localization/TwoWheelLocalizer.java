@@ -85,8 +85,8 @@ public class TwoWheelLocalizer extends Localizer {
         imu.initialize(new IMU.Parameters(new RevHubOrientationOnRobot(CurrentDrivetrain.Companion.getCurrentDrivetrain().getDriveConfigPARAMS().getLogoFacingDirection(), CurrentDrivetrain.Companion.getCurrentDrivetrain().getDriveConfigPARAMS().getUsbFacingDirection())));
 
         // TODO: replace these with your encoder ports
-        forwardEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, CurrentDrivetrain.Companion.getCurrentDrivetrain().getDriveConfigPARAMS().getPerEncoder()));
-        strafeEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, CurrentDrivetrain.Companion.getCurrentDrivetrain().getDriveConfigPARAMS().getParEncoder()));
+        forwardEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, CurrentDrivetrain.Companion.getCurrentDrivetrain().getDriveConfigPARAMS().getParEncoder()));
+        strafeEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, CurrentDrivetrain.Companion.getCurrentDrivetrain().getDriveConfigPARAMS().getPerEncoder()));
 
         forwardEncoder.setDirection(Encoder.REVERSE);
         if (HardwareConfig.Companion.isTesterDrivetrain())

@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.acmerobotics.roadrunner.Vector2d
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toPoint
+import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.PoseUpdater
 import org.firstinspires.ftc.teamcode.followers.rr.MecanumDrive
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
 import org.firstinspires.ftc.teamcode.utilClass.objects.Point
@@ -81,7 +82,7 @@ class AvoidanceSubsystem {
         telemetry.addData("Avoidance Type", currentAvoidanceTypes.name)
     }
 
-    fun draw(packet: TelemetryPacket, drive: MecanumDrive) {
+    fun draw(packet: TelemetryPacket, drive: MecanumDrive,type:PoseUpdater) {
         val rad = rad
         val roboRad = 8.0
         packet.fieldOverlay()
@@ -98,10 +99,16 @@ class AvoidanceSubsystem {
         val (x, y) = p1.plus(halfv)
         packet.fieldOverlay()
             .setStrokeWidth(1)
-            .setStroke("black")
-            .setFill("black")
+            .setStroke("blue")
+            .setFill("blue")
             .setAlpha(1.0)
             .strokeCircle(t.position.x, t.position.y, roboRad).strokeLine(p1.x, p1.y, x, y)
+        val t2 = type.pose
+        packet.fieldOverlay()
+            .setStroke("green")
+            .setFill("green")
+            .setAlpha(1.0)
+            .strokeCircle(t2.x, t2.y, roboRad)
     }
 
     private fun updateVars(type: AvoidanceTypes) {

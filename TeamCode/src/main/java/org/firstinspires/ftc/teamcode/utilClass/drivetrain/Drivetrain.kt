@@ -39,11 +39,11 @@ class Drivetrain(
                 DrivetrainNames.TESTER,
                 DrivetrainType.MECANUM,
                 DrivePARAMS(
-                    724.8676841202279,
-                    -1689.0290452639733,
+                    783.0500500149055,
+                    1678.229840435962,
                     0.002550207204,
                     -0.0020726061118353043,
-                    -4768.043260040023,
+                    4763.191550037603,
                     0.8666821746445845,
                     0.0004995225996863677,
                     0.0001,
@@ -60,23 +60,29 @@ class Drivetrain(
                     0.0
                 ),
                 PedroPathingPARAMS(
-                    0.002550207204,
-                    -0.0020726061118353043,
-                    Pose(0.0, 0.0, 0.0),
-                    Pose(0.0, 0.0, Math.toRadians(90.0)),
-                    10.0,
-                    81.0,
-                    65.0,
-                    -34.62719,
-                    -78.15554,
+                    0.003,
+                    -0.003,
+                    Pose(-2.55, 1.9685, 0.0), //fwd
+                    Pose(1.377, 5.3, Math.toRadians(90.0)),
+                    6.1,
+                    67.84,
+                    57.14,
+                    -60.4,
+                    -70.9,
                     CustomPIDFCoefficients(
-                        0.3,
+                        1.0,
                         0.0,
-                        0.01,
-                        0.0
+                        0.0,
+                        1.0
                     ),
                     CustomPIDFCoefficients(
                         0.1,
+                        0.0,
+                        0.0,
+                        0.0
+                    ),
+                    CustomPIDFCoefficients(
+                        2.0,
                         0.0,
                         0.0,
                         0.0
@@ -87,13 +93,6 @@ class Drivetrain(
                         0.0,
                         0.0
                     ),
-                    CustomPIDFCoefficients(
-                        5.0,
-                        0.0,
-                        0.08,
-                        0.0
-                    ),
-                    4.0,
                     CustomPIDFCoefficients(
                         0.02,
                         0.0,
@@ -106,6 +105,7 @@ class Drivetrain(
                         0.00001,
                         0.0
                     ),
+                    4.0,
                     0.0005
                 ),
                 DriveConfigPARAMS(
@@ -163,18 +163,17 @@ class Drivetrain(
                         0.0
                     ),
                     CustomPIDFCoefficients(
-                        1.0,
-                        0.0,
-                        0.0,
-                        0.0
-                    ),
-                    CustomPIDFCoefficients(
                         5.0,
                         0.0,
                         0.08,
                         0.0
                     ),
-                    4.0,
+                    CustomPIDFCoefficients(
+                        1.0,
+                        0.0,
+                        0.0,
+                        0.0
+                    ),
                     CustomPIDFCoefficients(
                         0.02,
                         0.0,
@@ -187,6 +186,7 @@ class Drivetrain(
                         0.00001,
                         0.0
                     ),
+                    4.0,
                     0.0005,
                 ),
                 DriveConfigPARAMS(

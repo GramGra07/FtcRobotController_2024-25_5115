@@ -8,13 +8,10 @@ import com.acmerobotics.roadrunner.Pose2d
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
-import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.VoltageSensor
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.Telemetry
-import org.firstinspires.ftc.teamcode.customHardware.gamepad.CustomGamepad
-import org.firstinspires.ftc.teamcode.customHardware.sensorArray.SensorArray
 import org.firstinspires.ftc.teamcode.customHardware.sensors.BeamBreakSensor
 import org.firstinspires.ftc.teamcode.customHardware.servos.AxonServo
 import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.initLights
@@ -23,6 +20,7 @@ import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.currentVoltage
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.initVSensor
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.lowVoltage
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.telemetry
+import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.PoseUpdater
 import org.firstinspires.ftc.teamcode.followers.rr.MecanumDrive
 import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
@@ -64,6 +62,8 @@ open class HardwareConfig(
     lateinit var localizationSubsystem: LocalizationSubsystem
     lateinit var avoidanceSubsystem: AvoidanceSubsystem
 
+    lateinit var poseUpdater: PoseUpdater
+
     companion object {
         fun isMainDrivetrain(): Boolean {
             return CurrentDrivetrain.currentDrivetrain.name == Drivetrain.DrivetrainNames.MAIN
@@ -91,15 +91,13 @@ open class HardwareConfig(
         lateinit var drive: MecanumDrive
         lateinit var fileWriter: FileWriter
         lateinit var loopTimeController: LoopTimeController
-        lateinit var sensorArray: SensorArray
+
+        //        lateinit var sensorArray: SensorArray
         var once = false
 
         private const val CURRENT_VERSION = "7.6.0"
 
         var allHubs: List<LynxModule> = ArrayList()
-
-        lateinit var gamepad1: CustomGamepad
-        lateinit var gamepad2: CustomGamepad
     }
 
     fun initRobot(
@@ -110,6 +108,8 @@ open class HardwareConfig(
         val drivetrain = CurrentDrivetrain.currentDrivetrain
 
         driveSubsystem = DriveSubsystem(ahwMap, startPose)
+
+        poseUpdater = PoseUpdater(ahwMap)
 
         allHubs = ahwMap.getAll(LynxModule::class.java)
         for (hub in allHubs) {
@@ -135,11 +135,9 @@ open class HardwareConfig(
 
         telemetry =
             MultipleTelemetry(myOpMode.telemetry, FtcDashboard.getInstance().telemetry)
+        packet = TelemetryPacket()
         dashboard = FtcDashboard.getInstance()
         once = false
-
-        gamepad1 = CustomGamepad(myOpMode.gamepad1)
-        gamepad2 = CustomGamepad(myOpMode.gamepad2)
 
         val file = String.format(
             "%s/FIRST/matchlogs/log.txt",
@@ -177,7 +175,7 @@ open class HardwareConfig(
             beamBreakSensor =
                 BeamBreakSensor(ahwMap, "beamBreak")
         }
-        sensorArray = SensorArray()
+//        sensorArray = SensorArray()
 //                sensorArray.addSensor(
 //                )
     }
@@ -201,6 +199,7 @@ open class HardwareConfig(
             loopTimeController.currentTime,
         )
         driveSubsystem.update(avoidanceSubsystem, currentAvoidanceType)
+        poseUpdater.update()
 
         if (drivetrainHasPermission(Permission.ENDGAME)) endgameSubsystem.update()
 
@@ -212,22 +211,15 @@ open class HardwareConfig(
         buildTelemetry() //makes telemetry
         lynxModules()
         loopTimeController.update()
-        sensorArray.autoLoop(loopTimeController.loops)
-
-        gamepad1.update()
-        gamepad2.update()
+//        sensorArray.autoLoop(loopTimeController.loops)
     }
 
-    fun once(myOpMode: OpMode) {
+    fun once() {
         if (!once) {
             telemetry.clearAll()
             timer.reset()
-            gamepad1.setColor(CustomGamepad.Colors.HOT_PINK)
-            gamepad2.setColor(CustomGamepad.Colors.BLACK)
-//            myOpMode.gamepad1.setLedColor(229.0, 74.0, 161.0, -1)
-//            myOpMode.gamepad2.setLedColor(0.0, 0.0, 0.0, -1)
-
-            packet = TelemetryPacket()
+            myOpMode.gamepad1.setLedColor(229.0, 74.0, 161.0, -1)
+            myOpMode.gamepad2.setLedColor(0.0, 0.0, 0.0, -1)
             once = true
         }
     }
@@ -260,7 +252,7 @@ open class HardwareConfig(
             telemetry
         )
 
-        sensorArray.allTelemetry(telemetry)
+//        sensorArray.allTelemetry(telemetry)
 
         if (drivetrainHasPermission(Permission.EXTRAS)) {
             axonServo.telemetry(telemetry)
@@ -274,15 +266,16 @@ open class HardwareConfig(
     }
 
     private fun drawPackets() {
+        packet = TelemetryPacket()
         if (drivetrainHasPermission(Permission.LOCALIZATION)) localizationSubsystem.draw(packet)
 
-        avoidanceSubsystem.draw(packet, drive)
+        avoidanceSubsystem.draw(packet, drive,poseUpdater)
 
         dashboard.sendTelemetryPacket(packet)
     }
 
     private fun teleSpace() {
-        telemetry.addLine(" ")
+        telemetry.addLine("")
     }
 }
 

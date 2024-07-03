@@ -1,7 +1,6 @@
-package org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.tuning;
+package org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.localizer;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -14,6 +13,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.PoseUpdater;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.DashboardPoseTracker;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.Drawing;
+import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain;
+import org.firstinspires.ftc.teamcode.utilClass.drivetrain.Drivetrain;
 
 import java.util.Arrays;
 import java.util.List;
@@ -26,9 +27,9 @@ import java.util.List;
  * @author Anyi Lin - 10158 Scott's Bots
  * @version 1.0, 5/6/2024
  */
-@Config
+//@Config
 @TeleOp(group = "Pedro Pathing Tuning", name = "Localization Test")
-public class LocalizationTest extends OpMode {
+public class LocalizationTestPP extends OpMode {
     private PoseUpdater poseUpdater;
     private DashboardPoseTracker dashboardPoseTracker;
     private Telemetry telemetryA;
@@ -50,10 +51,12 @@ public class LocalizationTest extends OpMode {
 
         leftFront = hardwareMap.get(DcMotorEx.class, "motorFrontLeft");
         leftRear = hardwareMap.get(DcMotorEx.class, "motorBackLeft");
-        rightFront = hardwareMap.get(DcMotorEx.class, "motorFrontRight");
         rightRear = hardwareMap.get(DcMotorEx.class, "motorBackRight");
+        rightFront = hardwareMap.get(DcMotorEx.class, "motorFrontRight");
 
-        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        if (CurrentDrivetrain.Companion.getCurrentDrivetrain().getName() == Drivetrain.DrivetrainNames.TESTER)
+            leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+
         leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
 
         motors = Arrays.asList(leftFront, leftRear, rightFront, rightRear);

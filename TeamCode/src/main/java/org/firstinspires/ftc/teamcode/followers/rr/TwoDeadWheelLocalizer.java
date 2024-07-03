@@ -25,7 +25,7 @@ import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig;
 import org.firstinspires.ftc.teamcode.followers.rr.messages.TwoDeadWheelInputsMessage;
 import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain;
 
-@Config
+//@Config
 public final class TwoDeadWheelLocalizer implements Localizer {
     public static Params PARAMS = new Params();
     public final Encoder par, perp;

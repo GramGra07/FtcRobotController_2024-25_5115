@@ -11,7 +11,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.teamcode.followers.rr.Drawing;
 import org.firstinspires.ftc.teamcode.followers.rr.MecanumDrive;
 
-public class LocalizationTest extends LinearOpMode {
+public class LocalizationTestRR extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         telemetry = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());

@@ -13,7 +13,7 @@ class blankTele : LinearOpMode() {
     @Throws(InterruptedException::class)
     override fun runOpMode() {
         waitForStart()
-        robot.once(this)
+        robot.once()
         while (opModeIsActive()) { //while the op mode is active
             robot.doBulk()
         }

@@ -22,6 +22,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeRegistrar;
 
 import org.firstinspires.ftc.robotcore.internal.opmode.OpModeMeta;
+import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig;
 import org.firstinspires.ftc.teamcode.followers.rr.MecanumDrive;
 import org.firstinspires.ftc.teamcode.followers.rr.ThreeDeadWheelLocalizer;
 import org.firstinspires.ftc.teamcode.followers.rr.TwoDeadWheelLocalizer;
@@ -34,7 +35,7 @@ public final class TuningOpModes {
     public static final Class<?> DRIVE_CLASS = MecanumDrive.class;
 
     public static final String GROUP = "quickstart";
-    public static final boolean DISABLED = false;
+    public static boolean DISABLED = true;
 
     private TuningOpModes() {
     }
@@ -49,6 +50,7 @@ public final class TuningOpModes {
 
     @OpModeRegistrar
     public static void register(OpModeManager manager) {
+        if (HardwareConfig.Companion.isMainDrivetrain()) DISABLED = false;
         if (DISABLED) return;
 
         DriveViewFactory dvf;
@@ -118,7 +120,7 @@ public final class TuningOpModes {
 
         manager.register(metaForClass(ManualFeedbackTuner.class), ManualFeedbackTuner.class);
         manager.register(metaForClass(SplineTest.class), SplineTest.class);
-        manager.register(metaForClass(LocalizationTest.class), LocalizationTest.class);
+        manager.register(metaForClass(LocalizationTestRR.class), LocalizationTestRR.class);
 
         FtcDashboard.getInstance().withConfigRoot(configRoot -> {
             for (Class<?> c : Arrays.asList(

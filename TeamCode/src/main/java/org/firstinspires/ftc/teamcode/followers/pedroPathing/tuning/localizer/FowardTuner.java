@@ -1,7 +1,6 @@
-package org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.tuning;
+package org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.localizer;
 
 import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
@@ -24,7 +23,7 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.Drawing;
  * @author Anyi Lin - 10158 Scott's Bots
  * @version 1.0, 5/6/2024
  */
-@Config
+//@Config
 @Autonomous(name = "Forward Localizer Tuner", group = "Autonomous Pathing Tuning")
 public class FowardTuner extends OpMode {
     public static double DISTANCE = 30;
