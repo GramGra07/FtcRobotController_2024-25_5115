@@ -16,18 +16,21 @@ data class StartPose(
     }
 
     private fun getStartPose(startLocation: StartLocation): Pose2d {
-        val spot = when (startLocation.alliance) {
-            Alliance.BLUE -> {
-                when (startLocation.startSide) {
-                    StartSide.LEFT -> Pose2d(12.0, -63.0, Math.toRadians(90.0))
-                    StartSide.RIGHT -> Pose2d(12.0, -63.0, Math.toRadians(90.0))
+        var spot = Pose2d(0.0,0.0,0.0)
+        if (!startLocation.zeros) {
+            spot = when (startLocation.alliance) {
+                Alliance.BLUE -> {
+                    when (startLocation.startSide) {
+                        StartSide.LEFT -> Pose2d(12.0, -63.0, Math.toRadians(90.0))
+                        StartSide.RIGHT -> Pose2d(12.0, -63.0, Math.toRadians(90.0))
+                    }
                 }
-            }
 
-            Alliance.RED -> {
-                when (startLocation.startSide) {
-                    StartSide.LEFT -> Pose2d(-12.0, -63.0, Math.toRadians(90.0))
-                    StartSide.RIGHT -> Pose2d(-12.0, -63.0, Math.toRadians(90.0))
+                Alliance.RED -> {
+                    when (startLocation.startSide) {
+                        StartSide.LEFT -> Pose2d(-12.0, -63.0, Math.toRadians(90.0))
+                        StartSide.RIGHT -> Pose2d(-12.0, -63.0, Math.toRadians(90.0))
+                    }
                 }
             }
         }

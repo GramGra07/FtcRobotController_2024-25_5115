@@ -33,39 +33,41 @@ class AutoHardware(
         showAutoTelemetry()
         opmode.waitForStart()
         timer.reset()
-        lights.setPatternCo()
+        if (isMainDrivetrain()) lights.setPatternCo()
     }
 
     private fun initAutoVars(startLocation: StartLocation) {
         val alliance = startLocation.alliance
         val startSide = startLocation.startSide
-        autoVars[AutoVarEnums.RED_ALLIANCE] = when (alliance) {
-            Alliance.RED -> {
-                true
-            }
+        if (!startLocation.zeros) {
+            autoVars[AutoVarEnums.RED_ALLIANCE] = when (alliance) {
+                Alliance.RED -> {
+                    true
+                }
 
-            Alliance.BLUE -> false
-        }
-        autoVars[AutoVarEnums.BLUE_ALLIANCE] = when (alliance) {
-            Alliance.BLUE -> {
-                true
+                Alliance.BLUE -> false
             }
+            autoVars[AutoVarEnums.BLUE_ALLIANCE] = when (alliance) {
+                Alliance.BLUE -> {
+                    true
+                }
 
-            Alliance.RED -> false
-        }
-        autoVars[AutoVarEnums.LEFT_SIDE] = when (startSide) {
-            StartSide.LEFT -> {
-                true
+                Alliance.RED -> false
             }
+            autoVars[AutoVarEnums.LEFT_SIDE] = when (startSide) {
+                StartSide.LEFT -> {
+                    true
+                }
 
-            StartSide.RIGHT -> false
-        }
-        autoVars[AutoVarEnums.RIGHT_SIDE] = when (startSide) {
-            StartSide.RIGHT -> {
-                true
+                StartSide.RIGHT -> false
             }
+            autoVars[AutoVarEnums.RIGHT_SIDE] = when (startSide) {
+                StartSide.RIGHT -> {
+                    true
+                }
 
-            StartSide.LEFT -> false
+                StartSide.LEFT -> false
+            }
         }
         autoVars[AutoVarEnums.VISION_READY] = false
     }

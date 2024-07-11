@@ -1,8 +1,5 @@
 package org.firstinspires.ftc.teamcode.opModes.auto
 
-import com.acmerobotics.roadrunner.InstantAction
-import com.acmerobotics.roadrunner.ParallelAction
-import com.acmerobotics.roadrunner.SequentialAction
 import com.acmerobotics.roadrunner.ftc.runBlocking
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
@@ -15,7 +12,7 @@ import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.StartSi
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.Processor
 
 
-@Autonomous
+//@Autonomous
 class rrTestAuto : LinearOpMode() {
     private lateinit var robot: AutoHardware
 
@@ -46,12 +43,7 @@ class rrTestAuto : LinearOpMode() {
                 .turn(Math.toRadians(90.0))
                 .build()
             runBlocking(
-                SequentialAction(
-                    ParallelAction(
-                        trajectoryAction1,
-                        InstantAction { robot.clawSubsystem.closeBoth() },
-                    )
-                )
+                trajectoryAction1,
             )
         }
     }

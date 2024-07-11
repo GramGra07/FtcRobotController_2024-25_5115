@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Bezi
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Path
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Point
 
-@Autonomous(name = "Straight Back And Forth", group = "Autonomous Pathing Tuning")
+@Autonomous
 class stayDemoPP : OpMode() {
     var DISTANCE: Double = 40.0
     private var forward = true
