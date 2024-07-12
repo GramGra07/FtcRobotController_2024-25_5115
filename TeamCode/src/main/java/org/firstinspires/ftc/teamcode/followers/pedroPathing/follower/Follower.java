@@ -854,26 +854,26 @@ public class Follower {
      *                  method will use to output the debug data.
      */
     public void telemetryDebug(MultipleTelemetry telemetry) {
-        telemetry.addData("follower busy", isBusy());
-        telemetry.addData("heading error", headingError);
-        telemetry.addData("heading vector magnitude", headingVector.getMagnitude());
-        telemetry.addData("corrective vector magnitude", correctiveVector.getMagnitude());
-        telemetry.addData("corrective vector heading", correctiveVector.getTheta());
-        telemetry.addData("translational error magnitude", getTranslationalError().getMagnitude());
-        telemetry.addData("translational error direction", getTranslationalError().getTheta());
-        telemetry.addData("translational vector magnitude", translationalVector.getMagnitude());
-        telemetry.addData("translational vector heading", translationalVector.getMagnitude());
-        telemetry.addData("centripetal vector magnitude", centripetalVector.getMagnitude());
-        telemetry.addData("centripetal vector heading", centripetalVector.getTheta());
-        telemetry.addData("drive error", driveError);
-        telemetry.addData("drive vector magnitude", driveVector.getMagnitude());
-        telemetry.addData("drive vector heading", driveVector.getTheta());
-        telemetry.addData("x", getPose().getX());
-        telemetry.addData("y", getPose().getY());
-        telemetry.addData("heading", getPose().getHeading());
-        telemetry.addData("total heading", poseUpdater.getTotalHeading());
-        telemetry.addData("velocity magnitude", getVelocity().getMagnitude());
-        telemetry.addData("velocity heading", getVelocity().getTheta());
+//        telemetry.addData("follower busy", isBusy());
+//        telemetry.addData("heading error", headingError);
+//        telemetry.addData("heading vector magnitude", headingVector.getMagnitude());
+//        telemetry.addData("corrective vector magnitude", correctiveVector.getMagnitude());
+//        telemetry.addData("corrective vector heading", correctiveVector.getTheta());
+//        telemetry.addData("translational error magnitude", getTranslationalError().getMagnitude());
+//        telemetry.addData("translational error direction", getTranslationalError().getTheta());
+//        telemetry.addData("translational vector magnitude", translationalVector.getMagnitude());
+//        telemetry.addData("translational vector heading", translationalVector.getMagnitude());
+//        telemetry.addData("centripetal vector magnitude", centripetalVector.getMagnitude());
+//        telemetry.addData("centripetal vector heading", centripetalVector.getTheta());
+//        telemetry.addData("drive error", driveError);
+//        telemetry.addData("drive vector magnitude", driveVector.getMagnitude());
+//        telemetry.addData("drive vector heading", driveVector.getTheta());
+//        telemetry.addData("x", getPose().getX());
+//        telemetry.addData("y", getPose().getY());
+//        telemetry.addData("heading", getPose().getHeading());
+//        telemetry.addData("total heading", poseUpdater.getTotalHeading());
+//        telemetry.addData("velocity magnitude", getVelocity().getMagnitude());
+//        telemetry.addData("velocity heading", getVelocity().getTheta());
         telemetry.update();
         if (drawOnDashboard) {
             Drawing.drawDebug(this);

@@ -111,15 +111,15 @@ object Drivers {
         }
 
         if (currDriver.name === AllDrivers.Camden) { //Camden
-            val cancel = CancelableFollowTrajectoryAction(
-                drive.actionBuilder(drive.pose).splineTo(Vector2d(0.0, 0.0), 90.0).build(), drive,
-            )
-            if (myOpMode.gamepad1.circle) {
-                cancel.preview(packet.fieldOverlay())
-            }
-            if (myOpMode.gamepad1.cross || !cancel.run(packet)) {
-                cancel.cancelAbruptly()
-            }
+//            val cancel = CancelableFollowTrajectoryAction(
+//                drive.actionBuilder(drive.pose).splineTo(Vector2d(0.0, 0.0), 90.0).build(), drive,
+//            )
+//            if (myOpMode.gamepad1.circle) {
+//                cancel.preview(packet.fieldOverlay())
+//            }
+//            if (myOpMode.gamepad1.cross || !cancel.run(packet)) {
+//                cancel.cancelAbruptly()
+//            }
         }
         if (currDriver.name == AllDrivers.Michael) { //Michael
         }
