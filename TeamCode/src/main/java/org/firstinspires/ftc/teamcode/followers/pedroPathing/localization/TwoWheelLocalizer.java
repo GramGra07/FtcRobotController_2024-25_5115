@@ -46,8 +46,10 @@ public class TwoWheelLocalizer extends Localizer {
     private final NanoTimer timer;
     private final Encoder forwardEncoder;
     private final Encoder strafeEncoder;
-    private final Pose forwardEncoderPose;
-    private final Pose strafeEncoderPose;
+    private Pose forwardEncoderPose;
+    public static double parYticks; 
+    private Pose strafeEncoderPose;
+    public static double perpXticks;
     private Pose startPose;
     private Pose displacementPose;
     private Pose currentVelocity;
@@ -76,8 +78,11 @@ public class TwoWheelLocalizer extends Localizer {
      */
     public TwoWheelLocalizer(HardwareMap map, Pose setStartPose) {
         // TODO: replace these with your encoder positions
-        forwardEncoderPose = CurrentDrivetrain.Companion.getCurrentDrivetrain().getPedroPathingPARAMS().getForwardEncoderPose();
-        strafeEncoderPose = CurrentDrivetrain.Companion.getCurrentDrivetrain().getPedroPathingPARAMS().getLateralEncoderPose();
+        Pose fep = Pose(CurrentDrivetrain.Companion.getCurrentDrivetrain().getPedroPathingPARAMS().getForwardEncoderPose().getX, parYticks.toInches,CurrentDrivetrain.Companion.getCurrentDrivetrain().getPedroPathingPARAMS().getForwardEncoderPose().getHeading);
+        
+        forwardEncoderPose = fep;
+        Pose sep = Pose(perpXticks.toInches,CurrentDrivetrain.Companion.getCurrentDrivetrain().getPedroPathingPARAMS().getLateralEncoderPose().getY, CurrentDrivetrain.Companion.getCurrentDrivetrain().getPedroPathingPARAMS().getLateralEncoderPose().getHeading);
+        strafeEncoderPose = sep;
 
         hardwareMap = map;
 
