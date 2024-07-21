@@ -1,14 +1,9 @@
 package org.firstinspires.ftc.teamcode.subsystems.humanInput
 
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket
-import com.acmerobotics.roadrunner.Vector2d
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
-import org.firstinspires.ftc.teamcode.actions.teleop.CancelableFollowTrajectoryAction
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
 import org.firstinspires.ftc.teamcode.extensions.GamepadExtensions
 import org.firstinspires.ftc.teamcode.extensions.GamepadExtensions.buttonJustPressed
-import org.firstinspires.ftc.teamcode.extensions.GamepadExtensions.update
-import org.firstinspires.ftc.teamcode.followers.rr.MecanumDrive
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.avoidance.AvoidanceSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.EndgameSubsystem
@@ -67,8 +62,6 @@ object Drivers {
         myOpMode: OpMode,
         driveSubsystem: DriveSubsystem,
         endgameSubsystem: EndgameSubsystem?,
-        packet: TelemetryPacket,
-        drive: MecanumDrive = driveSubsystem.drive,
     ): AvoidanceSubsystem.AvoidanceTypes {
         // "Camden", "Grady", "Michael","Graden", "Delaney", "Child"
         if (currDriver.name == AllDrivers.Grady) { //grady
@@ -80,7 +73,7 @@ object Drivers {
 //            }
 //            slowModeButtonDown = myOpMode.gamepad1.circle
             //TODO test
-            if (myOpMode.gamepad1.buttonJustPressed(GamepadExtensions.PushButtons.CIRCLE,1)){
+            if (myOpMode.gamepad1.buttonJustPressed(GamepadExtensions.PushButtons.CIRCLE, 1)) {
                 driveSubsystem.slowModeIsOn = !driveSubsystem.slowModeIsOn
             }
 

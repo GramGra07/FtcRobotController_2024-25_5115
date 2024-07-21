@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.subsystems.humanInput
 
 import com.acmerobotics.dashboard.config.Config
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
-import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ClawSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ExtendoSubsystem
 
@@ -18,7 +17,6 @@ object Operators {
         myOpMode: OpMode,
         clawSubsystem: ClawSubsystem,
         extendoSubsystem: ExtendoSubsystem,
-        driveSubsystem: DriveSubsystem,
     ) {
 
         // "Camden", "Grady", "Michael","Graden", "Delaney", "Child"

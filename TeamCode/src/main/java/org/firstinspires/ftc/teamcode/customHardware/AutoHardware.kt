@@ -10,7 +10,6 @@ import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.StartSi
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities.initializeProcessor
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.Processor
 import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.setPatternCo
-import org.firstinspires.ftc.teamcode.followers.rr.MecanumDrive
 
 class AutoHardware(
     opmode: LinearOpMode,
@@ -21,11 +20,9 @@ class AutoHardware(
 
     private var startPose = StartPose(startLocation)
     private var autoVars: HashMap<AutoVarEnums, Boolean> = hashMapOf()
-    var drive: MecanumDrive
 
     init {
         initRobot(ahwMap, true, startPose.pose)
-        drive = driveSubsystem.drive
         initAutoVars(startPose.startLocation)
         autoVars[AutoVarEnums.VISION_READY] =
             initializeProcessor(processor, ahwMap, CAM2, true)

@@ -84,9 +84,9 @@ class ppTestAuto : LinearOpMode() {
                     Point(Pose(-30.0, 24.0, 90.0)),
                     Point(Pose(-44.0, 12.0, 90.0)),
                     Point(Pose(-36.0, 0.0, 90.0)),
-                    Point(Pose(-30.0,-12.0,90.0)),
-                    Point(Pose(-44.0,-24.0,90.0)),
-                    Point(Pose(-36.0,-36.0,180.0)),
+                    Point(Pose(-30.0, -12.0, 90.0)),
+                    Point(Pose(-44.0, -24.0, 90.0)),
+                    Point(Pose(-36.0, -36.0, 180.0)),
                 )
             )
             .addPath(
@@ -111,7 +111,7 @@ class ppTestAuto : LinearOpMode() {
             )
             .build()
         follower.followPath(fullSpline)
-        follower.setStartingPose(Pose(36.0, 36.0,Math.toRadians(180.0)))
+        follower.setStartingPose(Pose(36.0, 36.0, Math.toRadians(180.0)))
         waitForStart()
         while (opModeIsActive()) {
             follower.update()

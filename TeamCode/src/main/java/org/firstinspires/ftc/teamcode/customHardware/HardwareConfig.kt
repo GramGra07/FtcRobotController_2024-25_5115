@@ -15,16 +15,14 @@ import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.customHardware.sensors.BeamBreakSensor
 import org.firstinspires.ftc.teamcode.customHardware.servos.AxonServo
 import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.initLights
-import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toPoint
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.currentVoltage
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.initVSensor
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.lowVoltage
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.telemetry
-import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.PoseUpdater
-import org.firstinspires.ftc.teamcode.followers.rr.MecanumDrive
 import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
-import org.firstinspires.ftc.teamcode.subsystems.LocalizationSubsystem
+import org.firstinspires.ftc.teamcode.subsystems.LocalizerSubsystem
+import org.firstinspires.ftc.teamcode.subsystems.ReLocalizationSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.avoidance.AvoidanceSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ClawSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.EndgameSubsystem
@@ -56,13 +54,12 @@ open class HardwareConfig(
     }
 
     lateinit var driveSubsystem: DriveSubsystem
+    lateinit var localizerSubsystem: LocalizerSubsystem
     lateinit var clawSubsystem: ClawSubsystem
     lateinit var endgameSubsystem: EndgameSubsystem
     lateinit var extendoSubsystem: ExtendoSubsystem
-    lateinit var localizationSubsystem: LocalizationSubsystem
+    lateinit var reLocalizationSubsystem: ReLocalizationSubsystem
     lateinit var avoidanceSubsystem: AvoidanceSubsystem
-
-    lateinit var poseUpdater: PoseUpdater
 
     companion object {
         fun isMainDrivetrain(): Boolean {
@@ -88,7 +85,6 @@ open class HardwareConfig(
         var lastTimeOpen = 0.0
 
         lateinit var vSensor: VoltageSensor
-        lateinit var drive: MecanumDrive
         lateinit var fileWriter: FileWriter
         lateinit var loopTimeController: LoopTimeController
 
@@ -107,9 +103,9 @@ open class HardwareConfig(
     ) {
         val drivetrain = CurrentDrivetrain.currentDrivetrain
 
-        driveSubsystem = DriveSubsystem(ahwMap, startPose)
-
-        poseUpdater = PoseUpdater(ahwMap)
+        localizerSubsystem =
+            LocalizerSubsystem(ahwMap, startPose, LocalizerSubsystem.LocalizationType.PP)
+        driveSubsystem = DriveSubsystem(ahwMap, localizerSubsystem)
 
         allHubs = ahwMap.getAll(LynxModule::class.java)
         for (hub in allHubs) {
@@ -128,10 +124,9 @@ open class HardwareConfig(
             EndgameSubsystem(ahwMap)
         if (drivetrainHasPermission(Permission.EXTENDO)) extendoSubsystem =
             ExtendoSubsystem(ahwMap)
-        if (drivetrainHasPermission(Permission.LOCALIZATION)) localizationSubsystem =
-            LocalizationSubsystem(ahwMap)
+        if (drivetrainHasPermission(Permission.RELOCALIZATION)) reLocalizationSubsystem =
+            ReLocalizationSubsystem(ahwMap)
         avoidanceSubsystem = AvoidanceSubsystem()
-        drive = driveSubsystem.drive
 
         telemetry =
             MultipleTelemetry(myOpMode.telemetry, FtcDashboard.getInstance().telemetry)
@@ -149,14 +144,15 @@ open class HardwareConfig(
 
         val loopTimePeriodics = listOf(
             PeriodicLoopTimeObject(
-                "Drive", 3
-            ) { drive.updatePoseEstimate() },
+                "Drive", 1
+            ) { localizerSubsystem.update(timer) },
         )
         val spacedObjects: List<SpacedBooleanObject> = emptyList()
 
         loopTimeController = LoopTimeController(
             timer, loopTimePeriodics, spacedObjects
         )
+
         telemetry.addData("Version", CURRENT_VERSION)
         telemetry.addData("Voltage", "%.2f", vSensor.currentVoltage())
         drivetrain.telemetry(telemetry)
@@ -183,12 +179,11 @@ open class HardwareConfig(
     //code to run all drive functions
     fun doBulk() {
         val currentAvoidanceType =
-            bindDriverButtons(myOpMode, driveSubsystem, null, packet)
+            bindDriverButtons(myOpMode, driveSubsystem, null)
         if (isMainDrivetrain()) bindOtherButtons(
             myOpMode,
             clawSubsystem,
             extendoSubsystem,
-            driveSubsystem
         )
         if (varConfig.multipleDrivers) {
             switchProfile(myOpMode)
@@ -196,10 +191,8 @@ open class HardwareConfig(
         driveSubsystem.driveByGamepads(
             currentFieldCentric,
             myOpMode,
-            loopTimeController.currentTime,
         )
         driveSubsystem.update(avoidanceSubsystem, currentAvoidanceType)
-        poseUpdater.update()
 
         if (drivetrainHasPermission(Permission.ENDGAME)) endgameSubsystem.update()
 
@@ -207,7 +200,9 @@ open class HardwareConfig(
 
         if (drivetrainHasPermission(Permission.EXTENDO)) extendoSubsystem.update()
 
-        if (drivetrainHasPermission(Permission.LOCALIZATION)) localizationSubsystem.relocalize(drive)
+        if (drivetrainHasPermission(Permission.RELOCALIZATION)) reLocalizationSubsystem.relocalize(
+            localizerSubsystem
+        )
         buildTelemetry() //makes telemetry
         lynxModules()
         loopTimeController.update()
@@ -243,12 +238,12 @@ open class HardwareConfig(
         }
         loopTimeController.telemetry(telemetry)
         teleSpace()
-        telemetry.addData("Pose: ", drive.pose.toPoint().toString())
         driveSubsystem.telemetry(telemetry)
+        localizerSubsystem.telemetry(telemetry)
         avoidanceSubsystem.telemetry(telemetry)
         if (drivetrainHasPermission(Permission.EXTENDO)) extendoSubsystem.telemetry(telemetry)
         teleSpace()
-        if (drivetrainHasPermission(Permission.LOCALIZATION)) localizationSubsystem.telemetry(
+        if (drivetrainHasPermission(Permission.RELOCALIZATION)) reLocalizationSubsystem.telemetry(
             telemetry
         )
 
@@ -267,9 +262,10 @@ open class HardwareConfig(
 
     private fun drawPackets() {
         packet = TelemetryPacket()
-        if (drivetrainHasPermission(Permission.LOCALIZATION)) localizationSubsystem.draw(packet)
+        if (drivetrainHasPermission(Permission.RELOCALIZATION)) reLocalizationSubsystem.draw(packet)
 
-        avoidanceSubsystem.draw(packet, drive,poseUpdater)
+        avoidanceSubsystem.draw(packet)
+        localizerSubsystem.draw(packet)
 
         dashboard.sendTelemetryPacket(packet)
     }

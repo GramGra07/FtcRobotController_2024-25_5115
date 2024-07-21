@@ -16,6 +16,7 @@ class smppTestAuto : LinearOpMode() {
         STATE2,
         STOP
     }
+
     override fun runOpMode() {
         val follower = Follower(hardwareMap)
         val circle = follower.pathBuilder()
@@ -54,9 +55,9 @@ class smppTestAuto : LinearOpMode() {
         val spline = follower.pathBuilder()
             .addPath(
                 BezierCurve(
-                    Point(Pose(0.0,0.0,90.0)),
-                    Point(Pose(24.0,0.0,90.0)),
-                    Point(Pose(24.0,48.0,0.0)),
+                    Point(Pose(0.0, 0.0, 90.0)),
+                    Point(Pose(24.0, 0.0, 90.0)),
+                    Point(Pose(24.0, 48.0, 0.0)),
                 )
             )
             .build()
@@ -64,8 +65,8 @@ class smppTestAuto : LinearOpMode() {
         val builder: StateMachine.Builder<states> = StateMachine.Builder<states>()
         builder.state(states.CIRCLE)
             .onEnter(states.CIRCLE) { follower.followPath(spline) }
-            .whileState(states.CIRCLE ,{follower.atParametricEnd() },{follower.update()})
-            .transition(states.CIRCLE,{follower.atParametricEnd()},0.0)
+            .whileState(states.CIRCLE, { follower.atParametricEnd() }, { follower.update() })
+            .transition(states.CIRCLE, { follower.atParametricEnd() }, 0.0)
             .stopRunning(states.STOP)
         val stateMachine: StateMachine<states> = builder.build()
         stateMachine.start()

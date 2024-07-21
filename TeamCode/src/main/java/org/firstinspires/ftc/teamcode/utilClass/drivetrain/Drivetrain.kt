@@ -200,7 +200,7 @@ class Drivetrain(
                     Permission.EXTENDO,
                     Permission.CLAW,
                     Permission.ENDGAME,
-                    Permission.LOCALIZATION,
+                    Permission.RELOCALIZATION,
                     Permission.LIGHTS
                 ),
             ),

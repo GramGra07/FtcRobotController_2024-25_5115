@@ -16,7 +16,7 @@ data class StartPose(
     }
 
     private fun getStartPose(startLocation: StartLocation): Pose2d {
-        var spot = Pose2d(0.0,0.0,0.0)
+        var spot = Pose2d(0.0, 0.0, 0.0)
         if (!startLocation.zeros) {
             spot = when (startLocation.alliance) {
                 Alliance.BLUE -> {

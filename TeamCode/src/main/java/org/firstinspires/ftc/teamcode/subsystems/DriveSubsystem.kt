@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.subsystems
 
-import com.acmerobotics.roadrunner.Action
-import com.acmerobotics.roadrunner.Pose2d
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
@@ -9,16 +7,10 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.robotcore.external.Telemetry
-import org.firstinspires.ftc.teamcode.actions.teleop.CancelableFollowTrajectoryAction
-import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
 import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.initMotor
-import org.firstinspires.ftc.teamcode.followers.rr.MecanumDrive
 import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain
-import org.firstinspires.ftc.teamcode.storage.DistanceStorage
-import org.firstinspires.ftc.teamcode.storage.PoseStorage
 import org.firstinspires.ftc.teamcode.subsystems.avoidance.AvoidanceSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers
-import org.firstinspires.ftc.teamcode.utilClass.FileWriterFTC
 import org.firstinspires.ftc.teamcode.utilClass.drivetrain.Drivetrain
 import org.firstinspires.ftc.teamcode.utilClass.drivetrain.DrivetrainType
 import org.firstinspires.ftc.teamcode.utilClass.objects.DriveType
@@ -28,32 +20,16 @@ import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.hypot
 import kotlin.math.sin
-import kotlin.math.sqrt
 
 
 //@Config
-class DriveSubsystem(ahwMap: HardwareMap, pose: Pose2d) {
-    var drive: MecanumDrive
-
+class DriveSubsystem(ahwMap: HardwareMap, private var localizerSubsystem: LocalizerSubsystem) {
     private var motorFrontLeft: DcMotorEx
     private var motorBackLeft: DcMotorEx
     private var motorFrontRight: DcMotorEx
     private var motorBackRight: DcMotorEx
 
-    private var currentSpeed: Double = 0.0
-
-    //    var odometrySubsystem: OdometrySubsystem3Wheel? = null
-    lateinit var cancelableFollowing: CancelableFollowTrajectoryAction
-
     init {
-//        if (odometrySubsystem == null) {
-//            odometrySubsystem = OdometrySubsystem3Wheel(ahwMap, 0.0, 0.0, 0.0)
-//        }
-        drive = MecanumDrive(
-            ahwMap,
-            pose
-        )
-
         motorFrontLeft =
             initMotor(
                 ahwMap,
@@ -80,12 +56,8 @@ class DriveSubsystem(ahwMap: HardwareMap, pose: Pose2d) {
         motorBackLeft.direction = DcMotorSimple.Direction.REVERSE
         if (CurrentDrivetrain.currentDrivetrain.name == Drivetrain.DrivetrainNames.TESTER) motorFrontLeft.direction =
             DcMotorSimple.Direction.REVERSE
-
-        reset()
     }
 
-    private var thisDist = 0.0
-    private var lastTime = 0.0
     private var frontRightPower = 0.0
     private var frontLeftPower = 0.0
     private var backRightPower = 0.0
@@ -93,11 +65,10 @@ class DriveSubsystem(ahwMap: HardwareMap, pose: Pose2d) {
     var slowModeIsOn = false
     private var reverse = false
     var isAutoInTeleop = false
-    var goZero: Action? = null
     var leftStickX = 0.0
     var leftStickY = 0.0
     var rightStickX = 0.0
-    fun driveByGamepads(type: DriveType, myOpMode: OpMode, timer: Double) {
+    fun driveByGamepads(type: DriveType, myOpMode: OpMode) {
         val drivetrain = CurrentDrivetrain.currentDrivetrain
         // Retrieve gamepad values
         leftStickX = myOpMode.gamepad1.left_stick_x.toDouble()
@@ -109,7 +80,7 @@ class DriveSubsystem(ahwMap: HardwareMap, pose: Pose2d) {
         if (drivetrain.type == DrivetrainType.MECANUM) {
             if (type == DriveType.FIELD_CENTRIC) {
                 val controllerAngle = Math.toDegrees(atan2(leftStickY, leftStickX))
-                val robotDegree = Math.toDegrees(drive.pose.heading.toDouble())
+                val robotDegree = Math.toDegrees(localizerSubsystem.heading())
                 val movementDegree = controllerAngle - robotDegree
                 val gamepadHypot = Range.clip(hypot(leftStickX, leftStickY), 0.0, 1.0)
 
@@ -144,32 +115,6 @@ class DriveSubsystem(ahwMap: HardwareMap, pose: Pose2d) {
             frontRightPower = Range.clip(leftStickY - rightStickX, -1.0, 1.0)
             backRightPower = frontRightPower
         }
-
-        // Update distance traveled
-        updateDistTraveled(PoseStorage.currentPose, drive.pose, timer)
-        FileWriterFTC.writeToFile(
-            HardwareConfig.fileWriter,
-            drive.pose.position.x.toInt(),
-            drive.pose.position.y.toInt()
-        )
-
-        PoseStorage.currentPose = drive.pose
-    }
-
-
-    private fun updateDistTraveled(before: Pose2d, after: Pose2d, timer: Double) {
-        val deltaX = after.position.x - before.position.x
-        val deltaY = after.position.y - before.position.y
-        val dist = sqrt(deltaX * deltaX + deltaY * deltaY)
-        val deltaTime = timer - lastTime
-        lastTime = timer
-        currentSpeed = (dist / deltaTime) * 0.0568
-        thisDist += dist
-        DistanceStorage.totalDist += dist
-    }
-
-    private fun reset() {
-        thisDist = 0.0
     }
 
     private fun power(avoidanceSubsystem: AvoidanceSubsystem) {
@@ -203,9 +148,8 @@ class DriveSubsystem(ahwMap: HardwareMap, pose: Pose2d) {
         avoidanceSubsystem: AvoidanceSubsystem,
         type: AvoidanceSubsystem.AvoidanceTypes
     ) {
-        avoidanceSubsystem.update(this, type)
+        avoidanceSubsystem.update(localizerSubsystem, this, type)
         power(avoidanceSubsystem)
-//        odometrySubsystem!!.update()
     }
 
     fun telemetry(telemetry: Telemetry) {
@@ -221,8 +165,5 @@ class DriveSubsystem(ahwMap: HardwareMap, pose: Pose2d) {
             DriveType.FIELD_CENTRIC -> telemetry.addData("fieldCentric", "")
             DriveType.ROBOT_CENTRIC -> telemetry.addData("robotCentric", "")
         }
-        telemetry.addData("totalDistance (in)", "%.1f", DistanceStorage.totalDist)
-        telemetry.addData("Current Speed (mph)", "%.1f", currentSpeed)
-//        odometrySubsystem!!.telemetry(telemetry)
     }
 }

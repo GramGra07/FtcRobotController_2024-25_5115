@@ -1,12 +1,10 @@
 package org.firstinspires.ftc.teamcode.subsystems.avoidance
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
-import com.acmerobotics.roadrunner.Vector2d
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toPoint
-import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.PoseUpdater
-import org.firstinspires.ftc.teamcode.followers.rr.MecanumDrive
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
+import org.firstinspires.ftc.teamcode.subsystems.LocalizerSubsystem
 import org.firstinspires.ftc.teamcode.utilClass.objects.Point
 import org.firstinspires.ftc.teamcode.utilClass.objects.VectorField
 import org.firstinspires.ftc.teamcode.utilClass.objects.VectorField.Companion.getCorrectionByAvoidancePUSH
@@ -50,23 +48,23 @@ class AvoidanceSubsystem {
     private var currentAvoidanceTypes: AvoidanceTypes = AvoidanceTypes.OFF
 
     fun update(
+        localizerSubsystem: LocalizerSubsystem,
         driveSubsystem: DriveSubsystem,
         type: AvoidanceTypes,
-        drive: MecanumDrive = driveSubsystem.drive
     ) {
         updateVars(type)
         when (type) {
             AvoidanceTypes.PUSH -> {
                 powers = getCorrectionByAvoidancePUSH(
                     fields,
-                    drive.pose.position.toPoint(),
+                    localizerSubsystem.pose().toPoint(),
                 )
             }
 
             AvoidanceTypes.STOP -> {
                 powers = getCorrectionByAvoidanceSTOP(
                     fields,
-                    drive.pose,
+                    localizerSubsystem.pose(),
                     driveSubsystem.leftStickY,
                     driveSubsystem.leftStickX,
                     driveSubsystem.rightStickX
@@ -77,14 +75,8 @@ class AvoidanceSubsystem {
         }
     }
 
-    fun telemetry(telemetry: Telemetry) {
-        telemetry.addData("powers", powers)
-        telemetry.addData("Avoidance Type", currentAvoidanceTypes.name)
-    }
-
-    fun draw(packet: TelemetryPacket, drive: MecanumDrive,type:PoseUpdater) {
+    fun draw(packet: TelemetryPacket) {
         val rad = rad
-        val roboRad = 8.0
         packet.fieldOverlay()
             .setFill("red")
             .setStroke("red")
@@ -93,23 +85,13 @@ class AvoidanceSubsystem {
             packet.fieldOverlay()
                 .fillCircle(field.point?.y!!, field.point!!.x!!, rad)
         }
-        val t = drive.pose
-        val halfv: Vector2d = t.heading.vec().times(0.5 * roboRad)
-        val p1: Vector2d = t.position.plus(halfv)
-        val (x, y) = p1.plus(halfv)
-        packet.fieldOverlay()
-            .setStrokeWidth(1)
-            .setStroke("blue")
-            .setFill("blue")
-            .setAlpha(1.0)
-            .strokeCircle(t.position.x, t.position.y, roboRad).strokeLine(p1.x, p1.y, x, y)
-        val t2 = type.pose
-        packet.fieldOverlay()
-            .setStroke("green")
-            .setFill("green")
-            .setAlpha(1.0)
-            .strokeCircle(t2.x, t2.y, roboRad)
     }
+
+    fun telemetry(telemetry: Telemetry) {
+        telemetry.addData("powers", powers)
+        telemetry.addData("Avoidance Type", currentAvoidanceTypes.name)
+    }
+
 
     private fun updateVars(type: AvoidanceTypes) {
         rad = varConfig.fieldRadius

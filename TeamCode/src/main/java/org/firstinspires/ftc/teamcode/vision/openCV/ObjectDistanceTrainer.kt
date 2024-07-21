@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode.vision.openCV
+
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
 import com.qualcomm.robotcore.eventloop.opmode.Disabled
@@ -26,7 +27,7 @@ import org.openftc.easyopencv.OpenCvWebcam
 @TeleOp
 @Disabled //@Config
 
-class ObjectRecognitionTrainer : LinearOpMode() {
+class ObjectDistanceTrainer : LinearOpMode() {
     lateinit var webcam: OpenCvWebcam
     var aspectRatio = 0.0
     var minWidth = 0.0
@@ -58,7 +59,7 @@ class ObjectRecognitionTrainer : LinearOpMode() {
     override fun runOpMode() {
         val telemetry: Telemetry =
             MultipleTelemetry(this.telemetry, FtcDashboard.getInstance().telemetry)
-        val pipeline: OpenCvPipeline = ColorDistance()
+        val pipeline: OpenCvPipeline = ColorDistance("Blue")
         val cameraMonitorViewId: Int = hardwareMap.appContext.resources
             .getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.packageName)
         webcam = OpenCvCameraFactory.getInstance().createWebcam(

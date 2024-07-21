@@ -12,6 +12,8 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Math
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Vector;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.NanoTimer;
 import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain;
+import org.firstinspires.ftc.teamcode.utilClass.drivetrain.DrivePARAMS;
+import org.firstinspires.ftc.teamcode.utilClass.drivetrain.PedroPathingPARAMS;
 
 /**
  * This is the TwoWheelLocalizer class. This class extends the Localizer superclass and is a
@@ -41,15 +43,15 @@ import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain;
 public class TwoWheelLocalizer extends Localizer {
     public static double FORWARD_TICKS_TO_INCHES = CurrentDrivetrain.Companion.getCurrentDrivetrain().getPedroPathingPARAMS().getForwardTicksToInches();
     public static double STRAFE_TICKS_TO_INCHES = CurrentDrivetrain.Companion.getCurrentDrivetrain().getPedroPathingPARAMS().getLateralTicksToInches();
+    public static double parYticks;
+    public static double perpXticks;
     private final HardwareMap hardwareMap;
     private final IMU imu;
     private final NanoTimer timer;
     private final Encoder forwardEncoder;
     private final Encoder strafeEncoder;
-    private Pose forwardEncoderPose;
-    public static double parYticks; 
-    private Pose strafeEncoderPose;
-    public static double perpXticks;
+    private final Pose forwardEncoderPose;
+    private final Pose strafeEncoderPose;
     private Pose startPose;
     private Pose displacementPose;
     private Pose currentVelocity;
@@ -77,12 +79,11 @@ public class TwoWheelLocalizer extends Localizer {
      * @param setStartPose the Pose to start from
      */
     public TwoWheelLocalizer(HardwareMap map, Pose setStartPose) {
+        PedroPathingPARAMS pedroPathingPARAMS = CurrentDrivetrain.Companion.getCurrentDrivetrain().getPedroPathingPARAMS();
+        DrivePARAMS driveParams = CurrentDrivetrain.Companion.getCurrentDrivetrain().getDrivePARAMS();
         // TODO: replace these with your encoder positions
-        Pose fep = Pose(CurrentDrivetrain.Companion.getCurrentDrivetrain().getPedroPathingPARAMS().getForwardEncoderPose().getX, parYticks.toInches,CurrentDrivetrain.Companion.getCurrentDrivetrain().getPedroPathingPARAMS().getForwardEncoderPose().getHeading);
-        
-        forwardEncoderPose = fep;
-        Pose sep = Pose(perpXticks.toInches,CurrentDrivetrain.Companion.getCurrentDrivetrain().getPedroPathingPARAMS().getLateralEncoderPose().getY, CurrentDrivetrain.Companion.getCurrentDrivetrain().getPedroPathingPARAMS().getLateralEncoderPose().getHeading);
-        strafeEncoderPose = sep;
+        forwardEncoderPose = new Pose(pedroPathingPARAMS.getForwardEncoderPose().getX(), parYticks * driveParams.getInPerTick(), pedroPathingPARAMS.getForwardEncoderPose().getHeading());
+        strafeEncoderPose = new Pose(perpXticks * driveParams.getLateralInPerTick(), pedroPathingPARAMS.getLateralEncoderPose().getY(), pedroPathingPARAMS.getLateralEncoderPose().getHeading());
 
         hardwareMap = map;
 

@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.subsystems
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.acmerobotics.roadrunner.Pose2d
-import com.acmerobotics.roadrunner.Rotation2d
 import com.acmerobotics.roadrunner.Vector2d
 import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.robotcore.external.Telemetry
@@ -12,12 +11,11 @@ import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.ATLocations.
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities.aprilTag
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities.initializeProcessor
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.Processor
-import org.firstinspires.ftc.teamcode.followers.rr.MecanumDrive
 import org.firstinspires.ftc.teamcode.utilClass.objects.Point
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection
 import kotlin.math.abs
 
-class LocalizationSubsystem(ahwMap: HardwareMap) {
+class ReLocalizationSubsystem(ahwMap: HardwareMap) {
     private var currentDetections: List<AprilTagDetection> = emptyList()
     private var numDetections: Int = 0
     private var parsedData: Pair<Double, Double>? = null
@@ -149,15 +147,16 @@ class LocalizationSubsystem(ahwMap: HardwareMap) {
 //        }
     }
 
-    fun relocalize(drive: MecanumDrive) {
+    fun relocalize(localizerSubsystem: LocalizerSubsystem) {
         parseDetections()
         val parsed = parsedData
         if (parsed != null) {
-            drive.pose = Pose2d(
-                Vector2d(parsed.first, parsed.second),
-                Rotation2d(drive.pose.heading.real, drive.pose.heading.imag)
+            localizerSubsystem.setPose(
+                Pose2d(
+                    Vector2d(parsed.first, parsed.second),
+                    localizerSubsystem.heading()
+                )
             )
-            parsedData = null
         }
     }
 }

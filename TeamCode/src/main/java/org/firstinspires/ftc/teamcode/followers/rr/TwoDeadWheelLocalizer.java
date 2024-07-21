@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.followers.rr;
 
 
-import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.DualNum;
 import com.acmerobotics.roadrunner.Rotation2d;
 import com.acmerobotics.roadrunner.Time;

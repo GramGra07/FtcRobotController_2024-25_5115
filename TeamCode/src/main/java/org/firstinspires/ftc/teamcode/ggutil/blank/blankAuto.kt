@@ -24,7 +24,7 @@ class blankAuto : LinearOpMode() {
                 StartLocation(Alliance.RED, StartSide.LEFT)
             )
         if (opModeIsActive()) {
-            PoseStorage.currentPose = robot.drive.pose
+            PoseStorage.currentPose = robot.localizerSubsystem.pose()
         }
     }
 }

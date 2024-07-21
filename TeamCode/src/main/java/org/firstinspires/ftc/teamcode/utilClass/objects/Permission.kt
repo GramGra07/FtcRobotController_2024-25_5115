@@ -4,7 +4,7 @@ enum class Permission {
     CLAW,
     EXTENDO,
     ENDGAME,
-    LOCALIZATION,
+    RELOCALIZATION,
     EXTRAS,
     LIGHTS
 }
