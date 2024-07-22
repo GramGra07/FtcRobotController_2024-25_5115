@@ -62,8 +62,8 @@ class Drivetrain(
                 PedroPathingPARAMS(
                     0.002550207204,
                     -0.0020726061118353043,
-                    Pose(-2.5625, 1.375, 0.0), //fwd
-                    Pose(0.75, 5.0, Math.toRadians(90.0)),
+                    Pose(0.0, 809.2789524675853, 0.0), //fwd //parallel
+                    Pose(1745.8006924415185, 0.0, 0.0), //lateral //perp
                     6.1,
                     60.758503953976685,
                     40.8115164940066,
@@ -141,7 +141,7 @@ class Drivetrain(
                     0.0
                 ),
                 PedroPathingPARAMS(
-                    0.002550207204,
+                    0.000750207204,
                     -0.0020726061118353043,
                     Pose(0.0, 0.0, 0.0),
                     Pose(0.0, 0.0, Math.toRadians(90.0)),

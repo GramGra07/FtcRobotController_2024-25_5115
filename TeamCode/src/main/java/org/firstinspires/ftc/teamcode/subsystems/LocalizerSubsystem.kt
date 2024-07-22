@@ -69,14 +69,14 @@ class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose2d, var type: Localizati
             LocalizationType.RR -> drive.updatePoseEstimate()
             LocalizationType.PP -> poseUpdater.update()
         }
-        updateDistTraveled(PoseStorage.currentPose, drive.pose, time)
+        updateDistTraveled(PoseStorage.currentPose, this.pose(), time)
         FileWriterFTC.writeToFile(
             HardwareConfig.fileWriter,
-            drive.pose.position.x.toInt(),
-            drive.pose.position.y.toInt()
+            this.x().toInt(),
+            this.y().toInt()
         )
 
-        PoseStorage.currentPose = drive.pose
+        PoseStorage.currentPose = this.pose()
     }
 
     fun setPose(pose: Pose2d) {
@@ -87,7 +87,7 @@ class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose2d, var type: Localizati
     }
 
     fun telemetry(telemetry: Telemetry) {
-        telemetry.addData("Pose: ", drive.pose.toPoint().toString())
+        telemetry.addData("Pose: ", this.pose().toPoint().toString())
         when (type) {
             LocalizationType.RR -> telemetry.addData("Using", "RoadRunner")
             LocalizationType.PP -> telemetry.addData("Using", "PedroPathing")

@@ -35,7 +35,7 @@ public final class TuningOpModes {
     public static final Class<?> DRIVE_CLASS = MecanumDrive.class;
 
     public static final String GROUP = "quickstart";
-    public static boolean DISABLED = true;
+    public static boolean DISABLED = false;
 
     private TuningOpModes() {
     }
@@ -50,7 +50,6 @@ public final class TuningOpModes {
 
     @OpModeRegistrar
     public static void register(OpModeManager manager) {
-        if (HardwareConfig.Companion.isMainDrivetrain()) DISABLED = false;
         if (DISABLED) return;
 
         DriveViewFactory dvf;

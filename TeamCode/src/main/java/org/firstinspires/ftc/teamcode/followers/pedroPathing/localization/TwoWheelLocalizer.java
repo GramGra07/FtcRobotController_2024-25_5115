@@ -41,10 +41,9 @@ import org.firstinspires.ftc.teamcode.utilClass.drivetrain.PedroPathingPARAMS;
  */
 @Config
 public class TwoWheelLocalizer extends Localizer {
-    public static double FORWARD_TICKS_TO_INCHES = CurrentDrivetrain.Companion.getCurrentDrivetrain().getPedroPathingPARAMS().getForwardTicksToInches();
-    public static double STRAFE_TICKS_TO_INCHES = CurrentDrivetrain.Companion.getCurrentDrivetrain().getPedroPathingPARAMS().getLateralTicksToInches();
-    public static double parYticks;
-    public static double perpXticks;
+    static PedroPathingPARAMS pedroPathingPARAMS = CurrentDrivetrain.Companion.getCurrentDrivetrain().getPedroPathingPARAMS();
+    public static double FORWARD_TICKS_TO_INCHES = pedroPathingPARAMS.getForwardTicksToInches();
+    public static double STRAFE_TICKS_TO_INCHES = pedroPathingPARAMS.getLateralTicksToInches();
     private final HardwareMap hardwareMap;
     private final IMU imu;
     private final NanoTimer timer;
@@ -79,11 +78,9 @@ public class TwoWheelLocalizer extends Localizer {
      * @param setStartPose the Pose to start from
      */
     public TwoWheelLocalizer(HardwareMap map, Pose setStartPose) {
-        PedroPathingPARAMS pedroPathingPARAMS = CurrentDrivetrain.Companion.getCurrentDrivetrain().getPedroPathingPARAMS();
-        DrivePARAMS driveParams = CurrentDrivetrain.Companion.getCurrentDrivetrain().getDrivePARAMS();
         // TODO: replace these with your encoder positions
-        forwardEncoderPose = new Pose(pedroPathingPARAMS.getForwardEncoderPose().getX(), parYticks * driveParams.getInPerTick(), pedroPathingPARAMS.getForwardEncoderPose().getHeading());
-        strafeEncoderPose = new Pose(perpXticks * driveParams.getLateralInPerTick(), pedroPathingPARAMS.getLateralEncoderPose().getY(), pedroPathingPARAMS.getLateralEncoderPose().getHeading());
+        forwardEncoderPose = pedroPathingPARAMS.getForwardEncoderPose();
+        strafeEncoderPose = pedroPathingPARAMS.getLateralEncoderPose();
 
         hardwareMap = map;
 

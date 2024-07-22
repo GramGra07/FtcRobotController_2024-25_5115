@@ -62,6 +62,7 @@ class DriveSubsystem(ahwMap: HardwareMap, private var localizerSubsystem: Locali
     private var frontLeftPower = 0.0
     private var backRightPower = 0.0
     private var backLeftPower = 0.0
+    private var setAPower = false
     var slowModeIsOn = false
     private var reverse = false
     var isAutoInTeleop = false
@@ -142,6 +143,21 @@ class DriveSubsystem(ahwMap: HardwareMap, private var localizerSubsystem: Locali
             motorBackRight.power = backRightPower
         }
     }
+    fun setArtificialPower(fwd:Double,axial:Double){
+        setAPower = true
+        frontLeftPower = Range.clip(fwd + axial, -1.0, 1.0)
+        backLeftPower = frontLeftPower
+        frontRightPower = Range.clip(fwd - axial, -1.0, 1.0)
+        backRightPower = frontRightPower
+        frontLeftPower = Range.clip(frontLeftPower , -1.0, 1.0)
+        frontRightPower = Range.clip(frontRightPower , -1.0, 1.0)
+        backLeftPower = Range.clip(backLeftPower , -1.0, 1.0)
+        backRightPower = Range.clip(backRightPower, -1.0, 1.0)
+        motorFrontLeft.power = frontLeftPower
+        motorBackLeft.power = backLeftPower
+        motorFrontRight.power = frontRightPower
+        motorBackRight.power = backRightPower
+    }
 
 
     fun update(
@@ -149,7 +165,9 @@ class DriveSubsystem(ahwMap: HardwareMap, private var localizerSubsystem: Locali
         type: AvoidanceSubsystem.AvoidanceTypes
     ) {
         avoidanceSubsystem.update(localizerSubsystem, this, type)
-        power(avoidanceSubsystem)
+        if (!setAPower) {
+            power(avoidanceSubsystem)
+        }
     }
 
     fun telemetry(telemetry: Telemetry) {
