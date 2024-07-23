@@ -14,6 +14,7 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.PoseUp
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.MathFunctions;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Vector;
 import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain;
+import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles;
 import org.firstinspires.ftc.teamcode.utilClass.drivetrain.Drivetrain;
 
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ import java.util.List;
  * @version 1.0, 3/13/2024
  */
 //@Config
-@Autonomous(name = "Forward Velocity Tuner", group = "Autonomous Pathing Tuning")
+@Autonomous(name = "Forward Velocity Tuner", group = GroupingTitles.pedroTuning)
 public class ForwardVelocityTuner extends OpMode {
     public static double DISTANCE = 40;
     public static double RECORD_NUMBER = 10;

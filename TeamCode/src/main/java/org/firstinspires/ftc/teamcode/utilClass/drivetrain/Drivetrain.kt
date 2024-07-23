@@ -60,8 +60,8 @@ class Drivetrain(
                     0.0
                 ),
                 PedroPathingPARAMS(
-                    0.002550207204,
-                    -0.0020726061118353043,
+                    0.00295188428614,
+                    -0.002490105300198796,
                     Pose(0.0, 809.2789524675853, 0.0), //fwd //parallel
                     Pose(1745.8006924415185, 0.0, 0.0), //lateral //perp
                     6.1,
@@ -114,7 +114,7 @@ class Drivetrain(
                     LogoFacingDirection.UP,
                     UsbFacingDirection.LEFT
                 ),
-                mutableListOf(),
+                mutableListOf(Permission.RELOCALIZATION),
             ),
             Drivetrain(
                 DrivetrainNames.MAIN,

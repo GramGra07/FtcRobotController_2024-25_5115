@@ -3,8 +3,9 @@ package org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.localizer
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
+import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles
 
-@TeleOp(group = "t") //@Disabled//disabling the opmode
+@TeleOp(group = GroupingTitles.pedroTuning) //@Disabled//disabling the opmode
 
 class TwoWheelTuner : LinearOpMode() {
     //declaring the class

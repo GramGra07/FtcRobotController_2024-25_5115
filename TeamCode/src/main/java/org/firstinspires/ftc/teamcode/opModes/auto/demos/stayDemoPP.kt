@@ -6,8 +6,9 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.follower.Follower
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.BezierLine
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Path
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Point
+import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles
 
-@Autonomous
+@Autonomous(group = GroupingTitles.demos)
 class stayDemoPP : OpMode() {
     var DISTANCE: Double = 40.0
     private var forward = true

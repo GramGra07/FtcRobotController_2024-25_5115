@@ -46,10 +46,10 @@ class ReLocalizationSubsystem(ahwMap: HardwareMap) {
         val xThresh = 24
         val yThresh = 36
         if (numDetections > 0 &&
-            rejectedIDs.any { currentSeenID?.contains(it) == false } &&
-            acceptableIDs.any { currentSeenID?.contains(it) == true }
+            rejectedIDs.any {it !in currentSeenID!! } &&
+            acceptableIDs.any { it in currentSeenID!! }
         ) {
-            if ((numDetections == 1)) {
+            if (numDetections == 1) {
                 id = currentDetections[0].id
                 xDif = currentDetections[0].ftcPose.x
                 yDif = currentDetections[0].ftcPose.y
@@ -109,42 +109,23 @@ class ReLocalizationSubsystem(ahwMap: HardwareMap) {
     fun telemetry(telemetry: Telemetry) {
         val currentSeenID = currentSeenID
         telemetry.addData("IDS", currentSeenID)
+        val localizingID = localizingID
+        telemetry.addData("Localizing ID", localizingID)
     }
 
     fun draw(packet: TelemetryPacket) {
         val fieldOverlay = packet.fieldOverlay()
         ATLocations.allLocations.forEach { (id, locationData) ->
+            val location = locationData.location
             if (localizingID!!.contains(id)) {
                 fieldOverlay.setStroke("green").setAlpha(1.0)
             } else if (currentSeenID!!.contains(id)) {
                 fieldOverlay.setStroke("orange").setAlpha(1.0)
             } else {
-                val location = locationData.location
                 fieldOverlay.setStroke("blue").setAlpha(0.5)
-                fieldOverlay.strokeRect(location.y!!, location.x!!, 0.5, 0.5)
             }
+            fieldOverlay.strokeRect(location.y!!, location.x!!, 0.5, 0.5)
         }
-//
-//        for (id in ATLocations.allLocations) {
-//            packet.fieldOverlay().setStroke("blue").setAlpha(0.5)
-//                .strokeRect(id.second.location.y!!, id.second.location.x!!, 0.5, 0.5)
-//        }
-//        val currentSeenID = currentSeenID
-//        if (!currentSeenID.isNullOrEmpty()) {
-//            for (id in currentSeenID) {
-//                val point = getLocation(id - 1)
-//                packet.fieldOverlay().setAlpha(1.0).setStroke("green")
-//                    .strokeRect(point.y!!, point.x!!, 1.0, 1.0)
-//            }
-//        }
-//        val localizingID = localizingID
-//        if (!localizingID.isNullOrEmpty()) {
-//            for (id in localizingID) {
-//                val point = getLocation(id - 1)
-//                packet.fieldOverlay().setAlpha(1.0).setStroke("orange")
-//                    .strokeRect(point.y!!, point.x!!, 1.0, 1.0)
-//            }
-//        }
     }
 
     fun relocalize(localizerSubsystem: LocalizerSubsystem) {

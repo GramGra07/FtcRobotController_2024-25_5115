@@ -7,9 +7,10 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.Pose
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.BezierCurve
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Point
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.Circle
+import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles
 import org.gentrifiedApps.statemachineftc.StateMachine
 
-@Autonomous
+@Autonomous(group = GroupingTitles.auto)
 class smppTestAuto : LinearOpMode() {
     enum class states {
         CIRCLE,

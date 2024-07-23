@@ -10,9 +10,10 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Bezi
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.BezierLine
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Point
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.Circle
+import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles
 
 
-@Autonomous
+@Autonomous(group = GroupingTitles.auto)
 class ppTestAuto : LinearOpMode() {
     override fun runOpMode() {
         val follower = Follower(hardwareMap)

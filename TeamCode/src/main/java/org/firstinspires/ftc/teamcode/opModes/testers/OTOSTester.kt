@@ -5,8 +5,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.extensions.OTOSExtension.initOTOS
 import org.firstinspires.ftc.teamcode.extensions.OTOSExtension.telemetry
+import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles
 
-@TeleOp(group = "a")
+@TeleOp(group = GroupingTitles.TESTING)
 //@Disabled//disabling the opmode
 
 class OTOSTester : LinearOpMode() {

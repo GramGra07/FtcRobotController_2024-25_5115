@@ -14,6 +14,7 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.PoseUp
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.DashboardPoseTracker;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.Drawing;
 import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain;
+import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles;
 import org.firstinspires.ftc.teamcode.utilClass.drivetrain.Drivetrain;
 
 import java.util.Arrays;
@@ -28,7 +29,7 @@ import java.util.List;
  * @version 1.0, 5/6/2024
  */
 //@Config
-@TeleOp(group = "Pedro Pathing Tuning", name = "Localization Test")
+@TeleOp(group = GroupingTitles.pedroTuning, name = "Localization Test")
 public class LocalizationTestPP extends OpMode {
     private PoseUpdater poseUpdater;
     private DashboardPoseTracker dashboardPoseTracker;

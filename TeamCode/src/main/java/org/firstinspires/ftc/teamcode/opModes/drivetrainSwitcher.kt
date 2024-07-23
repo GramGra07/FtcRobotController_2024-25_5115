@@ -3,9 +3,10 @@ package org.firstinspires.ftc.teamcode.opModes
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain
+import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles
 import org.firstinspires.ftc.teamcode.utilClass.drivetrain.Drivetrain.Companion.drivetrains
 
-@TeleOp
+@TeleOp(group = GroupingTitles.TESTING)
 //@Disabled
 class drivetrainSwitcher : LinearOpMode() {
     override fun runOpMode() {

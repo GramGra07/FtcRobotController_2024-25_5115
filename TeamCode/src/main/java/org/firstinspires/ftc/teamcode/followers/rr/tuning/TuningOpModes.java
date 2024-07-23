@@ -26,6 +26,7 @@ import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig;
 import org.firstinspires.ftc.teamcode.followers.rr.MecanumDrive;
 import org.firstinspires.ftc.teamcode.followers.rr.ThreeDeadWheelLocalizer;
 import org.firstinspires.ftc.teamcode.followers.rr.TwoDeadWheelLocalizer;
+import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,8 +35,8 @@ import java.util.List;
 public final class TuningOpModes {
     public static final Class<?> DRIVE_CLASS = MecanumDrive.class;
 
-    public static final String GROUP = "quickstart";
-    public static boolean DISABLED = false;
+    public static final String GROUP = GroupingTitles.rr;
+    public static boolean DISABLED = true;
 
     private TuningOpModes() {
     }

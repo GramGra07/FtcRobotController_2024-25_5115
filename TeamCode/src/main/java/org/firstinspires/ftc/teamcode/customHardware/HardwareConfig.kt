@@ -142,10 +142,7 @@ open class HardwareConfig(
         setUpFile(fileWriter)
 
 
-        val loopTimePeriodics = listOf(
-            PeriodicLoopTimeObject(
-                "Drive", 1
-            ) { localizerSubsystem.update(timer) },
+        val loopTimePeriodics = emptyList<PeriodicLoopTimeObject>(
         )
         val spacedObjects: List<SpacedBooleanObject> = emptyList()
 
@@ -178,6 +175,7 @@ open class HardwareConfig(
 
     //code to run all drive functions
     fun doBulk() {
+        localizerSubsystem.update(timer)
         val currentAvoidanceType =
             bindDriverButtons(myOpMode, driveSubsystem, null)
         if (isMainDrivetrain()) bindOtherButtons(
@@ -203,6 +201,7 @@ open class HardwareConfig(
         if (drivetrainHasPermission(Permission.RELOCALIZATION)) reLocalizationSubsystem.relocalize(
             localizerSubsystem
         )
+
         buildTelemetry() //makes telemetry
         lynxModules()
         loopTimeController.update()
@@ -231,6 +230,7 @@ open class HardwareConfig(
                 "Drivers",
                 Drivers.currDriver.name.toString() + " " + Drivers.currOther.name.toString()
             )
+            teleSpace()
         }
         if (vSensor.lowVoltage()) {
             vSensor.telemetry(telemetry)
@@ -239,8 +239,11 @@ open class HardwareConfig(
         loopTimeController.telemetry(telemetry)
         teleSpace()
         driveSubsystem.telemetry(telemetry)
+        teleSpace()
         localizerSubsystem.telemetry(telemetry)
+        teleSpace()
         avoidanceSubsystem.telemetry(telemetry)
+        teleSpace()
         if (drivetrainHasPermission(Permission.EXTENDO)) extendoSubsystem.telemetry(telemetry)
         teleSpace()
         if (drivetrainHasPermission(Permission.RELOCALIZATION)) reLocalizationSubsystem.telemetry(
@@ -248,7 +251,7 @@ open class HardwareConfig(
         )
 
 //        sensorArray.allTelemetry(telemetry)
-
+        teleSpace()
         if (drivetrainHasPermission(Permission.EXTRAS)) {
             axonServo.telemetry(telemetry)
             beamBreakSensor.telemetry(telemetry)
@@ -271,7 +274,7 @@ open class HardwareConfig(
     }
 
     private fun teleSpace() {
-        telemetry.addLine("")
+        telemetry.addLine("------------------")
     }
 }
 

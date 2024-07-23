@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
+import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles;
 import org.firstinspires.ftc.vision.VisionPortal;
 import org.gentrifiedApps.velocityvision.enums.CSpace;
 import org.gentrifiedApps.velocityvision.pipelines.moa.AssumedBuilder;
@@ -17,7 +18,7 @@ import org.opencv.core.Point;
 import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 
-@Autonomous
+@Autonomous(group = GroupingTitles.auto)
 @Disabled
 public class vvTestAuto extends LinearOpMode {
     private MeanColorOfAreaDetector processor;

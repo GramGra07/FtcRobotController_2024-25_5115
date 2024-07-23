@@ -9,6 +9,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.PoseUpdater;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.DashboardPoseTracker;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.Drawing;
+import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles;
 
 /**
  * This is the LateralTuner OpMode. This tracks the strafe movement of the robot and displays the
@@ -24,7 +25,7 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.Drawing;
  * @version 1.0, 5/6/2024
  */
 //@Config
-@Autonomous(name = "Lateral Localizer Tuner", group = "Autonomous Pathing Tuning")
+@Autonomous(name = "Lateral Localizer Tuner", group = GroupingTitles.pedroTuning)
 public class LateralTuner extends OpMode {
     public static double DISTANCE = 30;
     private PoseUpdater poseUpdater;

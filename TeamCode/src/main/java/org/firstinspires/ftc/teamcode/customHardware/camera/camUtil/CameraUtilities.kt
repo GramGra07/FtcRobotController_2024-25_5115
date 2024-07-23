@@ -37,7 +37,7 @@ object CameraUtilities {
             .stopCameraStream()
     }
 
-    private var mainCamera: Camera = setupCameras(CameraType.ARDU_CAM)
+    private var mainCamera: Camera = setupCameras(CameraType.LOGITECH)//!CHANGE
 
     private var runningProcessors: MutableList<VisionProcessor> =
         emptyList<VisionProcessor>().toMutableList()
@@ -141,7 +141,7 @@ object CameraUtilities {
             }
 
             CameraType.LOGITECH -> {
-                val LogiC270 = Camera(Size(640, 480), LensIntrinsics())
+                val LogiC270 = Camera(Size(640, 480), LensIntrinsics(397.606,397.606,320.023,239.979))
                 LogiC270
             }
         }
