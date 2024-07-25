@@ -143,15 +143,16 @@ class DriveSubsystem(ahwMap: HardwareMap, private var localizerSubsystem: Locali
             motorBackRight.power = backRightPower
         }
     }
-    fun setArtificialPower(fwd:Double,axial:Double){
+
+    fun setArtificialPower(fwd: Double, axial: Double) {
         setAPower = true
         frontLeftPower = Range.clip(fwd + axial, -1.0, 1.0)
         backLeftPower = frontLeftPower
         frontRightPower = Range.clip(fwd - axial, -1.0, 1.0)
         backRightPower = frontRightPower
-        frontLeftPower = Range.clip(frontLeftPower , -1.0, 1.0)
-        frontRightPower = Range.clip(frontRightPower , -1.0, 1.0)
-        backLeftPower = Range.clip(backLeftPower , -1.0, 1.0)
+        frontLeftPower = Range.clip(frontLeftPower, -1.0, 1.0)
+        frontRightPower = Range.clip(frontRightPower, -1.0, 1.0)
+        backLeftPower = Range.clip(backLeftPower, -1.0, 1.0)
         backRightPower = Range.clip(backRightPower, -1.0, 1.0)
         motorFrontLeft.power = frontLeftPower
         motorBackLeft.power = backLeftPower
@@ -171,6 +172,7 @@ class DriveSubsystem(ahwMap: HardwareMap, private var localizerSubsystem: Locali
     }
 
     fun telemetry(telemetry: Telemetry) {
+        telemetry.addData("DRIVE","")
         val drivetrain = CurrentDrivetrain.currentDrivetrain
         drivetrain.telemetry(telemetry)
         if (reverse) {

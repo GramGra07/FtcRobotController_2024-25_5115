@@ -212,6 +212,7 @@ class ExtendoSubsystem(ahwMap: HardwareMap) {
     }
 
     fun telemetry(telemetry: Telemetry) {
+        telemetry.addData("EXTENDO","")
         telemetry.addData("Extension Position", motorExtension.currentPosition)
         telemetry.addData("Rotation Position", motorRotation.currentPosition)
     }

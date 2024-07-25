@@ -45,6 +45,7 @@ class LoopTimeController(
     }
 
     fun telemetry(telemetry: Telemetry) {
+        telemetry.addData("LOOP TIME","")
         telemetry.addData("Timer", "%.1f", currentTime)
         telemetry.addData("Loops", loops)
         telemetry.addData("Current LPS", "%.1f", lps)
@@ -53,5 +54,13 @@ class LoopTimeController(
 
     fun spacedObjectOf(name: String): SpacedBooleanObject? {
         return spacedBooleanObjects.find { it.name == name }
+    }
+
+    companion object {
+        fun LoopTimeController.every(period: Int, func: Runnable) {
+            if (this.loops % period == 0) {
+                func.run()
+            }
+        }
     }
 }

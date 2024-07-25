@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.extensions
 
 import com.acmerobotics.roadrunner.Pose2d
 import com.acmerobotics.roadrunner.Vector2d
+import com.qualcomm.hardware.sparkfun.SparkFunOTOS
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.Pose
 import org.firstinspires.ftc.teamcode.utilClass.objects.Point
 
@@ -26,5 +27,9 @@ object PoseExtensions {
 
     fun Pose.toPose2d(): Pose2d {
         return Pose2d(this.x, this.y, this.heading)
+    }
+
+    fun Pose2d.toPose2D(): SparkFunOTOS.Pose2D {
+        return SparkFunOTOS.Pose2D(this.position.x, this.position.y, this.heading.toDouble())
     }
 }

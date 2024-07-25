@@ -8,6 +8,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig.Companion.CAM1
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.ATLocations
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.ATLocations.Companion.getLocation
+import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities.aprilTag
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities.initializeProcessor
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.Processor
@@ -19,8 +20,10 @@ class ReLocalizationSubsystem(ahwMap: HardwareMap) {
     private var currentDetections: List<AprilTagDetection> = emptyList()
     private var numDetections: Int = 0
     private var parsedData: Pair<Double, Double>? = null
-    private var currentSeenID: MutableList<Int>? = mutableListOf()
-    private var localizingID: MutableList<Int>? = mutableListOf()
+    companion object {
+        var currentSeenID: MutableList<Int>? = mutableListOf()
+        var localizingID: MutableList<Int>? = mutableListOf()
+    }
     private val acceptableIDs = listOf(5, 8, 2, 9)
     private val rejectedIDs = listOf(7)
 
@@ -46,7 +49,7 @@ class ReLocalizationSubsystem(ahwMap: HardwareMap) {
         val xThresh = 24
         val yThresh = 36
         if (numDetections > 0 &&
-            rejectedIDs.any {it !in currentSeenID!! } &&
+            rejectedIDs.any { it !in currentSeenID!! } &&
             acceptableIDs.any { it in currentSeenID!! }
         ) {
             if (numDetections == 1) {
@@ -107,26 +110,29 @@ class ReLocalizationSubsystem(ahwMap: HardwareMap) {
     }
 
     fun telemetry(telemetry: Telemetry) {
+        telemetry.addData("RELOCALIZATION","")
+        val mainCamera = CameraUtilities.mainCamera
+        telemetry.addData("Camera", mainCamera.name)
         val currentSeenID = currentSeenID
         telemetry.addData("IDS", currentSeenID)
         val localizingID = localizingID
         telemetry.addData("Localizing ID", localizingID)
     }
 
-    fun draw(packet: TelemetryPacket) {
-        val fieldOverlay = packet.fieldOverlay()
-        ATLocations.allLocations.forEach { (id, locationData) ->
-            val location = locationData.location
-            if (localizingID!!.contains(id)) {
-                fieldOverlay.setStroke("green").setAlpha(1.0)
-            } else if (currentSeenID!!.contains(id)) {
-                fieldOverlay.setStroke("orange").setAlpha(1.0)
-            } else {
-                fieldOverlay.setStroke("blue").setAlpha(0.5)
-            }
-            fieldOverlay.strokeRect(location.y!!, location.x!!, 0.5, 0.5)
-        }
-    }
+//    fun draw(packet: TelemetryPacket) {
+//        val fieldOverlay = packet.fieldOverlay()
+//        ATLocations.allLocations.forEach { (id, locationData) ->
+//            val location = locationData.location
+//            if (localizingID!!.contains(id)) {
+//                fieldOverlay.setStroke("green").setAlpha(1.0)
+//            } else if (currentSeenID!!.contains(id)) {
+//                fieldOverlay.setStroke("orange").setAlpha(1.0)
+//            } else {
+//                fieldOverlay.setStroke("blue").setAlpha(0.5)
+//            }
+//            fieldOverlay.strokeRect(location.y!!, location.x!!, 0.5, 0.5)
+//        }
+//    }
 
     fun relocalize(localizerSubsystem: LocalizerSubsystem) {
         parseDetections()

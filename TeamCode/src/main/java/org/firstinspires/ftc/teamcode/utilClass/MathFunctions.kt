@@ -10,7 +10,6 @@ class MathFunctions {
 //        position = degree_mult * degrees
 //        return position
 //    }
-
     fun averageOf(values: DoubleArray): Double {
         return values.average()
     }

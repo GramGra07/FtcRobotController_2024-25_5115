@@ -13,7 +13,7 @@ class TwoWheelTuner : LinearOpMode() {
         val robot = HardwareConfig(this, false)
         waitForStart()
         while (opModeIsActive()) { //while the op mode is active
-            robot.driveSubsystem.setArtificialPower(0.0,1.0)
+            robot.driveSubsystem.setArtificialPower(0.0, 1.0)
             robot.doBulk()
         }
     }

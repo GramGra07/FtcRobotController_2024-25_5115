@@ -18,31 +18,32 @@ class AvoidanceSubsystem {
         STOP,
         OFF
     }
-
-    private var fields: List<VectorField> = VectorField.massCreate(createFields())
+    companion object {
+        var fields: List<VectorField> = VectorField.massCreate(createFields())
+        private fun createFields(): HashMap<Point, Double> {
+            val fields = hashMapOf<Point, Double>()
+            val points = listOf(
+                Point(24.0, 0.0),
+                Point(48.0, 0.0),
+                Point(-24.0, 0.0),
+                Point(-48.0, 0.0),
+                Point(24.0, -24.0),
+                Point(48.0, -24.0),
+                Point(-24.0, -24.0),
+                Point(-48.0, -24.0)
+            )
+            for (point in points) {
+                fields[point] = rad
+            }
+            return fields
+        }
+        var rad: Double = varConfig.fieldRadius
+    }
 
     init {
         fields = VectorField.massCreate(createFields())
     }
 
-    private var rad: Double = varConfig.fieldRadius
-    private fun createFields(): HashMap<Point, Double> {
-        val fields = hashMapOf<Point, Double>()
-        val points = listOf(
-            Point(24.0, 0.0),
-            Point(48.0, 0.0),
-            Point(-24.0, 0.0),
-            Point(-48.0, 0.0),
-            Point(24.0, -24.0),
-            Point(48.0, -24.0),
-            Point(-24.0, -24.0),
-            Point(-48.0, -24.0)
-        )
-        for (point in points) {
-            fields[point] = rad
-        }
-        return fields
-    }
 
     var powers: Map<String, Double?>? = null
     private var currentAvoidanceTypes: AvoidanceTypes = AvoidanceTypes.OFF
@@ -75,19 +76,20 @@ class AvoidanceSubsystem {
         }
     }
 
-    fun draw(packet: TelemetryPacket) {
-        val rad = rad
-        packet.fieldOverlay()
-            .setFill("red")
-            .setStroke("red")
-            .setAlpha(0.3)
-        for (field in fields) {
-            packet.fieldOverlay()
-                .fillCircle(field.point?.y!!, field.point!!.x!!, rad)
-        }
-    }
+//    fun draw(packet: TelemetryPacket) {
+//        val rad = rad
+//        packet.fieldOverlay()
+//            .setFill("red")
+//            .setStroke("red")
+//            .setAlpha(0.3)
+//        for (field in fields) {
+//            packet.fieldOverlay()
+//                .fillCircle(field.point?.y!!, field.point!!.x!!, rad)
+//        }
+//    }
 
     fun telemetry(telemetry: Telemetry) {
+        telemetry.addData("AVOIDANCE","")
         telemetry.addData("powers", powers)
         telemetry.addData("Avoidance Type", currentAvoidanceTypes.name)
     }

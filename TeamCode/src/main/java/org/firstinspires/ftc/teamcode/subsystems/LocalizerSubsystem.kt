@@ -80,39 +80,40 @@ class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose2d, var type: Localizati
     }
 
     fun setPose(pose: Pose2d) {
-        when (type){
+        when (type) {
             LocalizationType.RR -> drive.pose = pose
             LocalizationType.PP -> poseUpdater.pose = pose.toPose()
         }
     }
 
     fun telemetry(telemetry: Telemetry) {
-        telemetry.addData("Pose: ", this.pose().toPoint().toString())
+        telemetry.addData("LOCALIZATION","")
         when (type) {
             LocalizationType.RR -> telemetry.addData("Using", "RoadRunner")
             LocalizationType.PP -> telemetry.addData("Using", "PedroPathing")
         }
+        telemetry.addData("Pose: ", this.pose().toPoint().toString())
         telemetry.addData("totalDistance (in)", "%.1f", DistanceStorage.totalDist)
         telemetry.addData("Current Speed (mph)", "%.1f", currentSpeed)
     }
-
-    fun draw(packet: TelemetryPacket) {
-        val color = when (type) {
-            LocalizationType.RR -> "blue"
-            LocalizationType.PP -> "green"
-        }
-        val roboRad = 8.0
-        val t = this.pose()
-        val halfv: Vector2d = t.heading.vec().times(0.5 * roboRad)
-        val p1: Vector2d = t.position.plus(halfv)
-        val (x, y) = p1.plus(halfv)
-        packet.fieldOverlay()
-            .setStrokeWidth(1)
-            .setStroke(color)
-            .setFill(color)
-            .setAlpha(1.0)
-            .strokeCircle(t.position.x, t.position.y, roboRad).strokeLine(p1.x, p1.y, x, y)
-    }
+//
+//    fun draw(packet: TelemetryPacket) {
+//        val color = when (type) {
+//            LocalizationType.RR -> "blue"
+//            LocalizationType.PP -> "green"
+//        }
+//        val roboRad = 8.0
+//        val t = this.pose()
+//        val halfv: Vector2d = t.heading.vec().times(0.5 * roboRad)
+//        val p1: Vector2d = t.position.plus(halfv)
+//        val (x, y) = p1.plus(halfv)
+//        packet.fieldOverlay()
+//            .setStrokeWidth(1)
+//            .setStroke(color)
+//            .setFill(color)
+//            .setAlpha(1.0)
+//            .strokeCircle(t.position.x, t.position.y, roboRad).strokeLine(p1.x, p1.y, x, y)
+//    }
 
     fun heading(): Double {
         return when (type) {
