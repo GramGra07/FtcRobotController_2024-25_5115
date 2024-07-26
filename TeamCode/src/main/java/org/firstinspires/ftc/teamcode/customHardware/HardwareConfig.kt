@@ -9,6 +9,7 @@ import com.acmerobotics.roadrunner.Vector2d
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS
+import com.qualcomm.hardware.sparkfun.SparkFunOTOS.Pose2D
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.VoltageSensor
@@ -327,20 +328,19 @@ open class HardwareConfig(
         val (x, y) = p1.plus(halfv)
 
         val t = sparkFunOTOS.getPose()
-        val headingRad = toRadians(t.h)
-        val shiftX = 0.5 * roboRad * cos(headingRad)
-        val shiftY = 0.5 * roboRad * sin(headingRad)
-        val p1sX = t.x + shiftX
-        val p1sY = t.y + shiftY
-        val xs = p1sX + shiftX
-        val ys = p1sY + shiftY
+        val h = t.h
+        val half = roboRad/2
+        val cos = cos(h)
+        val sin = sin(h)
+        val p1s = Pose2D(sin*half,cos*half,0.0)
+        val newS = Pose2D(sin*roboRad,cos*roboRad,0.0)
 
         fieldOverlay
             .setStrokeWidth(1)
             .setAlpha(1.0)
             .setStroke("orange")
             .setFill("orange")
-            .strokeCircle(t.x, t.y, roboRad).strokeLine(p1sY, p1sX, xs, ys)
+            .strokeCircle(t.x, t.y, roboRad).strokeLine(p1s.x, p1s.y, newS.x, newS.y)
             .setStroke(color)
             .setFill(color)
             .strokeCircle(l.position.x, l.position.y, roboRad).strokeLine(p1.x, p1.y, x, y)
