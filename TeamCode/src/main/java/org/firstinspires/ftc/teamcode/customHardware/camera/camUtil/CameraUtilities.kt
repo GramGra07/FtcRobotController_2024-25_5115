@@ -45,7 +45,6 @@ object CameraUtilities {
     lateinit var aprilTag: AprilTagProcessor
     private lateinit var objProcessor: VPObjectDetect
     private lateinit var pubProcessor: MeanColorOfAreaDetector
-
     fun initializeProcessor(
         processor: Processor?,
         ahwMap: HardwareMap,
@@ -64,7 +63,6 @@ object CameraUtilities {
                         .setOutputUnits(DistanceUnit.INCH, AngleUnit.DEGREES)
                         .setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)
                         .setTagLibrary(AprilTagGameDatabase.getCenterStageTagLibrary())
-                        //                    .setLensIntrinsics(972.571, 972.571, 667.598, 309.012)
                         .setLensIntrinsics(
                             mainCamera.lensIntrinsics.fx, mainCamera.lensIntrinsics.fy,
                             mainCamera.lensIntrinsics.cx, mainCamera.lensIntrinsics.cy
@@ -76,6 +74,7 @@ object CameraUtilities {
                 // Decimation = 3 ..  Detect 2" Tag from 4  feet away at 30 Frames Per Second (default)
                 // Decimation = 3 ..  Detect 5" Tag from 10 feet away at 30 Frames Per Second (default)
                 aprilTag.setDecimation(3.0F)
+                aprilTag.setPoseSolver(AprilTagProcessor.PoseSolver.APRILTAG_BUILTIN)
                 runningProcessors.add(aprilTag)
             }
 
