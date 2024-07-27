@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.followers.pedroPathing.follower;
 
+
 import static org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants.drivePIDFSwitch;
 import static org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants.forwardZeroPowerAcceleration;
 import static org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants.headingPIDFSwitch;
@@ -34,6 +35,8 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Vect
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.DashboardPoseTracker;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.Drawing;
+import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.FilteredPIDFController;
+import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.KalmanFilter;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.PIDFController;
 import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain;
 import org.firstinspires.ftc.teamcode.utilClass.drivetrain.Drivetrain;
@@ -53,63 +56,86 @@ import java.util.List;
  */
 @Config
 public class Follower {
-    public static boolean drawOnDashboard = true;
-    public static boolean useTranslational = true;
-    public static boolean useCentripetal = true;
-    public static boolean useHeading = true;
-    public static boolean useDrive = true;
-    private final int BEZIER_CURVE_BINARY_STEP_LIMIT = FollowerConstants.BEZIER_CURVE_BINARY_STEP_LIMIT;
-    private final int AVERAGED_VELOCITY_SAMPLE_NUMBER = FollowerConstants.AVERAGED_VELOCITY_SAMPLE_NUMBER;
-    private final HardwareMap hardwareMap;
-    private final double holdPointTranslationalScaling = FollowerConstants.holdPointTranslationalScaling;
-    private final double holdPointHeadingScaling = FollowerConstants.holdPointHeadingScaling;
-    private final ArrayList<Vector> velocities = new ArrayList<>();
-    private final ArrayList<Vector> accelerations = new ArrayList<>();
-    private final PIDFController smallTranslationalPIDF = new PIDFController(FollowerConstants.smallTranslationalPIDFCoefficients);
-    private final PIDFController smallTranslationalIntegral = new PIDFController(FollowerConstants.smallTranslationalIntegral);
-    private final PIDFController largeTranslationalPIDF = new PIDFController(FollowerConstants.largeTranslationalPIDFCoefficients);
-    private final PIDFController largeTranslationalIntegral = new PIDFController(FollowerConstants.largeTranslationalIntegral);
-    private final PIDFController smallHeadingPIDF = new PIDFController(FollowerConstants.smallHeadingPIDFCoefficients);
-    private final PIDFController largeHeadingPIDF = new PIDFController(FollowerConstants.largeHeadingPIDFCoefficients);
-    private final PIDFController smallDrivePIDF = new PIDFController(FollowerConstants.smallDrivePIDFCoefficients);
-    private final PIDFController largeDrivePIDF = new PIDFController(FollowerConstants.largeDrivePIDFCoefficients);
-    public double driveError;
-    public double headingError;
-    public Vector driveVector;
-    public Vector headingVector;
-    public Vector translationalVector;
-    public Vector centripetalVector;
-    public Vector correctiveVector;
+    private HardwareMap hardwareMap;
+
     private DcMotorEx leftFront;
     private DcMotorEx leftRear;
     private DcMotorEx rightFront;
     private DcMotorEx rightRear;
     private List<DcMotorEx> motors;
+
     private DriveVectorScaler driveVectorScaler;
+
     private PoseUpdater poseUpdater;
     private DashboardPoseTracker dashboardPoseTracker;
+
     private Pose closestPose;
+
     private Path currentPath;
+
     private PathChain currentPathChain;
+
+    private final int BEZIER_CURVE_BINARY_STEP_LIMIT = FollowerConstants.BEZIER_CURVE_BINARY_STEP_LIMIT;
+    private final int AVERAGED_VELOCITY_SAMPLE_NUMBER = FollowerConstants.AVERAGED_VELOCITY_SAMPLE_NUMBER;
+
     private int chainIndex;
+
     private long[] pathStartTimes;
+
     private boolean followingPathChain;
     private boolean holdingPosition;
     private boolean isBusy;
     private boolean auto = true;
     private boolean reachedParametricPathEnd;
     private boolean holdPositionAtEnd;
+
     private double maxPower = 1;
     private double previousSmallTranslationalIntegral;
     private double previousLargeTranslationalIntegral;
+    private double holdPointTranslationalScaling = FollowerConstants.holdPointTranslationalScaling;
+    private double holdPointHeadingScaling = FollowerConstants.holdPointHeadingScaling;
+    public double driveError;
+    public double headingError;
+
     private long reachedParametricPathEndTime;
+
     private double[] drivePowers;
+
     private Vector[] teleOpMovementVectors = new Vector[]{new Vector(), new Vector(), new Vector()};
+
+    private ArrayList<Vector> velocities = new ArrayList<>();
+    private ArrayList<Vector> accelerations = new ArrayList<>();
+
     private Vector averageVelocity;
     private Vector averagePreviousVelocity;
     private Vector averageAcceleration;
     private Vector smallTranslationalIntegralVector;
     private Vector largeTranslationalIntegralVector;
+    public Vector driveVector;
+    public Vector headingVector;
+    public Vector translationalVector;
+    public Vector centripetalVector;
+    public Vector correctiveVector;
+
+    private PIDFController smallTranslationalPIDF = new PIDFController(FollowerConstants.smallTranslationalPIDFCoefficients);
+    private PIDFController smallTranslationalIntegral = new PIDFController(FollowerConstants.smallTranslationalIntegral);
+    private PIDFController largeTranslationalPIDF = new PIDFController(FollowerConstants.largeTranslationalPIDFCoefficients);
+    private PIDFController largeTranslationalIntegral = new PIDFController(FollowerConstants.largeTranslationalIntegral);
+    private PIDFController smallHeadingPIDF = new PIDFController(FollowerConstants.smallHeadingPIDFCoefficients);
+    private PIDFController largeHeadingPIDF = new PIDFController(FollowerConstants.largeHeadingPIDFCoefficients);
+    private FilteredPIDFController smallDrivePIDF = new FilteredPIDFController(FollowerConstants.smallDrivePIDFCoefficients);
+    private FilteredPIDFController largeDrivePIDF = new FilteredPIDFController(FollowerConstants.largeDrivePIDFCoefficients);
+
+    private KalmanFilter driveKalmanFilter = new KalmanFilter(FollowerConstants.driveKalmanFilterParameters);
+    private double[] driveErrors;
+    private double rawDriveError;
+    private double previousRawDriveError;
+
+    public static boolean drawOnDashboard = true;
+    public static boolean useTranslational = true;
+    public static boolean useCentripetal = true;
+    public static boolean useHeading = true;
+    public static boolean useDrive = true;
 
     /**
      * This creates a new Follower given a HardwareMap.
@@ -276,30 +302,12 @@ public class Follower {
     }
 
     /**
-     * This returns the x offset.
-     *
-     * @return returns the x offset.
-     */
-    public double getXOffset() {
-        return poseUpdater.getXOffset();
-    }
-
-    /**
      * This sets the offset for only the x position.
      *
      * @param xOffset This sets the offset.
      */
     public void setXOffset(double xOffset) {
         poseUpdater.setXOffset(xOffset);
-    }
-
-    /**
-     * This returns the y offset.
-     *
-     * @return returns the y offset.
-     */
-    public double getYOffset() {
-        return poseUpdater.getYOffset();
     }
 
     /**
@@ -312,21 +320,39 @@ public class Follower {
     }
 
     /**
-     * This returns the heading offset.
-     *
-     * @return returns the heading offset.
-     */
-    public double getHeadingOffset() {
-        return poseUpdater.getHeadingOffset();
-    }
-
-    /**
      * This sets the offset for only the heading.
      *
      * @param headingOffset This sets the offset.
      */
     public void setHeadingOffset(double headingOffset) {
         poseUpdater.setHeadingOffset(headingOffset);
+    }
+
+    /**
+     * This returns the x offset.
+     *
+     * @return returns the x offset.
+     */
+    public double getXOffset() {
+        return poseUpdater.getXOffset();
+    }
+
+    /**
+     * This returns the y offset.
+     *
+     * @return returns the y offset.
+     */
+    public double getYOffset() {
+        return poseUpdater.getYOffset();
+    }
+
+    /**
+     * This returns the heading offset.
+     *
+     * @return returns the heading offset.
+     */
+    public double getHeadingOffset() {
+        return poseUpdater.getHeadingOffset();
     }
 
     /**
@@ -564,6 +590,13 @@ public class Follower {
         correctiveVector = new Vector();
         driveError = 0;
         headingError = 0;
+        rawDriveError = 0;
+        previousRawDriveError = 0;
+        driveErrors = new double[2];
+        for (int i = 0; i < driveErrors.length; i++) {
+            driveErrors[i] = 0;
+        }
+        driveKalmanFilter.reset();
 
         for (int i = 0; i < motors.size(); i++) {
             motors.get(i).setPower(0);
@@ -649,7 +682,19 @@ public class Follower {
         Vector lateralVelocityError = new Vector(lateralVelocityGoal - lateralVelocityZeroPowerDecay - lateralVelocity, lateralHeadingVector.getTheta());
         Vector velocityErrorVector = MathFunctions.addVectors(forwardVelocityError, lateralVelocityError);
 
-        return velocityErrorVector.getMagnitude() * MathFunctions.getSign(MathFunctions.dotProduct(velocityErrorVector, currentPath.getClosestPointTangentVector()));
+        previousRawDriveError = rawDriveError;
+        rawDriveError = velocityErrorVector.getMagnitude() * MathFunctions.getSign(MathFunctions.dotProduct(velocityErrorVector, currentPath.getClosestPointTangentVector()));
+
+        double projection = 2 * driveErrors[2] - driveErrors[1];
+
+        driveKalmanFilter.update(rawDriveError - previousRawDriveError, projection);
+
+        for (int i = 0; i < driveErrors.length - 1; i++) {
+            driveErrors[i] = driveErrors[i + 1];
+        }
+        driveErrors[2] = driveKalmanFilter.getState();
+
+        return driveKalmanFilter.getState();
     }
 
     /**
@@ -773,7 +818,7 @@ public class Follower {
         } else {
             double yPrime = averageVelocity.getYComponent() / averageVelocity.getXComponent();
             double yDoublePrime = averageAcceleration.getYComponent() / averageVelocity.getXComponent();
-            curvature = (Math.pow(Math.sqrt(1 + Math.pow(yPrime, 2)), 3)) / (yDoublePrime);
+            curvature = (yDoublePrime) / (Math.pow(Math.sqrt(1 + Math.pow(yPrime, 2)), 3));
         }
         if (Double.isNaN(curvature)) return new Vector();
         centripetalVector = new Vector(MathFunctions.clamp(FollowerConstants.centripetalScaling * FollowerConstants.mass * Math.pow(MathFunctions.dotProduct(poseUpdater.getVelocity(), MathFunctions.normalizeVector(currentPath.getClosestPointTangentVector())), 2) * curvature, -1, 1), currentPath.getClosestPointTangentVector().getTheta() + Math.PI / 2 * MathFunctions.getSign(currentPath.getClosestPointNormalVector().getTheta()));
@@ -854,26 +899,27 @@ public class Follower {
      *                  method will use to output the debug data.
      */
     public void telemetryDebug(MultipleTelemetry telemetry) {
-//        telemetry.addData("follower busy", isBusy());
-//        telemetry.addData("heading error", headingError);
-//        telemetry.addData("heading vector magnitude", headingVector.getMagnitude());
-//        telemetry.addData("corrective vector magnitude", correctiveVector.getMagnitude());
-//        telemetry.addData("corrective vector heading", correctiveVector.getTheta());
-//        telemetry.addData("translational error magnitude", getTranslationalError().getMagnitude());
-//        telemetry.addData("translational error direction", getTranslationalError().getTheta());
-//        telemetry.addData("translational vector magnitude", translationalVector.getMagnitude());
-//        telemetry.addData("translational vector heading", translationalVector.getMagnitude());
-//        telemetry.addData("centripetal vector magnitude", centripetalVector.getMagnitude());
-//        telemetry.addData("centripetal vector heading", centripetalVector.getTheta());
-//        telemetry.addData("drive error", driveError);
-//        telemetry.addData("drive vector magnitude", driveVector.getMagnitude());
-//        telemetry.addData("drive vector heading", driveVector.getTheta());
-//        telemetry.addData("x", getPose().getX());
-//        telemetry.addData("y", getPose().getY());
-//        telemetry.addData("heading", getPose().getHeading());
-//        telemetry.addData("total heading", poseUpdater.getTotalHeading());
-//        telemetry.addData("velocity magnitude", getVelocity().getMagnitude());
-//        telemetry.addData("velocity heading", getVelocity().getTheta());
+        telemetry.addData("follower busy", isBusy());
+        telemetry.addData("heading error", headingError);
+        telemetry.addData("heading vector magnitude", headingVector.getMagnitude());
+        telemetry.addData("corrective vector magnitude", correctiveVector.getMagnitude());
+        telemetry.addData("corrective vector heading", correctiveVector.getTheta());
+        telemetry.addData("translational error magnitude", getTranslationalError().getMagnitude());
+        telemetry.addData("translational error direction", getTranslationalError().getTheta());
+        telemetry.addData("translational vector magnitude", translationalVector.getMagnitude());
+        telemetry.addData("translational vector heading", translationalVector.getMagnitude());
+        telemetry.addData("centripetal vector magnitude", centripetalVector.getMagnitude());
+        telemetry.addData("centripetal vector heading", centripetalVector.getTheta());
+        telemetry.addData("drive error", driveError);
+        telemetry.addData("drive vector magnitude", driveVector.getMagnitude());
+        telemetry.addData("drive vector heading", driveVector.getTheta());
+        telemetry.addData("x", getPose().getX());
+        telemetry.addData("y", getPose().getY());
+        telemetry.addData("heading", getPose().getHeading());
+        telemetry.addData("total heading", poseUpdater.getTotalHeading());
+        telemetry.addData("velocity magnitude", getVelocity().getMagnitude());
+        telemetry.addData("velocity heading", getVelocity().getTheta());
+        driveKalmanFilter.debug(telemetry);
         telemetry.update();
         if (drawOnDashboard) {
             Drawing.drawDebug(this);

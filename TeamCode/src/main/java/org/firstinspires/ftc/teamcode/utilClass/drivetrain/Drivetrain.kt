@@ -2,8 +2,10 @@ package org.firstinspires.ftc.teamcode.utilClass.drivetrain
 
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot.LogoFacingDirection
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot.UsbFacingDirection
+import com.qualcomm.hardware.sparkfun.SparkFunOTOS
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.Pose
+import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.CustomFilteredPIDFCoefficients
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.CustomPIDFCoefficients
 import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain
 import org.firstinspires.ftc.teamcode.utilClass.objects.Permission
@@ -14,6 +16,7 @@ class Drivetrain(
     val drivePARAMS: DrivePARAMS,
     var pedroPathingPARAMS: PedroPathingPARAMS,
     var driveConfigPARAMS: DriveConfigPARAMS,
+    var sparkFunOTOSParams: SparkFunOTOSParams,
     var permissions: MutableList<Permission>,
 ) {
     fun telemetry(telemetry: Telemetry) {
@@ -93,17 +96,17 @@ class Drivetrain(
                         0.0,
                         0.0
                     ),
-                    CustomPIDFCoefficients(
+                    CustomFilteredPIDFCoefficients(
                         0.02,
                         0.0,
                         0.000005,
-                        0.0
+                        0.0,0.0
                     ),
-                    CustomPIDFCoefficients(
+                    CustomFilteredPIDFCoefficients(
                         0.025,
                         0.0,
                         0.00001,
-                        0.0
+                        0.0,0.0
                     ),
                     4.0,
                     0.0005
@@ -114,6 +117,7 @@ class Drivetrain(
                     LogoFacingDirection.UP,
                     UsbFacingDirection.LEFT
                 ),
+                SparkFunOTOSParams("spark", SparkFunOTOS.Pose2D(1.5, -7.5, 0.0),1.0,1.0),
                 mutableListOf(Permission.RELOCALIZATION),
             ),
             Drivetrain(
@@ -174,17 +178,17 @@ class Drivetrain(
                         0.0,
                         0.0
                     ),
-                    CustomPIDFCoefficients(
+                    CustomFilteredPIDFCoefficients(
                         0.02,
                         0.0,
                         0.000005,
-                        0.0
+                        0.0,0.0
                     ),
-                    CustomPIDFCoefficients(
+                    CustomFilteredPIDFCoefficients(
                         0.025,
                         0.0,
                         0.00001,
-                        0.0
+                        0.0,0.0
                     ),
                     4.0,
                     0.0005,
@@ -195,6 +199,7 @@ class Drivetrain(
                     LogoFacingDirection.RIGHT,
                     UsbFacingDirection.UP
                 ),
+                SparkFunOTOSParams("spark", SparkFunOTOS.Pose2D(1.5, -7.5, 0.0),1.0,1.0),
                 mutableListOf(
                     Permission.EXTRAS,
                     Permission.EXTENDO,

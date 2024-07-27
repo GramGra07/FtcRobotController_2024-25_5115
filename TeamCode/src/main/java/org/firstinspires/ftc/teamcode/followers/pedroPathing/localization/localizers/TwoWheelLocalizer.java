@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.followers.pedroPathing.localization;
+package org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.localizers;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
@@ -8,6 +8,10 @@ import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig;
+import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.Encoder;
+import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.Localizer;
+import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.Matrix;
+import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.Pose;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.MathFunctions;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Vector;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.NanoTimer;

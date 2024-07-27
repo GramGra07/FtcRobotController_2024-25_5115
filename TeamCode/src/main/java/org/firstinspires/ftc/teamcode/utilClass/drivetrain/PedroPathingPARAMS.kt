@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.utilClass.drivetrain
 
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.Pose
+import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.CustomFilteredPIDFCoefficients
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.CustomPIDFCoefficients
 
 data class PedroPathingPARAMS(
@@ -17,8 +18,8 @@ data class PedroPathingPARAMS(
     var largeTranslationalPIDFCoefficients: CustomPIDFCoefficients,
     var smallHeadingPIDFCoefficients: CustomPIDFCoefficients,
     var largeHeadingPIDFCoefficients: CustomPIDFCoefficients,
-    var smallDrivePIDFCoefficients: CustomPIDFCoefficients,
-    var largeDrivePIDFCoefficients: CustomPIDFCoefficients,
+    var smallDrivePIDFCoefficients: CustomFilteredPIDFCoefficients,
+    var largeDrivePIDFCoefficients: CustomFilteredPIDFCoefficients,
     var zeroPowerAccelerationMultiplier: Double,
     var centripetalScaling: Double,
 )

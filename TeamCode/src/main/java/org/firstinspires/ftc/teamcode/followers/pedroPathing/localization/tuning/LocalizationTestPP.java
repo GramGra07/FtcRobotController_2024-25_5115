@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.localizer;
+package org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.tuning;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;

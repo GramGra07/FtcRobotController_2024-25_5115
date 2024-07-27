@@ -5,7 +5,9 @@ import com.acmerobotics.dashboard.config.Config;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.MathFunctions;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Point;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Vector;
+import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.CustomFilteredPIDFCoefficients;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.CustomPIDFCoefficients;
+import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.KalmanFilterParameters;
 import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain;
 
 /**
@@ -60,13 +62,16 @@ public class FollowerConstants {
     // Feed forward constant added on to the small heading PIDF
     public static double smallHeadingPIDFFeedForward = 0.01;
     // Large drive PIDF coefficients
-    public static CustomPIDFCoefficients largeDrivePIDFCoefficients = CurrentDrivetrain.Companion.getCurrentDrivetrain().getPedroPathingPARAMS().getLargeDrivePIDFCoefficients();
+    public static CustomFilteredPIDFCoefficients largeDrivePIDFCoefficients = CurrentDrivetrain.Companion.getCurrentDrivetrain().getPedroPathingPARAMS().getLargeDrivePIDFCoefficients();
     // Feed forward constant added on to the large drive PIDF
     public static double largeDrivePIDFFeedForward = 0.01;
     // the limit at which the heading PIDF switches between the large and small drive PIDFs
     public static double drivePIDFSwitch = 20;
     // Small drive PIDF coefficients
-    public static CustomPIDFCoefficients smallDrivePIDFCoefficients = CurrentDrivetrain.Companion.getCurrentDrivetrain().getPedroPathingPARAMS().getSmallDrivePIDFCoefficients();
+    public static CustomFilteredPIDFCoefficients smallDrivePIDFCoefficients = CurrentDrivetrain.Companion.getCurrentDrivetrain().getPedroPathingPARAMS().getSmallDrivePIDFCoefficients();
+    public static KalmanFilterParameters driveKalmanFilterParameters = new KalmanFilterParameters(
+            6,
+            1);
     // Feed forward constant added on to the small drive PIDF
     public static double smallDrivePIDFFeedForward = 0.01;
     // Mass of robot in kilograms

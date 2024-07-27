@@ -10,6 +10,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig.Companion
+import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain
 
 object OTOSExtension {
     fun initOTOS(
@@ -30,8 +31,8 @@ object OTOSExtension {
         t.offset = offset
         //For example, if you move the robot 100 inches and
         // the sensor reports 103 inches, set the linear scalar to 100/103 = 0.971
-        t.setLinearScalar(1.0)
-        t.setAngularScalar(1.0)
+        t.setLinearScalar(CurrentDrivetrain.currentDrivetrain.sparkFunOTOSParams.linearScalar)
+        t.setAngularScalar(CurrentDrivetrain.currentDrivetrain.sparkFunOTOSParams.angularScalar)
         t.calibrateImu()
 
         t.resetTracking()

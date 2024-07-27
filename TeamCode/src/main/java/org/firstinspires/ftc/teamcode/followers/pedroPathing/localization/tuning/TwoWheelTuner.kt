@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.localizer
+package org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.tuning
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp

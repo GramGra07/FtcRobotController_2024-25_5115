@@ -1,12 +1,10 @@
 package org.firstinspires.ftc.teamcode.subsystems
 
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.acmerobotics.roadrunner.Pose2d
 import com.acmerobotics.roadrunner.Vector2d
 import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig.Companion.CAM1
-import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.ATLocations
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.ATLocations.Companion.getLocation
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities.aprilTag
@@ -20,12 +18,13 @@ class ReLocalizationSubsystem(ahwMap: HardwareMap) {
     private var currentDetections: List<AprilTagDetection> = emptyList()
     private var numDetections: Int = 0
     private var parsedData: Pair<Double, Double>? = null
+
     companion object {
-        var currentSeenID: MutableList<Int>? = mutableListOf()
-        var localizingID: MutableList<Int>? = mutableListOf()
+        var currentSeenID: MutableList<Int> = mutableListOf()
+        var localizingID: MutableList<Int> = mutableListOf()
     }
+
     private val acceptableIDs = listOf(5, 8, 2, 9)
-    private val rejectedIDs = listOf(7)
 
     init {
         initializeProcessor(Processor.APRIL_TAG, ahwMap, CAM1, true)
@@ -33,72 +32,68 @@ class ReLocalizationSubsystem(ahwMap: HardwareMap) {
 
     private fun getDetections(): Map<String, Double?>? {
         currentDetections = aprilTag.detections
-        currentSeenID = mutableListOf()
-        localizingID = mutableListOf()
-        if (currentDetections.isNotEmpty()) {
-            for (detection in currentDetections) {
-                currentSeenID!!.add(detection.id)
-            }
+        currentSeenID.clear()
+        localizingID.clear()
+        numDetections = currentDetections.size
+        if (numDetections == 0) return null
+        for (detection in currentDetections) {
+            currentSeenID.add(detection.id)
         }
         val id: Int
-        numDetections = currentDetections.size
-        var returnable: MutableMap<String, Double?>? = mutableMapOf()
         var xDif: Double?
         var yDif: Double?
         val correctedPose: Point
         val xThresh = 24
         val yThresh = 36
-        if (numDetections > 0 &&
-            rejectedIDs.any { it !in currentSeenID!! } &&
-            acceptableIDs.any { it in currentSeenID!! }
-        ) {
-            if (numDetections == 1) {
-                id = currentDetections[0].id
-                xDif = currentDetections[0].ftcPose.x
-                yDif = currentDetections[0].ftcPose.y
-                if (abs(xDif) < xThresh || abs(yDif) < yThresh) {
-                    localizingID!!.add(id)
-                    correctedPose = getCorrectedPose(getLocation(id - 1), xDif, yDif, id - 1)
-                    xDif = correctedPose.x
-                    yDif = correctedPose.y
-                    returnable = mapOf("X" to xDif, "Y" to yDif).toMutableMap()
-                }
+        if (acceptableIDs.any { it in currentSeenID }) {
+            val detection = if (numDetections == 1) {
+                currentDetections[0]
             } else {
-                val detection =
-                    currentDetections.find { acceptableIDs.contains(it.id) }
-                        ?: return null
-                id = detection.id
-                xDif = detection.ftcPose.x
-                yDif = detection.ftcPose.y
-                if (abs(xDif) < xThresh || abs(yDif) < yThresh) {
-                    localizingID!!.add(id)
-                    correctedPose = getCorrectedPose(getLocation(id), xDif, yDif, id)
-                    xDif = correctedPose.x
-                    yDif = correctedPose.y
-                    returnable = mapOf("X" to xDif, "Y" to yDif).toMutableMap()
-                }
+                currentDetections.find { acceptableIDs.contains(it.id) } ?: return null
             }
+            xDif = detection.ftcPose.x
+            yDif = detection.ftcPose.y
+            if (abs(xDif) >= xThresh && abs(yDif) >= yThresh) return null
+            id = detection.id
+            val detectionID = if (numDetections == 1){
+                id-1
+            }else{
+                id
+            }
+            localizingID.add(id)
+            correctedPose = getCorrectedPose(getLocation(detectionID), xDif, yDif, detectionID)
+            xDif = correctedPose.x
+            yDif = correctedPose.y
+            return mapOf("X" to xDif, "Y" to yDif).toMutableMap()
+        } else {
+            return null
         }
-        return returnable
     }
 
     private fun getCorrectedPose(point: Point, x: Double, y: Double, id: Int): Point {
-        var newX: Double
-        var newY: Double
-        val xDirOnRobot = 6
-        val yDirOnRobot = 7
-        if (id in 1..6) {
-            newX = point.x!! + x
-            newY = point.y!! - y
-            newX += xDirOnRobot
-            newY -= yDirOnRobot
+        val offsetPoint = Pair(6.0,7.0)
+        val (offsetX, offsetY) = if (id in 1..6) {
+            Pair(offsetPoint.first, -offsetPoint.second)
         } else {
-            newX = point.x!! + x
-            newY = point.y!! + y
-            newX -= xDirOnRobot
-            newY += yDirOnRobot
+            Pair(-offsetPoint.first, offsetPoint.second)
         }
-        return Point(newX, newY)
+        return Point(point.x!! + x + offsetX, point.y!! + y + offsetY)
+//        var newX: Double
+//        var newY: Double
+//        val xOffsetOnRobot = 6
+//        val yOffsetOnRobot = 7
+//        if (id in 1..6) {
+//            newX = point.x!! + x
+//            newY = point.y!! - y
+//            newX += xOffsetOnRobot
+//            newY -= yOffsetOnRobot
+//        } else {
+//            newX = point.x!! + x
+//            newY = point.y!! + y
+//            newX -= xOffsetOnRobot
+//            newY += yOffsetOnRobot
+//        }
+//        return Point(newX, newY)
     }
 
     private fun parseDetections(): Pair<Double, Double>? {
@@ -110,7 +105,7 @@ class ReLocalizationSubsystem(ahwMap: HardwareMap) {
     }
 
     fun telemetry(telemetry: Telemetry) {
-        telemetry.addData("RELOCALIZATION","")
+        telemetry.addData("RELOCALIZATION", "")
         val mainCamera = CameraUtilities.mainCamera
         telemetry.addData("Camera", mainCamera.name)
         val currentSeenID = currentSeenID
@@ -135,8 +130,7 @@ class ReLocalizationSubsystem(ahwMap: HardwareMap) {
 //    }
 
     fun relocalize(localizerSubsystem: LocalizerSubsystem) {
-        parseDetections()
-        val parsed = parsedData
+        val parsed = parseDetections()
         if (parsed != null) {
             localizerSubsystem.setPose(
                 Pose2d(

@@ -147,7 +147,7 @@ open class HardwareConfig(
         if (drivetrainHasPermission(Permission.RELOCALIZATION)) reLocalizationSubsystem =
             ReLocalizationSubsystem(ahwMap)
         if (isTesterDrivetrain())
-            sparkFunOTOS = initOTOS(ahwMap, "spark", SparkFunOTOS.Pose2D(1.5,-7.5,0.0), startPose.toPose2D())
+            sparkFunOTOS = initOTOS(ahwMap, CurrentDrivetrain.currentDrivetrain.sparkFunOTOSParams.name,CurrentDrivetrain.currentDrivetrain.sparkFunOTOSParams.offset, startPose.toPose2D())
         avoidanceSubsystem = AvoidanceSubsystem()
 
         telemetry =
@@ -321,6 +321,7 @@ open class HardwareConfig(
         val color = when (localizerSubsystem.type) {
             LocalizationType.RR -> "blue"
             LocalizationType.PP -> "green"
+            LocalizationType.PPOTOS -> "purple"
         }
         val l = localizerSubsystem.pose()
         val halfv: Vector2d = l.heading.vec().times(0.5 * roboRad)
