@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode.subsystems.loopTime
 
+import com.acmerobotics.dashboard.config.Config
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.Telemetry
 
+@Config
 class LoopTimeController(
     timer: ElapsedTime,
     periodics: List<PeriodicLoopTimeObject>,
@@ -16,6 +18,9 @@ class LoopTimeController(
     private val correctedLPS: Double = 5.0
     private val periodics: List<PeriodicLoopTimeObject>
     private val spacedBooleanObjects: List<SpacedBooleanObject>
+
+    @JvmField
+    var loopSaver: Boolean = false
 
     init {
         this.timer = timer
@@ -45,7 +50,7 @@ class LoopTimeController(
     }
 
     fun telemetry(telemetry: Telemetry) {
-        telemetry.addData("LOOP TIME","")
+        telemetry.addData("LOOP TIME", "")
         telemetry.addData("Timer", "%.1f", currentTime)
         telemetry.addData("Loops", loops)
         telemetry.addData("Current LPS", "%.1f", lps)

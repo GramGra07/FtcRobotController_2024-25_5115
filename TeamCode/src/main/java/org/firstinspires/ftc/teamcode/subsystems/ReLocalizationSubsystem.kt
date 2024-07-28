@@ -55,9 +55,9 @@ class ReLocalizationSubsystem(ahwMap: HardwareMap) {
             yDif = detection.ftcPose.y
             if (abs(xDif) >= xThresh && abs(yDif) >= yThresh) return null
             id = detection.id
-            val detectionID = if (numDetections == 1){
-                id-1
-            }else{
+            val detectionID = if (numDetections == 1) {
+                id - 1
+            } else {
                 id
             }
             localizingID.add(id)
@@ -71,7 +71,7 @@ class ReLocalizationSubsystem(ahwMap: HardwareMap) {
     }
 
     private fun getCorrectedPose(point: Point, x: Double, y: Double, id: Int): Point {
-        val offsetPoint = Pair(6.0,7.0)
+        val offsetPoint = Pair(6.0, 7.0)
         val (offsetX, offsetY) = if (id in 1..6) {
             Pair(offsetPoint.first, -offsetPoint.second)
         } else {

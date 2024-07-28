@@ -100,13 +100,13 @@ class Drivetrain(
                         0.02,
                         0.0,
                         0.000005,
-                        0.0,0.0
+                        0.0, 0.0
                     ),
                     CustomFilteredPIDFCoefficients(
                         0.025,
                         0.0,
                         0.00001,
-                        0.0,0.0
+                        0.0, 0.0
                     ),
                     4.0,
                     0.0005
@@ -117,7 +117,7 @@ class Drivetrain(
                     LogoFacingDirection.UP,
                     UsbFacingDirection.LEFT
                 ),
-                SparkFunOTOSParams("spark", SparkFunOTOS.Pose2D(1.5, -7.5, 0.0),1.0,1.0),
+                SparkFunOTOSParams("spark", SparkFunOTOS.Pose2D(1.5, -7.5, 0.0), 1.0, 1.0),
                 mutableListOf(Permission.RELOCALIZATION),
             ),
             Drivetrain(
@@ -182,13 +182,13 @@ class Drivetrain(
                         0.02,
                         0.0,
                         0.000005,
-                        0.0,0.0
+                        0.0, 0.0
                     ),
                     CustomFilteredPIDFCoefficients(
                         0.025,
                         0.0,
                         0.00001,
-                        0.0,0.0
+                        0.0, 0.0
                     ),
                     4.0,
                     0.0005,
@@ -199,7 +199,7 @@ class Drivetrain(
                     LogoFacingDirection.RIGHT,
                     UsbFacingDirection.UP
                 ),
-                SparkFunOTOSParams("spark", SparkFunOTOS.Pose2D(1.5, -7.5, 0.0),1.0,1.0),
+                SparkFunOTOSParams("spark", SparkFunOTOS.Pose2D(1.5, -7.5, 0.0), 1.0, 1.0),
                 mutableListOf(
                     Permission.EXTRAS,
                     Permission.EXTENDO,

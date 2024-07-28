@@ -23,7 +23,7 @@ class OTOSTuner : LinearOpMode() {
         waitForStart()
         robot.once() //runs once
         while (opModeIsActive()) {
-            robot.sparkFunOTOS.offset = Pose2D(OTOSxOffset,OTOSyOffset,OTOShOffset)
+            robot.sparkFunOTOS.offset = Pose2D(OTOSxOffset, OTOSyOffset, OTOShOffset)
             robot.doBulk()
         }
     }

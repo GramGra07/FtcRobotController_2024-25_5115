@@ -1,10 +1,7 @@
-package org.firstinspires.ftc.teamcode.subsystems.avoidance
+package org.firstinspires.ftc.teamcode.subsystems
 
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toPoint
-import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
-import org.firstinspires.ftc.teamcode.subsystems.LocalizerSubsystem
 import org.firstinspires.ftc.teamcode.utilClass.objects.Point
 import org.firstinspires.ftc.teamcode.utilClass.objects.VectorField
 import org.firstinspires.ftc.teamcode.utilClass.objects.VectorField.Companion.getCorrectionByAvoidancePUSH
@@ -18,6 +15,7 @@ class AvoidanceSubsystem {
         STOP,
         OFF
     }
+
     companion object {
         var fields: List<VectorField> = VectorField.massCreate(createFields())
         private fun createFields(): HashMap<Point, Double> {
@@ -37,6 +35,7 @@ class AvoidanceSubsystem {
             }
             return fields
         }
+
         var rad: Double = varConfig.fieldRadius
     }
 
@@ -89,7 +88,7 @@ class AvoidanceSubsystem {
 //    }
 
     fun telemetry(telemetry: Telemetry) {
-        telemetry.addData("AVOIDANCE","")
+        telemetry.addData("AVOIDANCE", "")
         telemetry.addData("powers", powers)
         telemetry.addData("Avoidance Type", currentAvoidanceTypes.name)
     }

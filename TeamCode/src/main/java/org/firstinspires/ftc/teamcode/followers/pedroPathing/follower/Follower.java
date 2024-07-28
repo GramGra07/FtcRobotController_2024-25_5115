@@ -56,86 +56,67 @@ import java.util.List;
  */
 @Config
 public class Follower {
-    private HardwareMap hardwareMap;
-
+    public static boolean drawOnDashboard = true;
+    public static boolean useTranslational = true;
+    public static boolean useCentripetal = true;
+    public static boolean useHeading = true;
+    public static boolean useDrive = true;
+    private final int BEZIER_CURVE_BINARY_STEP_LIMIT = FollowerConstants.BEZIER_CURVE_BINARY_STEP_LIMIT;
+    private final int AVERAGED_VELOCITY_SAMPLE_NUMBER = FollowerConstants.AVERAGED_VELOCITY_SAMPLE_NUMBER;
+    public double driveError;
+    public double headingError;
+    public Vector driveVector;
+    public Vector headingVector;
+    public Vector translationalVector;
+    public Vector centripetalVector;
+    public Vector correctiveVector;
+    private final HardwareMap hardwareMap;
     private DcMotorEx leftFront;
     private DcMotorEx leftRear;
     private DcMotorEx rightFront;
     private DcMotorEx rightRear;
     private List<DcMotorEx> motors;
-
     private DriveVectorScaler driveVectorScaler;
-
     private PoseUpdater poseUpdater;
     private DashboardPoseTracker dashboardPoseTracker;
-
     private Pose closestPose;
-
     private Path currentPath;
-
     private PathChain currentPathChain;
-
-    private final int BEZIER_CURVE_BINARY_STEP_LIMIT = FollowerConstants.BEZIER_CURVE_BINARY_STEP_LIMIT;
-    private final int AVERAGED_VELOCITY_SAMPLE_NUMBER = FollowerConstants.AVERAGED_VELOCITY_SAMPLE_NUMBER;
-
     private int chainIndex;
-
     private long[] pathStartTimes;
-
     private boolean followingPathChain;
     private boolean holdingPosition;
     private boolean isBusy;
     private boolean auto = true;
     private boolean reachedParametricPathEnd;
     private boolean holdPositionAtEnd;
-
     private double maxPower = 1;
     private double previousSmallTranslationalIntegral;
     private double previousLargeTranslationalIntegral;
-    private double holdPointTranslationalScaling = FollowerConstants.holdPointTranslationalScaling;
-    private double holdPointHeadingScaling = FollowerConstants.holdPointHeadingScaling;
-    public double driveError;
-    public double headingError;
-
+    private final double holdPointTranslationalScaling = FollowerConstants.holdPointTranslationalScaling;
+    private final double holdPointHeadingScaling = FollowerConstants.holdPointHeadingScaling;
     private long reachedParametricPathEndTime;
-
     private double[] drivePowers;
-
     private Vector[] teleOpMovementVectors = new Vector[]{new Vector(), new Vector(), new Vector()};
-
-    private ArrayList<Vector> velocities = new ArrayList<>();
-    private ArrayList<Vector> accelerations = new ArrayList<>();
-
+    private final ArrayList<Vector> velocities = new ArrayList<>();
+    private final ArrayList<Vector> accelerations = new ArrayList<>();
     private Vector averageVelocity;
     private Vector averagePreviousVelocity;
     private Vector averageAcceleration;
     private Vector smallTranslationalIntegralVector;
     private Vector largeTranslationalIntegralVector;
-    public Vector driveVector;
-    public Vector headingVector;
-    public Vector translationalVector;
-    public Vector centripetalVector;
-    public Vector correctiveVector;
-
-    private PIDFController smallTranslationalPIDF = new PIDFController(FollowerConstants.smallTranslationalPIDFCoefficients);
-    private PIDFController smallTranslationalIntegral = new PIDFController(FollowerConstants.smallTranslationalIntegral);
-    private PIDFController largeTranslationalPIDF = new PIDFController(FollowerConstants.largeTranslationalPIDFCoefficients);
-    private PIDFController largeTranslationalIntegral = new PIDFController(FollowerConstants.largeTranslationalIntegral);
-    private PIDFController smallHeadingPIDF = new PIDFController(FollowerConstants.smallHeadingPIDFCoefficients);
-    private PIDFController largeHeadingPIDF = new PIDFController(FollowerConstants.largeHeadingPIDFCoefficients);
-    private FilteredPIDFController smallDrivePIDF = new FilteredPIDFController(FollowerConstants.smallDrivePIDFCoefficients);
-    private FilteredPIDFController largeDrivePIDF = new FilteredPIDFController(FollowerConstants.largeDrivePIDFCoefficients);
-
-    private KalmanFilter driveKalmanFilter = new KalmanFilter(FollowerConstants.driveKalmanFilterParameters);
+    private final PIDFController smallTranslationalPIDF = new PIDFController(FollowerConstants.smallTranslationalPIDFCoefficients);
+    private final PIDFController smallTranslationalIntegral = new PIDFController(FollowerConstants.smallTranslationalIntegral);
+    private final PIDFController largeTranslationalPIDF = new PIDFController(FollowerConstants.largeTranslationalPIDFCoefficients);
+    private final PIDFController largeTranslationalIntegral = new PIDFController(FollowerConstants.largeTranslationalIntegral);
+    private final PIDFController smallHeadingPIDF = new PIDFController(FollowerConstants.smallHeadingPIDFCoefficients);
+    private final PIDFController largeHeadingPIDF = new PIDFController(FollowerConstants.largeHeadingPIDFCoefficients);
+    private final FilteredPIDFController smallDrivePIDF = new FilteredPIDFController(FollowerConstants.smallDrivePIDFCoefficients);
+    private final FilteredPIDFController largeDrivePIDF = new FilteredPIDFController(FollowerConstants.largeDrivePIDFCoefficients);
+    private final KalmanFilter driveKalmanFilter = new KalmanFilter(FollowerConstants.driveKalmanFilterParameters);
     private double[] driveErrors;
     private double rawDriveError;
     private double previousRawDriveError;
-
-    public static boolean drawOnDashboard = true;
-    public static boolean useTranslational = true;
-    public static boolean useCentripetal = true;
-    public static boolean useHeading = true;
-    public static boolean useDrive = true;
 
     /**
      * This creates a new Follower given a HardwareMap.
@@ -302,39 +283,21 @@ public class Follower {
     }
 
     /**
-     * This sets the offset for only the x position.
-     *
-     * @param xOffset This sets the offset.
-     */
-    public void setXOffset(double xOffset) {
-        poseUpdater.setXOffset(xOffset);
-    }
-
-    /**
-     * This sets the offset for only the y position.
-     *
-     * @param yOffset This sets the offset.
-     */
-    public void setYOffset(double yOffset) {
-        poseUpdater.setYOffset(yOffset);
-    }
-
-    /**
-     * This sets the offset for only the heading.
-     *
-     * @param headingOffset This sets the offset.
-     */
-    public void setHeadingOffset(double headingOffset) {
-        poseUpdater.setHeadingOffset(headingOffset);
-    }
-
-    /**
      * This returns the x offset.
      *
      * @return returns the x offset.
      */
     public double getXOffset() {
         return poseUpdater.getXOffset();
+    }
+
+    /**
+     * This sets the offset for only the x position.
+     *
+     * @param xOffset This sets the offset.
+     */
+    public void setXOffset(double xOffset) {
+        poseUpdater.setXOffset(xOffset);
     }
 
     /**
@@ -347,12 +310,30 @@ public class Follower {
     }
 
     /**
+     * This sets the offset for only the y position.
+     *
+     * @param yOffset This sets the offset.
+     */
+    public void setYOffset(double yOffset) {
+        poseUpdater.setYOffset(yOffset);
+    }
+
+    /**
      * This returns the heading offset.
      *
      * @return returns the heading offset.
      */
     public double getHeadingOffset() {
         return poseUpdater.getHeadingOffset();
+    }
+
+    /**
+     * This sets the offset for only the heading.
+     *
+     * @param headingOffset This sets the offset.
+     */
+    public void setHeadingOffset(double headingOffset) {
+        poseUpdater.setHeadingOffset(headingOffset);
     }
 
     /**

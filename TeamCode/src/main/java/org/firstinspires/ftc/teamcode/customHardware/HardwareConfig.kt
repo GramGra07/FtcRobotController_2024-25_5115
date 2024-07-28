@@ -16,6 +16,7 @@ import com.qualcomm.robotcore.hardware.VoltageSensor
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.ATLocations
+import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities
 import org.firstinspires.ftc.teamcode.customHardware.sensors.BeamBreakSensor
 import org.firstinspires.ftc.teamcode.customHardware.servos.AxonServo
 import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.initLights
@@ -34,9 +35,9 @@ import org.firstinspires.ftc.teamcode.subsystems.LocalizerSubsystem.Localization
 import org.firstinspires.ftc.teamcode.subsystems.ReLocalizationSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.ReLocalizationSubsystem.Companion.currentSeenID
 import org.firstinspires.ftc.teamcode.subsystems.ReLocalizationSubsystem.Companion.localizingID
-import org.firstinspires.ftc.teamcode.subsystems.avoidance.AvoidanceSubsystem
-import org.firstinspires.ftc.teamcode.subsystems.avoidance.AvoidanceSubsystem.Companion.fields
-import org.firstinspires.ftc.teamcode.subsystems.avoidance.AvoidanceSubsystem.Companion.rad
+import org.firstinspires.ftc.teamcode.subsystems.AvoidanceSubsystem
+import org.firstinspires.ftc.teamcode.subsystems.AvoidanceSubsystem.Companion.fields
+import org.firstinspires.ftc.teamcode.subsystems.AvoidanceSubsystem.Companion.rad
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ClawSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.EndgameSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ExtendoSubsystem
@@ -53,11 +54,8 @@ import org.firstinspires.ftc.teamcode.utilClass.FileWriterFTC.setUpFile
 import org.firstinspires.ftc.teamcode.utilClass.drivetrain.Drivetrain
 import org.firstinspires.ftc.teamcode.utilClass.drivetrain.Drivetrain.Companion.drivetrainHasPermission
 import org.firstinspires.ftc.teamcode.utilClass.objects.Permission
-import org.firstinspires.ftc.teamcode.utilClass.objects.Point
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.varConfig
 import java.io.FileWriter
-import java.lang.Math.toDegrees
-import java.lang.Math.toRadians
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -124,12 +122,12 @@ open class HardwareConfig(
         val drivetrain = CurrentDrivetrain.currentDrivetrain
 
         localizerSubsystem =
-            LocalizerSubsystem(ahwMap, startPose, LocalizerSubsystem.LocalizationType.PP)
+            LocalizerSubsystem(ahwMap, startPose, LocalizationType.PPOTOS)
         driveSubsystem = DriveSubsystem(ahwMap, localizerSubsystem)
 
         allHubs = ahwMap.getAll(LynxModule::class.java)
         for (hub in allHubs) {
-            hub.bulkCachingMode = LynxModule.BulkCachingMode.AUTO
+            hub.bulkCachingMode = LynxModule.BulkCachingMode.MANUAL
         }
 
         if (isMainDrivetrain()) vSensor =
@@ -147,7 +145,12 @@ open class HardwareConfig(
         if (drivetrainHasPermission(Permission.RELOCALIZATION)) reLocalizationSubsystem =
             ReLocalizationSubsystem(ahwMap)
         if (isTesterDrivetrain())
-            sparkFunOTOS = initOTOS(ahwMap, CurrentDrivetrain.currentDrivetrain.sparkFunOTOSParams.name,CurrentDrivetrain.currentDrivetrain.sparkFunOTOSParams.offset, startPose.toPose2D())
+            sparkFunOTOS = initOTOS(
+                ahwMap,
+                CurrentDrivetrain.currentDrivetrain.sparkFunOTOSParams.name,
+                CurrentDrivetrain.currentDrivetrain.sparkFunOTOSParams.offset,
+                startPose.toPose2D()
+            )
         avoidanceSubsystem = AvoidanceSubsystem()
 
         telemetry =
@@ -167,7 +170,6 @@ open class HardwareConfig(
         val loopTimePeriodics = emptyList<PeriodicLoopTimeObject>(
         )
         val spacedObjects: List<SpacedBooleanObject> = emptyList()
-
         loopTimeController = LoopTimeController(
             timer, loopTimePeriodics, spacedObjects
         )
@@ -221,7 +223,7 @@ open class HardwareConfig(
         if (drivetrainHasPermission(Permission.EXTENDO)) extendoSubsystem.update()
 
         loopTimeController.every(3) {
-            if (drivetrainHasPermission(Permission.RELOCALIZATION)) reLocalizationSubsystem.relocalize(
+            if (drivetrainHasPermission(Permission.RELOCALIZATION) && !loopTimeController.loopSaver) reLocalizationSubsystem.relocalize(
                 localizerSubsystem
             )
         }
@@ -249,6 +251,11 @@ open class HardwareConfig(
     }
 
     private fun buildTelemetry() {
+        if (loopTimeController.loopSaver) {
+            CameraUtilities.stopCameraStream()
+        } else {
+            CameraUtilities.startCameraStream()
+        }
         if (varConfig.multipleDrivers) {
             telemetry.addData(
                 "Drivers",
@@ -272,30 +279,28 @@ open class HardwareConfig(
             extendoSubsystem.telemetry(telemetry)
             teleSpace()
         }
-        if (drivetrainHasPermission(Permission.RELOCALIZATION)) {
+        if (drivetrainHasPermission(Permission.RELOCALIZATION) && !loopTimeController.loopSaver) {
             reLocalizationSubsystem.telemetry(
                 telemetry
             )
             teleSpace()
         }
 
-//        sensorArray.allTelemetry(telemetry)
         if (drivetrainHasPermission(Permission.EXTRAS)) {
             telemetry.addData("EXTRAS", "")
             axonServo.telemetry(telemetry)
             beamBreakSensor.telemetry(telemetry)
             teleSpace()
         }
-//        loopTimeController.every(3) {
-            if (isTesterDrivetrain()) {
-                sparkFunOTOS.telemetry(telemetry)
-                teleSpace()
-            }
-//        }
+
+        if (isTesterDrivetrain()) {
+            sparkFunOTOS.telemetry(telemetry)
+            teleSpace()
+        }
 
         telemetry.addData("Version", CURRENT_VERSION)
         telemetry.update()
-        drawPackets()
+        if (!loopTimeController.loopSaver) drawPackets()
     }
 
     private fun drawPackets() {
@@ -305,14 +310,14 @@ open class HardwareConfig(
         if (drivetrainHasPermission(Permission.RELOCALIZATION)) {
             ATLocations.allLocations.forEach { (id, locationData) ->
                 val location = locationData.location
-                if (localizingID!!.contains(id)) {
+                if (localizingID.contains(id)) {
                     fieldOverlay.setStroke("green").setAlpha(1.0)
-                } else if (currentSeenID!!.contains(id)) {
+                } else if (currentSeenID.contains(id)) {
                     fieldOverlay.setStroke("orange").setAlpha(1.0)
                 } else {
                     fieldOverlay.setStroke("blue").setAlpha(0.5)
                 }
-                    fieldOverlay.strokeRect(location.y!!, location.x!!, 0.5, 0.5)
+                fieldOverlay.strokeRect(location.y!!, location.x!!, 0.5, 0.5)
             }
         }
         //}
@@ -330,11 +335,11 @@ open class HardwareConfig(
 
         val t = sparkFunOTOS.getPose()
         val h = t.h
-        val half = roboRad/2
+        val half = roboRad / 2
         val cos = cos(h)
         val sin = sin(h)
-        val p1s = Pose2D(sin*half,cos*half,0.0)
-        val newS = Pose2D(sin*roboRad,cos*roboRad,0.0)
+        val p1s = Pose2D(sin * half, cos * half, 0.0)
+        val newS = Pose2D(sin * roboRad, cos * roboRad, 0.0)
 
         fieldOverlay
             .setStrokeWidth(1)

@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.utilClass.objects
 
-import org.firstinspires.ftc.teamcode.subsystems.avoidance.AvoidanceSubsystem
+import org.firstinspires.ftc.teamcode.subsystems.AvoidanceSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers
 
 class Driver(

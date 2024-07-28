@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.extensions
 
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.acmerobotics.roadrunner.Pose2d
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS.Pose2D
@@ -9,14 +8,13 @@ import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
-import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig.Companion
 import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain
 
 object OTOSExtension {
     fun initOTOS(
         hw: HardwareMap,
         name: String,
-        offset:Pose2D,
+        offset: Pose2D,
         startPose: Pose2D? = Pose2D(0.0, 0.0, 0.0)
     ): SparkFunOTOS {
         val t = hw.get(SparkFunOTOS::class.java, name)
@@ -42,7 +40,7 @@ object OTOSExtension {
     }
 
     fun SparkFunOTOS.getPose(): Pose2D {
-        val newPose:Pose2D = Pose2D(-this.position.y,this.position.x,this.position.h)
+        val newPose: Pose2D = Pose2D(-this.position.y, this.position.x, this.position.h)
         return newPose
     }
 
@@ -51,11 +49,11 @@ object OTOSExtension {
     }
 
     fun SparkFunOTOS.telemetry(telemetry: Telemetry) {
-        HardwareConfig.telemetry.addData("SPARK FUN","")
+        HardwareConfig.telemetry.addData("SPARK FUN", "")
         val pose = this.getPose()
-        telemetry.addData("x","%.2f", pose.x)
-        telemetry.addData("y","%.2f", pose.y)
-        telemetry.addData("h","%.2f", pose.h)
+        telemetry.addData("x", "%.2f", pose.x)
+        telemetry.addData("y", "%.2f", pose.y)
+        telemetry.addData("h", "%.2f", pose.h)
     }
 
 //    fun SparkFunOTOS.draw(packet: TelemetryPacket) {

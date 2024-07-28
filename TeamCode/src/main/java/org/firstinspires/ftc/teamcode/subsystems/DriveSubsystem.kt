@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.initMotor
 import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain
-import org.firstinspires.ftc.teamcode.subsystems.avoidance.AvoidanceSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers
 import org.firstinspires.ftc.teamcode.utilClass.drivetrain.Drivetrain
 import org.firstinspires.ftc.teamcode.utilClass.drivetrain.DrivetrainType
@@ -172,7 +171,7 @@ class DriveSubsystem(ahwMap: HardwareMap, private var localizerSubsystem: Locali
     }
 
     fun telemetry(telemetry: Telemetry) {
-        telemetry.addData("DRIVE","")
+        telemetry.addData("DRIVE", "")
         val drivetrain = CurrentDrivetrain.currentDrivetrain
         drivetrain.telemetry(telemetry)
         if (reverse) {

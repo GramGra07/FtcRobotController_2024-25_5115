@@ -8,8 +8,10 @@ object varConfig {
 
     @JvmField
     var OTOSxOffset = 1.5
+
     @JvmField
     var OTOSyOffset = -7.5
+
     @JvmField
     var OTOShOffset = 0.0
 

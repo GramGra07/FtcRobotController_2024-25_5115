@@ -4,7 +4,7 @@ import com.acmerobotics.roadrunner.Pose2d
 import kotlin.math.abs
 
 class MathFunctions {
-//    var position = 0.0 //sets servo position to 0-1 multiplier
+    //    var position = 0.0 //sets servo position to 0-1 multiplier
 //    val degree_mult = 0.00555555554 // = 100/180
 //    fun calcServo(degrees: Int): Double {
 //        position = degree_mult * degrees

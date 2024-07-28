@@ -12,6 +12,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 @Disabled
 public class OTOS extends LinearOpMode {
     SparkFunOTOS sparkFunOTOS;
+
     @Override
     public void runOpMode() {
         hardwareMap.get(SparkFunOTOS.class, "spark");
@@ -23,7 +24,7 @@ public class OTOS extends LinearOpMode {
         // clockwise (negative rotation) from the robot's orientation, the offset
         // would be {-5, 10, -90}. These can be any value, even the angle can be
         // tweaked slightly to compensate for imperfect mounting (eg. 1.3 degrees).
-        sparkFunOTOS.setOffset(new SparkFunOTOS.Pose2D(0.0,0.0,0.0));
+        sparkFunOTOS.setOffset(new SparkFunOTOS.Pose2D(0.0, 0.0, 0.0));
         //For example, if you move the robot 100 inches and
         // the sensor reports 103 inches, set the linear scalar to 100/103 = 0.971
         sparkFunOTOS.setLinearScalar(1.0);
@@ -32,10 +33,10 @@ public class OTOS extends LinearOpMode {
 
         sparkFunOTOS.resetTracking();
 
-        sparkFunOTOS.setPosition(new SparkFunOTOS.Pose2D(0.0,0.0,0.0));
+        sparkFunOTOS.setPosition(new SparkFunOTOS.Pose2D(0.0, 0.0, 0.0));
 
         waitForStart();
-        while (opModeIsActive()){
+        while (opModeIsActive()) {
             telemetry.addData("X: ", sparkFunOTOS.getPosition().x);
             telemetry.addData("Y: ", sparkFunOTOS.getPosition().y);
             telemetry.addData("H: ", sparkFunOTOS.getPosition().h);
