@@ -117,13 +117,13 @@ class DriveSubsystem(ahwMap: HardwareMap, private var localizerSubsystem: Locali
         }
     }
 
-    private fun power(avoidanceSubsystem: AvoidanceSubsystem) {
+    private fun power(avoidanceSubsystem: AvoidanceSubsystem,type: AvoidanceSubsystem.AvoidanceTypes) {
         if (!isAutoInTeleop) {
             var flP = 0.0
             var frP = 0.0
             var rrP = 0.0
             var rlP = 0.0
-            if (avoidanceSubsystem.powers != null) {
+            if (avoidanceSubsystem.powers != null && type != AvoidanceSubsystem.AvoidanceTypes.OFF) {
                 val addedPowers: Map<String, Double?>? = avoidanceSubsystem.powers
                 flP = addedPowers?.getOrDefault("FL", 0.0) ?: 0.0
                 frP = addedPowers?.getOrDefault("FR", 0.0) ?: 0.0
@@ -164,9 +164,11 @@ class DriveSubsystem(ahwMap: HardwareMap, private var localizerSubsystem: Locali
         avoidanceSubsystem: AvoidanceSubsystem,
         type: AvoidanceSubsystem.AvoidanceTypes
     ) {
-        avoidanceSubsystem.update(localizerSubsystem, this, type)
+        if (type != AvoidanceSubsystem.AvoidanceTypes.OFF) {
+            avoidanceSubsystem.update(localizerSubsystem, this, type)
+        }
         if (!setAPower) {
-            power(avoidanceSubsystem)
+            power(avoidanceSubsystem,type)
         }
     }
 

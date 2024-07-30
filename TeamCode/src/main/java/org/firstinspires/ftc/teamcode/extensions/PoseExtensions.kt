@@ -5,6 +5,7 @@ import com.acmerobotics.roadrunner.Vector2d
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.Pose
 import org.firstinspires.ftc.teamcode.utilClass.objects.Point
+import kotlin.math.roundToInt
 
 object PoseExtensions {
     fun Pose2d.toPose(): Pose {
@@ -26,10 +27,13 @@ object PoseExtensions {
     }
 
     fun Pose.toPose2d(): Pose2d {
-        return Pose2d(this.x, this.y, this.heading)
+        return Pose2d(this.x, this.y, Math.toDegrees(this.heading))
     }
 
     fun Pose2d.toPose2D(): SparkFunOTOS.Pose2D {
-        return SparkFunOTOS.Pose2D(this.position.x, this.position.y, this.heading.toDouble())
+        return SparkFunOTOS.Pose2D(this.position.x, this.position.y, Math.toDegrees(this.heading.toDouble()))
+    }
+    fun Pose2d.toString2(): String {
+        return "x: ${this.position.x.roundToInt()}, y: ${this.position.y.roundToInt()}, h: ${Math.toDegrees(this.heading.toDouble())}"
     }
 }

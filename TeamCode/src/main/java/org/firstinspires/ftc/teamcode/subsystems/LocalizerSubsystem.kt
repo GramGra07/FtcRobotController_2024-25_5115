@@ -8,6 +8,8 @@ import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
 import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toPoint
 import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toPose
 import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toPose2d
+import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toString
+import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toString2
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.PoseUpdater
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.localizers.OTOSLocalizer
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.localizers.TwoWheelLocalizer
@@ -97,7 +99,7 @@ class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose2d, var type: Localizati
             LocalizationType.PP -> telemetry.addData("Using", "PedroPathing")
             LocalizationType.PPOTOS -> telemetry.addData("Using", "PP SparkFunOTOS")
         }
-        telemetry.addData("Pose: ", this.pose().toPoint().toString())
+        telemetry.addData("Pose: ", this.pose().toString2())
         telemetry.addData("totalDistance (in)", "%.1f", DistanceStorage.totalDist)
         telemetry.addData("Current Speed (mph)", "%.1f", currentSpeed)
     }
@@ -141,13 +143,4 @@ class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose2d, var type: Localizati
     fun y(): Double {
         return pose().position.y
     }
-
-    fun headingRad(): Double {
-        return Math.toRadians(heading())
-    }
-
-    fun headingDeg(): Double {
-        return heading()
-    }
-
 }

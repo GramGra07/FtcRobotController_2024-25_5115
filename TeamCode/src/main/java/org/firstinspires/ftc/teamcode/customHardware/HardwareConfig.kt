@@ -117,7 +117,7 @@ open class HardwareConfig(
     fun initRobot(
         ahwMap: HardwareMap,
         auto: Boolean,
-        startPose: Pose2d = Pose2d(0.0, 0.0, 0.0)
+        startPose: Pose2d = Pose2d(0.0, 0.0, 90.0)
     ) {
         val drivetrain = CurrentDrivetrain.currentDrivetrain
 
@@ -273,8 +273,10 @@ open class HardwareConfig(
         teleSpace()
         localizerSubsystem.telemetry(telemetry)
         teleSpace()
-        avoidanceSubsystem.telemetry(telemetry)
-        teleSpace()
+        if (Drivers.currDriver.defaultAvoidance ==AvoidanceSubsystem.AvoidanceTypes.OFF) {
+            avoidanceSubsystem.telemetry(telemetry)
+            teleSpace()
+        }
         if (drivetrainHasPermission(Permission.EXTENDO)) {
             extendoSubsystem.telemetry(telemetry)
             teleSpace()
@@ -293,7 +295,7 @@ open class HardwareConfig(
             teleSpace()
         }
 
-        if (isTesterDrivetrain()) {
+        if (isTesterDrivetrain() && localizerSubsystem.type != LocalizationType.PPOTOS) {
             sparkFunOTOS.telemetry(telemetry)
             teleSpace()
         }
@@ -329,17 +331,20 @@ open class HardwareConfig(
             LocalizationType.PPOTOS -> "purple"
         }
         val l = localizerSubsystem.pose()
-        val halfv: Vector2d = l.heading.vec().times(0.5 * roboRad)
-        val p1: Vector2d = l.position.plus(halfv)
-        val (x, y) = p1.plus(halfv)
+        val h2 =  Math.toRadians(l.heading.toDouble())
+        val half2 = roboRad / 2
+        val cos2 = cos(h2)
+        val sin2 = sin(h2)
+        val p1s2 = Pose2D(l.position.x +(sin2 * half2), l.position.y+(cos2 * half2), 0.0)
+        val newS2 = Pose2D(l.position.x+(sin2 * roboRad), l.position.y+(cos2 * roboRad), 0.0)
 
         val t = sparkFunOTOS.getPose()
-        val h = t.h
+        val h =  Math.toRadians(t.h)
         val half = roboRad / 2
         val cos = cos(h)
         val sin = sin(h)
-        val p1s = Pose2D(sin * half, cos * half, 0.0)
-        val newS = Pose2D(sin * roboRad, cos * roboRad, 0.0)
+        val p1s = Pose2D(t.x+(sin * half), t.y+(cos * half), 0.0)
+        val newS = Pose2D(t.x+(sin * roboRad), t.y+(cos * roboRad), 0.0)
 
         fieldOverlay
             .setStrokeWidth(1)
@@ -349,7 +354,7 @@ open class HardwareConfig(
             .strokeCircle(t.x, t.y, roboRad).strokeLine(p1s.x, p1s.y, newS.x, newS.y)
             .setStroke(color)
             .setFill(color)
-            .strokeCircle(l.position.x, l.position.y, roboRad).strokeLine(p1.x, p1.y, x, y)
+            .strokeCircle(l.position.x, l.position.y, roboRad).strokeLine(p1s2.x, p1s2.y, newS2.x, newS2.y)
             .setFill("red")
             .setStroke("red")
             .setAlpha(0.3)

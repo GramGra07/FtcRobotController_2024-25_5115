@@ -15,10 +15,10 @@ import org.firstinspires.ftc.teamcode.utilClass.objects.Operator
 object Drivers {
 
     private var drivers = mutableListOf(
-        Driver(AllDrivers.Camden, AvoidanceSubsystem.AvoidanceTypes.STOP, DriveType.ROBOT_CENTRIC),
-        Driver(AllDrivers.Grady, AvoidanceSubsystem.AvoidanceTypes.PUSH, DriveType.FIELD_CENTRIC),
+        Driver(AllDrivers.Camden, AvoidanceSubsystem.AvoidanceTypes.OFF, DriveType.ROBOT_CENTRIC),
+        Driver(AllDrivers.Grady, AvoidanceSubsystem.AvoidanceTypes.OFF, DriveType.FIELD_CENTRIC),
         Driver(AllDrivers.Michael, AvoidanceSubsystem.AvoidanceTypes.OFF, DriveType.ROBOT_CENTRIC),
-        Driver(AllDrivers.Graden, AvoidanceSubsystem.AvoidanceTypes.PUSH, DriveType.ROBOT_CENTRIC),
+        Driver(AllDrivers.Graden, AvoidanceSubsystem.AvoidanceTypes.OFF, DriveType.ROBOT_CENTRIC),
         Driver(AllDrivers.Delaney, AvoidanceSubsystem.AvoidanceTypes.OFF, DriveType.ROBOT_CENTRIC),
         Driver(AllDrivers.Child, AvoidanceSubsystem.AvoidanceTypes.OFF, DriveType.ROBOT_CENTRIC),
     )

@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.varConfig.OTOS
 @TeleOp(group = GroupingTitles.TESTING)
 //@Disabled//disabling the opmode
 //@Config
-class OTOSTuner : LinearOpMode() {
+class OTOSOffsetTuner : LinearOpMode() {
     //declaring the class
 
     override fun runOpMode() { //if opmode is started

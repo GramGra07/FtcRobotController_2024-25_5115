@@ -9,13 +9,14 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
 import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain
+import java.lang.Math.toDegrees
 
 object OTOSExtension {
     fun initOTOS(
         hw: HardwareMap,
         name: String,
         offset: Pose2D,
-        startPose: Pose2D? = Pose2D(0.0, 0.0, 0.0)
+        startPose: Pose2D? = Pose2D(0.0, 0.0, 90.0)
     ): SparkFunOTOS {
         val t = hw.get(SparkFunOTOS::class.java, name)
         t.setLinearUnit(DistanceUnit.INCH)
@@ -40,7 +41,7 @@ object OTOSExtension {
     }
 
     fun SparkFunOTOS.getPose(): Pose2D {
-        val newPose: Pose2D = Pose2D(-this.position.y, this.position.x, this.position.h)
+        val newPose: Pose2D = Pose2D(this.position.x, this.position.y, -this.position.h)
         return newPose
     }
 
@@ -55,15 +56,4 @@ object OTOSExtension {
         telemetry.addData("y", "%.2f", pose.y)
         telemetry.addData("h", "%.2f", pose.h)
     }
-
-//    fun SparkFunOTOS.draw(packet: TelemetryPacket) {
-//        val roboRad = 8.0
-//        val t = this.getPose()
-//        packet.fieldOverlay()
-//            .setStrokeWidth(1)
-//            .setStroke("orange")
-//            .setFill("orange")
-//            .setAlpha(1.0)
-//            .strokeCircle(t.x, t.y, roboRad)
-//    }
 }

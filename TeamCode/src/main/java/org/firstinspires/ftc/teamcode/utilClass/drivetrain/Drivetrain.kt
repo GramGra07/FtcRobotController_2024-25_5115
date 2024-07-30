@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.CustomFiltered
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.CustomPIDFCoefficients
 import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain
 import org.firstinspires.ftc.teamcode.utilClass.objects.Permission
+import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.varConfig
 
 class Drivetrain(
     val name: DrivetrainNames,
@@ -117,7 +118,7 @@ class Drivetrain(
                     LogoFacingDirection.UP,
                     UsbFacingDirection.LEFT
                 ),
-                SparkFunOTOSParams("spark", SparkFunOTOS.Pose2D(1.5, -7.5, 0.0), 1.0, 1.0),
+                SparkFunOTOSParams("spark", SparkFunOTOS.Pose2D(varConfig.OTOSxOffset,varConfig.OTOSyOffset, varConfig.OTOShOffset), 1.0, 1.0),
                 mutableListOf(Permission.RELOCALIZATION),
             ),
             Drivetrain(
@@ -199,7 +200,7 @@ class Drivetrain(
                     LogoFacingDirection.RIGHT,
                     UsbFacingDirection.UP
                 ),
-                SparkFunOTOSParams("spark", SparkFunOTOS.Pose2D(1.5, -7.5, 0.0), 1.0, 1.0),
+                SparkFunOTOSParams("spark", SparkFunOTOS.Pose2D(varConfig.OTOSxOffset,varConfig.OTOSyOffset, varConfig.OTOShOffset), 1.0, 1.0),
                 mutableListOf(
                     Permission.EXTRAS,
                     Permission.EXTENDO,
