@@ -95,17 +95,23 @@ class OTOSOffsetAutoTuner : LinearOpMode() {
         motorFrontRight.power = 0.0
         motorFrontLeft.power = 1.0
 
+        var seconds: Double
+        var remainingTime:Double? = null
         timer.reset()
         for (i in xLimits.first..xLimits.second){
             for (j in yLimits.first..yLimits.second){
                 if (breakout()) break
+                timer.reset()
                 sparkFunOTOS.position = SparkFunOTOS.Pose2D(0.0, 0.0, 0.0)
                 sparkFunOTOS.offset.x = i.toDouble()
                 sparkFunOTOS.offset.y = j.toDouble()
                 while(sparkFunOTOS.position.h < 355) {
                     if (breakout()) break
+                    telemetry.addData("remaining time", "${ remainingTime ?: "unknown" } seconds")
                     getHyp( telemetry)
                 }
+                seconds = timer.seconds()
+                remainingTime = (((abs(xLimits.first)+abs(xLimits.second))-abs(i)) + ((abs(yLimits.first)+abs(yLimits.second))-abs(j)))*seconds
                 val hyp = getHyp( telemetry)
                 data.add(DataPoint(i.toDouble(), j.toDouble(), hyp))
             }
