@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opModes.testers
+package org.firstinspires.ftc.teamcode.opModes.testers.OTOS
 
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS.Pose2D
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
@@ -12,7 +12,7 @@ import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.varConfig.OTOS
 @TeleOp(group = GroupingTitles.TESTING)
 //@Disabled//disabling the opmode
 //@Config
-class OTOSOffsetTuner : LinearOpMode() {
+class OTOSOffsetManualTuner : LinearOpMode() {
     //declaring the class
 
     override fun runOpMode() { //if opmode is started

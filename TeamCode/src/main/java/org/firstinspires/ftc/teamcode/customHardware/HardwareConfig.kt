@@ -305,7 +305,7 @@ open class HardwareConfig(
         if (!loopTimeController.loopSaver) drawPackets()
     }
 
-    private fun drawPackets() {
+    fun drawPackets() {
         packet = TelemetryPacket()
         val fieldOverlay = packet.fieldOverlay()
 //        loopTimeController.every(3) {

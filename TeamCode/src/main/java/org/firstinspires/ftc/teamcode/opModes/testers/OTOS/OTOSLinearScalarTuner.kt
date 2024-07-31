@@ -1,14 +1,10 @@
-package org.firstinspires.ftc.teamcode.opModes.testers
+package org.firstinspires.ftc.teamcode.opModes.testers.OTOS
 
-import com.qualcomm.hardware.sparkfun.SparkFunOTOS.Pose2D
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
 import org.firstinspires.ftc.teamcode.extensions.OTOSExtension.getPose
 import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles
-import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.varConfig.OTOShOffset
-import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.varConfig.OTOSxOffset
-import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.varConfig.OTOSyOffset
 
 @TeleOp(group = GroupingTitles.TESTING)
 //@Disabled//disabling the opmode

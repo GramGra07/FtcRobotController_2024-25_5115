@@ -36,4 +36,7 @@ object PoseExtensions {
     fun Pose2d.toString2(): String {
         return "x: ${this.position.x.roundToInt()}, y: ${this.position.y.roundToInt()}, h: ${Math.toDegrees(this.heading.toDouble())}"
     }
+    fun SparkFunOTOS.Pose2D.toPoint(): Point {
+        return Point(this.x, this.y)
+    }
 }
