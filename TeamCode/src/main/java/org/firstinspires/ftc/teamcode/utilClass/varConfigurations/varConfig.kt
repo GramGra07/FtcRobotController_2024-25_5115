@@ -7,13 +7,13 @@ import com.acmerobotics.dashboard.config.Config
 object varConfig {
 
     @JvmField
-    var OTOSxOffset = 6.5
+    var OTOSxOffset = 0.0
 
     @JvmField
-    var OTOSyOffset = -6.5
+    var OTOSyOffset = 0.0
 
     @JvmField
-    var OTOShOffset = 90.0
+    var OTOShOffset = 0.0
 
     @JvmField
     var slowMult = 3

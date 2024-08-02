@@ -70,7 +70,7 @@ open class HardwareConfig(
         initRobot(ahwMap, auto)
     }
 
-    lateinit var sparkFunOTOS: SparkFunOTOS
+//    lateinit var sparkFunOTOS: SparkFunOTOS
     lateinit var driveSubsystem: DriveSubsystem
     lateinit var localizerSubsystem: LocalizerSubsystem
     lateinit var clawSubsystem: ClawSubsystem
@@ -117,7 +117,7 @@ open class HardwareConfig(
     fun initRobot(
         ahwMap: HardwareMap,
         auto: Boolean,
-        startPose: Pose2d = Pose2d(0.0, 0.0, 90.0)
+        startPose: Pose2d = Pose2d(0.0, 0.0, -Math.PI/2)
     ) {
         val drivetrain = CurrentDrivetrain.currentDrivetrain
 
@@ -144,13 +144,13 @@ open class HardwareConfig(
             ExtendoSubsystem(ahwMap)
         if (drivetrainHasPermission(Permission.RELOCALIZATION)) reLocalizationSubsystem =
             ReLocalizationSubsystem(ahwMap)
-        if (isTesterDrivetrain())
-            sparkFunOTOS = initOTOS(
-                ahwMap,
-                CurrentDrivetrain.currentDrivetrain.sparkFunOTOSParams.name,
-                CurrentDrivetrain.currentDrivetrain.sparkFunOTOSParams.offset,
-                startPose.toPose2D()
-            )
+//        if (isTesterDrivetrain())
+//            sparkFunOTOS = initOTOS(
+//                ahwMap,
+//                CurrentDrivetrain.currentDrivetrain.sparkFunOTOSParams.name,
+//                CurrentDrivetrain.currentDrivetrain.sparkFunOTOSParams.offset,
+//                startPose.toPose2D()
+//            )
         avoidanceSubsystem = AvoidanceSubsystem()
 
         telemetry =
@@ -295,10 +295,10 @@ open class HardwareConfig(
             teleSpace()
         }
 
-        if (isTesterDrivetrain() && localizerSubsystem.type != LocalizationType.PPOTOS) {
-            sparkFunOTOS.telemetry(telemetry)
-            teleSpace()
-        }
+//        if (isTesterDrivetrain() && localizerSubsystem.type != LocalizationType.PPOTOS) {
+//            sparkFunOTOS.telemetry(telemetry)
+//            teleSpace()
+//        }
 
         telemetry.addData("Version", CURRENT_VERSION)
         telemetry.update()
@@ -331,27 +331,27 @@ open class HardwareConfig(
             LocalizationType.PPOTOS -> "purple"
         }
         val l = localizerSubsystem.pose()
-        val h2 =  Math.toRadians(l.heading.toDouble())
+        val h2 = l.heading.toDouble()
         val half2 = roboRad / 2
         val cos2 = cos(h2)
         val sin2 = sin(h2)
         val p1s2 = Pose2D(l.position.x +(sin2 * half2), l.position.y+(cos2 * half2), 0.0)
         val newS2 = Pose2D(l.position.x+(sin2 * roboRad), l.position.y+(cos2 * roboRad), 0.0)
 
-        val t = sparkFunOTOS.getPose()
-        val h =  Math.toRadians(t.h)
-        val half = roboRad / 2
-        val cos = cos(h)
-        val sin = sin(h)
-        val p1s = Pose2D(t.x+(sin * half), t.y+(cos * half), 0.0)
-        val newS = Pose2D(t.x+(sin * roboRad), t.y+(cos * roboRad), 0.0)
+//        val t = sparkFunOTOS.getPose()
+//        val h =  Math.toRadians(t.h)
+//        val half = roboRad / 2
+//        val cos = cos(h)
+//        val sin = sin(h)
+//        val p1s = Pose2D(t.x+(sin * half), t.y+(cos * half), 0.0)
+//        val newS = Pose2D(t.x+(sin * roboRad), t.y+(cos * roboRad), 0.0)
 
         fieldOverlay
-            .setStrokeWidth(1)
-            .setAlpha(1.0)
-            .setStroke("orange")
-            .setFill("orange")
-            .strokeCircle(t.x, t.y, roboRad).strokeLine(p1s.x, p1s.y, newS.x, newS.y)
+//            .setStrokeWidth(1)
+//            .setAlpha(1.0)
+//            .setStroke("orange")
+//            .setFill("orange")
+//            .strokeCircle(t.x, t.y, roboRad).strokeLine(p1s.x, p1s.y, newS.x, newS.y)
             .setStroke(color)
             .setFill(color)
             .strokeCircle(l.position.x, l.position.y, roboRad).strokeLine(p1s2.x, p1s2.y, newS2.x, newS2.y)

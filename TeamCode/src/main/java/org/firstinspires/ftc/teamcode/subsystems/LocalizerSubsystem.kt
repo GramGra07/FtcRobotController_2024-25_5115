@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems
 
 import com.acmerobotics.roadrunner.Pose2d
+import com.qualcomm.hardware.sparkfun.SparkFunOTOS.Pose2D
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.Telemetry
@@ -40,7 +41,7 @@ class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose2d, var type: Localizati
             }
 
             LocalizationType.PPOTOS -> {
-                poseUpdater = PoseUpdater(ahwMap, OTOSLocalizer(ahwMap))
+                poseUpdater = PoseUpdater(ahwMap, OTOSLocalizer(ahwMap,pose.toPose()))
                 poseUpdater.pose = pose.toPose()
             }
         }
@@ -50,7 +51,6 @@ class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose2d, var type: Localizati
     private var thisDist = 0.0
     private var lastTime = 0.0
     private var currentSpeed: Double = 0.0
-
 
     private fun updateDistTraveled(before: Pose2d, after: Pose2d, timer: Double) {
         val deltaX = after.position.x - before.position.x
@@ -68,20 +68,20 @@ class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose2d, var type: Localizati
     }
 
     fun update(
-        timer: ElapsedTime,
-        time: Double = timer.seconds()
+        timer: ElapsedTime?,
     ) {
         when (type) {
             LocalizationType.RR -> drive.updatePoseEstimate()
             LocalizationType.PP, LocalizationType.PPOTOS -> poseUpdater.update()
         }
-        updateDistTraveled(PoseStorage.currentPose, this.pose(), time)
-        FileWriterFTC.writeToFile(
-            HardwareConfig.fileWriter,
-            this.x().toInt(),
-            this.y().toInt()
-        )
-
+        if (timer!=null) {
+            updateDistTraveled(PoseStorage.currentPose, this.pose(), timer.seconds())
+            FileWriterFTC.writeToFile(
+                HardwareConfig.fileWriter,
+                this.x().toInt(),
+                this.y().toInt()
+            )
+        }
         PoseStorage.currentPose = this.pose()
     }
 

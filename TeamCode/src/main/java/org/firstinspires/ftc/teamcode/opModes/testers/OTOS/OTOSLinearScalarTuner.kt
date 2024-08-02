@@ -16,11 +16,17 @@ class OTOSLinearScalarTuner : LinearOpMode() {
     override fun runOpMode() { //if opmode is started
         val robot = HardwareConfig(this, false)
         telemetry.addData("Move the robot forward 30 inches","It will tell you the correct linear scalar")
+        robot.localizerSubsystem.update(null)
+        val startY = robot.localizerSubsystem.y()
+        val targetY = startY + distance
         telemetry.update()
         waitForStart()
         while (opModeIsActive()) {
-            deltaDistance = robot.sparkFunOTOS.getPose().y
-            telemetry.addData("Linear scalar",distance/deltaDistance)
+            robot.localizerSubsystem.update(null)
+            deltaDistance = robot.localizerSubsystem.y() +startY
+            telemetry.addData("deltaDistance",deltaDistance)
+            telemetry.addData("targetY",targetY)
+            telemetry.addData("Linear scalar",targetY/deltaDistance)
             telemetry.update()
         }
     }

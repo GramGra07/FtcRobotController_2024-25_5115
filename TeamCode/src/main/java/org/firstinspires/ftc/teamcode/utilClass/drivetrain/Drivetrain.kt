@@ -118,7 +118,7 @@ class Drivetrain(
                     LogoFacingDirection.UP,
                     UsbFacingDirection.LEFT
                 ),
-                SparkFunOTOSParams("spark", SparkFunOTOS.Pose2D(varConfig.OTOSxOffset,varConfig.OTOSyOffset, varConfig.OTOShOffset), 1.0, 1.0),
+                SparkFunOTOSParams("spark", SparkFunOTOS.Pose2D(varConfig.OTOSxOffset,varConfig.OTOSyOffset, varConfig.OTOShOffset), 1.0, 1.011),
                 mutableListOf(Permission.RELOCALIZATION),
             ),
             Drivetrain(

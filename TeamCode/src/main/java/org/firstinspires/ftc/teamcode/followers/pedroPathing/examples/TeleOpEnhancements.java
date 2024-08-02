@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.followers.pedroPathing.examples;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -20,6 +21,7 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Vect
  * @version 1.0, 3/21/2024
  */
 @TeleOp(name = "Pedro Pathing TeleOp Enhancements", group = "Test")
+@Disabled
 public class TeleOpEnhancements extends OpMode {
     private Follower follower;
 

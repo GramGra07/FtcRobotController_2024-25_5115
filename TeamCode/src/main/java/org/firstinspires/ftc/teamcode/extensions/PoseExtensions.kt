@@ -27,7 +27,7 @@ object PoseExtensions {
     }
 
     fun Pose.toPose2d(): Pose2d {
-        return Pose2d(this.x, this.y, Math.toDegrees(this.heading))
+        return Pose2d(this.x, this.y, -this.heading)
     }
 
     fun Pose2d.toPose2D(): SparkFunOTOS.Pose2D {

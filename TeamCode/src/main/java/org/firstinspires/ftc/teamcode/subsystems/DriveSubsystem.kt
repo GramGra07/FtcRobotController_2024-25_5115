@@ -85,8 +85,8 @@ class DriveSubsystem(ahwMap: HardwareMap, private var localizerSubsystem: Locali
                 val gamepadHypot = Range.clip(hypot(leftStickX, leftStickY), 0.0, 1.0)
 
                 // Compute x and y controls
-                val xControl = cos(Math.toRadians(movementDegree)) * gamepadHypot
-                val yControl = sin(Math.toRadians(movementDegree)) * gamepadHypot
+                val yControl = cos(Math.toRadians(movementDegree)) * gamepadHypot
+                val xControl = -(sin(Math.toRadians(movementDegree)) * gamepadHypot)
 
                 // Compute powers
                 val turn = rightStickX

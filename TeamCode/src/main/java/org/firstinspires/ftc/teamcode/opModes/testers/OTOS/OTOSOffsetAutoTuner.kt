@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.opModes.testers.OTOS
 
+import com.acmerobotics.roadrunner.Pose2d
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS
+import com.qualcomm.hardware.sparkfun.SparkFunOTOS.Pose2D
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.DcMotor
@@ -9,18 +12,12 @@ import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
-import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
-import org.firstinspires.ftc.teamcode.extensions.OTOSExtension.getPose
-import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.distanceTo
-import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toPoint
 import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles
-import org.firstinspires.ftc.teamcode.utilClass.MathFunctions.Companion.inTolerance
-import org.firstinspires.ftc.teamcode.utilClass.objects.Point
 import kotlin.math.abs
-import kotlin.math.sqrt
+import kotlin.math.roundToInt
 
 @TeleOp(group = GroupingTitles.TESTING)
-//@Disabled
+@Disabled
 //@Config
 class OTOSOffsetAutoTuner : LinearOpMode() {
     private var maxHypotenuse = 0.0 // radius of the wrong circle
@@ -36,11 +33,9 @@ class OTOSOffsetAutoTuner : LinearOpMode() {
     lateinit var sparkFunOTOS: SparkFunOTOS
 
     override fun runOpMode() {
-        val robot = HardwareConfig(this, false)
 
         //TODO: Set your sensor name and offsets
         sparkFunOTOS = hardwareMap.get(SparkFunOTOS::class.java, "spark")
-        sparkFunOTOS.offset = SparkFunOTOS.Pose2D(0.0, 0.0, 0.0)
         sparkFunOTOS.setLinearUnit(DistanceUnit.INCH)
         sparkFunOTOS.setAngularUnit(AngleUnit.DEGREES)
         sparkFunOTOS.linearScalar = 1.0
@@ -56,7 +51,7 @@ class OTOSOffsetAutoTuner : LinearOpMode() {
 
         //TODO: Set your motor directions
         motorBackLeft.direction = DcMotorSimple.Direction.REVERSE
-
+        motorFrontLeft.direction = DcMotorSimple.Direction.REVERSE
         waitForStart()
         while (opModeIsActive()) {
             if (gamepad1.cross) {
@@ -65,16 +60,16 @@ class OTOSOffsetAutoTuner : LinearOpMode() {
             if (gamepad1.square) {
                 play()
             }
-            telemetry.addData("Press Square to start the test","")
-            telemetry.addData("You may choose to change the limits you test for","")
-            telemetry.addData("Press Cross to pause the test","")
+            telemetry.addData("Press Square to start the test", "")
+            telemetry.addData("You may choose to change the limits you test for", "")
+            telemetry.addData("Press Cross to pause the test", "")
             telemetry.update()
-
-            robot.drawPackets()
         }
     }
-    private fun getHyp( telemetry: Telemetry):Double{
-        val hyp = sparkFunOTOS.getPose().toPoint().distanceTo(Point(0.0, 0.0)) //recalculate the hypotenuse
+
+    private fun getHyp(telemetry: Telemetry): Double {
+        val hyp = sparkFunOTOS.getPose().toPoint()
+            .distanceTo(Point(0.0, 0.0)) //recalculate the hypotenuse
         if (hyp > maxHypotenuse) {
             maxHypotenuse = hyp
         }
@@ -83,53 +78,84 @@ class OTOSOffsetAutoTuner : LinearOpMode() {
         telemetry.update()
         return maxHypotenuse
     }
-    private fun pause(){
+
+    private fun pause() {
         motorBackRight.power = 0.0
         motorBackLeft.power = 0.0
         motorFrontRight.power = 0.0
         motorFrontLeft.power = 0.0
     }
-    fun play(){
-        motorBackRight.power = 0.0
-        motorBackLeft.power = 1.0
-        motorFrontRight.power = 0.0
-        motorFrontLeft.power = 1.0
 
-        var seconds: Double
-        var remainingTime:Double? = null
+    fun power() {
+        motorBackRight.power = -1.0
+        motorBackLeft.power = 1.0
+        motorFrontRight.power = -1.0
+        motorFrontLeft.power = 1.0
+    }
+
+    fun play() {
+        power()
         timer.reset()
-        for (i in xLimits.first..xLimits.second){
-            for (j in yLimits.first..yLimits.second){
+        for (i in xLimits.first..xLimits.second) {
+            for (j in yLimits.first..yLimits.second) {
+                maxHypotenuse = 0.0
                 if (breakout()) break
-                timer.reset()
-                sparkFunOTOS.position = SparkFunOTOS.Pose2D(0.0, 0.0, 0.0)
-                sparkFunOTOS.offset.x = i.toDouble()
-                sparkFunOTOS.offset.y = j.toDouble()
-                while(sparkFunOTOS.position.h < 355) {
-                    if (breakout()) break
-                    telemetry.addData("remaining time", "${ remainingTime ?: "unknown" } seconds")
-                    getHyp( telemetry)
+                sparkFunOTOS.position = Pose2D(0.0, 0.0, 0.0)
+                sparkFunOTOS.offset = Pose2D(i.toDouble(), j.toDouble(), 0.0)
+                while (sparkFunOTOS.position.h < 170) {
+                    breakout()
+                    telemetry.addData("x",sparkFunOTOS.position.x)
+                    telemetry.addData("y",sparkFunOTOS.position.y)
+                    telemetry.addData("h", sparkFunOTOS.position.h)
+                    telemetry.addData("j", j)
+                    telemetry.addData("i", i)
+                    getHyp(telemetry)
                 }
-                seconds = timer.seconds()
-                remainingTime = (((abs(xLimits.first)+abs(xLimits.second))-abs(i)) + ((abs(yLimits.first)+abs(yLimits.second))-abs(j)))*seconds
-                val hyp = getHyp( telemetry)
+
+                val hyp = getHyp(telemetry)
                 data.add(DataPoint(i.toDouble(), j.toDouble(), hyp))
             }
         }
-        val regression = runRegression(data,telemetry)
-        telemetry.addData("newX", regression.first)
-        telemetry.addData("newY", regression.second)
+        getMin(telemetry)
+        val regression = runRegression(data, telemetry)
+//        telemetry.addData("data",data)
+//        telemetry.addData("newX", regression.first / 10)
+//        telemetry.addData("newY", regression.second / 100)
         telemetry.update()
+        while (!isStopRequested) {
+            if (breakout()) break
+            pause()
+            telemetry.update()
+        }
     }
-    private fun breakout():Boolean{
-        return if (gamepad1.cross){
+
+    private fun breakout(): Boolean {
+        return if (gamepad1.cross) {
             pause()
             true
         } else {
             false
         }
     }
-    fun runRegression(data: List<DataPoint>, telemetry: Telemetry): Pair<Double, Double> {
+
+    private fun getMin(telemetry: Telemetry): Pair<Double, Double> {
+        var min = Double.POSITIVE_INFINITY
+        var xOff = 0.0
+        var yOff = 0.0
+        for (point in data) {
+            if (point.output < min) {
+                min = point.output
+                xOff = point.xOffset
+                yOff = point.yOffset
+            }
+        }
+        telemetry.addData("min", min)
+        telemetry.addData("xOffSet", xOff)
+        telemetry.addData("yOffset", yOff)
+        return Pair(xOff, yOff)
+    }
+
+    private fun runRegression(data: List<DataPoint>, telemetry: Telemetry): Pair<Double, Double> {
         val (coefficients, intercept) = linearRegression(data)
         // Coarse search step size
         val coarseStep = 1.0
@@ -173,14 +199,20 @@ class OTOSOffsetAutoTuner : LinearOpMode() {
             xFine += fineStep
         }
 
-        telemetry.addData("newX", bestX)
-        telemetry.addData("newY", bestY)
-        telemetry.update()
+        telemetry.addData("bestX", bestX)
+        telemetry.addData("bestY", bestY)
         return Pair(bestX, bestY)
     }
-    private fun predict(xOffset: Double, yOffset: Double, coefficients: DoubleArray, intercept: Double): Double {
+
+    private fun predict(
+        xOffset: Double,
+        yOffset: Double,
+        coefficients: DoubleArray,
+        intercept: Double
+    ): Double {
         return intercept + coefficients[0] * xOffset + coefficients[1] * yOffset
     }
+
     private fun linearRegression(data: List<DataPoint>): Pair<DoubleArray, Double> {
         val n = data.size
 
@@ -210,5 +242,35 @@ class OTOSOffsetAutoTuner : LinearOpMode() {
 
         return Pair(doubleArrayOf(b1, b2), b0)
     }
-    data class DataPoint(val xOffset: Double, val yOffset: Double, val output:Double)
+
+    fun SparkFunOTOS.getPose(): Pose2D {
+        val newPose: Pose2D = Pose2D(this.position.x, this.position.y, -this.position.h)
+        return newPose
+    }
+
+    private fun Point.distanceTo(point: Point): Double {
+        val dx = point.x!! - this.x!!
+        val dy = point.y!! - this.y!!
+        return kotlin.math.sqrt(dx * dx + dy * dy)
+    }
+
+    private fun Pose2D.toPoint(): Point {
+        return Point(this.x, this.y)
+    }
+
+    data class DataPoint(val xOffset: Double, val yOffset: Double, val output: Double)
+    class Point(var x: Double? = 0.0, var y: Double? = 0.0) {
+        fun setPoint(x: Double, y: Double) {
+            this.x = x
+            this.y = y
+        }
+
+        fun toPose(heading: Double? = 0.0): Pose2d {
+            return Pose2d(x!!, y!!, Math.toRadians(heading!!))
+        }
+
+        override fun toString(): String {
+            return "x: ${x?.roundToInt()}, y: ${y?.roundToInt()}"
+        }
+    }
 }

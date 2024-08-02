@@ -16,11 +16,11 @@ object OTOSExtension {
         hw: HardwareMap,
         name: String,
         offset: Pose2D,
-        startPose: Pose2D? = Pose2D(0.0, 0.0, 90.0)
+        startPose: Pose2D? = Pose2D(0.0, 0.0, Math.PI/2)
     ): SparkFunOTOS {
         val t = hw.get(SparkFunOTOS::class.java, name)
         t.setLinearUnit(DistanceUnit.INCH)
-        t.setAngularUnit(AngleUnit.DEGREES)
+        t.setAngularUnit(AngleUnit.RADIANS)
         //For example, if
         // the sensor is mounted 5 inches to the left (negative X) and 10 inches
         // forward (positive Y) of the center of the robot, and mounted 90 degrees
@@ -41,7 +41,7 @@ object OTOSExtension {
     }
 
     fun SparkFunOTOS.getPose(): Pose2D {
-        val newPose: Pose2D = Pose2D(this.position.x, this.position.y, -this.position.h)
+        val newPose: Pose2D = Pose2D(this.position.x, this.position.y, this.position.h)
         return newPose
     }
 
