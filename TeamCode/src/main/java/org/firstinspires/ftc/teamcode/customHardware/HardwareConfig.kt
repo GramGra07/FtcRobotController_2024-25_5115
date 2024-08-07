@@ -326,7 +326,7 @@ open class HardwareConfig(
 
         val roboRad = 8.0
         val color = when (localizerSubsystem.type) {
-            LocalizationType.RR -> "blue"
+//            LocalizationType.RR -> "blue"
             LocalizationType.PP -> "green"
             LocalizationType.PPOTOS -> "purple"
         }

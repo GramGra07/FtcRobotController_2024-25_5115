@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toString2
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.PoseUpdater
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.localizers.OTOSLocalizer
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.localizers.TwoWheelLocalizer
-import org.firstinspires.ftc.teamcode.followers.rr.MecanumDrive
+//import org.firstinspires.ftc.teamcode.followers.rr.MecanumDrive
 import org.firstinspires.ftc.teamcode.storage.DistanceStorage
 import org.firstinspires.ftc.teamcode.storage.PoseStorage
 import org.firstinspires.ftc.teamcode.utilClass.FileWriterFTC
@@ -24,17 +24,17 @@ import kotlin.math.sqrt
 //@Config
 class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose2d, var type: LocalizationType) {
     enum class LocalizationType {
-        RR,
+//        RR,
         PP,
         PPOTOS
     }
 
-    private lateinit var drive: MecanumDrive
+//    private lateinit var drive: MecanumDrive
     private lateinit var poseUpdater: PoseUpdater
 
     init {
         when (type) {
-            LocalizationType.RR -> drive = MecanumDrive(ahwMap, pose)
+//            LocalizationType.RR -> drive = MecanumDrive(ahwMap, pose)
             LocalizationType.PP -> {
                 poseUpdater = PoseUpdater(ahwMap, TwoWheelLocalizer(ahwMap))
                 poseUpdater.pose = pose.toPose()
@@ -71,7 +71,7 @@ class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose2d, var type: Localizati
         timer: ElapsedTime?,
     ) {
         when (type) {
-            LocalizationType.RR -> drive.updatePoseEstimate()
+//            LocalizationType.RR -> drive.updatePoseEstimate()
             LocalizationType.PP, LocalizationType.PPOTOS -> poseUpdater.update()
         }
         if (timer!=null) {
@@ -87,7 +87,7 @@ class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose2d, var type: Localizati
 
     fun setPose(pose: Pose2d) {
         when (type) {
-            LocalizationType.RR -> drive.pose = pose
+//            LocalizationType.RR -> drive.pose = pose
             LocalizationType.PP, LocalizationType.PPOTOS -> poseUpdater.pose = pose.toPose()
         }
     }
@@ -95,7 +95,7 @@ class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose2d, var type: Localizati
     fun telemetry(telemetry: Telemetry) {
         telemetry.addData("LOCALIZATION", "")
         when (type) {
-            LocalizationType.RR -> telemetry.addData("Using", "RoadRunner")
+//            LocalizationType.RR -> telemetry.addData("Using", "RoadRunner")
             LocalizationType.PP -> telemetry.addData("Using", "PedroPathing")
             LocalizationType.PPOTOS -> telemetry.addData("Using", "PP SparkFunOTOS")
         }
@@ -124,14 +124,14 @@ class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose2d, var type: Localizati
 
     fun heading(): Double {
         return when (type) {
-            LocalizationType.RR -> drive.pose.heading.toDouble()
+//            LocalizationType.RR -> drive.pose.heading.toDouble()
             LocalizationType.PP, LocalizationType.PPOTOS -> poseUpdater.pose.heading
         }
     }
 
     fun pose(): Pose2d {
         return when (type) {
-            LocalizationType.RR -> drive.pose
+//            LocalizationType.RR -> drive.pose
             LocalizationType.PP, LocalizationType.PPOTOS -> poseUpdater.pose.toPose2d()
         }
     }
