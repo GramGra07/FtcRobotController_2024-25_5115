@@ -18,11 +18,13 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.locali
 import org.firstinspires.ftc.teamcode.storage.DistanceStorage
 import org.firstinspires.ftc.teamcode.storage.PoseStorage
 import org.firstinspires.ftc.teamcode.utilClass.FileWriterFTC
+import org.firstinspires.ftc.teamcode.utilClass.Subsystem
 import kotlin.math.sqrt
 
 
 //@Config
-class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose2d, var type: LocalizationType) {
+class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose2d, var type: LocalizationType):
+    Subsystem() {
     enum class LocalizationType {
 //        RR,
         PP,
