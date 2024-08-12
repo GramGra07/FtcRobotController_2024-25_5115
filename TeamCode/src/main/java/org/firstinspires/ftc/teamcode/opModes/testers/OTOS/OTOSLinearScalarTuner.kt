@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.opModes.testers.OTOS
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
@@ -7,7 +8,7 @@ import org.firstinspires.ftc.teamcode.extensions.OTOSExtension.getPose
 import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles
 
 @TeleOp(group = GroupingTitles.TESTING)
-//@Disabled//disabling the opmode
+@Disabled//disabling the opmode
 //@Config
 class OTOSLinearScalarTuner : LinearOpMode() {
     //declaring the class

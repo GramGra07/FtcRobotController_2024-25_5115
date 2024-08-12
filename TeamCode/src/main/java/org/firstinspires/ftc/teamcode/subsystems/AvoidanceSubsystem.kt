@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.subsystems
 
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toPoint
-import org.firstinspires.ftc.teamcode.utilClass.Subsystem
 import org.firstinspires.ftc.teamcode.utilClass.objects.Point
 import org.firstinspires.ftc.teamcode.utilClass.objects.VectorField
 import org.firstinspires.ftc.teamcode.utilClass.objects.VectorField.Companion.getCorrectionByAvoidancePUSH
@@ -10,7 +9,7 @@ import org.firstinspires.ftc.teamcode.utilClass.objects.VectorField.Companion.ge
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.varConfig
 
 //@Config
-class AvoidanceSubsystem : Subsystem(){
+class AvoidanceSubsystem{
     enum class AvoidanceTypes {
         PUSH,
         STOP,

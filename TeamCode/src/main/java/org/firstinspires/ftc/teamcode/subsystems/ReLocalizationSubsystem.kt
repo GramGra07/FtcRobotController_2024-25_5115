@@ -10,12 +10,11 @@ import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilit
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities.aprilTag
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities.initializeProcessor
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.Processor
-import org.firstinspires.ftc.teamcode.utilClass.Subsystem
 import org.firstinspires.ftc.teamcode.utilClass.objects.Point
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection
 import kotlin.math.abs
 
-class ReLocalizationSubsystem(ahwMap: HardwareMap) :Subsystem(){
+class ReLocalizationSubsystem(ahwMap: HardwareMap) {
     private var currentDetections: List<AprilTagDetection> = emptyList()
     private var numDetections: Int = 0
     private var parsedData: Pair<Double, Double>? = null

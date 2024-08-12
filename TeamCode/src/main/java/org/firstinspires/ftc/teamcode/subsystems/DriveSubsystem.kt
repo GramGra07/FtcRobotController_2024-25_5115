@@ -10,7 +10,6 @@ import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.initMotor
 import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers
-import org.firstinspires.ftc.teamcode.utilClass.Subsystem
 import org.firstinspires.ftc.teamcode.utilClass.drivetrain.Drivetrain
 import org.firstinspires.ftc.teamcode.utilClass.drivetrain.DrivetrainType
 import org.firstinspires.ftc.teamcode.utilClass.objects.DriveType
@@ -23,8 +22,7 @@ import kotlin.math.sin
 
 
 //@Config
-class DriveSubsystem(ahwMap: HardwareMap, private var localizerSubsystem: LocalizerSubsystem) :
-    Subsystem(){
+class DriveSubsystem(ahwMap: HardwareMap, private var localizerSubsystem: LocalizerSubsystem){
     private var motorFrontLeft: DcMotorEx
     private var motorBackLeft: DcMotorEx
     private var motorFrontRight: DcMotorEx

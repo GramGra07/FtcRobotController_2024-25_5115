@@ -220,7 +220,9 @@ open class HardwareConfig(
 
         if (drivetrainHasPermission(Permission.CLAW)) clawSubsystem.update()
 
-        if (drivetrainHasPermission(Permission.EXTENDO)) extendoSubsystem.update()
+        if (drivetrainHasPermission(Permission.EXTENDO)) {
+            extendoSubsystem.update()
+        }
 
 //        loopTimeController.every(3) {
             if (drivetrainHasPermission(Permission.RELOCALIZATION) && !loopTimeController.loopSaver) reLocalizationSubsystem.relocalize(
