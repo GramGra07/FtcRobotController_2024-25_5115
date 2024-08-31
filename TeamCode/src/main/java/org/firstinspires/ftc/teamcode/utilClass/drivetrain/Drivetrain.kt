@@ -4,9 +4,10 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot.LogoFacingDirection
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot.UsbFacingDirection
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS
 import org.firstinspires.ftc.robotcore.external.Telemetry
-import org.firstinspires.ftc.teamcode.followers.pedroPathingOLD.localization.Pose
-import org.firstinspires.ftc.teamcode.followers.pedroPathingOLD.util.CustomFilteredPIDFCoefficients
-import org.firstinspires.ftc.teamcode.followers.pedroPathingOLD.util.CustomPIDFCoefficients
+import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.Pose
+import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.CustomFilteredPIDFCoefficients
+import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.CustomPIDFCoefficients
+import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.KalmanFilterParameters
 import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain
 import org.firstinspires.ftc.teamcode.utilClass.objects.Permission
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.varConfig
@@ -74,40 +75,35 @@ class Drivetrain(
                     -50.12846614166424,
                     -77.35699334482771,
                     CustomPIDFCoefficients(
-                        0.0001,
-                        0.00006,
-                        0.005,
+                        0.009,
+                        0.0006,
+                        0.002,
                         0.0005
                     ),
                     CustomPIDFCoefficients(
-                        0.09,
                         0.0,
-                        0.001,
+                        0.0,
+                        0.0,
                         0.0
                     ),
+                    0.015,
                     CustomPIDFCoefficients(
                         2.0,
                         0.0,
                         0.0,
                         0.0
                     ),
-                    CustomPIDFCoefficients(
-                        1.0,
-                        0.0,
-                        0.0,
-                        0.0
-                    ),
+                    0.01,
                     CustomFilteredPIDFCoefficients(
                         0.02,
                         0.0,
                         0.000005,
                         0.0, 0.0
                     ),
-                    CustomFilteredPIDFCoefficients(
-                        0.025,
-                        0.0,
-                        0.00001,
-                        0.0, 0.0
+                    0.01,
+                    KalmanFilterParameters(
+                        6.0,
+                        1.0
                     ),
                     4.0,
                     0.0005
@@ -118,7 +114,16 @@ class Drivetrain(
                     LogoFacingDirection.UP,
                     UsbFacingDirection.LEFT
                 ),
-                SparkFunOTOSParams("spark", SparkFunOTOS.Pose2D(varConfig.OTOSxOffset,varConfig.OTOSyOffset, varConfig.OTOShOffset), 1.0, 1.011),
+                SparkFunOTOSParams(
+                    "spark",
+                    SparkFunOTOS.Pose2D(
+                        varConfig.OTOSxOffset,
+                        varConfig.OTOSyOffset,
+                        varConfig.OTOShOffset
+                    ),
+                    1.0,
+                    1.011
+                ),
                 mutableListOf(Permission.RELOCALIZATION),
             ),
             Drivetrain(
@@ -167,32 +172,27 @@ class Drivetrain(
                         0.0,
                         0.0
                     ),
+                    0.015,
                     CustomPIDFCoefficients(
-                        5.0,
-                        0.0,
-                        0.08,
-                        0.0
-                    ),
-                    CustomPIDFCoefficients(
-                        1.0,
+                        2.0,
                         0.0,
                         0.0,
                         0.0
                     ),
+                    0.01,
                     CustomFilteredPIDFCoefficients(
                         0.02,
                         0.0,
                         0.000005,
                         0.0, 0.0
                     ),
-                    CustomFilteredPIDFCoefficients(
-                        0.025,
-                        0.0,
-                        0.00001,
-                        0.0, 0.0
+                    0.01,
+                    KalmanFilterParameters(
+                        6.0,
+                        1.0
                     ),
                     4.0,
-                    0.0005,
+                    0.0005
                 ),
                 DriveConfigPARAMS(
                     "parallelEnc",
@@ -200,7 +200,16 @@ class Drivetrain(
                     LogoFacingDirection.RIGHT,
                     UsbFacingDirection.UP
                 ),
-                SparkFunOTOSParams("spark", SparkFunOTOS.Pose2D(varConfig.OTOSxOffset,varConfig.OTOSyOffset, varConfig.OTOShOffset), 1.0, 1.0),
+                SparkFunOTOSParams(
+                    "spark",
+                    SparkFunOTOS.Pose2D(
+                        varConfig.OTOSxOffset,
+                        varConfig.OTOSyOffset,
+                        varConfig.OTOShOffset
+                    ),
+                    1.0,
+                    1.0
+                ),
                 mutableListOf(
                     Permission.EXTRAS,
                     Permission.EXTENDO,

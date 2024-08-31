@@ -8,9 +8,9 @@ import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
 import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toPose
 import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toPose2d
 import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toString2
-import org.firstinspires.ftc.teamcode.followers.pedroPathingOLD.localization.PoseUpdater
-import org.firstinspires.ftc.teamcode.followers.pedroPathingOLD.localization.localizers.OTOSLocalizer
-import org.firstinspires.ftc.teamcode.followers.pedroPathingOLD.localization.localizers.TwoWheelLocalizer
+import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.PoseUpdater
+import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.localizers.OTOSLocalizer
+import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.localizers.TwoWheelLocalizer
 //import org.firstinspires.ftc.teamcode.followers.rr.MecanumDrive
 import org.firstinspires.ftc.teamcode.storage.DistanceStorage
 import org.firstinspires.ftc.teamcode.storage.PoseStorage
