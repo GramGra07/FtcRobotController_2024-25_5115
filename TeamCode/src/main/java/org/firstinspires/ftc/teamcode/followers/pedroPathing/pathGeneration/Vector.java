@@ -33,7 +33,7 @@ public class Vector {
      * This creates a new Vector with a specified magnitude and direction.
      *
      * @param magnitude magnitude of the Vector.
-     * @param theta the direction of the Vector in radians.
+     * @param theta     the direction of the Vector in radians.
      */
     public Vector(double magnitude, double theta) {
         setComponents(magnitude, theta);
@@ -43,13 +43,13 @@ public class Vector {
      * This sets the components of the Vector in regular vector coordinates.
      *
      * @param magnitude sets the magnitude of this Vector.
-     * @param theta sets the theta value of this Vector.
+     * @param theta     sets the theta value of this Vector.
      */
     public void setComponents(double magnitude, double theta) {
         double[] orthogonalComponents;
-        if (magnitude<0) {
+        if (magnitude < 0) {
             this.magnitude = -magnitude;
-            this.theta = MathFunctions.normalizeAngle(theta+Math.PI);
+            this.theta = MathFunctions.normalizeAngle(theta + Math.PI);
         } else {
             this.magnitude = magnitude;
             this.theta = MathFunctions.normalizeAngle(theta);
@@ -60,30 +60,12 @@ public class Vector {
     }
 
     /**
-     * This sets only the magnitude of the Vector.
-     *
-     * @param magnitude sets the magnitude of this Vector.
-     */
-    public void setMagnitude(double magnitude) {
-        setComponents(magnitude, theta);
-    }
-
-    /**
-     * This sets only the angle, theta, of the Vector.
-     *
-     * @param theta sets the angle, or theta value, of this Vector.
-     */
-    public void setTheta(double theta) {
-        setComponents(magnitude, theta);
-    }
-
-    /**
      * This rotates the Vector by an angle, theta.
      *
      * @param theta2 the angle to be added.
      */
     public void rotateVector(double theta2) {
-        setTheta(theta+theta2);
+        setTheta(theta + theta2);
     }
 
     /**
@@ -113,12 +95,30 @@ public class Vector {
     }
 
     /**
+     * This sets only the magnitude of the Vector.
+     *
+     * @param magnitude sets the magnitude of this Vector.
+     */
+    public void setMagnitude(double magnitude) {
+        setComponents(magnitude, theta);
+    }
+
+    /**
      * Returns the theta value, or angle, of this Vector.
      *
      * @return returns the theta value.
      */
     public double getTheta() {
         return theta;
+    }
+
+    /**
+     * This sets only the angle, theta, of the Vector.
+     *
+     * @param theta sets the angle, or theta value, of this Vector.
+     */
+    public void setTheta(double theta) {
+        setComponents(magnitude, theta);
     }
 
     /**

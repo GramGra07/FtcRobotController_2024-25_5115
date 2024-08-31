@@ -21,6 +21,14 @@ public abstract class Localizer {
     public abstract Pose getPose();
 
     /**
+     * This sets the current pose estimate of the Localizer. Changing this should just change the
+     * robot's current pose estimate, not anything to do with the start pose.
+     *
+     * @param setPose the new current pose estimate
+     */
+    public abstract void setPose(Pose setPose);
+
+    /**
      * This returns the current velocity estimate from the Localizer.
      *
      * @return returns the velocity as a Pose object.
@@ -41,14 +49,6 @@ public abstract class Localizer {
      * @param setStart the new start pose
      */
     public abstract void setStartPose(Pose setStart);
-
-    /**
-     * This sets the current pose estimate of the Localizer. Changing this should just change the
-     * robot's current pose estimate, not anything to do with the start pose.
-     *
-     * @param setPose the new current pose estimate
-     */
-    public abstract void setPose(Pose setPose);
 
     /**
      * This calls an update to the Localizer, updating the current pose estimate and current velocity

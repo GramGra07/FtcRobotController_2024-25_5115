@@ -1,10 +1,10 @@
 package org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration;
 
 
-
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * This is the BezierCurve class. This class handles the creation of Bezier curves, which are used
@@ -19,18 +19,13 @@ import java.util.ArrayList;
  * @version 1.0, 3/5/2024
  */
 public class BezierCurve {
+    private final int APPROXIMATION_STEPS = FollowerConstants.APPROXIMATION_STEPS;
+    private final int DASHBOARD_DRAWING_APPROXIMATION_STEPS = 100;
     // This contains the coefficients for the curve points
-    private ArrayList<BezierCurveCoefficients> pointCoefficients = new ArrayList<>();
-
+    private final ArrayList<BezierCurveCoefficients> pointCoefficients = new ArrayList<>();
     // This contains the control points for the Bezier curve
     private ArrayList<Point> controlPoints = new ArrayList<>();
-
     private Vector endTangent = new Vector();
-
-    private final int APPROXIMATION_STEPS = FollowerConstants.APPROXIMATION_STEPS;
-
-    private final int DASHBOARD_DRAWING_APPROXIMATION_STEPS = 100;
-
     private double[][] dashboardDrawingPoints;
 
     private double UNIT_TO_TIME;
@@ -52,7 +47,7 @@ public class BezierCurve {
      * @param controlPoints This is the ArrayList of control points that define the BezierCurve.
      */
     public BezierCurve(ArrayList<Point> controlPoints) {
-        if (controlPoints.size()<3) {
+        if (controlPoints.size() < 3) {
             try {
                 throw new Exception("Too few control points");
             } catch (Exception e) {
@@ -71,10 +66,8 @@ public class BezierCurve {
      * @param controlPoints This is the specified control points that define the BezierCurve.
      */
     public BezierCurve(Point... controlPoints) {
-        for (Point controlPoint : controlPoints) {
-            this.controlPoints.add(controlPoint);
-        }
-        if (this.controlPoints.size()<3) {
+        Collections.addAll(this.controlPoints, controlPoints);
+        if (this.controlPoints.size() < 3) {
             try {
                 throw new Exception("Too few control points");
             } catch (Exception e) {
@@ -90,8 +83,8 @@ public class BezierCurve {
     public void initialize() {
         generateBezierCurve();
         length = approximateLength();
-        UNIT_TO_TIME = 1/length;
-        endTangent.setOrthogonalComponents(controlPoints.get(controlPoints.size()-1).getX()-controlPoints.get(controlPoints.size()-2).getX(), controlPoints.get(controlPoints.size()-1).getY()-controlPoints.get(controlPoints.size()-2).getY());
+        UNIT_TO_TIME = 1 / length;
+        endTangent.setOrthogonalComponents(controlPoints.get(controlPoints.size() - 1).getX() - controlPoints.get(controlPoints.size() - 2).getX(), controlPoints.get(controlPoints.size() - 1).getY() - controlPoints.get(controlPoints.size() - 2).getY());
         endTangent = MathFunctions.normalizeVector(endTangent);
         initializeDashboardDrawingPoints();
     }
@@ -102,7 +95,7 @@ public class BezierCurve {
     public void initializeDashboardDrawingPoints() {
         dashboardDrawingPoints = new double[2][DASHBOARD_DRAWING_APPROXIMATION_STEPS + 1];
         for (int i = 0; i <= DASHBOARD_DRAWING_APPROXIMATION_STEPS; i++) {
-            Point currentPoint = getPoint(i/(double) (DASHBOARD_DRAWING_APPROXIMATION_STEPS));
+            Point currentPoint = getPoint(i / (double) (DASHBOARD_DRAWING_APPROXIMATION_STEPS));
             dashboardDrawingPoints[0][i] = currentPoint.getX();
             dashboardDrawingPoints[1][i] = currentPoint.getY();
         }
@@ -123,11 +116,11 @@ public class BezierCurve {
      * Well, this actually generates the coefficients for each control point on the Bezier curve.
      * These coefficients can then be used to calculate a position, velocity, or accleration on the
      * Bezier curve on the fly without much computational expense.
-     *
+     * <p>
      * See https://en.wikipedia.org/wiki/Bézier_curve for the explicit formula for Bezier curves
      */
     public void generateBezierCurve() {
-        int n = controlPoints.size()-1;
+        int n = controlPoints.size() - 1;
         for (int i = 0; i <= n; i++) {
             pointCoefficients.add(new BezierCurveCoefficients(n, i));
         }
@@ -153,7 +146,7 @@ public class BezierCurve {
         Point currentPoint;
         double approxLength = 0;
         for (int i = 1; i <= APPROXIMATION_STEPS; i++) {
-            currentPoint = getPoint(i/(double)APPROXIMATION_STEPS);
+            currentPoint = getPoint(i / (double) APPROXIMATION_STEPS);
             approxLength += previousPoint.distanceFrom(currentPoint);
             previousPoint = currentPoint;
         }
@@ -198,7 +191,7 @@ public class BezierCurve {
         Vector secondDerivative = getSecondDerivative(t);
 
         if (derivative.getMagnitude() == 0) return 0;
-        return (MathFunctions.crossProduct(derivative, secondDerivative))/Math.pow(derivative.getMagnitude(),3);
+        return (MathFunctions.crossProduct(derivative, secondDerivative)) / Math.pow(derivative.getMagnitude(), 3);
     }
 
     /**
@@ -215,13 +208,13 @@ public class BezierCurve {
         Vector returnVector = new Vector();
 
         // calculates the x coordinate of the point requested
-        for (int i = 0; i < controlPoints.size()-1; i++) {
-            xCoordinate += pointCoefficients.get(i).getDerivativeValue(t) * (MathFunctions.subtractPoints(controlPoints.get(i+1), controlPoints.get(i)).getX());
+        for (int i = 0; i < controlPoints.size() - 1; i++) {
+            xCoordinate += pointCoefficients.get(i).getDerivativeValue(t) * (MathFunctions.subtractPoints(controlPoints.get(i + 1), controlPoints.get(i)).getX());
         }
 
         // calculates the y coordinate of the point requested
-        for (int i = 0; i < controlPoints.size()-1; i++) {;
-            yCoordinate += pointCoefficients.get(i).getDerivativeValue(t) * (MathFunctions.subtractPoints(controlPoints.get(i+1), controlPoints.get(i)).getY());
+        for (int i = 0; i < controlPoints.size() - 1; i++) {
+            yCoordinate += pointCoefficients.get(i).getDerivativeValue(t) * (MathFunctions.subtractPoints(controlPoints.get(i + 1), controlPoints.get(i)).getY());
         }
 
         returnVector.setOrthogonalComponents(xCoordinate, yCoordinate);
@@ -243,13 +236,13 @@ public class BezierCurve {
         Vector returnVector = new Vector();
 
         // calculates the x coordinate of the point requested
-        for (int i = 0; i < controlPoints.size()-2; i++) {
-            xCoordinate += pointCoefficients.get(i).getSecondDerivativeValue(t) * (MathFunctions.addPoints(MathFunctions.subtractPoints(controlPoints.get(i+2), new Point(2*controlPoints.get(i+1).getX(), 2*controlPoints.get(i+1).getY(), Point.CARTESIAN)), controlPoints.get(i)).getX());
+        for (int i = 0; i < controlPoints.size() - 2; i++) {
+            xCoordinate += pointCoefficients.get(i).getSecondDerivativeValue(t) * (MathFunctions.addPoints(MathFunctions.subtractPoints(controlPoints.get(i + 2), new Point(2 * controlPoints.get(i + 1).getX(), 2 * controlPoints.get(i + 1).getY(), Point.CARTESIAN)), controlPoints.get(i)).getX());
         }
 
         // calculates the y coordinate of the point requested
-        for (int i = 0; i < controlPoints.size()-2; i++) {
-            yCoordinate += pointCoefficients.get(i).getSecondDerivativeValue(t) * (MathFunctions.addPoints(MathFunctions.subtractPoints(controlPoints.get(i+2), new Point(2*controlPoints.get(i+1).getX(), 2*controlPoints.get(i+1).getY(), Point.CARTESIAN)), controlPoints.get(i)).getY());
+        for (int i = 0; i < controlPoints.size() - 2; i++) {
+            yCoordinate += pointCoefficients.get(i).getSecondDerivativeValue(t) * (MathFunctions.addPoints(MathFunctions.subtractPoints(controlPoints.get(i + 2), new Point(2 * controlPoints.get(i + 1).getX(), 2 * controlPoints.get(i + 1).getY(), Point.CARTESIAN)), controlPoints.get(i)).getY());
         }
 
         returnVector.setOrthogonalComponents(xCoordinate, yCoordinate);
@@ -305,7 +298,7 @@ public class BezierCurve {
      * @return This returns the Point.
      */
     public Point getSecondToLastControlPoint() {
-        return controlPoints.get(controlPoints.size()-2);
+        return controlPoints.get(controlPoints.size() - 2);
     }
 
     /**
@@ -314,7 +307,7 @@ public class BezierCurve {
      * @return This returns the Point.
      */
     public Point getLastControlPoint() {
-        return controlPoints.get(controlPoints.size()-1);
+        return controlPoints.get(controlPoints.size() - 1);
     }
 
     /**

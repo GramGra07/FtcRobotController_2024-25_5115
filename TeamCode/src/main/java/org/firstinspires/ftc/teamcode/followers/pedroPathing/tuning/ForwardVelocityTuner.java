@@ -1,7 +1,10 @@
 package org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning;
 
 
-import static org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants.*;
+import static org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants.leftFrontMotorName;
+import static org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants.leftRearMotorName;
+import static org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants.rightFrontMotorName;
+import static org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants.rightRearMotorName;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -38,21 +41,17 @@ import java.util.List;
  * @version 1.0, 3/13/2024
  */
 @Config
-@Autonomous (name = "Forward Velocity Tuner", group = "Autonomous Pathing Tuning")
+@Autonomous(name = "Forward Velocity Tuner", group = "Autonomous Pathing Tuning")
 public class ForwardVelocityTuner extends OpMode {
-    private ArrayList<Double> velocities = new ArrayList<>();
-
+    public static double DISTANCE = 40;
+    public static double RECORD_NUMBER = 10;
+    private final ArrayList<Double> velocities = new ArrayList<>();
     private DcMotorEx leftFront;
     private DcMotorEx leftRear;
     private DcMotorEx rightFront;
     private DcMotorEx rightRear;
     private List<DcMotorEx> motors;
-
     private PoseUpdater poseUpdater;
-
-    public static double DISTANCE = 40;
-    public static double RECORD_NUMBER = 10;
-
     private Telemetry telemetryA;
 
     private boolean end;
@@ -141,7 +140,7 @@ public class ForwardVelocityTuner extends OpMode {
             for (Double velocity : velocities) {
                 average += velocity;
             }
-            average /= (double) velocities.size();
+            average /= velocities.size();
 
             telemetryA.addData("forward velocity:", average);
             telemetryA.update();

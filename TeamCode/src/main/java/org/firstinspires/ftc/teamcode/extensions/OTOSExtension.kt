@@ -9,14 +9,13 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
 import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain
-import java.lang.Math.toDegrees
 
 object OTOSExtension {
     fun initOTOS(
         hw: HardwareMap,
         name: String,
         offset: Pose2D,
-        startPose: Pose2D? = Pose2D(0.0, 0.0, Math.PI/2)
+        startPose: Pose2D? = Pose2D(0.0, 0.0, Math.PI / 2)
     ): SparkFunOTOS {
         val t = hw.get(SparkFunOTOS::class.java, name)
         t.setLinearUnit(DistanceUnit.INCH)

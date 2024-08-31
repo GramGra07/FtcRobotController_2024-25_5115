@@ -20,8 +20,8 @@ public class Pose {
     /**
      * This creates a new Pose from a x, y, and heading inputs.
      *
-     * @param setX the initial x value
-     * @param setY the initial y value
+     * @param setX       the initial x value
+     * @param setY       the initial y value
      * @param setHeading the initial heading value
      */
     public Pose(double setX, double setY, double setHeading) {
@@ -44,34 +44,7 @@ public class Pose {
      * This creates a new Pose with no inputs and 0 for all values.
      */
     public Pose() {
-        this(0,0,0);
-    }
-
-    /**
-     * This sets the x value.
-     *
-     * @param set the x value
-     */
-    public void setX(double set) {
-        x = set;
-    }
-
-    /**
-     * This sets the y value.
-     *
-     * @param set the y value
-     */
-    public void setY(double set) {
-        y = set;
-    }
-
-    /**
-     * This sets the heading value.
-     *
-     * @param set the heading value
-     */
-    public void setHeading(double set) {
-        heading = MathFunctions.normalizeAngle(set);
+        this(0, 0, 0);
     }
 
     /**
@@ -84,6 +57,15 @@ public class Pose {
     }
 
     /**
+     * This sets the x value.
+     *
+     * @param set the x value
+     */
+    public void setX(double set) {
+        x = set;
+    }
+
+    /**
      * This returns the y value.
      *
      * @return returns the y value
@@ -93,12 +75,30 @@ public class Pose {
     }
 
     /**
+     * This sets the y value.
+     *
+     * @param set the y value
+     */
+    public void setY(double set) {
+        y = set;
+    }
+
+    /**
      * This returns the heading value.
      *
      * @return returns the heading value
      */
     public double getHeading() {
         return heading;
+    }
+
+    /**
+     * This sets the heading value.
+     *
+     * @param set the heading value
+     */
+    public void setHeading(double set) {
+        heading = MathFunctions.normalizeAngle(set);
     }
 
     /**
@@ -182,7 +182,7 @@ public class Pose {
      * This returns if a Pose is within a specified accuracy of this Pose in terms of x position,
      * y position, and heading.
      *
-     * @param pose the input Pose to check
+     * @param pose     the input Pose to check
      * @param accuracy the specified accuracy necessary to return true
      * @return returns if the input Pose is within the specified accuracy of this Pose
      */

@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.utilClass.objects.VectorField.Companion.ge
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.varConfig
 
 //@Config
-class AvoidanceSubsystem{
+class AvoidanceSubsystem {
     enum class AvoidanceTypes {
         PUSH,
         STOP,

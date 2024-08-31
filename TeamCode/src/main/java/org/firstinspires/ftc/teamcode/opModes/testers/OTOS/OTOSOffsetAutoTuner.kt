@@ -104,8 +104,8 @@ class OTOSOffsetAutoTuner : LinearOpMode() {
                 sparkFunOTOS.offset = Pose2D(i.toDouble(), j.toDouble(), 0.0)
                 while (sparkFunOTOS.position.h < 170) {
                     breakout()
-                    telemetry.addData("x",sparkFunOTOS.position.x)
-                    telemetry.addData("y",sparkFunOTOS.position.y)
+                    telemetry.addData("x", sparkFunOTOS.position.x)
+                    telemetry.addData("y", sparkFunOTOS.position.y)
                     telemetry.addData("h", sparkFunOTOS.position.h)
                     telemetry.addData("j", j)
                     telemetry.addData("i", i)

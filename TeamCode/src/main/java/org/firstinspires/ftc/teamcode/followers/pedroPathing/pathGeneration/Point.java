@@ -14,6 +14,9 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.Pose;
  */
 public class Point {
 
+    // these are used for ease of changing/setting identification
+    public static final int POLAR = 0;
+    public static final int CARTESIAN = 1;
     // IMPORTANT NOTE: theta is defined in radians.
     // These are the values of the coordinate defined by this Point, in both polar and
     // Cartesian systems.
@@ -22,22 +25,18 @@ public class Point {
     private double x;
     private double y;
 
-    // these are used for ease of changing/setting identification
-    public static final int POLAR = 0;
-    public static final int CARTESIAN = 1;
-
 
     /**
      * This creates a new Point with coordinate inputs and a specified coordinate system.
      *
-     * @param rOrX Depending on the coordinate system specified, this is either the r or x value.
-     *             In polar coordinates, the r value is the distance from the origin.
-     *             In Cartesian coordinates, the x value is the distance left/right from the origin.
-     * @param thetaOrY Depending on the coordinate system specified, this is either the theta or
-     *                 y value.
-     *                 In polar coordinates, the theta value is the angle from the positive x-axis.
-     *                 Increasing theta moves in the counter-clockwise direction.
-     *                 In Cartesian coordinates, the y value is the distance up/down from the origin.
+     * @param rOrX       Depending on the coordinate system specified, this is either the r or x value.
+     *                   In polar coordinates, the r value is the distance from the origin.
+     *                   In Cartesian coordinates, the x value is the distance left/right from the origin.
+     * @param thetaOrY   Depending on the coordinate system specified, this is either the theta or
+     *                   y value.
+     *                   In polar coordinates, the theta value is the angle from the positive x-axis.
+     *                   Increasing theta moves in the counter-clockwise direction.
+     *                   In Cartesian coordinates, the y value is the distance up/down from the origin.
      * @param identifier this specifies what coordinate system the coordinate inputs are in.
      */
     public Point(double rOrX, double thetaOrY, int identifier) {
@@ -54,16 +53,51 @@ public class Point {
     }
 
     /**
+     * This takes in an r and theta value and converts them to Cartesian coordinates.
+     *
+     * @param r     this is the r value of the Point being converted.
+     * @param theta this is the theta value of the Point being converted.
+     * @return this returns the x and y values, in that order, in an Array of doubles.
+     */
+    public static double[] polarToCartesian(double r, double theta) {
+        return new double[]{r * Math.cos(theta), r * Math.sin(theta)};
+    }
+
+    /**
+     * This takes in an x and y value and converts them to polar coordinates.
+     *
+     * @param x this is the x value of the Point being converted.
+     * @param y this is the y value of the Point being converted.
+     * @return this returns the r and theta values, in that order, in an Array of doubles.
+     */
+    public static double[] cartesianToPolar(double x, double y) {
+        if (x == 0) {
+            if (y > 0) {
+                return new double[]{Math.abs(y), Math.PI / 2};
+            } else {
+                return new double[]{Math.abs(y), (3 * Math.PI) / 2};
+            }
+        }
+        double r = Math.sqrt(x * x + y * y);
+        if (x < 0) return new double[]{r, Math.PI + Math.atan(y / x)};
+        if (y > 0) {
+            return new double[]{r, Math.atan(y / x)};
+        } else {
+            return new double[]{r, (2 * Math.PI) + Math.atan(y / x)};
+        }
+    }
+
+    /**
      * This sets the coordinates of the Point using the specified coordinate system.
      *
-     * @param rOrX Depending on the coordinate system specified, this is either the r or x value.
-     *             In polar coordinates, the r value is the distance from the origin.
-     *             In Cartesian coordinates, the x value is the distance left/right from the origin.
-     * @param thetaOrY Depending on the coordinate system specified, this is either the theta or
-     *                 y value.
-     *                 In polar coordinates, the theta value is the angle from the positive x-axis.
-     *                 Increasing theta moves in the counter-clockwise direction.
-     *                 In Cartesian coordinates, the y value is the distance up/down from the origin.
+     * @param rOrX       Depending on the coordinate system specified, this is either the r or x value.
+     *                   In polar coordinates, the r value is the distance from the origin.
+     *                   In Cartesian coordinates, the x value is the distance left/right from the origin.
+     * @param thetaOrY   Depending on the coordinate system specified, this is either the theta or
+     *                   y value.
+     *                   In polar coordinates, the theta value is the angle from the positive x-axis.
+     *                   Increasing theta moves in the counter-clockwise direction.
+     *                   In Cartesian coordinates, the y value is the distance up/down from the origin.
      * @param identifier this specifies what coordinate system to use when setting values.
      */
     public void setCoordinates(double rOrX, double thetaOrY, int identifier) {
@@ -78,9 +112,9 @@ public class Point {
                 theta = setOtherCoordinates[1];
                 break;
             default:
-                if (rOrX<0) {
+                if (rOrX < 0) {
                     r = -rOrX;
-                    theta = MathFunctions.normalizeAngle(thetaOrY+Math.PI);
+                    theta = MathFunctions.normalizeAngle(thetaOrY + Math.PI);
                 } else {
                     r = rOrX;
                     theta = MathFunctions.normalizeAngle(thetaOrY);
@@ -99,42 +133,7 @@ public class Point {
      * @return returns the distance between the two Points.
      */
     public double distanceFrom(Point otherPoint) {
-        return Math.sqrt(Math.pow(otherPoint.getX()-x, 2) + Math.pow(otherPoint.getY()-y, 2));
-    }
-
-    /**
-     * This takes in an r and theta value and converts them to Cartesian coordinates.
-     *
-     * @param r this is the r value of the Point being converted.
-     * @param theta this is the theta value of the Point being converted.
-     * @return this returns the x and y values, in that order, in an Array of doubles.
-     */
-    public static double[] polarToCartesian(double r, double theta) {
-        return new double[] {r * Math.cos(theta), r * Math.sin(theta)};
-    }
-
-    /**
-     * This takes in an x and y value and converts them to polar coordinates.
-     *
-     * @param x this is the x value of the Point being converted.
-     * @param y this is the y value of the Point being converted.
-     * @return this returns the r and theta values, in that order, in an Array of doubles.
-     */
-    public static double[] cartesianToPolar(double x, double y) {
-        if (x == 0) {
-            if (y > 0) {
-                return new double[] {Math.abs(y), Math.PI/2};
-            } else {
-                return new double[] {Math.abs(y), (3 * Math.PI) / 2};
-            }
-        }
-        double r = Math.sqrt(x*x+y*y);
-        if (x < 0) return new double[] {r, Math.PI+Math.atan(y/x)};
-        if (y > 0) {
-            return new double[]{r, Math.atan(y / x)};
-        } else {
-            return new double[]{r, (2*Math.PI) + Math.atan(y / x)};
-        }
+        return Math.sqrt(Math.pow(otherPoint.getX() - x, 2) + Math.pow(otherPoint.getY() - y, 2));
     }
 
     /**

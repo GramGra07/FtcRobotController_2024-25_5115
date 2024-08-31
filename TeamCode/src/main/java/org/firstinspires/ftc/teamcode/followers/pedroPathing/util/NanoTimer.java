@@ -41,6 +41,6 @@ public class NanoTimer {
      * @return this returns the elapsed time in seconds.
      */
     public double getElapsedTimeSeconds() {
-        return (getElapsedTime() / Math.pow(10.0,9));
+        return (getElapsedTime() / Math.pow(10.0, 9));
     }
 }

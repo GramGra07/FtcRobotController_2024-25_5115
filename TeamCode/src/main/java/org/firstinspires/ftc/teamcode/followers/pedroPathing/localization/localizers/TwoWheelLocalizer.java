@@ -23,49 +23,50 @@ import org.firstinspires.ftc.teamcode.utilClass.drivetrain.PedroPathingPARAMS;
  * This is the TwoWheelLocalizer class. This class extends the Localizer superclass and is a
  * localizer that uses the two wheel odometry with IMU set up. The diagram below, which is modified from
  * Road Runner, shows a typical set up.
- *
+ * <p>
  * The view is from the top of the robot looking downwards.
- *
+ * <p>
  * left on robot is the y positive direction
- *
+ * <p>
  * forward on robot is the x positive direction
- *
- *    /--------------\
- *    |     ____     |
- *    |     ----     |
- *    | ||        || |
- *    | ||        || |  ----> left (y positive)
- *    |              |
- *    |              |
- *    \--------------/
- *           |
- *           |
- *           V
- *    forward (x positive)
+ * <p>
+ * /--------------\
+ * |     ____     |
+ * |     ----     |
+ * | ||        || |
+ * | ||        || |  ----> left (y positive)
+ * |              |
+ * |              |
+ * \--------------/
+ * |
+ * |
+ * V
+ * forward (x positive)
  *
  * @author Anyi Lin - 10158 Scott's Bots
  * @version 1.0, 4/2/2024
  */
 @Config
 public class TwoWheelLocalizer extends Localizer { // todo: make two wheel odo work
-    private HardwareMap hardwareMap;
-    private IMU imu;
+    static PedroPathingPARAMS pedroPathingPARAMS = CurrentDrivetrain.Companion.getCurrentDrivetrain().getPedroPathingPARAMS();
+    public static double FORWARD_TICKS_TO_INCHES = pedroPathingPARAMS.getForwardTicksToInches();
+    public static double STRAFE_TICKS_TO_INCHES = pedroPathingPARAMS.getLateralTicksToInches();
+    private final HardwareMap hardwareMap;
+    private final IMU imu;
     private Pose startPose;
     private Pose displacementPose;
     private Pose currentVelocity;
     private Matrix prevRotationMatrix;
-    private NanoTimer timer;
+    private final NanoTimer timer;
     private long deltaTimeNano;
-    private Encoder forwardEncoder;
-    private Encoder strafeEncoder;
-    private Pose forwardEncoderPose;
-    private Pose strafeEncoderPose;
+    private final Encoder forwardEncoder;
+    private final Encoder strafeEncoder;
+    private final Pose forwardEncoderPose;
+    private final Pose strafeEncoderPose;
     private double previousIMUOrientation;
     private double deltaRadians;
     private double totalHeading;
-    static PedroPathingPARAMS pedroPathingPARAMS = CurrentDrivetrain.Companion.getCurrentDrivetrain().getPedroPathingPARAMS();
-    public static double FORWARD_TICKS_TO_INCHES = pedroPathingPARAMS.getForwardTicksToInches();
-    public static double STRAFE_TICKS_TO_INCHES = pedroPathingPARAMS.getLateralTicksToInches();
+
     /**
      * This creates a new TwoWheelLocalizer from a HardwareMap, with a starting Pose at (0,0)
      * facing 0 heading.
@@ -80,7 +81,7 @@ public class TwoWheelLocalizer extends Localizer { // todo: make two wheel odo w
      * This creates a new TwoWheelLocalizer from a HardwareMap and a Pose, with the Pose
      * specifying the starting pose of the localizer.
      *
-     * @param map the HardwareMap
+     * @param map          the HardwareMap
      * @param setStartPose the Pose to start from
      */
     public TwoWheelLocalizer(HardwareMap map, Pose setStartPose) {
@@ -123,6 +124,18 @@ public class TwoWheelLocalizer extends Localizer { // todo: make two wheel odo w
     }
 
     /**
+     * This sets the current pose estimate. Changing this should just change the robot's current
+     * pose estimate, not anything to do with the start pose.
+     *
+     * @param setPose the new current pose estimate
+     */
+    @Override
+    public void setPose(Pose setPose) {
+        displacementPose = MathFunctions.subtractPoses(setPose, startPose);
+        resetEncoders();
+    }
+
+    /**
      * This returns the current velocity estimate.
      *
      * @return returns the current velocity estimate as a Pose
@@ -159,24 +172,12 @@ public class TwoWheelLocalizer extends Localizer { // todo: make two wheel odo w
      * @param heading the rotation of the Matrix
      */
     public void setPrevRotationMatrix(double heading) {
-        prevRotationMatrix = new Matrix(3,3);
+        prevRotationMatrix = new Matrix(3, 3);
         prevRotationMatrix.set(0, 0, Math.cos(heading));
         prevRotationMatrix.set(0, 1, -Math.sin(heading));
         prevRotationMatrix.set(1, 0, Math.sin(heading));
         prevRotationMatrix.set(1, 1, Math.cos(heading));
         prevRotationMatrix.set(2, 2, 1.0);
-    }
-
-    /**
-     * This sets the current pose estimate. Changing this should just change the robot's current
-     * pose estimate, not anything to do with the start pose.
-     *
-     * @param setPose the new current pose estimate
-     */
-    @Override
-    public void setPose(Pose setPose) {
-        displacementPose = MathFunctions.subtractPoses(setPose, startPose);
-        resetEncoders();
     }
 
     /**
@@ -194,7 +195,7 @@ public class TwoWheelLocalizer extends Localizer { // todo: make two wheel odo w
         Matrix globalDeltas;
         setPrevRotationMatrix(getPose().getHeading());
 
-        Matrix transformation = new Matrix(3,3);
+        Matrix transformation = new Matrix(3, 3);
         if (Math.abs(robotDeltas.get(2, 0)) < 0.001) {
             transformation.set(0, 0, 1.0 - (Math.pow(robotDeltas.get(2, 0), 2) / 6.0));
             transformation.set(0, 1, -robotDeltas.get(2, 0) / 2.0);
@@ -224,7 +225,7 @@ public class TwoWheelLocalizer extends Localizer { // todo: make two wheel odo w
         forwardEncoder.update();
         strafeEncoder.update();
 
-        double currentIMUOrientation =MathFunctions.normalizeAngle(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
+        double currentIMUOrientation = MathFunctions.normalizeAngle(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
         deltaRadians = MathFunctions.getTurnDirection(previousIMUOrientation, currentIMUOrientation) * MathFunctions.getSmallestAngleDifference(currentIMUOrientation, previousIMUOrientation);
         previousIMUOrientation = currentIMUOrientation;
     }
@@ -244,13 +245,13 @@ public class TwoWheelLocalizer extends Localizer { // todo: make two wheel odo w
      * @return returns a Matrix containing the robot relative movement.
      */
     public Matrix getRobotDeltas() {
-        Matrix returnMatrix = new Matrix(3,1);
+        Matrix returnMatrix = new Matrix(3, 1);
         // x/forward movement
-        returnMatrix.set(0,0, FORWARD_TICKS_TO_INCHES * (forwardEncoder.getDeltaPosition() - forwardEncoderPose.getY() * deltaRadians));
+        returnMatrix.set(0, 0, FORWARD_TICKS_TO_INCHES * (forwardEncoder.getDeltaPosition() - forwardEncoderPose.getY() * deltaRadians));
         //y/strafe movement
-        returnMatrix.set(1,0, STRAFE_TICKS_TO_INCHES * (strafeEncoder.getDeltaPosition() - strafeEncoderPose.getX() * deltaRadians));
+        returnMatrix.set(1, 0, STRAFE_TICKS_TO_INCHES * (strafeEncoder.getDeltaPosition() - strafeEncoderPose.getX() * deltaRadians));
         // theta/turning
-        returnMatrix.set(2,0, deltaRadians);
+        returnMatrix.set(2, 0, deltaRadians);
         return returnMatrix;
     }
 

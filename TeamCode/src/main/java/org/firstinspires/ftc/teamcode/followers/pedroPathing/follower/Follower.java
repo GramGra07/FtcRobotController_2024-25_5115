@@ -1,7 +1,24 @@
 package org.firstinspires.ftc.teamcode.followers.pedroPathing.follower;
 
 
-import static org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants.*;
+import static org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants.drivePIDFFeedForward;
+import static org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants.drivePIDFSwitch;
+import static org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants.forwardZeroPowerAcceleration;
+import static org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants.headingPIDFFeedForward;
+import static org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants.headingPIDFSwitch;
+import static org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants.lateralZeroPowerAcceleration;
+import static org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants.leftFrontMotorName;
+import static org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants.leftRearMotorName;
+import static org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants.rightFrontMotorName;
+import static org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants.rightRearMotorName;
+import static org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants.secondaryDrivePIDFFeedForward;
+import static org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants.secondaryHeadingPIDFFeedForward;
+import static org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants.secondaryTranslationalPIDFFeedForward;
+import static org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants.translationalPIDFFeedForward;
+import static org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants.translationalPIDFSwitch;
+import static org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants.useSecondaryDrivePID;
+import static org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants.useSecondaryHeadingPID;
+import static org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants.useSecondaryTranslationalPID;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -46,55 +63,50 @@ import java.util.List;
  */
 @Config
 public class Follower {
-    private HardwareMap hardwareMap;
-
+    public static boolean drawOnDashboard = true;
+    public static boolean useTranslational = true;
+    public static boolean useCentripetal = true;
+    public static boolean useHeading = true;
+    public static boolean useDrive = true;
+    private final int BEZIER_CURVE_BINARY_STEP_LIMIT = FollowerConstants.BEZIER_CURVE_BINARY_STEP_LIMIT;
+    private final int AVERAGED_VELOCITY_SAMPLE_NUMBER = FollowerConstants.AVERAGED_VELOCITY_SAMPLE_NUMBER;
+    public double driveError;
+    public double headingError;
+    public Vector driveVector;
+    public Vector headingVector;
+    public Vector translationalVector;
+    public Vector centripetalVector;
+    public Vector correctiveVector;
+    private final HardwareMap hardwareMap;
     private DcMotorEx leftFront;
     private DcMotorEx leftRear;
     private DcMotorEx rightFront;
     private DcMotorEx rightRear;
     private List<DcMotorEx> motors;
-
     private DriveVectorScaler driveVectorScaler;
-
     private PoseUpdater poseUpdater;
     private DashboardPoseTracker dashboardPoseTracker;
-
     private Pose closestPose;
-
     private Path currentPath;
-
     private PathChain currentPathChain;
-
-    private final int BEZIER_CURVE_BINARY_STEP_LIMIT = FollowerConstants.BEZIER_CURVE_BINARY_STEP_LIMIT;
-    private final int AVERAGED_VELOCITY_SAMPLE_NUMBER = FollowerConstants.AVERAGED_VELOCITY_SAMPLE_NUMBER;
-
     private int chainIndex;
-
     private long[] pathStartTimes;
-
     private boolean followingPathChain;
     private boolean holdingPosition;
     private boolean isBusy;
     private boolean reachedParametricPathEnd;
     private boolean holdPositionAtEnd;
     private boolean teleopDrive;
-
     private double maxPower = 1;
     private double previousSecondaryTranslationalIntegral;
     private double previousTranslationalIntegral;
-    private double holdPointTranslationalScaling = FollowerConstants.holdPointTranslationalScaling;
-    private double holdPointHeadingScaling = FollowerConstants.holdPointHeadingScaling;
-    public double driveError;
-    public double headingError;
-
+    private final double holdPointTranslationalScaling = FollowerConstants.holdPointTranslationalScaling;
+    private final double holdPointHeadingScaling = FollowerConstants.holdPointHeadingScaling;
     private long reachedParametricPathEndTime;
-
     private double[] drivePowers;
     private double[] teleopDriveValues;
-
-    private ArrayList<Vector> velocities = new ArrayList<>();
-    private ArrayList<Vector> accelerations = new ArrayList<>();
-
+    private final ArrayList<Vector> velocities = new ArrayList<>();
+    private final ArrayList<Vector> accelerations = new ArrayList<>();
     private Vector averageVelocity;
     private Vector averagePreviousVelocity;
     private Vector averageAcceleration;
@@ -102,31 +114,18 @@ public class Follower {
     private Vector translationalIntegralVector;
     private Vector teleopDriveVector;
     private Vector teleopHeadingVector;
-    public Vector driveVector;
-    public Vector headingVector;
-    public Vector translationalVector;
-    public Vector centripetalVector;
-    public Vector correctiveVector;
-
-    private PIDFController secondaryTranslationalPIDF = new PIDFController(FollowerConstants.secondaryTranslationalPIDFCoefficients);
-    private PIDFController secondaryTranslationalIntegral = new PIDFController(FollowerConstants.secondaryTranslationalIntegral);
-    private PIDFController translationalPIDF = new PIDFController(FollowerConstants.translationalPIDFCoefficients);
-    private PIDFController translationalIntegral = new PIDFController(FollowerConstants.translationalIntegral);
-    private PIDFController secondaryHeadingPIDF = new PIDFController(FollowerConstants.secondaryHeadingPIDFCoefficients);
-    private PIDFController headingPIDF = new PIDFController(FollowerConstants.headingPIDFCoefficients);
-    private FilteredPIDFController secondaryDrivePIDF = new FilteredPIDFController(FollowerConstants.secondaryDrivePIDFCoefficients);
-    private FilteredPIDFController drivePIDF = new FilteredPIDFController(FollowerConstants.drivePIDFCoefficients);
-
-    private KalmanFilter driveKalmanFilter = new KalmanFilter(FollowerConstants.driveKalmanFilterParameters);
+    private final PIDFController secondaryTranslationalPIDF = new PIDFController(FollowerConstants.secondaryTranslationalPIDFCoefficients);
+    private final PIDFController secondaryTranslationalIntegral = new PIDFController(FollowerConstants.secondaryTranslationalIntegral);
+    private final PIDFController translationalPIDF = new PIDFController(FollowerConstants.translationalPIDFCoefficients);
+    private final PIDFController translationalIntegral = new PIDFController(FollowerConstants.translationalIntegral);
+    private final PIDFController secondaryHeadingPIDF = new PIDFController(FollowerConstants.secondaryHeadingPIDFCoefficients);
+    private final PIDFController headingPIDF = new PIDFController(FollowerConstants.headingPIDFCoefficients);
+    private final FilteredPIDFController secondaryDrivePIDF = new FilteredPIDFController(FollowerConstants.secondaryDrivePIDFCoefficients);
+    private final FilteredPIDFController drivePIDF = new FilteredPIDFController(FollowerConstants.drivePIDFCoefficients);
+    private final KalmanFilter driveKalmanFilter = new KalmanFilter(FollowerConstants.driveKalmanFilterParameters);
     private double[] driveErrors;
     private double rawDriveError;
     private double previousRawDriveError;
-
-    public static boolean drawOnDashboard = true;
-    public static boolean useTranslational = true;
-    public static boolean useCentripetal = true;
-    public static boolean useHeading = true;
-    public static boolean useDrive = true;
 
     /**
      * This creates a new Follower given a HardwareMap.
@@ -273,39 +272,21 @@ public class Follower {
     }
 
     /**
-     * This sets the offset for only the x position.
-     *
-     * @param xOffset This sets the offset.
-     */
-    public void setXOffset(double xOffset) {
-        poseUpdater.setXOffset(xOffset);
-    }
-
-    /**
-     * This sets the offset for only the y position.
-     *
-     * @param yOffset This sets the offset.
-     */
-    public void setYOffset(double yOffset) {
-        poseUpdater.setYOffset(yOffset);
-    }
-
-    /**
-     * This sets the offset for only the heading.
-     *
-     * @param headingOffset This sets the offset.
-     */
-    public void setHeadingOffset(double headingOffset) {
-        poseUpdater.setHeadingOffset(headingOffset);
-    }
-
-    /**
      * This returns the x offset.
      *
      * @return returns the x offset.
      */
     public double getXOffset() {
         return poseUpdater.getXOffset();
+    }
+
+    /**
+     * This sets the offset for only the x position.
+     *
+     * @param xOffset This sets the offset.
+     */
+    public void setXOffset(double xOffset) {
+        poseUpdater.setXOffset(xOffset);
     }
 
     /**
@@ -318,12 +299,30 @@ public class Follower {
     }
 
     /**
+     * This sets the offset for only the y position.
+     *
+     * @param yOffset This sets the offset.
+     */
+    public void setYOffset(double yOffset) {
+        poseUpdater.setYOffset(yOffset);
+    }
+
+    /**
      * This returns the heading offset.
      *
      * @return returns the heading offset.
      */
     public double getHeadingOffset() {
         return poseUpdater.getHeadingOffset();
+    }
+
+    /**
+     * This sets the offset for only the heading.
+     *
+     * @param headingOffset This sets the offset.
+     */
+    public void setHeadingOffset(double headingOffset) {
+        poseUpdater.setHeadingOffset(headingOffset);
     }
 
     /**

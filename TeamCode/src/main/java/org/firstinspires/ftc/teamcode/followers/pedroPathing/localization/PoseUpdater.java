@@ -19,13 +19,13 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Vect
  * @version 1.0, 3/4/2024
  */
 public class PoseUpdater {
-    private HardwareMap hardwareMap;
+    private final HardwareMap hardwareMap;
 
     private IMU imu;
 
-    private Localizer localizer;
+    private final Localizer localizer;
 
-    private Pose startingPose = new Pose(0,0,0);
+    private Pose startingPose = new Pose(0, 0, 0);
 
     private Pose currentPose = startingPose;
 
@@ -48,7 +48,7 @@ public class PoseUpdater {
      * Creates a new PoseUpdater from a HardwareMap and a Localizer.
      *
      * @param hardwareMap the HardwareMap
-     * @param localizer the Localizer
+     * @param localizer   the Localizer
      */
     public PoseUpdater(HardwareMap hardwareMap, Localizer localizer) {
         this.hardwareMap = hardwareMap;
@@ -103,7 +103,6 @@ public class PoseUpdater {
      * This sets the current pose, using offsets. Think of using offsets as setting trim in an
      * aircraft. This can be reset as well, so beware of using the resetOffset() method.
      *
-     *
      * @param set The pose to set the current pose to.
      */
     public void setCurrentPoseWithOffset(Pose set) {
@@ -111,33 +110,6 @@ public class PoseUpdater {
         setXOffset(set.getX() - currentPose.getX());
         setYOffset(set.getY() - currentPose.getY());
         setHeadingOffset(MathFunctions.getTurnDirection(currentPose.getHeading(), set.getHeading()) * MathFunctions.getSmallestAngleDifference(currentPose.getHeading(), set.getHeading()));
-    }
-
-    /**
-     * This sets the offset for only the x position.
-     *
-     * @param offset This sets the offset.
-     */
-    public void setXOffset(double offset) {
-        xOffset = offset;
-    }
-
-    /**
-     * This sets the offset for only the y position.
-     *
-     * @param offset This sets the offset.
-     */
-    public void setYOffset(double offset) {
-        yOffset = offset;
-    }
-
-    /**
-     * This sets the offset for only the heading.
-     *
-     * @param offset This sets the offset.
-     */
-    public void setHeadingOffset(double offset) {
-        headingOffset = offset;
     }
 
     /**
@@ -150,12 +122,30 @@ public class PoseUpdater {
     }
 
     /**
+     * This sets the offset for only the x position.
+     *
+     * @param offset This sets the offset.
+     */
+    public void setXOffset(double offset) {
+        xOffset = offset;
+    }
+
+    /**
      * This returns the y offset.
      *
      * @return returns the y offset.
      */
     public double getYOffset() {
         return yOffset;
+    }
+
+    /**
+     * This sets the offset for only the y position.
+     *
+     * @param offset This sets the offset.
+     */
+    public void setYOffset(double offset) {
+        yOffset = offset;
     }
 
     /**
@@ -168,13 +158,22 @@ public class PoseUpdater {
     }
 
     /**
+     * This sets the offset for only the heading.
+     *
+     * @param offset This sets the offset.
+     */
+    public void setHeadingOffset(double offset) {
+        headingOffset = offset;
+    }
+
+    /**
      * This applies the offset to a specified Pose.
      *
      * @param pose The pose to be offset.
      * @return This returns a new Pose with the offset applied.
      */
     public Pose applyOffset(Pose pose) {
-        return new Pose(pose.getX()+xOffset, pose.getY()+yOffset, pose.getHeading()+headingOffset);
+        return new Pose(pose.getX() + xOffset, pose.getY() + yOffset, pose.getHeading() + headingOffset);
     }
 
     /**
@@ -205,6 +204,16 @@ public class PoseUpdater {
     }
 
     /**
+     * This sets the current pose without using resettable offsets.
+     *
+     * @param set the pose to set the current pose to.
+     */
+    public void setPose(Pose set) {
+        resetOffset();
+        localizer.setPose(set);
+    }
+
+    /**
      * This returns the current raw pose, without any offsets applied. If this is called multiple times in
      * a single update, the current pose is cached so that subsequent calls don't have to repeat
      * localizer calls or calculations.
@@ -218,16 +227,6 @@ public class PoseUpdater {
         } else {
             return currentPose;
         }
-    }
-
-    /**
-     * This sets the current pose without using resettable offsets.
-     *
-     * @param set the pose to set the current pose to.
-     */
-    public void setPose(Pose set) {
-        resetOffset();
-        localizer.setPose(set);
     }
 
     /**
@@ -274,7 +273,7 @@ public class PoseUpdater {
      * @return returns the angular velocity of the robot.
      */
     public double getAngularVelocity() {
-        return MathFunctions.getTurnDirection(previousPose.getHeading(), getPose().getHeading()) * MathFunctions.getSmallestAngleDifference(getPose().getHeading(), previousPose.getHeading()) / ((currentPoseTime-previousPoseTime)/Math.pow(10.0, 9));
+        return MathFunctions.getTurnDirection(previousPose.getHeading(), getPose().getHeading()) * MathFunctions.getSmallestAngleDifference(getPose().getHeading(), previousPose.getHeading()) / ((currentPoseTime - previousPoseTime) / Math.pow(10.0, 9));
     }
 
     /**

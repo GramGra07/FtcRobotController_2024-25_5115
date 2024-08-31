@@ -4,7 +4,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
-import org.firstinspires.ftc.teamcode.extensions.OTOSExtension.getPose
 import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles
 
 @TeleOp(group = GroupingTitles.TESTING)
@@ -16,7 +15,10 @@ class OTOSLinearScalarTuner : LinearOpMode() {
     private var deltaDistance = 0.0
     override fun runOpMode() { //if opmode is started
         val robot = HardwareConfig(this, false)
-        telemetry.addData("Move the robot forward 30 inches","It will tell you the correct linear scalar")
+        telemetry.addData(
+            "Move the robot forward 30 inches",
+            "It will tell you the correct linear scalar"
+        )
         robot.localizerSubsystem.update(null)
         val startY = robot.localizerSubsystem.y()
         val targetY = startY + distance
@@ -24,10 +26,10 @@ class OTOSLinearScalarTuner : LinearOpMode() {
         waitForStart()
         while (opModeIsActive()) {
             robot.localizerSubsystem.update(null)
-            deltaDistance = robot.localizerSubsystem.y() +startY
-            telemetry.addData("deltaDistance",deltaDistance)
-            telemetry.addData("targetY",targetY)
-            telemetry.addData("Linear scalar",targetY/deltaDistance)
+            deltaDistance = robot.localizerSubsystem.y() + startY
+            telemetry.addData("deltaDistance", deltaDistance)
+            telemetry.addData("targetY", targetY)
+            telemetry.addData("Linear scalar", targetY / deltaDistance)
             telemetry.update()
         }
     }

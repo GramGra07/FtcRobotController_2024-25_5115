@@ -104,6 +104,15 @@ public class PIDFController {
     }
 
     /**
+     * This returns the target position of the PIDF.
+     *
+     * @return this returns the target position.
+     */
+    public double getTargetPosition() {
+        return targetPosition;
+    }
+
+    /**
      * This is used to set the target position if the PIDF is being run with current position and
      * target position inputs rather than error inputs.
      *
@@ -114,12 +123,12 @@ public class PIDFController {
     }
 
     /**
-     * This returns the target position of the PIDF.
+     * This returns the PIDF's current coefficients.
      *
-     * @return this returns the target position.
+     * @return this returns the current coefficients.
      */
-    public double getTargetPosition() {
-        return targetPosition;
+    public CustomPIDFCoefficients getCoefficients() {
+        return coefficients;
     }
 
     /**
@@ -129,15 +138,6 @@ public class PIDFController {
      */
     public void setCoefficients(CustomPIDFCoefficients set) {
         coefficients = set;
-    }
-
-    /**
-     * This returns the PIDF's current coefficients.
-     *
-     * @return this returns the current coefficients.
-     */
-    public CustomPIDFCoefficients getCoefficients() {
-        return coefficients;
     }
 
     /**

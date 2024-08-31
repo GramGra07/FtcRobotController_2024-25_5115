@@ -27,12 +27,10 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.Drawing;
 @Config
 @Autonomous(name = "Forward Localizer Tuner", group = "Autonomous Pathing Tuning")
 public class FowardTuner extends OpMode {
+    public static double DISTANCE = 30;
     private PoseUpdater poseUpdater;
     private DashboardPoseTracker dashboardPoseTracker;
-
     private Telemetry telemetryA;
-
-    public static double DISTANCE = 30;
 
     /**
      * This initializes the PoseUpdater as well as the FTC Dashboard telemetry.

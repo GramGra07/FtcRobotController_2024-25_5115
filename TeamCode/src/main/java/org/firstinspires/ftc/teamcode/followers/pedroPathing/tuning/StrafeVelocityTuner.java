@@ -1,11 +1,11 @@
 package org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning;
 
 
+import static org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants.leftFrontMotorName;
+import static org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants.leftRearMotorName;
+import static org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants.rightFrontMotorName;
+import static org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants.rightRearMotorName;
 
-import static org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants.*;
-import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.PoseUpdater;
-import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.MathFunctions;
-import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Vector;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
@@ -17,6 +17,9 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.PoseUpdater;
+import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.MathFunctions;
+import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Vector;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,21 +41,17 @@ import java.util.List;
  * @version 1.0, 3/13/2024
  */
 @Config
-@Autonomous (name = "Strafe Velocity Tuner", group = "Autonomous Pathing Tuning")
+@Autonomous(name = "Strafe Velocity Tuner", group = "Autonomous Pathing Tuning")
 public class StrafeVelocityTuner extends OpMode {
-    private ArrayList<Double> velocities = new ArrayList<>();
-
+    public static double DISTANCE = 40;
+    public static double RECORD_NUMBER = 10;
+    private final ArrayList<Double> velocities = new ArrayList<>();
     private DcMotorEx leftFront;
     private DcMotorEx leftRear;
     private DcMotorEx rightFront;
     private DcMotorEx rightRear;
     private List<DcMotorEx> motors;
-
     private PoseUpdater poseUpdater;
-
-    public static double DISTANCE = 40;
-    public static double RECORD_NUMBER = 10;
-
     private Telemetry telemetryA;
 
     private boolean end;
@@ -130,7 +129,7 @@ public class StrafeVelocityTuner extends OpMode {
                     motor.setPower(0);
                 }
             } else {
-                double currentVelocity = Math.abs(MathFunctions.dotProduct(poseUpdater.getVelocity(), new Vector(1, Math.PI/2)));
+                double currentVelocity = Math.abs(MathFunctions.dotProduct(poseUpdater.getVelocity(), new Vector(1, Math.PI / 2)));
                 velocities.add(currentVelocity);
                 velocities.remove(0);
             }
@@ -139,7 +138,7 @@ public class StrafeVelocityTuner extends OpMode {
             for (Double velocity : velocities) {
                 average += velocity;
             }
-            average /= (double) velocities.size();
+            average /= velocities.size();
 
             telemetryA.addData("strafe velocity:", average);
             telemetryA.update();

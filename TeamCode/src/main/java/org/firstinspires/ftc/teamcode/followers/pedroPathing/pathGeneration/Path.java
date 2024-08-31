@@ -17,7 +17,7 @@ import java.util.ArrayList;
  * @version 1.0, 3/10/2024
  */
 public class Path {
-    private BezierCurve curve;
+    private final BezierCurve curve;
 
     private double startHeading;
     private double endHeading;
@@ -82,8 +82,8 @@ public class Path {
      * double endHeading, double endTime) method.
      *
      * @param startHeading The start of the linear heading interpolation.
-     * @param endHeading The end of the linear heading interpolation.
-     *                   This will be reached at the end of the Path if no end time is specified.
+     * @param endHeading   The end of the linear heading interpolation.
+     *                     This will be reached at the end of the Path if no end time is specified.
      */
     public void setLinearHeadingInterpolation(double startHeading, double endHeading) {
         linearInterpolationEndTime = 1;
@@ -100,10 +100,10 @@ public class Path {
      * generally interpolating to something like 0.8 of your Path should work best.
      *
      * @param startHeading The start of the linear heading interpolation.
-     * @param endHeading The end of the linear heading interpolation.
-     *                   This will be reached at the end of the Path if no end time is specified.
-     * @param endTime The end time on the Path that the linear heading interpolation will finish.
-     *                This value ranges from [0, 1] since Bezier curves are parametric functions.
+     * @param endHeading   The end of the linear heading interpolation.
+     *                     This will be reached at the end of the Path if no end time is specified.
+     * @param endTime      The end time on the Path that the linear heading interpolation will finish.
+     *                     This value ranges from [0, 1] since Bezier curves are parametric functions.
      */
     public void setLinearHeadingInterpolation(double startHeading, double endHeading, double endTime) {
         linearInterpolationEndTime = MathFunctions.clamp(endTime, 0.000000001, 1);
@@ -128,7 +128,7 @@ public class Path {
      * This gets the closest Point from a specified pose to the BezierCurve with a binary search
      * that is limited to some specified step limit.
      *
-     * @param pose the pose.
+     * @param pose            the pose.
      * @param searchStepLimit the binary search step limit.
      * @return returns the closest Point.
      */
@@ -139,14 +139,14 @@ public class Path {
 
         // we don't need to calculate the midpoint, so we start off at the 1/4 and 3/4 point
         for (int i = 0; i < searchStepLimit; i++) {
-            if (MathFunctions.distance(pose, getPoint(lower + 0.25 * (upper-lower))) > MathFunctions.distance(pose, getPoint(lower + 0.75 * (upper-lower)))) {
-                lower += (upper-lower)/2.0;
+            if (MathFunctions.distance(pose, getPoint(lower + 0.25 * (upper - lower))) > MathFunctions.distance(pose, getPoint(lower + 0.75 * (upper - lower)))) {
+                lower += (upper - lower) / 2.0;
             } else {
-                upper -= (upper-lower)/2.0;
+                upper -= (upper - lower) / 2.0;
             }
         }
 
-        closestPointTValue = lower + 0.5 * (upper-lower);
+        closestPointTValue = lower + 0.5 * (upper - lower);
 
         returnPoint = getPoint(closestPointTValue);
 
@@ -262,7 +262,8 @@ public class Path {
      */
     public double getClosestPointHeadingGoal() {
         if (isTangentHeadingInterpolation) {
-            if (followTangentReversed) return MathFunctions.normalizeAngle(closestPointTangentVector.getTheta() + Math.PI);
+            if (followTangentReversed)
+                return MathFunctions.normalizeAngle(closestPointTangentVector.getTheta() + Math.PI);
             return closestPointTangentVector.getTheta();
         } else {
             return getHeadingGoal(closestPointTValue);
@@ -277,7 +278,8 @@ public class Path {
      */
     public double getHeadingGoal(double t) {
         if (isTangentHeadingInterpolation) {
-            if (followTangentReversed) return MathFunctions.normalizeAngle(curve.getDerivative(t).getTheta() + Math.PI);
+            if (followTangentReversed)
+                return MathFunctions.normalizeAngle(curve.getDerivative(t).getTheta() + Math.PI);
             return curve.getDerivative(t).getTheta();
         } else {
             if (t > linearInterpolationEndTime) {
@@ -293,8 +295,7 @@ public class Path {
      * @return returns if at end.
      */
     public boolean isAtParametricEnd() {
-        if (closestPointTValue >= pathEndTValueConstraint) return true;
-        return false;
+        return closestPointTValue >= pathEndTValueConstraint;
     }
 
     /**
@@ -303,8 +304,7 @@ public class Path {
      * @return returns if at start.
      */
     public boolean isAtParametricStart() {
-        if (closestPointTValue <= 1- pathEndTValueConstraint) return true;
-        return false;
+        return closestPointTValue <= 1 - pathEndTValueConstraint;
     }
 
     /**
@@ -353,6 +353,15 @@ public class Path {
     }
 
     /**
+     * This gets the deceleration multiplier.
+     *
+     * @return This returns the deceleration multiplier.
+     */
+    public double getZeroPowerAccelerationMultiplier() {
+        return zeroPowerAccelerationMultiplier;
+    }
+
+    /**
      * This sets the path's deceleration factor in terms of the natural deceleration of the robot
      * when power is cut from the drivetrain.
      *
@@ -363,12 +372,30 @@ public class Path {
     }
 
     /**
+     * This gets the velocity stop criteria.
+     *
+     * @return This returns the velocity stop criteria.
+     */
+    public double getPathEndVelocityConstraint() {
+        return pathEndVelocityConstraint;
+    }
+
+    /**
      * This sets the velocity stop criteria. When velocity is below this amount, then this is met.
      *
      * @param set This sets the velocity end constraint.
      */
     public void setPathEndVelocityConstraint(double set) {
         pathEndVelocityConstraint = set;
+    }
+
+    /**
+     * This gets the translational stop criteria.
+     *
+     * @return This returns the translational stop criteria.
+     */
+    public double getPathEndTranslationalConstraint() {
+        return pathEndTranslationalConstraint;
     }
 
     /**
@@ -382,6 +409,15 @@ public class Path {
     }
 
     /**
+     * This gets the heading stop criteria.
+     *
+     * @return This returns the heading stop criteria.
+     */
+    public double getPathEndHeadingConstraint() {
+        return pathEndHeadingConstraint;
+    }
+
+    /**
      * This sets the heading stop criteria. When the heading error is less than this amount, then
      * the heading end criteria is met.
      *
@@ -389,6 +425,15 @@ public class Path {
      */
     public void setPathEndHeadingConstraint(double set) {
         pathEndHeadingConstraint = set;
+    }
+
+    /**
+     * This gets the parametric end criteria.
+     *
+     * @return This returns the parametric end criteria.
+     */
+    public double getPathEndTValueConstraint() {
+        return pathEndTValueConstraint;
     }
 
     /**
@@ -402,6 +447,15 @@ public class Path {
     }
 
     /**
+     * This gets the Path end correction time.
+     *
+     * @return This returns the Path end correction time.
+     */
+    public double getPathEndTimeoutConstraint() {
+        return pathEndTimeoutConstraint;
+    }
+
+    /**
      * This sets the Path end timeout. If the Path is at its end parametrically, then the Follower
      * has this many seconds to correct before the Path gets ended anyways.
      *
@@ -409,60 +463,6 @@ public class Path {
      */
     public void setPathEndTimeoutConstraint(double set) {
         pathEndTimeoutConstraint = set;
-    }
-
-    /**
-     * This gets the deceleration multiplier.
-     *
-     * @return This returns the deceleration multiplier.
-     */
-    public double getZeroPowerAccelerationMultiplier() {
-        return zeroPowerAccelerationMultiplier;
-    }
-
-    /**
-     * This gets the velocity stop criteria.
-     *
-     * @return This returns the velocity stop criteria.
-     */
-    public double getPathEndVelocityConstraint() {
-        return pathEndVelocityConstraint;
-    }
-
-    /**
-     * This gets the translational stop criteria.
-     *
-     * @return This returns the translational stop criteria.
-     */
-    public double getPathEndTranslationalConstraint() {
-        return pathEndTranslationalConstraint;
-    }
-
-    /**
-     * This gets the heading stop criteria.
-     *
-     * @return This returns the heading stop criteria.
-     */
-    public double getPathEndHeadingConstraint() {
-        return pathEndHeadingConstraint;
-    }
-
-    /**
-     * This gets the parametric end criteria.
-     *
-     * @return This returns the parametric end criteria.
-     */
-    public double getPathEndTValueConstraint() {
-        return pathEndTValueConstraint;
-    }
-
-    /**
-     * This gets the Path end correction time.
-     *
-     * @return This returns the Path end correction time.
-     */
-    public double getPathEndTimeoutConstraint() {
-        return pathEndTimeoutConstraint;
     }
 
     /**

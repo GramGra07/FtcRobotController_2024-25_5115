@@ -14,13 +14,11 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.SingleRunActio
  */
 public class PathCallback extends SingleRunAction {
 
-    private double startCondition;
-
-    private int type;
-    private int index;
-
     public static final int TIME = 0;
     public static final int PARAMETRIC = 1;
+    private double startCondition;
+    private int type;
+    private final int index;
 
     /**
      * This creates a new PathCallback with a specified start condition (either time or parametric),
@@ -29,9 +27,9 @@ public class PathCallback extends SingleRunAction {
      *
      * @param startCondition This defines when the callback is to be run, either as a wait time in
      *                       milliseconds or a t-value (parametric time) point.
-     * @param runnable This contains the code to run when the callback is called.
-     * @param type This defines the type of callback using the class constants.
-     * @param index This defines which Path within the PathChain the callback is to run on.
+     * @param runnable       This contains the code to run when the callback is called.
+     * @param type           This defines the type of callback using the class constants.
+     * @param index          This defines which Path within the PathChain the callback is to run on.
      */
     public PathCallback(double startCondition, Runnable runnable, int type, int index) {
         super(runnable);

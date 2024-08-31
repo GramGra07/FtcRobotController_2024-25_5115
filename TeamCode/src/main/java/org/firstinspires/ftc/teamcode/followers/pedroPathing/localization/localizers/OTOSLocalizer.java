@@ -15,33 +15,33 @@ import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain;
  * This is the OTOSLocalizer class. This class extends the Localizer superclass and is a
  * localizer that uses the SparkFun OTOS. The diagram below, which is modified from
  * Road Runner, shows a typical set up.
- *
+ * <p>
  * The view is from the top of the robot looking downwards.
- *
+ * <p>
  * left on robot is the y positive direction
- *
+ * <p>
  * forward on robot is the x positive direction
- *
- *    /--------------\
- *    |     ____     |
- *    |     ----     |
- *    | ||        || |
- *    | ||        || |  ----> left (y positive)
- *    |              |
- *    |              |
- *    \--------------/
- *           |
- *           |
- *           V
- *    forward (x positive)
+ * <p>
+ * /--------------\
+ * |     ____     |
+ * |     ----     |
+ * | ||        || |
+ * | ||        || |  ----> left (y positive)
+ * |              |
+ * |              |
+ * \--------------/
+ * |
+ * |
+ * V
+ * forward (x positive)
  *
  * @author Anyi Lin - 10158 Scott's Bots
  * @version 1.0, 7/20/2024
  */
 public class OTOSLocalizer extends Localizer {
-    private HardwareMap hardwareMap;
+    private final HardwareMap hardwareMap;
     private Pose startPose;
-    private SparkFunOTOS otos;
+    private final SparkFunOTOS otos;
     private double previousHeading;
     private double totalHeading;
 
@@ -59,14 +59,14 @@ public class OTOSLocalizer extends Localizer {
      * This creates a new OTOSLocalizer from a HardwareMap and a Pose, with the Pose
      * specifying the starting pose of the localizer.
      *
-     * @param map the HardwareMap
+     * @param map          the HardwareMap
      * @param setStartPose the Pose to start from
      */
     public OTOSLocalizer(HardwareMap map, Pose setStartPose) {
         hardwareMap = map;
 
         // TODO: replace this with your OTOS port
-        otos = hardwareMap.get(SparkFunOTOS.class,  CurrentDrivetrain.Companion.getCurrentDrivetrain().getSparkFunOTOSParams().getName());
+        otos = hardwareMap.get(SparkFunOTOS.class, CurrentDrivetrain.Companion.getCurrentDrivetrain().getSparkFunOTOSParams().getName());
 
         otos.setLinearUnit(DistanceUnit.INCH);
         otos.setAngularUnit(AngleUnit.RADIANS);
@@ -103,6 +103,19 @@ public class OTOSLocalizer extends Localizer {
     }
 
     /**
+     * This sets the current pose estimate. Changing this should just change the robot's current
+     * pose estimate, not anything to do with the start pose.
+     *
+     * @param setPose the new current pose estimate
+     */
+    @Override
+    public void setPose(Pose setPose) {
+        resetOTOS();
+        Pose setOTOSPose = MathFunctions.subtractPoses(setPose, startPose);
+        otos.setPosition(new SparkFunOTOS.Pose2D(setOTOSPose.getX(), setOTOSPose.getY(), setOTOSPose.getHeading()));
+    }
+
+    /**
      * This returns the current velocity estimate.
      *
      * @return returns the current velocity estimate as a Pose
@@ -132,19 +145,6 @@ public class OTOSLocalizer extends Localizer {
     @Override
     public void setStartPose(Pose setStart) {
         startPose = setStart;
-    }
-
-    /**
-     * This sets the current pose estimate. Changing this should just change the robot's current
-     * pose estimate, not anything to do with the start pose.
-     *
-     * @param setPose the new current pose estimate
-     */
-    @Override
-    public void setPose(Pose setPose) {
-        resetOTOS();
-        Pose setOTOSPose = MathFunctions.subtractPoses(setPose, startPose);
-        otos.setPosition(new SparkFunOTOS.Pose2D(setOTOSPose.getX(), setOTOSPose.getY(), setOTOSPose.getHeading()));
     }
 
     /**

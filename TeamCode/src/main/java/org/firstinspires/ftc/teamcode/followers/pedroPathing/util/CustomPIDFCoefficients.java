@@ -12,10 +12,14 @@ import kotlin.jvm.JvmField;
  * @version 1.0, 3/5/2024
  */
 public class CustomPIDFCoefficients {
-    @JvmField public double P;
-    @JvmField public double I;
-    @JvmField public double D;
-    @JvmField public double F;
+    @JvmField
+    public double P;
+    @JvmField
+    public double I;
+    @JvmField
+    public double D;
+    @JvmField
+    public double F;
 
     public FeedForwardConstant feedForwardConstantEquation;
 

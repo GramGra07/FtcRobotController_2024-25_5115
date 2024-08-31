@@ -19,26 +19,23 @@ import kotlin.math.sqrt
 
 
 //@Config
-class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose2d, var type: LocalizationType){
+class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose2d, var type: LocalizationType) {
     enum class LocalizationType {
-//        RR,
         PP,
         PPOTOS
     }
 
-//    private lateinit var drive: MecanumDrive
     private lateinit var poseUpdater: PoseUpdater
 
     init {
         when (type) {
-//            LocalizationType.RR -> drive = MecanumDrive(ahwMap, pose)
             LocalizationType.PP -> {
                 poseUpdater = PoseUpdater(ahwMap, TwoWheelLocalizer(ahwMap))
                 poseUpdater.pose = pose.toPose()
             }
 
             LocalizationType.PPOTOS -> {
-                poseUpdater = PoseUpdater(ahwMap, OTOSLocalizer(ahwMap,pose.toPose()))
+                poseUpdater = PoseUpdater(ahwMap, OTOSLocalizer(ahwMap, pose.toPose()))
                 poseUpdater.pose = pose.toPose()
             }
         }
@@ -68,10 +65,9 @@ class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose2d, var type: Localizati
         timer: ElapsedTime?,
     ) {
         when (type) {
-//            LocalizationType.RR -> drive.updatePoseEstimate()
             LocalizationType.PP, LocalizationType.PPOTOS -> poseUpdater.update()
         }
-        if (timer!=null) {
+        if (timer != null) {
             updateDistTraveled(PoseStorage.currentPose, this.pose(), timer.seconds())
             FileWriterFTC.writeToFile(
                 HardwareConfig.fileWriter,
@@ -84,7 +80,6 @@ class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose2d, var type: Localizati
 
     fun setPose(pose: Pose2d) {
         when (type) {
-//            LocalizationType.RR -> drive.pose = pose
             LocalizationType.PP, LocalizationType.PPOTOS -> poseUpdater.pose = pose.toPose()
         }
     }
@@ -92,7 +87,6 @@ class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose2d, var type: Localizati
     fun telemetry(telemetry: Telemetry) {
         telemetry.addData("LOCALIZATION", "")
         when (type) {
-//            LocalizationType.RR -> telemetry.addData("Using", "RoadRunner")
             LocalizationType.PP -> telemetry.addData("Using", "PedroPathing")
             LocalizationType.PPOTOS -> telemetry.addData("Using", "PP SparkFunOTOS")
         }
@@ -100,35 +94,15 @@ class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose2d, var type: Localizati
         telemetry.addData("totalDistance (in)", "%.1f", DistanceStorage.totalDist)
         telemetry.addData("Current Speed (mph)", "%.1f", currentSpeed)
     }
-//
-//    fun draw(packet: TelemetryPacket) {
-//        val color = when (type) {
-//            LocalizationType.RR -> "blue"
-//            LocalizationType.PP -> "green"
-//        }
-//        val roboRad = 8.0
-//        val t = this.pose()
-//        val halfv: Vector2d = t.heading.vec().times(0.5 * roboRad)
-//        val p1: Vector2d = t.position.plus(halfv)
-//        val (x, y) = p1.plus(halfv)
-//        packet.fieldOverlay()
-//            .setStrokeWidth(1)
-//            .setStroke(color)
-//            .setFill(color)
-//            .setAlpha(1.0)
-//            .strokeCircle(t.position.x, t.position.y, roboRad).strokeLine(p1.x, p1.y, x, y)
-//    }
 
     fun heading(): Double {
         return when (type) {
-//            LocalizationType.RR -> drive.pose.heading.toDouble()
             LocalizationType.PP, LocalizationType.PPOTOS -> poseUpdater.pose.heading
         }
     }
 
     fun pose(): Pose2d {
         return when (type) {
-//            LocalizationType.RR -> drive.pose
             LocalizationType.PP, LocalizationType.PPOTOS -> poseUpdater.pose.toPose2d()
         }
     }

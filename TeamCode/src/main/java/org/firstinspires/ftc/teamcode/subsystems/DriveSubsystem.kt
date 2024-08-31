@@ -22,7 +22,7 @@ import kotlin.math.sin
 
 
 //@Config
-class DriveSubsystem(ahwMap: HardwareMap, private var localizerSubsystem: LocalizerSubsystem){
+class DriveSubsystem(ahwMap: HardwareMap, private var localizerSubsystem: LocalizerSubsystem) {
     private var motorFrontLeft: DcMotorEx
     private var motorBackLeft: DcMotorEx
     private var motorFrontRight: DcMotorEx
@@ -117,7 +117,10 @@ class DriveSubsystem(ahwMap: HardwareMap, private var localizerSubsystem: Locali
         }
     }
 
-    private fun power(avoidanceSubsystem: AvoidanceSubsystem,type: AvoidanceSubsystem.AvoidanceTypes) {
+    private fun power(
+        avoidanceSubsystem: AvoidanceSubsystem,
+        type: AvoidanceSubsystem.AvoidanceTypes
+    ) {
         if (!isAutoInTeleop) {
             var flP = 0.0
             var frP = 0.0
@@ -168,7 +171,7 @@ class DriveSubsystem(ahwMap: HardwareMap, private var localizerSubsystem: Locali
             avoidanceSubsystem.update(localizerSubsystem, this, type)
         }
         if (!setAPower) {
-            power(avoidanceSubsystem,type)
+            power(avoidanceSubsystem, type)
         }
     }
 

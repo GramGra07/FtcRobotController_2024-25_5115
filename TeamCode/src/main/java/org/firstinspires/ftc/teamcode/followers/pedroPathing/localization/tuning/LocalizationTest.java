@@ -1,7 +1,10 @@
 package org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.tuning;
 
 
-import static org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants.*;
+import static org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants.leftFrontMotorName;
+import static org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants.leftRearMotorName;
+import static org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants.rightFrontMotorName;
+import static org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants.rightRearMotorName;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -14,7 +17,6 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.followers.pedroPathing.*;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.PoseUpdater;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.DashboardPoseTracker;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.Drawing;

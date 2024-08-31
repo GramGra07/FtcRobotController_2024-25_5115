@@ -24,7 +24,7 @@ public class Matrix {
     /**
      * This creates a new Matrix with a specified width and height.
      *
-     * @param rows the number of rows, or height
+     * @param rows    the number of rows, or height
      * @param columns the number of columns, or width
      */
     public Matrix(int rows, int columns) {
@@ -66,6 +66,23 @@ public class Matrix {
     }
 
     /**
+     * This multiplies a Matrix to another Matrix. This will not change any data in the two input
+     * Matrices.
+     *
+     * @param one the first Matrix to multiply.
+     * @param two the second Matrix to multiply
+     * @return returns if the operation was successful
+     */
+    public static Matrix multiply(Matrix one, Matrix two) {
+        Matrix returnMatrix = new Matrix(one);
+        if (returnMatrix.multiply(two)) {
+            return returnMatrix;
+        } else {
+            return new Matrix();
+        }
+    }
+
+    /**
      * This returns a deep copy of the 2D Array that this Matrix is based on.
      *
      * @return returns the 2D Array of doubles this Matrix is built on
@@ -87,7 +104,7 @@ public class Matrix {
     /**
      * This returns a specified element of the Matrix as a double.
      *
-     * @param row the index of the row of the element
+     * @param row    the index of the row of the element
      * @param column the index of the column of the element
      * @return returns the element of the Matrix specified
      */
@@ -145,7 +162,7 @@ public class Matrix {
     /**
      * This sets a row of the Matrix to a copy of a specified Array of doubles.
      *
-     * @param row the row to be written over
+     * @param row   the row to be written over
      * @param input the Array input
      * @return returns if the operation was successful
      */
@@ -160,9 +177,9 @@ public class Matrix {
     /**
      * This sets a specified element of the Matrix to an input value.
      *
-     * @param row the index of the row of the specified element
+     * @param row    the index of the row of the specified element
      * @param column the index of the column of the specified element
-     * @param input the input value
+     * @param input  the input value
      * @return returns if the operation was successful
      */
     public boolean set(int row, int column, double input) {
@@ -180,7 +197,7 @@ public class Matrix {
         if (input.getRows() == getRows() && input.getColumns() == getColumns()) {
             for (int i = 0; i < getRows(); i++) {
                 for (int j = 0; j < getColumns(); j++) {
-                    set(i, j, get(i,j) + input.get(i,j));
+                    set(i, j, get(i, j) + input.get(i, j));
                 }
             }
             return true;
@@ -198,7 +215,7 @@ public class Matrix {
         if (input.getRows() == getRows() && input.getColumns() == getColumns()) {
             for (int i = 0; i < getRows(); i++) {
                 for (int j = 0; j < getColumns(); j++) {
-                    set(i, j, get(i,j) - input.get(i,j));
+                    set(i, j, get(i, j) - input.get(i, j));
                 }
             }
             return true;
@@ -215,7 +232,7 @@ public class Matrix {
     public boolean scalarMultiply(double scalar) {
         for (int i = 0; i < getRows(); i++) {
             for (int j = 0; j < getColumns(); j++) {
-                set(i, j, scalar * get(i,j));
+                set(i, j, scalar * get(i, j));
             }
         }
         return true;
@@ -252,22 +269,5 @@ public class Matrix {
             return true;
         }
         return false;
-    }
-
-    /**
-     * This multiplies a Matrix to another Matrix. This will not change any data in the two input
-     * Matrices.
-     *
-     * @param one the first Matrix to multiply.
-     * @param two the second Matrix to multiply
-     * @return returns if the operation was successful
-     */
-    public static Matrix multiply(Matrix one, Matrix two) {
-        Matrix returnMatrix = new Matrix(one);
-        if (returnMatrix.multiply(two)) {
-            return returnMatrix;
-        } else {
-            return new Matrix();
-        }
     }
 }
