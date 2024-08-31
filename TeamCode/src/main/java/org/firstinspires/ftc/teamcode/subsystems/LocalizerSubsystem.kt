@@ -1,19 +1,16 @@
 package org.firstinspires.ftc.teamcode.subsystems
 
 import com.acmerobotics.roadrunner.Pose2d
-import com.qualcomm.hardware.sparkfun.SparkFunOTOS.Pose2D
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
-import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toPoint
 import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toPose
 import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toPose2d
-import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toString
 import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toString2
-import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.PoseUpdater
-import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.localizers.OTOSLocalizer
-import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.localizers.TwoWheelLocalizer
+import org.firstinspires.ftc.teamcode.followers.pedroPathingOLD.localization.PoseUpdater
+import org.firstinspires.ftc.teamcode.followers.pedroPathingOLD.localization.localizers.OTOSLocalizer
+import org.firstinspires.ftc.teamcode.followers.pedroPathingOLD.localization.localizers.TwoWheelLocalizer
 //import org.firstinspires.ftc.teamcode.followers.rr.MecanumDrive
 import org.firstinspires.ftc.teamcode.storage.DistanceStorage
 import org.firstinspires.ftc.teamcode.storage.PoseStorage

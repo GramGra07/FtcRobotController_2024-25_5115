@@ -2,10 +2,10 @@ package org.firstinspires.ftc.teamcode.opModes.auto.demos
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
-import org.firstinspires.ftc.teamcode.followers.pedroPathing.follower.Follower
-import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.BezierLine
-import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Path
-import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Point
+import org.firstinspires.ftc.teamcode.followers.pedroPathingOLD.follower.Follower
+import org.firstinspires.ftc.teamcode.followers.pedroPathingOLD.pathGeneration.BezierLine
+import org.firstinspires.ftc.teamcode.followers.pedroPathingOLD.pathGeneration.Path
+import org.firstinspires.ftc.teamcode.followers.pedroPathingOLD.pathGeneration.Point
 import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles
 
 @Autonomous(group = GroupingTitles.demos)

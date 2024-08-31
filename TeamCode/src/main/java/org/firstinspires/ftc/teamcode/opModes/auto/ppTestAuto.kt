@@ -4,12 +4,12 @@ import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
-import org.firstinspires.ftc.teamcode.followers.pedroPathing.follower.Follower
-import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.Pose
-import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.BezierCurve
-import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.BezierLine
-import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Point
-import org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.Circle
+import org.firstinspires.ftc.teamcode.followers.pedroPathingOLD.follower.Follower
+import org.firstinspires.ftc.teamcode.followers.pedroPathingOLD.localization.Pose
+import org.firstinspires.ftc.teamcode.followers.pedroPathingOLD.pathGeneration.BezierCurve
+import org.firstinspires.ftc.teamcode.followers.pedroPathingOLD.pathGeneration.BezierLine
+import org.firstinspires.ftc.teamcode.followers.pedroPathingOLD.pathGeneration.Point
+import org.firstinspires.ftc.teamcode.followers.pedroPathingOLD.tuning.Circle
 import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles
 
 

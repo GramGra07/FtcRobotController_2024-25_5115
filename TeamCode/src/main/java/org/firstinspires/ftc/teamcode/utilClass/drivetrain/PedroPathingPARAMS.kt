@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.utilClass.drivetrain
 
-import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.Pose
-import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.CustomFilteredPIDFCoefficients
-import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.CustomPIDFCoefficients
+import org.firstinspires.ftc.teamcode.followers.pedroPathingOLD.localization.Pose
+import org.firstinspires.ftc.teamcode.followers.pedroPathingOLD.util.CustomFilteredPIDFCoefficients
+import org.firstinspires.ftc.teamcode.followers.pedroPathingOLD.util.CustomPIDFCoefficients
 
 data class PedroPathingPARAMS(
     var forwardTicksToInches: Double,

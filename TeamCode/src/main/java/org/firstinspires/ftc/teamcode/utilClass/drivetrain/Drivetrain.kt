@@ -4,9 +4,9 @@ import com.qualcomm.hardware.rev.RevHubOrientationOnRobot.LogoFacingDirection
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot.UsbFacingDirection
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS
 import org.firstinspires.ftc.robotcore.external.Telemetry
-import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.Pose
-import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.CustomFilteredPIDFCoefficients
-import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.CustomPIDFCoefficients
+import org.firstinspires.ftc.teamcode.followers.pedroPathingOLD.localization.Pose
+import org.firstinspires.ftc.teamcode.followers.pedroPathingOLD.util.CustomFilteredPIDFCoefficients
+import org.firstinspires.ftc.teamcode.followers.pedroPathingOLD.util.CustomPIDFCoefficients
 import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain
 import org.firstinspires.ftc.teamcode.utilClass.objects.Permission
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.varConfig
