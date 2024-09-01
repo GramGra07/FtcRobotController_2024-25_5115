@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.follower.Follower;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.BezierCurve;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.PathChain;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Point;
+import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles;
 
 /**
  * This is the Circle autonomous OpMode. It runs the robot in a PathChain that's actually not quite
@@ -24,7 +25,7 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Poin
  * @version 1.0, 3/12/2024
  */
 @Config
-@Autonomous(name = "Circle", group = "Autonomous Pathing Tuning")
+@Autonomous(name = "Circle", group = GroupingTitles.pedroTuning)
 public class Circle extends OpMode {
     public static double RADIUS = 10;
     private Telemetry telemetryA;

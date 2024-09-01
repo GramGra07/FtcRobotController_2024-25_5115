@@ -20,6 +20,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.PoseUpdater;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.MathFunctions;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Vector;
+import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -41,7 +42,7 @@ import java.util.List;
  * @version 1.0, 3/13/2024
  */
 @Config
-@Autonomous(name = "Lateral Zero Power Acceleration Tuner", group = "Autonomous Pathing Tuning")
+@Autonomous(name = "Lateral Zero Power Acceleration Tuner", group = GroupingTitles.pedroTuning)
 public class LateralZeroPowerAccelerationTuner extends OpMode {
     public static double VELOCITY = 30;
     private final ArrayList<Double> accelerations = new ArrayList<>();

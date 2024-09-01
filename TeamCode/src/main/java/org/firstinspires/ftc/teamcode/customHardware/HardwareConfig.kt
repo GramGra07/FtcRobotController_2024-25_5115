@@ -43,6 +43,7 @@ import org.firstinspires.ftc.teamcode.subsystems.humanInput.Operators.bindOtherB
 import org.firstinspires.ftc.teamcode.subsystems.loopTime.LoopTimeController
 import org.firstinspires.ftc.teamcode.subsystems.loopTime.PeriodicLoopTimeObject
 import org.firstinspires.ftc.teamcode.subsystems.loopTime.SpacedBooleanObject
+import org.firstinspires.ftc.teamcode.utilClass.drawer.Drawing
 import org.firstinspires.ftc.teamcode.utilClass.FileWriterFTC.setUpFile
 import org.firstinspires.ftc.teamcode.utilClass.drivetrain.Drivetrain
 import org.firstinspires.ftc.teamcode.utilClass.drivetrain.Drivetrain.Companion.drivetrainHasPermission
@@ -137,13 +138,6 @@ open class HardwareConfig(
             ExtendoSubsystem(ahwMap)
         if (drivetrainHasPermission(Permission.RELOCALIZATION)) reLocalizationSubsystem =
             ReLocalizationSubsystem(ahwMap)
-//        if (isTesterDrivetrain())
-//            sparkFunOTOS = initOTOS(
-//                ahwMap,
-//                CurrentDrivetrain.currentDrivetrain.sparkFunOTOSParams.name,
-//                CurrentDrivetrain.currentDrivetrain.sparkFunOTOSParams.offset,
-//                startPose.toPose2D()
-//            )
         avoidanceSubsystem = AvoidanceSubsystem()
 
         telemetry =
@@ -176,7 +170,7 @@ open class HardwareConfig(
         if (!auto) {
             telemetry.update()
         }
-        drawPackets()
+        Drawing.drawAll(packet, dashboard, localizerSubsystem)
 
         if (drivetrainHasPermission(Permission.EXTRAS)) {
             axonServo =
@@ -246,11 +240,8 @@ open class HardwareConfig(
     }
 
     private fun buildTelemetry() {
-        if (loopTimeController.loopSaver) {
+        if (loopTimeController.loopSaver)
             CameraUtilities.stopCameraStream()
-        } else {
-            CameraUtilities.startCameraStream()
-        }
         if (varConfig.multipleDrivers) {
             telemetry.addData(
                 "Drivers",
@@ -268,7 +259,7 @@ open class HardwareConfig(
         teleSpace()
         localizerSubsystem.telemetry(telemetry)
         teleSpace()
-        if (Drivers.currDriver.defaultAvoidance == AvoidanceSubsystem.AvoidanceTypes.OFF) {
+        if (Drivers.currDriver.defaultAvoidance != AvoidanceSubsystem.AvoidanceTypes.OFF) {
             avoidanceSubsystem.telemetry(telemetry)
             teleSpace()
         }
@@ -290,61 +281,9 @@ open class HardwareConfig(
             teleSpace()
         }
 
-//        if (isTesterDrivetrain() && localizerSubsystem.type != LocalizationType.PPOTOS) {
-//            sparkFunOTOS.telemetry(telemetry)
-//            teleSpace()
-//        }
-
         telemetry.addData("Version", CURRENT_VERSION)
         telemetry.update()
-        if (!loopTimeController.loopSaver) drawPackets()
-    }
-
-    fun drawPackets() {
-        packet = TelemetryPacket()
-        val fieldOverlay = packet.fieldOverlay()
-        if (drivetrainHasPermission(Permission.RELOCALIZATION)) {
-            ATLocations.allLocations.forEach { (id, locationData) ->
-                val location = locationData.location
-                if (localizingID.contains(id)) {
-                    fieldOverlay.setStroke("green").setAlpha(1.0)
-                } else if (currentSeenID.contains(id)) {
-                    fieldOverlay.setStroke("orange").setAlpha(1.0)
-                } else {
-                    fieldOverlay.setStroke("blue").setAlpha(0.5)
-                }
-                fieldOverlay.strokeRect(location.y!!, location.x!!, 0.5, 0.5)
-            }
-        }
-
-        val roboRad = 8.0
-        val color = when (localizerSubsystem.type) {
-            LocalizationType.PP -> "green"
-            LocalizationType.PPOTOS -> "purple"
-        }
-        val l = localizerSubsystem.pose()
-        val h2 = l.heading.toDouble()
-        val half2 = roboRad / 2
-        val cos2 = cos(h2)
-        val sin2 = sin(h2)
-        val p1s2 = Pose2D(l.position.x + (sin2 * half2), l.position.y + (cos2 * half2), 0.0)
-        val newS2 = Pose2D(l.position.x + (sin2 * roboRad), l.position.y + (cos2 * roboRad), 0.0)
-
-        fieldOverlay
-            .setStroke(color)
-            .setFill(color)
-            .strokeCircle(l.position.x, l.position.y, roboRad)
-            .strokeLine(p1s2.x, p1s2.y, newS2.x, newS2.y)
-            .setFill("red")
-            .setStroke("red")
-            .setAlpha(0.3)
-
-        for (field in fields) {
-            packet.fieldOverlay()
-                .fillCircle(field.point?.y!!, field.point!!.x!!, rad)
-        }
-
-        dashboard.sendTelemetryPacket(packet)
+        if (!loopTimeController.loopSaver) Drawing.drawAll(packet, dashboard, localizerSubsystem)
     }
 
     private fun teleSpace() {

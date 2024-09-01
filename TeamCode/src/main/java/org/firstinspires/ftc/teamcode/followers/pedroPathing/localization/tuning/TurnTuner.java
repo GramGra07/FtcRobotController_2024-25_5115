@@ -10,6 +10,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.PoseUpdater;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.DashboardPoseTracker;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.Drawing;
+import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles;
 
 /**
  * This is the TurnTuner OpMode. This tracks the turning movement of the robot and displays the
@@ -25,7 +26,7 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.Drawing;
  * @version 1.0, 5/6/2024
  */
 @Config
-@Autonomous(name = "Turn Localizer Tuner", group = "Autonomous Pathing Tuning")
+@Autonomous(name = "Turn Localizer Tuner", group = GroupingTitles.pedroTuning)
 public class TurnTuner extends OpMode {
     public static double ANGLE = 2 * Math.PI;
     private PoseUpdater poseUpdater;

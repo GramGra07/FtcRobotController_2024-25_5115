@@ -20,6 +20,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.PoseUpdater;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.DashboardPoseTracker;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.Drawing;
+import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles;
 
 import java.util.Arrays;
 import java.util.List;
@@ -33,7 +34,7 @@ import java.util.List;
  * @version 1.0, 5/6/2024
  */
 @Config
-@TeleOp(group = "Pedro Pathing Tuning", name = "Localization Test")
+@TeleOp(group = GroupingTitles.pedroTuning, name = "Localization Test")
 public class LocalizationTest extends OpMode {
     private PoseUpdater poseUpdater;
     private DashboardPoseTracker dashboardPoseTracker;
