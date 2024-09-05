@@ -2,11 +2,8 @@ package org.firstinspires.ftc.teamcode.customHardware
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.HardwareMap
-import org.firstinspires.ftc.teamcode.customHardware.autoUtil.AutoVarEnums
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartPose
-import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.Alliance
-import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.StartSide
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities.initializeProcessor
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.PROCESSORS
 import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.setPatternCo
@@ -21,7 +18,7 @@ class AutoHardware(
 ) : HardwareConfig(opmode, true) {
 
     private var startPose = StartPose(startLocation)
-    var follower:Follower
+    var follower: Follower
 
     init {
         initRobot(ahwMap, true, startPose.pose)

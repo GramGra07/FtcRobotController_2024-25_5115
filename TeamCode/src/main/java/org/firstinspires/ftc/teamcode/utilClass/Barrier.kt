@@ -3,11 +3,12 @@ package org.firstinspires.ftc.teamcode.utilClass
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import org.firstinspires.ftc.teamcode.utilClass.objects.Point
 
-data class Barrier(var location: Point, var radius: Double, var shape: SHAPE,var color:COLOR) {
+data class Barrier(var location: Point, var radius: Double, var shape: SHAPE, var color: COLOR) {
     enum class SHAPE {
         CIRCLE,
         SQUARE
     }
+
     enum class COLOR {
         RED,
         BLUE,

@@ -53,16 +53,16 @@ public class TwoWheelLocalizer extends Localizer { // todo: make two wheel odo w
     public static double STRAFE_TICKS_TO_INCHES = pedroPathingPARAMS.getLateralTicksToInches();
     private final HardwareMap hardwareMap;
     private final IMU imu;
-    private Pose startPose;
-    private Pose displacementPose;
-    private Pose currentVelocity;
-    private Matrix prevRotationMatrix;
     private final NanoTimer timer;
-    private long deltaTimeNano;
     private final Encoder forwardEncoder;
     private final Encoder strafeEncoder;
     private final Pose forwardEncoderPose;
     private final Pose strafeEncoderPose;
+    private Pose startPose;
+    private Pose displacementPose;
+    private Pose currentVelocity;
+    private Matrix prevRotationMatrix;
+    private long deltaTimeNano;
     private double previousIMUOrientation;
     private double deltaRadians;
     private double totalHeading;
@@ -100,7 +100,7 @@ public class TwoWheelLocalizer extends Localizer { // todo: make two wheel odo w
 
         // TODO: reverse any encoders necessary
         forwardEncoder.setDirection(Encoder.REVERSE);
-        if (HardwareConfig.Companion.isTesterDrivetrain())
+        if (HardwareConfig.Companion.isOLDDrivetrain())
             strafeEncoder.setDirection(Encoder.REVERSE);
 
         setStartPose(setStartPose);

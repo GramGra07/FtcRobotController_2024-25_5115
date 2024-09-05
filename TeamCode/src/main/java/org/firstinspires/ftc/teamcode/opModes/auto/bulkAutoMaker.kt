@@ -1,10 +1,6 @@
 package org.firstinspires.ftc.teamcode.opModes.auto
 
 
-import com.acmerobotics.dashboard.FtcDashboard
-import com.acmerobotics.dashboard.config.reflection.ReflectionConfig
-import com.acmerobotics.dashboard.config.variable.CustomVariable
-import com.acmerobotics.roadrunner.ftc.AngularRampLogger
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.eventloop.opmode.OpModeManager
 import com.qualcomm.robotcore.eventloop.opmode.OpModeRegistrar
@@ -12,7 +8,6 @@ import org.firstinspires.ftc.robotcore.internal.opmode.OpModeMeta
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.Alliance
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.StartSide
 import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles
-import java.util.Arrays
 
 object bulkAutoMaker {
 
@@ -40,8 +35,8 @@ object bulkAutoMaker {
     fun register(manager: OpModeManager) {
         if (DISABLED) return
 
-        allOptions.first.forEach() { alliance ->
-            allOptions.second.forEach(){ startSide ->
+        allOptions.first.forEach { alliance ->
+            allOptions.second.forEach { startSide ->
                 val name = buildName(Pair(alliance, startSide))
                 manager.register(
                     metaForClass(name, strippedAuto::class.java),

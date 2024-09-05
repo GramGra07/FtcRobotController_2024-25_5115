@@ -126,7 +126,7 @@ class Drivetrain(
                 mutableListOf(Permission.RELOCALIZATION),
             ),
             Drivetrain(
-                DrivetrainNames.OLD ,
+                DrivetrainNames.OLD,
                 DrivetrainType.MECANUM,
                 DrivePARAMS(
                     -2187.424701924342,

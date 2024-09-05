@@ -135,19 +135,19 @@ object CameraUtilities {
     private fun setupCameras(cameraType: CameraType): Camera {
         return when (cameraType) {
             CameraType.ARDU_CAM -> {
-                    Camera(
-                        "ArduCam",
-                        Size(1280, 720),
-                        LensIntrinsics(972.571, 972.571, 667.598, 309.012)
-                    )
+                Camera(
+                    "ArduCam",
+                    Size(1280, 720),
+                    LensIntrinsics(972.571, 972.571, 667.598, 309.012)
+                )
             }
 
             CameraType.LOGITECH -> {
-                    Camera(
-                        "Logitech",
-                        Size(640, 480),
-                        LensIntrinsics(397.606, 397.606, 320.023, 239.979)
-                    )
+                Camera(
+                    "Logitech",
+                    Size(640, 480),
+                    LensIntrinsics(397.606, 397.606, 320.023, 239.979)
+                )
             }
         }
     }

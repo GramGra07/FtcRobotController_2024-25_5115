@@ -14,27 +14,33 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 class Drawing {
-    fun drawAll(packet:TelemetryPacket,dashboard: FtcDashboard,localizerSubsystem: LocalizerSubsystem){
+    fun drawAll(
+        packet: TelemetryPacket,
+        dashboard: FtcDashboard,
+        localizerSubsystem: LocalizerSubsystem
+    ) {
         drawAvoidance(packet)
         drawLocalization(packet, localizerSubsystem)
         dashboard.sendTelemetryPacket(packet)
     }
-    private fun drawAvoidance(packet:TelemetryPacket){
+
+    private fun drawAvoidance(packet: TelemetryPacket) {
         val fieldOverlay = packet.fieldOverlay()
-            ATLocations.allLocations.forEach { (id, locationData) ->
-                val location = locationData.location
-                if (localizingID.contains(id)) {
-                    fieldOverlay.setStroke("green").setAlpha(1.0)
-                } else if (currentSeenID.contains(id)) {
-                    fieldOverlay.setStroke("orange").setAlpha(1.0)
-                } else {
-                    fieldOverlay.setStroke("blue").setAlpha(0.5)
-                }
-                fieldOverlay.strokeRect(location.y!!, location.x!!, 0.5, 0.5)
+        ATLocations.allLocations.forEach { (id, locationData) ->
+            val location = locationData.location
+            if (localizingID.contains(id)) {
+                fieldOverlay.setStroke("green").setAlpha(1.0)
+            } else if (currentSeenID.contains(id)) {
+                fieldOverlay.setStroke("orange").setAlpha(1.0)
+            } else {
+                fieldOverlay.setStroke("blue").setAlpha(0.5)
             }
+            fieldOverlay.strokeRect(location.y!!, location.x!!, 0.5, 0.5)
+        }
 
     }
-    private fun drawLocalization(packet: TelemetryPacket, localizerSubsystem: LocalizerSubsystem){
+
+    private fun drawLocalization(packet: TelemetryPacket, localizerSubsystem: LocalizerSubsystem) {
         val fieldOverlay = packet.fieldOverlay()
         val roboRad = 8.0
         val color = when (localizerSubsystem.type) {
@@ -65,7 +71,11 @@ class Drawing {
     }
 
     companion object {
-        fun drawAll(packet: TelemetryPacket, dashboard: FtcDashboard?, localizerSubsystem: LocalizerSubsystem) {
+        fun drawAll(
+            packet: TelemetryPacket,
+            dashboard: FtcDashboard?,
+            localizerSubsystem: LocalizerSubsystem
+        ) {
             Drawing().drawAll(packet, dashboard!!, localizerSubsystem)
         }
     }

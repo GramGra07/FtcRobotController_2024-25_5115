@@ -40,8 +40,8 @@ import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain;
  */
 public class OTOSLocalizer extends Localizer {
     private final HardwareMap hardwareMap;
-    private Pose startPose;
     private final SparkFunOTOS otos;
+    private Pose startPose;
     private double previousHeading;
     private double totalHeading;
 

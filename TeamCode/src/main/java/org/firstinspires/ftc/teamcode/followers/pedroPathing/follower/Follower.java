@@ -70,6 +70,20 @@ public class Follower {
     public static boolean useDrive = true;
     private final int BEZIER_CURVE_BINARY_STEP_LIMIT = FollowerConstants.BEZIER_CURVE_BINARY_STEP_LIMIT;
     private final int AVERAGED_VELOCITY_SAMPLE_NUMBER = FollowerConstants.AVERAGED_VELOCITY_SAMPLE_NUMBER;
+    private final HardwareMap hardwareMap;
+    private final double holdPointTranslationalScaling = FollowerConstants.holdPointTranslationalScaling;
+    private final double holdPointHeadingScaling = FollowerConstants.holdPointHeadingScaling;
+    private final ArrayList<Vector> velocities = new ArrayList<>();
+    private final ArrayList<Vector> accelerations = new ArrayList<>();
+    private final PIDFController secondaryTranslationalPIDF = new PIDFController(FollowerConstants.secondaryTranslationalPIDFCoefficients);
+    private final PIDFController secondaryTranslationalIntegral = new PIDFController(FollowerConstants.secondaryTranslationalIntegral);
+    private final PIDFController translationalPIDF = new PIDFController(FollowerConstants.translationalPIDFCoefficients);
+    private final PIDFController translationalIntegral = new PIDFController(FollowerConstants.translationalIntegral);
+    private final PIDFController secondaryHeadingPIDF = new PIDFController(FollowerConstants.secondaryHeadingPIDFCoefficients);
+    private final PIDFController headingPIDF = new PIDFController(FollowerConstants.headingPIDFCoefficients);
+    private final FilteredPIDFController secondaryDrivePIDF = new FilteredPIDFController(FollowerConstants.secondaryDrivePIDFCoefficients);
+    private final FilteredPIDFController drivePIDF = new FilteredPIDFController(FollowerConstants.drivePIDFCoefficients);
+    private final KalmanFilter driveKalmanFilter = new KalmanFilter(FollowerConstants.driveKalmanFilterParameters);
     public double driveError;
     public double headingError;
     public Vector driveVector;
@@ -77,7 +91,6 @@ public class Follower {
     public Vector translationalVector;
     public Vector centripetalVector;
     public Vector correctiveVector;
-    private final HardwareMap hardwareMap;
     private DcMotorEx leftFront;
     private DcMotorEx leftRear;
     private DcMotorEx rightFront;
@@ -100,13 +113,9 @@ public class Follower {
     private double maxPower = 1;
     private double previousSecondaryTranslationalIntegral;
     private double previousTranslationalIntegral;
-    private final double holdPointTranslationalScaling = FollowerConstants.holdPointTranslationalScaling;
-    private final double holdPointHeadingScaling = FollowerConstants.holdPointHeadingScaling;
     private long reachedParametricPathEndTime;
     private double[] drivePowers;
     private double[] teleopDriveValues;
-    private final ArrayList<Vector> velocities = new ArrayList<>();
-    private final ArrayList<Vector> accelerations = new ArrayList<>();
     private Vector averageVelocity;
     private Vector averagePreviousVelocity;
     private Vector averageAcceleration;
@@ -114,15 +123,6 @@ public class Follower {
     private Vector translationalIntegralVector;
     private Vector teleopDriveVector;
     private Vector teleopHeadingVector;
-    private final PIDFController secondaryTranslationalPIDF = new PIDFController(FollowerConstants.secondaryTranslationalPIDFCoefficients);
-    private final PIDFController secondaryTranslationalIntegral = new PIDFController(FollowerConstants.secondaryTranslationalIntegral);
-    private final PIDFController translationalPIDF = new PIDFController(FollowerConstants.translationalPIDFCoefficients);
-    private final PIDFController translationalIntegral = new PIDFController(FollowerConstants.translationalIntegral);
-    private final PIDFController secondaryHeadingPIDF = new PIDFController(FollowerConstants.secondaryHeadingPIDFCoefficients);
-    private final PIDFController headingPIDF = new PIDFController(FollowerConstants.headingPIDFCoefficients);
-    private final FilteredPIDFController secondaryDrivePIDF = new FilteredPIDFController(FollowerConstants.secondaryDrivePIDFCoefficients);
-    private final FilteredPIDFController drivePIDF = new FilteredPIDFController(FollowerConstants.drivePIDFCoefficients);
-    private final KalmanFilter driveKalmanFilter = new KalmanFilter(FollowerConstants.driveKalmanFilterParameters);
     private double[] driveErrors;
     private double rawDriveError;
     private double previousRawDriveError;
@@ -151,7 +151,7 @@ public class Follower {
         leftRear = hardwareMap.get(DcMotorEx.class, leftRearMotorName);
         rightRear = hardwareMap.get(DcMotorEx.class, rightRearMotorName);
         rightFront = hardwareMap.get(DcMotorEx.class, rightFrontMotorName);
-        if (CurrentDrivetrain.Companion.getCurrentDrivetrain().getName() == Drivetrain.DrivetrainNames.TESTER)
+        if (CurrentDrivetrain.Companion.getCurrentDrivetrain().getName() == Drivetrain.DrivetrainNames.OLD)
             leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
 
         leftRear.setDirection(DcMotorSimple.Direction.REVERSE);

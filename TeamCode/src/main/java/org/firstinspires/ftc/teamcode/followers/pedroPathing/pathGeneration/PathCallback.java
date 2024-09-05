@@ -16,9 +16,9 @@ public class PathCallback extends SingleRunAction {
 
     public static final int TIME = 0;
     public static final int PARAMETRIC = 1;
+    private final int index;
     private double startCondition;
     private int type;
-    private final int index;
 
     /**
      * This creates a new PathCallback with a specified start condition (either time or parametric),

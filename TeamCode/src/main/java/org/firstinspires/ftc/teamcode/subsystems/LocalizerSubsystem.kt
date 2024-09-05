@@ -30,7 +30,7 @@ class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose2d, var type: Localizati
     init {
         when (type) {
             LocalizationType.PP -> {
-                poseUpdater = PoseUpdater(ahwMap, TwoWheelLocalizer(ahwMap,pose.toPose()))
+                poseUpdater = PoseUpdater(ahwMap, TwoWheelLocalizer(ahwMap, pose.toPose()))
                 poseUpdater.pose = pose.toPose()
             }
 

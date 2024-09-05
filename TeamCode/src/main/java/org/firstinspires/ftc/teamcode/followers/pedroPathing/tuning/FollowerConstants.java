@@ -24,6 +24,12 @@ import org.firstinspires.ftc.teamcode.utilClass.drivetrain.PedroPathingPARAMS;
 @Config
 public class FollowerConstants {
 
+    // This section is for setting the actual drive vector for the front left wheel, if the robot
+    // is facing a heading of 0 radians with the wheel centered at (0,0)
+    private static final double xMovement = CurrentDrivetrain.Companion.getCurrentDrivetrain().getPedroPathingPARAMS().getXMovement();
+    private static final double yMovement = CurrentDrivetrain.Companion.getCurrentDrivetrain().getPedroPathingPARAMS().getYMovement();
+    private static final double[] convertToPolar = Point.cartesianToPolar(xMovement, -yMovement);
+    public static Vector frontLeftVector = MathFunctions.normalizeVector(new Vector(convertToPolar[0], convertToPolar[1]));
     // This section is for configuring your motors
     public static String leftFrontMotorName = "motorFrontLeft";
     public static String leftRearMotorName = "motorBackLeft";
@@ -141,10 +147,4 @@ public class FollowerConstants {
     // Acceleration of the drivetrain when power is cut in inches/second^2 (should be negative)
     // if not negative, then the robot thinks that its going to go faster under 0 power
     public static double lateralZeroPowerAcceleration = pedroParams.getLateralZeroPowerAcceleration();
-    // This section is for setting the actual drive vector for the front left wheel, if the robot
-    // is facing a heading of 0 radians with the wheel centered at (0,0)
-    private static final double xMovement = CurrentDrivetrain.Companion.getCurrentDrivetrain().getPedroPathingPARAMS().getXMovement();
-    private static final double yMovement = CurrentDrivetrain.Companion.getCurrentDrivetrain().getPedroPathingPARAMS().getYMovement();
-    private static final double[] convertToPolar = Point.cartesianToPolar(xMovement, -yMovement);
-    public static Vector frontLeftVector = MathFunctions.normalizeVector(new Vector(convertToPolar[0], convertToPolar[1]));
 }

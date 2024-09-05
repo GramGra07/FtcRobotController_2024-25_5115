@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems.humanInput
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
-import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
 import org.firstinspires.ftc.teamcode.extensions.GamepadExtensions
 import org.firstinspires.ftc.teamcode.extensions.GamepadExtensions.buttonJustPressed
 import org.firstinspires.ftc.teamcode.subsystems.AvoidanceSubsystem
@@ -77,21 +76,21 @@ object Drivers {
                 driveSubsystem.slowModeIsOn = !driveSubsystem.slowModeIsOn
             }
 
-                if (myOpMode.gamepad1.triangle && !planeButtonDown && !endgameSubsystem!!.planeReleased) {
-                    endgameSubsystem.shoot()
-                    endgameSubsystem.planeReleased = true
-                } else if (myOpMode.gamepad1.triangle && !planeButtonDown && endgameSubsystem!!.planeReleased) {
-                    endgameSubsystem.resetAirplane()
-                    endgameSubsystem.planeReleased = false
-                }
-                planeButtonDown = myOpMode.gamepad1.triangle
-                if (myOpMode.gamepad1.right_trigger > 0) {
-                    endgameSubsystem!!.retract()
-                } else if (myOpMode.gamepad1.left_trigger > 0) {
-                    endgameSubsystem!!.extend()
-                } else {
-                    endgameSubsystem!!.stopLift()
-                }
+            if (myOpMode.gamepad1.triangle && !planeButtonDown && !endgameSubsystem!!.planeReleased) {
+                endgameSubsystem.shoot()
+                endgameSubsystem.planeReleased = true
+            } else if (myOpMode.gamepad1.triangle && !planeButtonDown && endgameSubsystem!!.planeReleased) {
+                endgameSubsystem.resetAirplane()
+                endgameSubsystem.planeReleased = false
+            }
+            planeButtonDown = myOpMode.gamepad1.triangle
+            if (myOpMode.gamepad1.right_trigger > 0) {
+                endgameSubsystem!!.retract()
+            } else if (myOpMode.gamepad1.left_trigger > 0) {
+                endgameSubsystem!!.extend()
+            } else {
+                endgameSubsystem!!.stopLift()
+            }
 
             DriverAid.doDriverAid()
         }
@@ -168,7 +167,7 @@ object Drivers {
             currentAvoidance = currDriver.defaultAvoidance
             currentFieldCentric = currDriver.fieldCentric
         }
-        if (otherChanged){
+        if (otherChanged) {
 
         }
     }

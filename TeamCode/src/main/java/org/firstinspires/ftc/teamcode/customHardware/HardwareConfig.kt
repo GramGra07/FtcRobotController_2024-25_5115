@@ -39,6 +39,7 @@ import org.firstinspires.ftc.teamcode.subsystems.humanInput.Operators.bindOtherB
 import org.firstinspires.ftc.teamcode.subsystems.loopTime.LoopTimeController
 import org.firstinspires.ftc.teamcode.utilClass.FileWriterFTC.setUpFile
 import org.firstinspires.ftc.teamcode.utilClass.drawer.Drawing
+import org.firstinspires.ftc.teamcode.utilClass.drivetrain.Drivetrain
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.VarConfig
 import java.io.FileWriter
 
@@ -63,13 +64,13 @@ open class HardwareConfig(
     lateinit var avoidanceSubsystem: AvoidanceSubsystem
 
     companion object {
-//        fun isMainDrivetrain(): Boolean {
+        //        fun isMainDrivetrain(): Boolean {
 //            return CurrentDrivetrain.currentDrivetrain.name == Drivetrain.DrivetrainNames.MAIN
 //        }
 //
-//        fun isTesterDrivetrain(): Boolean {
-//            return CurrentDrivetrain.currentDrivetrain.name == Drivetrain.DrivetrainNames.TESTER
-//        }
+        fun isOLDDrivetrain(): Boolean {
+            return CurrentDrivetrain.currentDrivetrain.name == Drivetrain.DrivetrainNames.OLD
+        }
 
         lateinit var telemetry: Telemetry
         lateinit var dashboard: FtcDashboard
