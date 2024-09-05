@@ -10,8 +10,6 @@ import org.firstinspires.ftc.teamcode.subsystems.LocalizerSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.LocalizerSubsystem.LocalizationType
 import org.firstinspires.ftc.teamcode.subsystems.ReLocalizationSubsystem.Companion.currentSeenID
 import org.firstinspires.ftc.teamcode.subsystems.ReLocalizationSubsystem.Companion.localizingID
-import org.firstinspires.ftc.teamcode.utilClass.drivetrain.Drivetrain.Companion.drivetrainHasPermission
-import org.firstinspires.ftc.teamcode.utilClass.objects.Permission
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -23,7 +21,6 @@ class Drawing {
     }
     private fun drawAvoidance(packet:TelemetryPacket){
         val fieldOverlay = packet.fieldOverlay()
-        if (drivetrainHasPermission(Permission.RELOCALIZATION)) {
             ATLocations.allLocations.forEach { (id, locationData) ->
                 val location = locationData.location
                 if (localizingID.contains(id)) {
@@ -35,7 +32,7 @@ class Drawing {
                 }
                 fieldOverlay.strokeRect(location.y!!, location.x!!, 0.5, 0.5)
             }
-        }
+
     }
     private fun drawLocalization(packet: TelemetryPacket, localizerSubsystem: LocalizerSubsystem){
         val fieldOverlay = packet.fieldOverlay()

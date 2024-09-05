@@ -77,7 +77,6 @@ object Drivers {
                 driveSubsystem.slowModeIsOn = !driveSubsystem.slowModeIsOn
             }
 
-            if (HardwareConfig.isMainDrivetrain()) {
                 if (myOpMode.gamepad1.triangle && !planeButtonDown && !endgameSubsystem!!.planeReleased) {
                     endgameSubsystem.shoot()
                     endgameSubsystem.planeReleased = true
@@ -93,7 +92,7 @@ object Drivers {
                 } else {
                     endgameSubsystem!!.stopLift()
                 }
-            }
+
             DriverAid.doDriverAid()
         }
 
