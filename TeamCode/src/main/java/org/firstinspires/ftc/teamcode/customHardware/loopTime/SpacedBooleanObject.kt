@@ -1,21 +1,19 @@
-package org.firstinspires.ftc.teamcode.subsystems.loopTime
+package org.firstinspires.ftc.teamcode.customHardware.loopTime
 
 import org.firstinspires.ftc.robotcore.external.Telemetry
 
 class SpacedBooleanObject(
     name: String,
-    spacing: Double,
+    private var spacing: Double,
     function: Runnable
 ) { // purpose is to have things that can only happen every so often
     // loopTimeController.spacedObjectOf("name")!!.run(loopTimeController.currentTime)
     private var lastTime: Double = 0.0
-    private var spacing: Double
     private var canRun: Boolean = false
     val name: String
     private val runnable: Runnable
 
     init {
-        this.spacing = spacing
         canRun = true
         this.name = name
         this.runnable = function

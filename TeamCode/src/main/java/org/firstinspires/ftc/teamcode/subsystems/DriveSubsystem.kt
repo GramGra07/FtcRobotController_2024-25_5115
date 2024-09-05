@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers
 import org.firstinspires.ftc.teamcode.utilClass.drivetrain.Drivetrain
 import org.firstinspires.ftc.teamcode.utilClass.drivetrain.DrivetrainType
 import org.firstinspires.ftc.teamcode.utilClass.objects.DriveType
-import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.varConfig
+import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.VarConfig
 import kotlin.math.abs
 import kotlin.math.atan2
 import kotlin.math.cos
@@ -64,7 +64,7 @@ class DriveSubsystem(ahwMap: HardwareMap, private var localizerSubsystem: Locali
     private var setAPower = false
     var slowModeIsOn = false
     private var reverse = false
-    var isAutoInTeleop = false
+    private var isAutoInTeleop = false
     var leftStickX = 0.0
     var leftStickY = 0.0
     var rightStickX = 0.0
@@ -75,7 +75,7 @@ class DriveSubsystem(ahwMap: HardwareMap, private var localizerSubsystem: Locali
         leftStickY = -myOpMode.gamepad1.left_stick_y.toDouble()
         rightStickX = -myOpMode.gamepad1.right_stick_x.toDouble()
 
-        val slowPower = if (slowModeIsOn) varConfig.slowMult else 1
+        val slowPower = if (slowModeIsOn) VarConfig.slowMult else 1
 //
         if (drivetrain.type == DrivetrainType.MECANUM) {
             if (type == DriveType.FIELD_CENTRIC) {

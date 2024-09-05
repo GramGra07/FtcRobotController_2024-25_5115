@@ -15,7 +15,7 @@ class Sensor(private var type: SensorType, private var initializer: Runnable, va
     private lateinit var beamBreak: BeamBreakSensor
     var value: Double = 0.0
     fun read(): Any {
-        var temp = when (type) {
+        val temp = when (type) {
             SensorType.ENC -> enc.currentPosition
 
             SensorType.DIST -> dist.getDistance(DistanceUnit.INCH)

@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.utilClass.drawer
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS.Pose2D
-import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.ATLocations
+import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.AT.ATLocations
 import org.firstinspires.ftc.teamcode.subsystems.AvoidanceSubsystem.Companion.fields
 import org.firstinspires.ftc.teamcode.subsystems.AvoidanceSubsystem.Companion.rad
 import org.firstinspires.ftc.teamcode.subsystems.LocalizerSubsystem

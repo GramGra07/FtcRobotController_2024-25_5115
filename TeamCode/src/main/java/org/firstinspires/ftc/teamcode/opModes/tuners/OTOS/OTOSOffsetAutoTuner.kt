@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opModes.testers.OTOS
+package org.firstinspires.ftc.teamcode.opModes.tuners.OTOS
 
 import com.acmerobotics.roadrunner.Pose2d
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS

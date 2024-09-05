@@ -8,81 +8,34 @@ import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartPose
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.Alliance
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.StartSide
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities.initializeProcessor
-import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.Processor
+import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.PROCESSORS
 import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.setPatternCo
+import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toPose
+import org.firstinspires.ftc.teamcode.followers.pedroPathing.follower.Follower
 
 class AutoHardware(
     opmode: LinearOpMode,
-    processor: Processor?,
+    processor: PROCESSORS?,
     startLocation: StartLocation,
     ahwMap: HardwareMap = opmode.hardwareMap,
 ) : HardwareConfig(opmode, true) {
 
     private var startPose = StartPose(startLocation)
-    private var autoVars: HashMap<AutoVarEnums, Boolean> = hashMapOf()
+    var follower:Follower
 
     init {
         initRobot(ahwMap, true, startPose.pose)
-        initAutoVars(startPose.startLocation)
-        autoVars[AutoVarEnums.VISION_READY] =
+        if (processor != null) {
             initializeProcessor(processor, ahwMap, CAM2, true)
-
-        showAutoTelemetry()
+        }
+        follower = Follower(ahwMap)
+        follower.setStartingPose(startPose.pose.toPose())
+        telemetry.addData("Status", "Initialized")
+        telemetry.addData("Alliance", startLocation.alliance)
+        telemetry.addData("Start Side", startLocation.startSide)
+        telemetry.update()
         opmode.waitForStart()
         timer.reset()
-        if (isMainDrivetrain()) lights.setPatternCo()
-    }
-
-    private fun initAutoVars(startLocation: StartLocation) {
-        val alliance = startLocation.alliance
-        val startSide = startLocation.startSide
-        if (!startLocation.zeros) {
-            autoVars[AutoVarEnums.RED_ALLIANCE] = when (alliance) {
-                Alliance.RED -> {
-                    true
-                }
-
-                Alliance.BLUE -> false
-            }
-            autoVars[AutoVarEnums.BLUE_ALLIANCE] = when (alliance) {
-                Alliance.BLUE -> {
-                    true
-                }
-
-                Alliance.RED -> false
-            }
-            autoVars[AutoVarEnums.LEFT_SIDE] = when (startSide) {
-                StartSide.LEFT -> {
-                    true
-                }
-
-                StartSide.RIGHT -> false
-            }
-            autoVars[AutoVarEnums.RIGHT_SIDE] = when (startSide) {
-                StartSide.RIGHT -> {
-                    true
-                }
-
-                StartSide.LEFT -> false
-            }
-        }
-        autoVars[AutoVarEnums.VISION_READY] = false
-    }
-
-    private fun showAutoTelemetry() {
-        if (autoVars[AutoVarEnums.RED_ALLIANCE] == true) {
-            telemetry.addData("Alliance", "Red")
-        } else if (autoVars[AutoVarEnums.BLUE_ALLIANCE] == true) {
-            telemetry.addData("Alliance", "Blue")
-        }
-        if (autoVars[AutoVarEnums.LEFT_SIDE] == true) {
-            telemetry.addData("Side", "Left")
-        } else if (autoVars[AutoVarEnums.RIGHT_SIDE] == true) {
-            telemetry.addData("Side", "Right")
-        }
-        if (autoVars[AutoVarEnums.VISION_READY] == true) {
-            telemetry.addData("Vision", "Ready")
-        }
-        telemetry.update()
+        lights.setPatternCo()
     }
 }

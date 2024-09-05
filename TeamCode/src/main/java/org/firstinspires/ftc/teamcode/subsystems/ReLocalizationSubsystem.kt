@@ -5,11 +5,11 @@ import com.acmerobotics.roadrunner.Vector2d
 import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig.Companion.CAM1
-import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.ATLocations.Companion.getLocation
+import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.AT.ATLocations.Companion.getLocation
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities.aprilTag
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities.initializeProcessor
-import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.Processor
+import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.PROCESSORS
 import org.firstinspires.ftc.teamcode.utilClass.objects.Point
 import org.firstinspires.ftc.vision.apriltag.AprilTagDetection
 import kotlin.math.abs
@@ -27,7 +27,7 @@ class ReLocalizationSubsystem(ahwMap: HardwareMap) {
     private val acceptableIDs = listOf(5, 8, 2, 9)
 
     init {
-        initializeProcessor(Processor.APRIL_TAG, ahwMap, CAM1, true)
+        initializeProcessor(PROCESSORS.APRIL_TAG, ahwMap, CAM1, true)
     }
 
     private fun getDetections(): Map<String, Double?>? {

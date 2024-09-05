@@ -1,11 +1,9 @@
-package org.firstinspires.ftc.teamcode.subsystems.loopTime
+package org.firstinspires.ftc.teamcode.customHardware.loopTime
 
 import org.firstinspires.ftc.robotcore.external.Telemetry
 
-class PeriodicLoopTimeObject(name: String, everyLoopNum: Int, func: Runnable) {
-    private val func: Runnable
-    val name: String
-    private val interval: Int
+class PeriodicLoopTimeObject(val name: String, everyLoopNum: Int, private val func: Runnable) {
+    private val interval: Int = everyLoopNum
     private var refreshRate: Double = 0.0
     private var pastRefreshRate: Double = refreshRate
     private var realRefreshRate: Double = 0.0
@@ -25,12 +23,6 @@ class PeriodicLoopTimeObject(name: String, everyLoopNum: Int, func: Runnable) {
 
     fun check(loops: Int): Boolean {
         return loops % interval == 0
-    }
-
-    init {
-        this.name = name
-        this.interval = everyLoopNum
-        this.func = func
     }
 
     fun telemetry(telemetry: Telemetry) {

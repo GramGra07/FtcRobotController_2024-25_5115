@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.utilClass
 
 import android.os.Environment
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
+import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.VarConfig
 import java.io.File
 import java.io.FileWriter
 
@@ -12,7 +13,7 @@ object FileWriterFTC {
     )
 
     fun setUpFile(fileWriter: FileWriter) {
-        if (HardwareConfig.useFileWriter) {
+        if (VarConfig.useFileWriter) {
             val myObj = File(file)
             try {
                 myObj.delete()
@@ -46,7 +47,7 @@ object FileWriterFTC {
         //  run testGraphing in pycharm or other python IDE
         //  look at results in graph.png
         var fileWriter = fileWriter
-        if (HardwareConfig.useFileWriter) {
+        if (VarConfig.useFileWriter) {
             try {
                 fileWriter = FileWriter(file, true)
                 fileWriter.append(x.toString()).append(" ").append(y.toString()).append(" \n")

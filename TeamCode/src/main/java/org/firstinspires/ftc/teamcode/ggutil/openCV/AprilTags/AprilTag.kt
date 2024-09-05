@@ -26,7 +26,7 @@
  * OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  * OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
-package org.firstinspires.ftc.teamcode.vision.openCV.AprilTags
+package org.firstinspires.ftc.teamcode.ggutil.openCV.AprilTags
 
 import android.util.Size
 import com.qualcomm.robotcore.eventloop.opmode.Disabled

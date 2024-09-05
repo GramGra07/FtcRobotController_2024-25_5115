@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.CustomPIDFCoef
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.KalmanFilterParameters
 import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain
 import org.firstinspires.ftc.teamcode.utilClass.objects.Permission
-import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.varConfig
+import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.VarConfig
 
 class Drivetrain(
     val name: DrivetrainNames,
@@ -29,19 +29,18 @@ class Drivetrain(
     }
 
     enum class DrivetrainNames {
-        TESTER, // stripped one
         MAIN, // pink one
-        SECONDARY
+        OLD,
     }
 
     companion object {
-        fun drivetrainHasPermission(permission: Permission): Boolean {
-            return CurrentDrivetrain.currentDrivetrain.permissions.contains(permission)
-        }
+//        fun drivetrainHasPermission(permission: Permission): Boolean {
+//            return CurrentDrivetrain.currentDrivetrain.permissions.contains(permission)
+//        }
 
         var drivetrains: MutableList<Drivetrain> = mutableListOf(
             Drivetrain(
-                DrivetrainNames.TESTER,
+                DrivetrainNames.MAIN,
                 DrivetrainType.MECANUM,
                 DrivePARAMS(
                     783.0500500149055,
@@ -117,9 +116,9 @@ class Drivetrain(
                 SparkFunOTOSParams(
                     "spark",
                     SparkFunOTOS.Pose2D(
-                        varConfig.OTOSxOffset,
-                        varConfig.OTOSyOffset,
-                        varConfig.OTOShOffset
+                        VarConfig.OTOSxOffset,
+                        VarConfig.OTOSyOffset,
+                        VarConfig.OTOShOffset
                     ),
                     1.0,
                     1.011
@@ -127,7 +126,7 @@ class Drivetrain(
                 mutableListOf(Permission.RELOCALIZATION),
             ),
             Drivetrain(
-                DrivetrainNames.MAIN,
+                DrivetrainNames.OLD ,
                 DrivetrainType.MECANUM,
                 DrivePARAMS(
                     -2187.424701924342,
@@ -203,9 +202,9 @@ class Drivetrain(
                 SparkFunOTOSParams(
                     "spark",
                     SparkFunOTOS.Pose2D(
-                        varConfig.OTOSxOffset,
-                        varConfig.OTOSyOffset,
-                        varConfig.OTOShOffset
+                        VarConfig.OTOSxOffset,
+                        VarConfig.OTOSyOffset,
+                        VarConfig.OTOShOffset
                     ),
                     1.0,
                     1.0

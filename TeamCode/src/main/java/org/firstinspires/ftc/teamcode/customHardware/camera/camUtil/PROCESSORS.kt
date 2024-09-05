@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.customHardware.camera.camUtil
 
-enum class Processor {
+enum class PROCESSORS {
     APRIL_TAG,
     OBJECT_DETECT,
     PUB_TEST

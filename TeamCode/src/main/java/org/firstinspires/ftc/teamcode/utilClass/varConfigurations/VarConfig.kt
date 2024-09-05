@@ -4,7 +4,7 @@ import com.acmerobotics.dashboard.config.Config
 
 // these variables can be changed from FTC dashboard
 @Config
-object varConfig {
+object VarConfig {
 
     @JvmField
     var OTOSxOffset = 0.0
@@ -19,7 +19,7 @@ object varConfig {
     var slowMult = 3
 
     @JvmField
-    var useFileWriter = true
+    var useFileWriter = false
 
     @JvmField
     var multipleDrivers = true

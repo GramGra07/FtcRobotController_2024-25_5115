@@ -4,12 +4,10 @@ import com.qualcomm.robotcore.hardware.DigitalChannel
 import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.robotcore.external.Telemetry
 
-class BeamBreakSensor(hw: HardwareMap, name: String) {
-    val name: String
+class BeamBreakSensor(hw: HardwareMap, val name: String) {
     private val beamBreak: DigitalChannel
 
     init {
-        this.name = name
         beamBreak = initBeamBreak(hw)
         beamBreak.mode = DigitalChannel.Mode.INPUT
         beamBreak.state = true

@@ -27,7 +27,7 @@ import org.opencv.core.Rect
 import org.opencv.core.Scalar
 
 object CameraUtilities {
-    fun startCameraStream(streamSource: CameraStreamSource? = this.visionPortal) {
+    private fun startCameraStream(streamSource: CameraStreamSource? = this.visionPortal) {
         FtcDashboard.getInstance()
             .startCameraStream(streamSource, 0.0)
     }
@@ -37,23 +37,24 @@ object CameraUtilities {
             .stopCameraStream()
     }
 
-    var mainCamera: Camera = setupCameras(CameraType.LOGITECH)//!CHANGE
+    var mainCamera: Camera = setupCameras(CameraType.ARDU_CAM)
 
     private var runningProcessors: MutableList<VisionProcessor> =
         emptyList<VisionProcessor>().toMutableList()
+
     private lateinit var visionPortal: VisionPortal
     lateinit var aprilTag: AprilTagProcessor
     private lateinit var objProcessor: VPObjectDetect
     private lateinit var pubProcessor: MeanColorOfAreaDetector
     fun initializeProcessor(
-        processor: Processor?,
+        processor: PROCESSORS?,
         ahwMap: HardwareMap,
         camera: String,
         ftcDashboard: Boolean
     ): Boolean {
         when (processor) {
-            null -> {}
-            Processor.APRIL_TAG -> {
+            null,
+            PROCESSORS.APRIL_TAG -> {
                 aprilTag =
                     AprilTagProcessor.Builder() // The following default settings are available to un-comment and edit as needed.
                         .setDrawAxes(false)
@@ -64,8 +65,8 @@ object CameraUtilities {
                         .setTagFamily(AprilTagProcessor.TagFamily.TAG_36h11)
                         .setTagLibrary(AprilTagGameDatabase.getCenterStageTagLibrary())
                         .setLensIntrinsics(
-                            mainCamera.lensIntrinsics.fx, mainCamera.lensIntrinsics.fy,
-                            mainCamera.lensIntrinsics.cx, mainCamera.lensIntrinsics.cy
+                            mainCamera.lensIntrinsics.fx!!, mainCamera.lensIntrinsics.fy!!,
+                            mainCamera.lensIntrinsics.cx!!, mainCamera.lensIntrinsics.cy!!
                         )
                         .build()
 
@@ -78,12 +79,12 @@ object CameraUtilities {
                 runningProcessors.add(aprilTag)
             }
 
-            Processor.OBJECT_DETECT -> {
+            PROCESSORS.OBJECT_DETECT -> {
                 objProcessor = VPObjectDetect()
                 runningProcessors.add(objProcessor)
             }
 
-            Processor.PUB_TEST -> {
+            PROCESSORS.PUB_TEST -> {
                 pubProcessor = MeanColorOfAreaDetector(
                     CSpace.YCrCb,
                     DetectionBuilder(
@@ -109,15 +110,15 @@ object CameraUtilities {
                 builder.setLiveViewContainerId(0)
             }
             when (processor) {
-                Processor.APRIL_TAG -> {
+                PROCESSORS.APRIL_TAG -> {
                     builder.addProcessor(aprilTag)
                 }
 
-                Processor.OBJECT_DETECT -> {
+                PROCESSORS.OBJECT_DETECT -> {
                     builder.addProcessor(objProcessor)
                 }
 
-                Processor.PUB_TEST -> {
+                PROCESSORS.PUB_TEST -> {
                     builder.addProcessor(pubProcessor)
                 }
             }
@@ -134,23 +135,19 @@ object CameraUtilities {
     private fun setupCameras(cameraType: CameraType): Camera {
         return when (cameraType) {
             CameraType.ARDU_CAM -> {
-                val ArduCam =
                     Camera(
                         "ArduCam",
                         Size(1280, 720),
                         LensIntrinsics(972.571, 972.571, 667.598, 309.012)
                     )
-                ArduCam
             }
 
             CameraType.LOGITECH -> {
-                val LogiC270 =
                     Camera(
                         "Logitech",
                         Size(640, 480),
                         LensIntrinsics(397.606, 397.606, 320.023, 239.979)
                     )
-                LogiC270
             }
         }
     }

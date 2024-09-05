@@ -3,30 +3,23 @@ package org.firstinspires.ftc.teamcode.subsystems.loopTime
 import com.acmerobotics.dashboard.config.Config
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.Telemetry
+import org.firstinspires.ftc.teamcode.customHardware.loopTime.PeriodicLoopTimeObject
+import org.firstinspires.ftc.teamcode.customHardware.loopTime.SpacedBooleanObject
 
 @Config
 class LoopTimeController(
-    timer: ElapsedTime,
-    periodics: List<PeriodicLoopTimeObject>,
-    spacedObjects: List<SpacedBooleanObject>
-) {
     // loopTimeController.spacedObjectOf("name")!!.run(loopTimeController.currentTime)
-    private val timer: ElapsedTime
+    private val timer: ElapsedTime,
+    private val periodics: List<PeriodicLoopTimeObject>,
+    private val spacedBooleanObjects: List<SpacedBooleanObject>
+) {
     var loops: Int = 0
     private var lps = 0.0
-    var currentTime: Double = 0.0
+    private var currentTime: Double = 0.0
     private val correctedLPS: Double = 5.0
-    private val periodics: List<PeriodicLoopTimeObject>
-    private val spacedBooleanObjects: List<SpacedBooleanObject>
 
     @JvmField
     var loopSaver: Boolean = false
-
-    init {
-        this.timer = timer
-        this.periodics = periodics
-        this.spacedBooleanObjects = spacedObjects
-    }
 
     private fun doCalculations() {
         lps = loops / (currentTime - correctedLPS)

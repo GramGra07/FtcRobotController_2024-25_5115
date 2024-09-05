@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.utilClass.objects
 
 import com.acmerobotics.roadrunner.Pose2d
 import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toPoint
-import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.varConfig
+import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.VarConfig
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.pow
@@ -17,14 +17,14 @@ class VectorField(point: Point? = Point(), radius: Double) {
     var rad = radius
 
     companion object {
-        private var fieldStrengthCoefficient: Double = varConfig.correctionSpeedAvoid
+        private var fieldStrengthCoefficient: Double = VarConfig.correctionSpeedAvoid
         private val correctionMap = mutableMapOf<String, Double>()
 
         fun getCorrectionByAvoidancePUSH(
             fields: List<VectorField>,
             pose: Point
         ): Map<String, Double>? {
-            fieldStrengthCoefficient = varConfig.correctionSpeedAvoid
+            fieldStrengthCoefficient = VarConfig.correctionSpeedAvoid
             var newPose: Point? = null
             for (field in fields) {
                 if (poseInField(pose, field)) {
@@ -61,7 +61,7 @@ class VectorField(point: Point? = Point(), radius: Double) {
             strafePower: Double,
             turnPower: Double
         ): Map<String, Double>? {
-            fieldStrengthCoefficient = varConfig.correctionSpeedAvoid
+            fieldStrengthCoefficient = VarConfig.correctionSpeedAvoid
             val correctionMap = mutableMapOf<String, Double>()
 
             val projectedPose = Pose2d(
@@ -115,7 +115,7 @@ class VectorField(point: Point? = Point(), radius: Double) {
         }
 
         private fun poseInField(pose: Point, field: VectorField): Boolean {
-            val robotRadius = varConfig.robotRadiusAvoidance
+            val robotRadius = VarConfig.robotRadiusAvoidance
             val point = field.point ?: return false
             val y = pose.x ?: return false
             val x = pose.y ?: return false

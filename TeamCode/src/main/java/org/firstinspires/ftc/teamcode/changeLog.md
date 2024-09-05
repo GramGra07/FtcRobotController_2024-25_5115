@@ -1,3 +1,7 @@
+7.9.0 September 7th, 2024
+Refactored all code to be more readable and easier to understand
+Ready for next seasons updates
+
 7.6.0 July 12th, 2024
 Updated to FTC 9.2.0
 

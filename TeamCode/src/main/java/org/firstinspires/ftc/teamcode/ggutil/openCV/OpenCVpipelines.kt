@@ -1,13 +1,13 @@
-package org.firstinspires.ftc.teamcode.vision.openCV
+package org.firstinspires.ftc.teamcode.ggutil.openCV
 
 import com.acmerobotics.dashboard.FtcDashboard
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.extensions.ScalarUtil.fetchScalar
 import org.firstinspires.ftc.teamcode.extensions.ScalarUtil.scalarVals
-import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.varConfig
-import org.firstinspires.ftc.teamcode.vision.openCV.trainer.vars.blueconeObjVars
-import org.firstinspires.ftc.teamcode.vision.openCV.trainer.vars.redconeObjVars
-import org.firstinspires.ftc.teamcode.vision.openCV.trainer.vars.redpropObjVars
+import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.VarConfig
+import org.firstinspires.ftc.teamcode.ggutil.openCV.trainer.vars.blueconeObjVars
+import org.firstinspires.ftc.teamcode.ggutil.openCV.trainer.vars.redconeObjVars
+import org.firstinspires.ftc.teamcode.ggutil.openCV.trainer.vars.redpropObjVars
 import org.opencv.core.Core
 import org.opencv.core.CvType
 import org.opencv.core.Mat
@@ -395,7 +395,7 @@ class OpenCVpipelines {
             for (i in contours.indices) {
                 val c: Scalar = scalarVals(color)
                 Imgproc.drawContours(input, contoursPolyList, i, c)
-                if (boundRect[i]!!.area() > varConfig.minRectArea) {
+                if (boundRect[i]!!.area() > VarConfig.minRectArea) {
                     Imgproc.rectangle(input, boundRect[i]!!.tl(), boundRect[i]!!.br(), c, 2)
                 }
                 if (boundRect[i]!!.height > boundRect[highIndex]!!.height && boundRect[i]!!.width > boundRect[highIndex]!!.width) //get largest rectangle
@@ -408,7 +408,7 @@ class OpenCVpipelines {
             if (boundRect.size > 0) {
                 // find furthest middle
                 for (i in boundRect.indices) {
-                    if (boundRect[i]!!.area() > varConfig.minRectArea) {
+                    if (boundRect[i]!!.area() > VarConfig.minRectArea) {
                         if (boundRect[i]!!.tl().x <= boundRect[lIndex]!!.tl().x) {
                             lIndex = i
                         }

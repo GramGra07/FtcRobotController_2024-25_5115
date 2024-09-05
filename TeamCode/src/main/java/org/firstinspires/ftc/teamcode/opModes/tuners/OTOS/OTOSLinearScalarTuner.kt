@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opModes.testers.OTOS
+package org.firstinspires.ftc.teamcode.opModes.tuners.OTOS
 
 import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode

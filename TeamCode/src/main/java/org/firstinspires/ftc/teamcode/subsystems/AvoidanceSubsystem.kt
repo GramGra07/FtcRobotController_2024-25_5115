@@ -6,7 +6,7 @@ import org.firstinspires.ftc.teamcode.utilClass.objects.Point
 import org.firstinspires.ftc.teamcode.utilClass.objects.VectorField
 import org.firstinspires.ftc.teamcode.utilClass.objects.VectorField.Companion.getCorrectionByAvoidancePUSH
 import org.firstinspires.ftc.teamcode.utilClass.objects.VectorField.Companion.getCorrectionByAvoidanceSTOP
-import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.varConfig
+import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.VarConfig
 
 //@Config
 class AvoidanceSubsystem {
@@ -36,7 +36,7 @@ class AvoidanceSubsystem {
             return fields
         }
 
-        var rad: Double = varConfig.fieldRadius
+        var rad: Double = VarConfig.fieldRadius
     }
 
     init {
@@ -75,18 +75,6 @@ class AvoidanceSubsystem {
         }
     }
 
-//    fun draw(packet: TelemetryPacket) {
-//        val rad = rad
-//        packet.fieldOverlay()
-//            .setFill("red")
-//            .setStroke("red")
-//            .setAlpha(0.3)
-//        for (field in fields) {
-//            packet.fieldOverlay()
-//                .fillCircle(field.point?.y!!, field.point!!.x!!, rad)
-//        }
-//    }
-
     fun telemetry(telemetry: Telemetry) {
         telemetry.addData("AVOIDANCE", "")
         telemetry.addData("powers", powers)
@@ -95,7 +83,7 @@ class AvoidanceSubsystem {
 
 
     private fun updateVars(type: AvoidanceTypes) {
-        rad = varConfig.fieldRadius
+        rad = VarConfig.fieldRadius
         currentAvoidanceTypes = type
     }
 }

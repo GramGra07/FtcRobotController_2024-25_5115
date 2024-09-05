@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.vision.openCV.trainer.vars
+package org.firstinspires.ftc.teamcode.ggutil.openCV.trainer.vars
 
 //@Config
 object blueconeObjVars {
