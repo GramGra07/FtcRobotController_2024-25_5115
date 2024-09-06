@@ -7,23 +7,63 @@ import com.qualcomm.robotcore.eventloop.opmode.OpModeRegistrar
 import org.firstinspires.ftc.robotcore.internal.opmode.OpModeMeta
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.Alliance
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.StartSide
+import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.tuning.FowardTuner
+import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.tuning.LateralTuner
+import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.tuning.LocalizationTest
+import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.tuning.TurnTuner
+import org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.Circle
+import org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.CurvedBackAndForth
+import org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.ForwardVelocityTuner
+import org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.ForwardZeroPowerAccelerationTuner
+import org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.LateralZeroPowerAccelerationTuner
+import org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.StrafeVelocityTuner
+import org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.StraightBackAndForth
+import org.firstinspires.ftc.teamcode.opModes.tuners.OTOS.J5155OTOSAngularScalar
+import org.firstinspires.ftc.teamcode.opModes.tuners.OTOS.J5155OTOSHeadingOffsetTuner
+import org.firstinspires.ftc.teamcode.opModes.tuners.OTOS.J5155OTOSPositionOffsetTuner
+import org.firstinspires.ftc.teamcode.opModes.tuners.OTOS.OTOSAngularScalarTuner
+import org.firstinspires.ftc.teamcode.opModes.tuners.OTOS.OTOSLinearScalarTuner
+import org.firstinspires.ftc.teamcode.opModes.tuners.OTOS.OTOSOffsetAutoTuner
 import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles
 
 object bulkAutoMaker {
 
-    private const val GROUP: String = GroupingTitles.auto
-    private const val DISABLED: Boolean = false
-
+    private val allOptionsParams: Pair<String, Boolean> = Pair(GroupingTitles.auto, false)
     private val alliances: List<Alliance> = listOf(Alliance.RED, Alliance.BLUE)
     private val startSides: List<StartSide> = listOf(StartSide.LEFT, StartSide.RIGHT)
 
     private val allOptions: Pair<List<Alliance>, List<StartSide>> = Pair(alliances, startSides)
 
-    private fun metaForClass(name: String, cls: Class<out OpMode?>): OpModeMeta {
+    private val pedroParams: Pair<String, Boolean> = Pair(GroupingTitles.pedroTuning, false)
+    private val pedroTuners: List<Pair<Class<out OpMode>, OpModeMeta.Flavor>> = listOf(
+        Pair(Circle::class.java, OpModeMeta.Flavor.AUTONOMOUS),
+        Pair(CurvedBackAndForth::class.java, OpModeMeta.Flavor.AUTONOMOUS),
+        Pair(ForwardVelocityTuner::class.java, OpModeMeta.Flavor.AUTONOMOUS),
+        Pair(ForwardZeroPowerAccelerationTuner::class.java, OpModeMeta.Flavor.AUTONOMOUS),
+        Pair(LateralZeroPowerAccelerationTuner::class.java, OpModeMeta.Flavor.AUTONOMOUS),
+        Pair(StrafeVelocityTuner::class.java, OpModeMeta.Flavor.AUTONOMOUS),
+        Pair(StraightBackAndForth::class.java, OpModeMeta.Flavor.AUTONOMOUS),
+        Pair(LateralTuner::class.java, OpModeMeta.Flavor.AUTONOMOUS),
+        Pair(FowardTuner::class.java, OpModeMeta.Flavor.AUTONOMOUS),
+        Pair(LocalizationTest::class.java, OpModeMeta.Flavor.AUTONOMOUS),
+        Pair(TurnTuner::class.java, OpModeMeta.Flavor.AUTONOMOUS)
+    )
+
+    private val otosParams: Pair<String, Boolean> = Pair(GroupingTitles.pedroTuning, false)
+    private val otosTuners: List<Pair<Class<out OpMode>, OpModeMeta.Flavor>> = listOf(
+        Pair(J5155OTOSAngularScalar::class.java, OpModeMeta.Flavor.TELEOP),
+        Pair(J5155OTOSHeadingOffsetTuner::class.java, OpModeMeta.Flavor.TELEOP),
+        Pair(J5155OTOSPositionOffsetTuner::class.java, OpModeMeta.Flavor.TELEOP),
+        Pair(OTOSAngularScalarTuner::class.java, OpModeMeta.Flavor.TELEOP),
+        Pair(OTOSLinearScalarTuner::class.java, OpModeMeta.Flavor.TELEOP),
+        Pair(OTOSOffsetAutoTuner::class.java, OpModeMeta.Flavor.TELEOP),
+    )
+
+    private fun metaForClass(name: String, group: String, flavor: OpModeMeta.Flavor): OpModeMeta {
         return OpModeMeta.Builder()
             .setName(name)
-            .setGroup(GROUP)
-            .setFlavor(OpModeMeta.Flavor.AUTONOMOUS)
+            .setGroup(group)
+            .setFlavor(flavor)
             .build()
     }
 
@@ -33,14 +73,36 @@ object bulkAutoMaker {
 
     @OpModeRegistrar
     fun register(manager: OpModeManager) {
-        if (DISABLED) return
-
-        allOptions.first.forEach { alliance ->
-            allOptions.second.forEach { startSide ->
-                val name = buildName(Pair(alliance, startSide))
+        if (!allOptionsParams.second) {
+            allOptions.first.forEach { alliance ->
+                allOptions.second.forEach { startSide ->
+                    val name = buildName(Pair(alliance, startSide))
+                    manager.register(
+                        metaForClass(name, allOptionsParams.first, OpModeMeta.Flavor.AUTONOMOUS),
+                        strippedAuto(alliance, startSide)
+                    )
+                }
+            }
+        }
+        if (!pedroParams.second) {
+            pedroTuners.forEach { tuner ->
                 manager.register(
-                    metaForClass(name, strippedAuto::class.java),
-                    strippedAuto(alliance, startSide)
+                    metaForClass(
+                        tuner.first.simpleName,
+                        pedroParams.first,
+                        tuner.second
+                    ), tuner.first
+                )
+            }
+        }
+        if (!otosParams.second) {
+            otosTuners.forEach { tuner ->
+                manager.register(
+                    metaForClass(
+                        tuner.first.simpleName,
+                        otosParams.first,
+                        tuner.second
+                    ), tuner.first
                 )
             }
         }
