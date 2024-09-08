@@ -5,7 +5,7 @@ import org.firstinspires.ftc.teamcode.extensions.GamepadExtensions
 import org.firstinspires.ftc.teamcode.extensions.GamepadExtensions.buttonJustPressed
 import org.firstinspires.ftc.teamcode.subsystems.AvoidanceSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
-import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.EndgameSubsystem
+import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.LiftSubsystem
 import org.firstinspires.ftc.teamcode.utilClass.DriverAid
 import org.firstinspires.ftc.teamcode.utilClass.objects.DriveType
 import org.firstinspires.ftc.teamcode.utilClass.objects.Driver
@@ -36,7 +36,6 @@ object Drivers {
     private var oIndex = baseOther
     var currDriver = drivers[baseDriver]
     var currOther = others[baseOther] //list string of driver and other controls
-    private var currentAvoidance = currDriver.defaultAvoidance
     var currentFieldCentric = currDriver.fieldCentric
 
 //    private var optionsHigh1 = false
@@ -60,8 +59,8 @@ object Drivers {
     fun bindDriverButtons(
         myOpMode: OpMode,
         driveSubsystem: DriveSubsystem,
-        endgameSubsystem: EndgameSubsystem?,
-    ): AvoidanceSubsystem.AvoidanceTypes {
+        liftSubsystem: LiftSubsystem,
+    ) {
         // "Camden", "Grady", "Michael","Graden", "Delaney", "Child"
         if (currDriver.name == AllDrivers.Grady) { //grady
             //slowmode
@@ -76,22 +75,13 @@ object Drivers {
                 driveSubsystem.slowModeIsOn = !driveSubsystem.slowModeIsOn
             }
 
-            if (myOpMode.gamepad1.triangle && !planeButtonDown && !endgameSubsystem!!.planeReleased) {
-                endgameSubsystem.shoot()
-                endgameSubsystem.planeReleased = true
-            } else if (myOpMode.gamepad1.triangle && !planeButtonDown && endgameSubsystem!!.planeReleased) {
-                endgameSubsystem.resetAirplane()
-                endgameSubsystem.planeReleased = false
-            }
-            planeButtonDown = myOpMode.gamepad1.triangle
-            if (myOpMode.gamepad1.right_trigger > 0) {
-                endgameSubsystem!!.retract()
-            } else if (myOpMode.gamepad1.left_trigger > 0) {
-                endgameSubsystem!!.extend()
+            if (myOpMode.gamepad1.triangle) {
+                liftSubsystem.setPower(liftSubsystem.maxLiftExtension)
+            } else if (myOpMode.gamepad1.circle) {
+                liftSubsystem.setPower(liftSubsystem.minLiftExtension)
             } else {
-                endgameSubsystem!!.stopLift()
+                liftSubsystem.stop()
             }
-
             DriverAid.doDriverAid()
         }
 
@@ -107,7 +97,6 @@ object Drivers {
         if (currDriver.name == AllDrivers.Child) { //Child
             driveSubsystem.slowModeIsOn = true
         }
-        return currentAvoidance
     }
 
     var optionsHigh1 = false
@@ -164,7 +153,6 @@ object Drivers {
         }
         shareHigh2 = myOpMode.gamepad2.share
         if (driverChanged) {
-            currentAvoidance = currDriver.defaultAvoidance
             currentFieldCentric = currDriver.fieldCentric
         }
         if (otherChanged) {

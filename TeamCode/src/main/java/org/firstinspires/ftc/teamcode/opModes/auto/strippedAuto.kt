@@ -16,7 +16,6 @@ class strippedAuto(private var alliance: Alliance, private var startSide: StartS
         robot =
             AutoHardware(
                 this,
-                PROCESSORS.OBJECT_DETECT,
                 StartLocation(alliance, startSide)
             )
         if (opModeIsActive()) {

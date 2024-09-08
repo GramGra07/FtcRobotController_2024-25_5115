@@ -13,33 +13,15 @@ import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.setPose
 @Config
 object ServoUtil {
     @JvmField
-    var backClaw = 20
-
-    @JvmField
-    var openClaw1 = 100
-
-    @JvmField
-    var openClaw2 = 90
-    fun openClaw1(servo: Servo) {
-        servo.setPose(openClaw1.toDouble())
-        lastTimeOpen = timer.seconds()
-    }
-
-    fun openClaw2(servo: Servo) {
-        servo.setPose(openClaw2.toDouble())
+    var openClaw = 100
+    fun openClaw(servo: Servo) {
+        servo.setPose(openClaw.toDouble())
         lastTimeOpen = timer.seconds()
     }
 
     @JvmField
-    var closeClaw1 = 200
-
-    @JvmField
-    var closeClaw2 = 10
-    fun closeClaw1(servo: Servo) {
-        servo.setPose(closeClaw1.toDouble())
-    }
-
-    fun closeClaw2(servo: Servo) {
-        servo.setPose((closeClaw2.toDouble()))
+    var closeClaw = 200
+    fun closeClaw(servo: Servo) {
+        servo.setPose(closeClaw.toDouble())
     }
 }

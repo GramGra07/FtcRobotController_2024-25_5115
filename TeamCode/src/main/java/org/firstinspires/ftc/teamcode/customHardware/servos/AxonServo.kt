@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.Servo
 import org.firstinspires.ftc.robotcore.external.Telemetry
+import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.calcFlipPose
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.initServo
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.setPose
 import org.firstinspires.ftc.teamcode.utilClass.MathFunctions.Companion.inTolerance
@@ -55,4 +56,8 @@ class AxonServo(hw: HardwareMap, val name: String, private val defaultPose: Doub
 //            servo.setPose(getExpectedPosition(getEncoderPosition()))
 //        }
 //    }
+
+    fun calcFlipPose(target: Double) {
+        servo.calcFlipPose(target)
+    }
 }

@@ -17,40 +17,40 @@ Servo
 4 -
 5 -
 Digital
-0:1 - green1,red1
-2:3 - green4,red4
-4:5 - green3,red3
-6:7 - green2,red2
+0:1 - 
+2:3 - 
+4:5 - 
+6:7 - 
 I2C
 0 -
-1 -
+1 - spark
 2 -
 3 -
 Analog
-0 - potent
+0 - 
 1 -
 2 -
 3 -
 
 RS485 - yes
-USB -
+USB-2.0 - limelight
 
 Expansion Hub
 Motor
-0 - slideMotor
-1 - parallelEnc
-2 - lift
-3 - flipperMotor
+0 - intakeMotor
+1 - motorExtension
+2 - motorRotation
+3 - 
 Servo
-0 - claw1
-1 - claw2
-2 - flipServo
-3 - airplaneServo
-4 - airplaneRotation
+0 - intakePitch
+1 - claw
+2 - pitchServo
+3 - topPitchServo
+4 - 
 5 -
 Digital
-0 - beamBreak
-1 - beamBreak
+0 - 
+1 - 
 2 -
 3 -
 4 -
@@ -59,11 +59,11 @@ Digital
 7 -
 I2C
 0 - internal IMU BNO055:imu
-1 - Rev Color Sensor V3:C1
-2 - Rev Color Sensor V3:C2
+1 - Rev Color Sensor V3:intakeColor
+2 - 
 3 -
 Analog
-0:1 -
+0:1 - pitchServoEncoder - 
 2:3 -
 
 RS485 - yes

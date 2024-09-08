@@ -12,7 +12,6 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.follower.Follower
 
 class AutoHardware(
     opmode: LinearOpMode,
-    processor: PROCESSORS?,
     startLocation: StartLocation,
     ahwMap: HardwareMap = opmode.hardwareMap,
 ) : HardwareConfig(opmode, true) {
@@ -22,9 +21,6 @@ class AutoHardware(
 
     init {
         initRobot(ahwMap, true, startPose.pose)
-        if (processor != null) {
-            initializeProcessor(processor, ahwMap, CAM2, true)
-        }
         follower = Follower(ahwMap)
         follower.setStartingPose(startPose.pose.toPose())
         telemetry.addData("Status", "Initialized")

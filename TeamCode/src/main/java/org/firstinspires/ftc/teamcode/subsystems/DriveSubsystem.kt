@@ -118,26 +118,24 @@ class DriveSubsystem(ahwMap: HardwareMap, private var localizerSubsystem: Locali
     }
 
     private fun power(
-        avoidanceSubsystem: AvoidanceSubsystem,
-        type: AvoidanceSubsystem.AvoidanceTypes
     ) {
         if (!isAutoInTeleop) {
-            var flP = 0.0
-            var frP = 0.0
-            var rrP = 0.0
-            var rlP = 0.0
-            if (avoidanceSubsystem.powers != null && type != AvoidanceSubsystem.AvoidanceTypes.OFF) {
-                val addedPowers: Map<String, Double?>? = avoidanceSubsystem.powers
-                flP = addedPowers?.getOrDefault("FL", 0.0) ?: 0.0
-                frP = addedPowers?.getOrDefault("FR", 0.0) ?: 0.0
-                rlP = addedPowers?.getOrDefault("RL", 0.0) ?: 0.0
-                rrP = addedPowers?.getOrDefault("RR", 0.0) ?: 0.0
-            }
+//            var flP = 0.0
+//            var frP = 0.0
+//            var rrP = 0.0
+//            var rlP = 0.0
+//            if (avoidanceSubsystem.powers != null && type != AvoidanceSubsystem.AvoidanceTypes.OFF) {
+//                val addedPowers: Map<String, Double?>? = avoidanceSubsystem.powers
+//                flP = addedPowers?.getOrDefault("FL", 0.0) ?: 0.0
+//                frP = addedPowers?.getOrDefault("FR", 0.0) ?: 0.0
+//                rlP = addedPowers?.getOrDefault("RL", 0.0) ?: 0.0
+//                rrP = addedPowers?.getOrDefault("RR", 0.0) ?: 0.0
+//            }
 
-            frontLeftPower = Range.clip(frontLeftPower + flP, -1.0, 1.0)
-            frontRightPower = Range.clip(frontRightPower + frP, -1.0, 1.0)
-            backLeftPower = Range.clip(backLeftPower + rlP, -1.0, 1.0)
-            backRightPower = Range.clip(backRightPower + rrP, -1.0, 1.0)
+            frontLeftPower = Range.clip(frontLeftPower, -1.0, 1.0)
+            frontRightPower = Range.clip(frontRightPower, -1.0, 1.0)
+            backLeftPower = Range.clip(backLeftPower, -1.0, 1.0)
+            backRightPower = Range.clip(backRightPower, -1.0, 1.0)
 
             motorFrontLeft.power = frontLeftPower
             motorBackLeft.power = backLeftPower
@@ -164,15 +162,9 @@ class DriveSubsystem(ahwMap: HardwareMap, private var localizerSubsystem: Locali
 
 
     fun update(
-        avoidanceSubsystem: AvoidanceSubsystem,
-        type: AvoidanceSubsystem.AvoidanceTypes
     ) {
-        if (type != AvoidanceSubsystem.AvoidanceTypes.OFF) {
-            avoidanceSubsystem.update(localizerSubsystem, this, type)
-        }
-        if (!setAPower) {
-            power(avoidanceSubsystem, type)
-        }
+        power()
+
     }
 
     fun telemetry(telemetry: Telemetry) {

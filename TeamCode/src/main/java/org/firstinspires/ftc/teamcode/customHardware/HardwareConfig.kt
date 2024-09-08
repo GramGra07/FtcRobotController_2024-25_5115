@@ -15,6 +15,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities
 import org.firstinspires.ftc.teamcode.customHardware.loopTime.PeriodicLoopTimeObject
 import org.firstinspires.ftc.teamcode.customHardware.loopTime.SpacedBooleanObject
+import org.firstinspires.ftc.teamcode.customHardware.sensorArray.SensorArray
 import org.firstinspires.ftc.teamcode.customHardware.sensors.BeamBreakSensor
 import org.firstinspires.ftc.teamcode.customHardware.servos.AxonServo
 import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.initLights
@@ -23,14 +24,13 @@ import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.initVSensor
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.lowVoltage
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.telemetry
 import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain
-import org.firstinspires.ftc.teamcode.subsystems.AvoidanceSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.LocalizerSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.LocalizerSubsystem.LocalizationType
 import org.firstinspires.ftc.teamcode.subsystems.ReLocalizationSubsystem
-import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ClawSubsystem
-import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.EndgameSubsystem
-import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ExtendoSubsystem
+import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.FastIntakeSubsystem
+import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.LiftSubsystem
+import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ScoringSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers.bindDriverButtons
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers.currentFieldCentric
@@ -57,11 +57,10 @@ open class HardwareConfig(
     //    lateinit var sparkFunOTOS: SparkFunOTOS
     lateinit var driveSubsystem: DriveSubsystem
     lateinit var localizerSubsystem: LocalizerSubsystem
-    lateinit var clawSubsystem: ClawSubsystem
-    lateinit var endgameSubsystem: EndgameSubsystem
-    lateinit var extendoSubsystem: ExtendoSubsystem
+    lateinit var fastIntakeSubsystem: FastIntakeSubsystem
+    lateinit var liftSubsystem: LiftSubsystem
+    lateinit var scoringSubsystem: ScoringSubsystem
     lateinit var reLocalizationSubsystem: ReLocalizationSubsystem
-    lateinit var avoidanceSubsystem: AvoidanceSubsystem
 
     companion object {
         //        fun isMainDrivetrain(): Boolean {
@@ -90,10 +89,10 @@ open class HardwareConfig(
         lateinit var fileWriter: FileWriter
         lateinit var loopTimeController: LoopTimeController
 
-        // lateinit var sensorArray: SensorArray
+        lateinit var sensorArray: SensorArray
         var once = false
 
-        private const val CURRENT_VERSION = "7.9.0"
+        private const val CURRENT_VERSION = "8.0.0"
 
         var allHubs: List<LynxModule> = ArrayList()
     }
@@ -118,22 +117,15 @@ open class HardwareConfig(
             initVSensor(ahwMap, "Expansion Hub 2")
         lights =
             initLights(ahwMap, "blinkin")
-        clawSubsystem =
-            ClawSubsystem(ahwMap)
-        endgameSubsystem =
-            EndgameSubsystem(ahwMap)
-        extendoSubsystem =
-            ExtendoSubsystem(ahwMap)
+        fastIntakeSubsystem =
+            FastIntakeSubsystem(ahwMap)
+        liftSubsystem =
+            LiftSubsystem(ahwMap)
+        scoringSubsystem =
+            ScoringSubsystem(ahwMap)
+
         reLocalizationSubsystem =
             ReLocalizationSubsystem(ahwMap)
-        avoidanceSubsystem = AvoidanceSubsystem()
-
-        axonServo =
-            AxonServo(ahwMap, "airplaneRotation", 90.0)
-
-        beamBreakSensor =
-            BeamBreakSensor(ahwMap, "beamBreak")
-
 
         telemetry =
             MultipleTelemetry(myOpMode.telemetry, FtcDashboard.getInstance().telemetry)
@@ -151,8 +143,7 @@ open class HardwareConfig(
         }
 
         if (!auto) {
-            val loopTimePeriodics = emptyList<PeriodicLoopTimeObject>(
-            )
+            val loopTimePeriodics = emptyList<PeriodicLoopTimeObject>()
             val spacedObjects: List<SpacedBooleanObject> = emptyList()
             loopTimeController = LoopTimeController(
                 timer, loopTimePeriodics, spacedObjects
@@ -169,21 +160,16 @@ open class HardwareConfig(
             telemetry.update()
 
         if (!loopTimeController.loopSaver) Drawing.drawAll(packet, dashboard, localizerSubsystem)
-
-//        sensorArray = SensorArray()
-//                sensorArray.addSensor(
-//                )
     }
 
     //code to run all drive functions
     fun doBulk() {
         localizerSubsystem.update(timer)
-        val currentAvoidanceType =
-            bindDriverButtons(myOpMode, driveSubsystem, null)
+        bindDriverButtons(myOpMode, driveSubsystem, liftSubsystem)
         bindOtherButtons(
             myOpMode,
-            clawSubsystem,
-            extendoSubsystem,
+            fastIntakeSubsystem,
+            scoringSubsystem
         )
         if (VarConfig.multipleDrivers) {
             switchProfile(myOpMode)
@@ -192,16 +178,16 @@ open class HardwareConfig(
             currentFieldCentric,
             myOpMode,
         )
-        driveSubsystem.update(avoidanceSubsystem, currentAvoidanceType)
+        driveSubsystem.update()
 
-        endgameSubsystem.update()
+        fastIntakeSubsystem.update(loopTimeController)
 
-        clawSubsystem.update()
+        scoringSubsystem.update()
 
-        extendoSubsystem.update()
+        liftSubsystem.update()
 
 //        loopTimeController.every(3) {
-        if (!loopTimeController.loopSaver) reLocalizationSubsystem.relocalize(
+         reLocalizationSubsystem.relocalize(
             localizerSubsystem
         )
 //        }
@@ -209,7 +195,6 @@ open class HardwareConfig(
         buildTelemetry() //makes telemetry
         lynxModules()
         loopTimeController.update()
-//        sensorArray.autoLoop(loopTimeController.loops)
     }
 
     fun once() {
@@ -248,11 +233,11 @@ open class HardwareConfig(
         teleSpace()
         localizerSubsystem.telemetry(telemetry)
         teleSpace()
-        if (Drivers.currDriver.defaultAvoidance != AvoidanceSubsystem.AvoidanceTypes.OFF) {
-            avoidanceSubsystem.telemetry(telemetry)
-            teleSpace()
-        }
-        extendoSubsystem.telemetry(telemetry)
+        fastIntakeSubsystem.telemetry(telemetry)
+        teleSpace()
+        scoringSubsystem.telemetry(telemetry)
+        teleSpace()
+        liftSubsystem.telemetry(telemetry)
         teleSpace()
 
         if (!loopTimeController.loopSaver) {
@@ -262,8 +247,7 @@ open class HardwareConfig(
             teleSpace()
         }
 
-        axonServo.telemetry(telemetry)
-        beamBreakSensor.telemetry(telemetry)
+//        beamBreakSensor.telemetry(telemetry)
         teleSpace()
 
 

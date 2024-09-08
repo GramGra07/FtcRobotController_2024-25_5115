@@ -20,7 +20,6 @@ class blankAuto : LinearOpMode() {
         robot =
             AutoHardware(
                 this,
-                PROCESSORS.OBJECT_DETECT,
                 StartLocation(Alliance.RED, StartSide.LEFT)
             )
         if (opModeIsActive()) {
