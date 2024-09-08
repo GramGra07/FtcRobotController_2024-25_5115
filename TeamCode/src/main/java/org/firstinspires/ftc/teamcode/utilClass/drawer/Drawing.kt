@@ -22,7 +22,7 @@ class Drawing {
         dashboard.sendTelemetryPacket(packet)
     }
 
-//    private fun drawAvoidance(packet: TelemetryPacket) {
+//    private fun drawReLocalizer(packet: TelemetryPacket) {
 //        val fieldOverlay = packet.fieldOverlay()
 //        ATLocations.allLocations.forEach { (id, locationData) ->
 //            val location = locationData.location
@@ -58,14 +58,6 @@ class Drawing {
             .setFill(color)
             .strokeCircle(l.position.x, l.position.y, roboRad)
             .strokeLine(p1s2.x, p1s2.y, newS2.x, newS2.y)
-            .setFill("red")
-            .setStroke("red")
-            .setAlpha(0.3)
-
-        for (field in fields) {
-            packet.fieldOverlay()
-                .fillCircle(field.point?.y!!, field.point!!.x!!, rad)
-        }
     }
 
     companion object {

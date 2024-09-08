@@ -11,8 +11,8 @@ import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.initMotor
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.getColor
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.initColorSensor
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.telemetry
-import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.calcFlipPose
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.initServo
+import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.setPose
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ScoringSubsystem.ExtensionState
 import org.firstinspires.ftc.teamcode.subsystems.loopTime.LoopTimeController
 import org.firstinspires.ftc.teamcode.subsystems.loopTime.LoopTimeController.Companion.every
@@ -45,7 +45,7 @@ class FastIntakeSubsystem(ahwMap: HardwareMap) {
     private var colorSensor: NormalizedColorSensor
     var colorDetected: Color = Color.NONE
 
-    var usePIDF = true
+    var usePIDF = false
     private var intakeMotor: DcMotor
     private var extendMotor: DcMotor
     private var extendState: ExtendState = ExtendState.IDLE
@@ -74,24 +74,19 @@ class FastIntakeSubsystem(ahwMap: HardwareMap) {
         colorDetected = colorSensor.getColor()
     }
 
-    private fun idleIntake() {
-        intakeState = IntakeState.IDLE
-    }
-
-    private fun stopIntake() {
-        intakeState = IntakeState.STOPPED
-    }
-
     fun turnOnIntake() {
         intakeState = IntakeState.RUNNING
+        setIntakePower()
     }
 
     fun turnOffIntake() {
         intakeState = IntakeState.STOPPED
+        setIntakePower()
     }
 
     fun reverseIntake() {
         intakeState = IntakeState.REVERSED
+        setIntakePower()
     }
     fun setPowerExtend(target: Double) {
         updatePID()
@@ -122,60 +117,28 @@ class FastIntakeSubsystem(ahwMap: HardwareMap) {
     private fun setIntakePower(){
         when (intakeState) {
             IntakeState.RUNNING -> {
-                iPower =
+                intakeMotor.power =
                     iMax
             }
 
             IntakeState.STOPPED -> {
-                iPower = 0.0
+                intakeMotor.power = 0.0
             }
 
             IntakeState.REVERSED -> {
-                iPower = iMin
+                intakeMotor.power = iMin
             }
 
             IntakeState.IDLE -> {}
         }
     }
 
-    private fun power() {
-        setIntakePower()
-        when (intakeState){
-            IntakeState.RUNNING,
-            IntakeState.REVERSED -> {
-                intakeMotor.power = iPower
-            }
-
-            IntakeState.STOPPED -> {
-                intakeMotor.power = 0.0
-                idleIntake()
-            }
-
-            IntakeState.IDLE -> {
-            }
-        }
-        when (extendState){
-            ExtendState.MANUAL,
-            ExtendState.PID -> {
-                extendMotor.power = ePower
-            }
-
-            ExtendState.STOPPED -> {
-                extendMotor.power = 0.0
-                idleExtend()
-            }
-
-            ExtendState.IDLE -> {}
-        }
-    }
-
     fun update(loopTimeController: LoopTimeController) {
         updatePID()
-        power()
         updateServo()
-        loopTimeController.every(1) {
-            updateColor()
-        }
+//        loopTimeController.every(1) {
+//            updateColor()
+//        }
     }
     private fun updatePID() {
         extendState = if (usePIDF) {
@@ -215,12 +178,12 @@ class FastIntakeSubsystem(ahwMap: HardwareMap) {
     private fun updateServo() {
         when (intakePitchState) {
             PitchState.HIGH -> {
-                intakeServo.calcFlipPose(0.0)
+                intakeServo.setPose(30.0)
                 intakePitchState = PitchState.IDLE
             }
 
             PitchState.LOW -> {
-                intakeServo.calcFlipPose(0.0)
+                intakeServo.setPose(0.0)
                 intakePitchState = PitchState.IDLE
             }
 

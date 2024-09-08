@@ -24,4 +24,16 @@ object ServoUtil {
     fun closeClaw(servo: Servo) {
         servo.setPose(closeClaw.toDouble())
     }
+
+    @JvmField
+    var pitchHigh = 0.0
+
+    @JvmField
+    var pitchLow = 50.0
+
+    @JvmField
+    var topPitchHigh = 150.0
+
+    @JvmField
+    var topPitchLow = 105.0
 }

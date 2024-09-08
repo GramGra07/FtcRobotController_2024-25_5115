@@ -25,13 +25,13 @@ object ServoExtensions {
     @JvmField
     var lastSetVal: Int = 0
 
-    fun Servo.calcFlipPose(pose: Double) {
-        val theta = 0
-//        val theta: Double = potentiometer.potentAngle()
-//        PotentPositions.pastAngleVal = theta
-        val sig = ceil(-0.26 * theta + hcalc) + pose / 2
-        this.setPose(sig)
-        servoFlipVal = sig.toInt()
-        lastSetVal = pose.toInt()
-    }
+//    fun Servo.calcFlipPose(pose: Double) {
+//        val theta = 0
+////        val theta: Double = potentiometer.potentAngle()
+////        PotentPositions.pastAngleVal = theta
+//        val sig = ceil(-0.26 * theta + hcalc) + pose / 2
+//        this.setPose(sig)
+//        servoFlipVal = sig.toInt()
+//        lastSetVal = pose.toInt()
+//    }
 }

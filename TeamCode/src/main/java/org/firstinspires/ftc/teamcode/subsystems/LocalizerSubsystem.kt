@@ -69,11 +69,11 @@ class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose2d, var type: Localizati
         }
         if (timer != null) {
             updateDistTraveled(PoseStorage.currentPose, this.pose(), timer.seconds())
-            FileWriterFTC.writeToFile(
-                HardwareConfig.fileWriter,
-                this.x().toInt(),
-                this.y().toInt()
-            )
+//            FileWriterFTC.writeToFile(
+//                HardwareConfig.fileWriter,
+//                this.x().toInt(),
+//                this.y().toInt()
+//            )
         }
         PoseStorage.currentPose = this.pose()
     }

@@ -27,7 +27,7 @@ class LiftSubsystem(ahwMap: HardwareMap) {
     private var lMin = 0.0
     private var lMax = 1.0
 
-    private var usePIDF = true
+    private var usePIDF = false
 
     var maxLiftExtension = 1000.0
     var minLiftExtension = 0.0

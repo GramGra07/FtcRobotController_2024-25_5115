@@ -50,16 +50,19 @@ object Operators {
                 scoringSubsystem.pitchHigh()
             } else if (myOpMode.gamepad2.dpad_up) {
                 scoringSubsystem.pitchLow()
-            } else if (myOpMode.gamepad2.dpad_down) {
-                scoringSubsystem.topPitchHigh()
+            }
+            if (myOpMode.gamepad2.dpad_down) {
+                scoringSubsystem.topPitchForward()
             } else if (myOpMode.gamepad2.dpad_right) {
-                scoringSubsystem.topPitchLow()
+                scoringSubsystem.topPitchReverse()
+            }else{
+                scoringSubsystem.idleTopPitch()
             }
 
             if (myOpMode.gamepad2.right_stick_y < -deadZone && intakeSubsystem.usePIDF) {
                 intakeSubsystem.setPowerExtend(intakeSubsystem.extendMaxTicks)
             } else if (myOpMode.gamepad2.right_stick_y > deadZone && intakeSubsystem.usePIDF) {
-                intakeSubsystem.setPowerExtend(intakeSubsystem.extendMinTicks.toDouble())
+                intakeSubsystem.setPowerExtend(intakeSubsystem.extendMinTicks)
             } else {
                 intakeSubsystem.stopExtend()
             }

@@ -60,7 +60,7 @@ open class HardwareConfig(
     lateinit var fastIntakeSubsystem: FastIntakeSubsystem
     lateinit var liftSubsystem: LiftSubsystem
     lateinit var scoringSubsystem: ScoringSubsystem
-    lateinit var reLocalizationSubsystem: ReLocalizationSubsystem
+//    lateinit var reLocalizationSubsystem: ReLocalizationSubsystem
 
     companion object {
         //        fun isMainDrivetrain(): Boolean {
@@ -124,8 +124,8 @@ open class HardwareConfig(
         scoringSubsystem =
             ScoringSubsystem(ahwMap)
 
-        reLocalizationSubsystem =
-            ReLocalizationSubsystem(ahwMap)
+//        reLocalizationSubsystem =
+//            ReLocalizationSubsystem(ahwMap)
 
         telemetry =
             MultipleTelemetry(myOpMode.telemetry, FtcDashboard.getInstance().telemetry)
@@ -187,9 +187,9 @@ open class HardwareConfig(
         liftSubsystem.update()
 
 //        loopTimeController.every(3) {
-         reLocalizationSubsystem.relocalize(
-            localizerSubsystem
-        )
+//         reLocalizationSubsystem.relocalize(
+//            localizerSubsystem
+//        )
 //        }
 
         buildTelemetry() //makes telemetry
@@ -214,8 +214,6 @@ open class HardwareConfig(
     }
 
     private fun buildTelemetry() {
-        if (loopTimeController.loopSaver)
-            CameraUtilities.stopCameraStream()
         if (VarConfig.multipleDrivers) {
             telemetry.addData(
                 "Drivers",
@@ -240,12 +238,12 @@ open class HardwareConfig(
         liftSubsystem.telemetry(telemetry)
         teleSpace()
 
-        if (!loopTimeController.loopSaver) {
-            reLocalizationSubsystem.telemetry(
-                telemetry
-            )
-            teleSpace()
-        }
+//        if (!loopTimeController.loopSaver) {
+//            reLocalizationSubsystem.telemetry(
+//                telemetry
+//            )
+//            teleSpace()
+//        }
 
 //        beamBreakSensor.telemetry(telemetry)
         teleSpace()

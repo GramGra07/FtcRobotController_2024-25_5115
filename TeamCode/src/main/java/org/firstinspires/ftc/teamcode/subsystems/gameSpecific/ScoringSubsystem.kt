@@ -8,8 +8,8 @@ import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.customHardware.servos.AxonServo
 import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.initMotor
-import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.calcFlipPose
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.initServo
+import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.setPose
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.PIDVals
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.ServoUtil
 
@@ -30,12 +30,12 @@ class ScoringSubsystem(ahwMap: HardwareMap) {
 
 
     enum class PitchState {
-        HIGH, LOW,
+                          HIGH,LOW,
         IDLE,
     }
 
     enum class TopPitchState {
-        HIGH, LOW,
+                             FORWARD,REVERSE,
         IDLE,
     }
 
@@ -47,26 +47,17 @@ class ScoringSubsystem(ahwMap: HardwareMap) {
 
 
     private var motorExtension: DcMotor
-//    private var motorRotation: DcMotor
-    private var ePower: Double = 0.0
-//    private var rPower: Double = 0.0
     private var extensionState: ExtensionState = ExtensionState.IDLE
-//    private var rotationState: RotationState = RotationState.IDLE
-    var usePIDF = true
+    var usePIDF = false
     private var extensionPIDF = PIDFController(0.0, 0.0, 0.0, 0.0)
-//    private var rotationPIDF = PIDFController(0.0, 0.0, 0.0, 0.0)
     private var eMin = -1.0
     private var eMax = 1.0
-//    private var rMin = -1.0
-//    private var rMax = 1.0
-//    var rotationMaxTicks = 1000
-//    var rotationMinTicks = 0
     var extensionMaxTicks = 1000
     var extensionMinTicks = 0
 
     private var claw: Servo
-    private var pitchServo: AxonServo
-    private var topPitchServo: Servo
+    private var pitchServo: Servo
+    private var topPitchServo: AxonServo
 
     private var clawState: ClawState = ClawState.IDLE
     private var pitchState: PitchState = PitchState.IDLE
@@ -74,48 +65,23 @@ class ScoringSubsystem(ahwMap: HardwareMap) {
 
     init {
         motorExtension = initMotor(ahwMap, "motorExtension", DcMotor.RunMode.RUN_USING_ENCODER)
-//        motorRotation = initMotor(ahwMap, "motorRotation", DcMotor.RunMode.RUN_USING_ENCODER)
 
         claw = initServo(ahwMap, "claw")
-        pitchServo = AxonServo(ahwMap, "pitchServo", 0.0)
-        topPitchServo = initServo(ahwMap, "topPitchServo")
-        updatePID()
+        pitchServo = initServo(ahwMap, "pitchServo")
+        topPitchServo = AxonServo(ahwMap, "topPitchServo",0.0)
+        update()
     }
-
-//    fun setPowerR(target: Double) {
-//        updatePID()
-//        when (rotationState) {
-//            RotationState.PID -> {
-//                rPower =
-//                    calculatePID(rotationPIDF, motorRotation.currentPosition.toDouble(), target)
-//            }
-//
-//            RotationState.MANUAL -> {
-//                rPower = Range.clip(
-//                    target,
-//                    rMin,
-//                    rMax
-//                )
-//            }
-//
-//            RotationState.STOPPED -> {
-//                rPower = 0.0
-//            }
-//
-//            RotationState.IDLE -> {}
-//        }
-//    }
 
     fun setPowerE(target: Double) {
         updatePID()
         when (extensionState) {
             ExtensionState.PID -> {
-                ePower =
+                motorExtension.power =
                     calculatePID(extensionPIDF, motorExtension.currentPosition.toDouble(), target)
             }
 
             ExtensionState.MANUAL -> {
-                ePower = Range.clip(
+                motorExtension.power = Range.clip(
                     target,
                     eMin,
                     eMax
@@ -123,68 +89,28 @@ class ScoringSubsystem(ahwMap: HardwareMap) {
             }
 
             ExtensionState.STOPPED -> {
-                ePower = 0.0
+                motorExtension.power = 0.0
             }
 
             ExtensionState.IDLE -> {}
         }
     }
-
-//    fun stopR() {
-//        updatePID()
-//        rPower = 0.0
-//        rotationState = RotationState.STOPPED
-//    }
 
     fun stopE() {
-        updatePID()
-        ePower = 0.0
+        motorExtension.power = 0.0
         extensionState = ExtensionState.STOPPED
-    }
-
-    private fun power() {
-        when (extensionState) {
-            ExtensionState.MANUAL,
-            ExtensionState.PID -> {
-                motorExtension.power = ePower
-            }
-
-            ExtensionState.STOPPED -> {
-                motorExtension.power = 0.0
-                idleE()
-            }
-
-            ExtensionState.IDLE -> {}
-        }
-
-//        when (rotationState) {
-//            RotationState.MANUAL,
-//            RotationState.PID -> {
-//                motorExtension.power = ePower
-//            }
-//
-//            RotationState.STOPPED -> {
-//                motorExtension.power = 0.0
-//                idleR()
-//            }
-//
-//            RotationState.IDLE -> {}
-//        }
     }
 
     fun update() {
         updateServos()
         updatePID()
-        power()
     }
 
     private fun updatePID() {
         if (usePIDF) {
             extensionState = ExtensionState.PID
-//            rotationState = RotationState.PID
         } else {
             extensionState = ExtensionState.MANUAL
-//            rotationState = RotationState.MANUAL
         }
         extensionPIDF.setPIDF(
             PIDVals.extensionPIDFCo.p,
@@ -192,13 +118,6 @@ class ScoringSubsystem(ahwMap: HardwareMap) {
             PIDVals.extensionPIDFCo.d,
             PIDVals.extensionPIDFCo.f
         )
-
-//        rotationPIDF.setPIDF(
-//            PIDVals.rotationPIDFCo.p,
-//            PIDVals.rotationPIDFCo.i,
-//            PIDVals.rotationPIDFCo.d,
-//            PIDVals.rotationPIDFCo.f
-//        )
     }
 
     private fun calculatePID(controller: PIDFController, current: Double, target: Double): Double {
@@ -210,19 +129,9 @@ class ScoringSubsystem(ahwMap: HardwareMap) {
         )
     }
 
-//    fun idleR() {
-//        rotationState = RotationState.IDLE
-//    }
-
-    fun idleE() {
-        extensionState = ExtensionState.IDLE
-    }
-
     fun telemetry(telemetry: Telemetry) {
         telemetry.addData("Scoring Subsystem", "")
         telemetry.addData("Extension Position", motorExtension.currentPosition)
-//        telemetry.addData("Rotation Position", motorRotation.currentPosition)
-        pitchServo.telemetry(telemetry)
     }
 
     fun openClaw() {
@@ -241,12 +150,14 @@ class ScoringSubsystem(ahwMap: HardwareMap) {
         pitchState = PitchState.LOW
     }
 
-    fun topPitchHigh() {
-        topPitchState = TopPitchState.HIGH
+    fun topPitchForward() {
+        topPitchState = TopPitchState.FORWARD
     }
-
-    fun topPitchLow() {
-        topPitchState = TopPitchState.LOW
+    fun topPitchReverse() {
+        topPitchState = TopPitchState.REVERSE
+    }
+    fun idleTopPitch(){
+        topPitchState = TopPitchState.IDLE
     }
 
     private fun updateServos() {
@@ -265,29 +176,29 @@ class ScoringSubsystem(ahwMap: HardwareMap) {
         }
         when (pitchState) {
             PitchState.HIGH -> {
-                pitchServo.calcFlipPose(70.0)
+                pitchServo.setPose(ServoUtil.pitchHigh)
                 pitchState = PitchState.IDLE
             }
 
             PitchState.LOW -> {
-                pitchServo.calcFlipPose(0.0)
+                pitchServo.setPose(ServoUtil.pitchLow)
                 pitchState = PitchState.IDLE
             }
 
             PitchState.IDLE -> {}
         }
         when (topPitchState) {
-            TopPitchState.HIGH -> {
-                topPitchServo.calcFlipPose(0.0)
-                topPitchState = TopPitchState.IDLE
+            TopPitchState.FORWARD -> {
+                topPitchServo.setPosition(ServoUtil.topPitchHigh)
             }
 
-            TopPitchState.LOW -> {
-                topPitchServo.calcFlipPose(0.0)
-                topPitchState = TopPitchState.IDLE
+            TopPitchState.REVERSE -> {
+                topPitchServo.setPosition(-ServoUtil.topPitchHigh)
             }
 
-            TopPitchState.IDLE -> {}
+            TopPitchState.IDLE -> {
+                topPitchServo.setPosition(ServoUtil.topPitchLow)
+            }
         }
     }
 }
