@@ -55,7 +55,7 @@ object Operators {
                 scoringSubsystem.topPitchForward()
             } else if (myOpMode.gamepad2.dpad_right) {
                 scoringSubsystem.topPitchReverse()
-            }else{
+            } else {
                 scoringSubsystem.idleTopPitch()
             }
 
@@ -87,7 +87,7 @@ object Operators {
                     -myOpMode.gamepad2.left_stick_y.toDouble()
                 )
             }
-            if (!intakeSubsystem.usePIDF){
+            if (!intakeSubsystem.usePIDF) {
                 intakeSubsystem.setPowerExtend(
                     -myOpMode.gamepad2.right_stick_y.toDouble()
                 )

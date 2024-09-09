@@ -2,8 +2,6 @@ package org.firstinspires.ftc.teamcode.subsystems
 
 import com.acmerobotics.roadrunner.Pose2d
 import com.acmerobotics.roadrunner.Vector2d
-import com.qualcomm.hardware.limelightvision.LLResultTypes
-import com.qualcomm.hardware.limelightvision.LLResultTypes.DetectorResult
 import com.qualcomm.hardware.limelightvision.Limelight3A
 import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.robotcore.external.Telemetry
@@ -24,7 +22,7 @@ class ReLocalizationSubsystem(ahwMap: HardwareMap) {
         return this.latestResult.botpose
     }
 
-    fun relocalize(localizerSubsystem: LocalizerSubsystem){
+    fun relocalize(localizerSubsystem: LocalizerSubsystem) {
         val pose = limelight3A.getPose()
         localizerSubsystem.setPose(
             Pose2d(
@@ -33,13 +31,16 @@ class ReLocalizationSubsystem(ahwMap: HardwareMap) {
             )
         )
     }
-    fun telemetry(telemetry: Telemetry){
+
+    fun telemetry(telemetry: Telemetry) {
         telemetry.addData("RELOCALIZATION", "")
         telemetry.addData("X", pose.position.x)
         telemetry.addData("Y", pose.position.y)
         val status = limelight3A.status
-        telemetry.addData ("LL", "Temp: %.1fC, CPU: %.1f%%, FPS: %d",
-        status.temp, status.cpu, status.fps.toInt())
+        telemetry.addData(
+            "LL", "Temp: %.1fC, CPU: %.1f%%, FPS: %d",
+            status.temp, status.cpu, status.fps.toInt()
+        )
         val detectorResults = limelight3A.latestResult.detectorResults
         for (dr in detectorResults) {
             telemetry.addData("Detector", "Class: %s, Area: %.2f", dr.className, dr.targetArea)

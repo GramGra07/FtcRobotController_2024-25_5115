@@ -8,7 +8,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.initMotor
-import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers
 import org.firstinspires.ftc.teamcode.utilClass.drivetrain.Drivetrain
 import org.firstinspires.ftc.teamcode.utilClass.drivetrain.DrivetrainType
@@ -22,7 +21,11 @@ import kotlin.math.sin
 
 
 //@Config
-class DriveSubsystem(ahwMap: HardwareMap, private var localizerSubsystem: LocalizerSubsystem) {
+class DriveSubsystem(
+    ahwMap: HardwareMap,
+    private var localizerSubsystem: LocalizerSubsystem,
+    private var dt: Drivetrain
+) {
     private var motorFrontLeft: DcMotorEx
     private var motorBackLeft: DcMotorEx
     private var motorFrontRight: DcMotorEx
@@ -53,8 +56,6 @@ class DriveSubsystem(ahwMap: HardwareMap, private var localizerSubsystem: Locali
                 DcMotor.RunMode.RUN_WITHOUT_ENCODER
             )
         motorBackLeft.direction = DcMotorSimple.Direction.REVERSE
-        if (CurrentDrivetrain.currentDrivetrain.name == Drivetrain.DrivetrainNames.OLD) motorFrontLeft.direction =
-            DcMotorSimple.Direction.REVERSE
     }
 
     private var frontRightPower = 0.0
@@ -69,7 +70,6 @@ class DriveSubsystem(ahwMap: HardwareMap, private var localizerSubsystem: Locali
     var leftStickY = 0.0
     var rightStickX = 0.0
     fun driveByGamepads(type: DriveType, myOpMode: OpMode) {
-        val drivetrain = CurrentDrivetrain.currentDrivetrain
         // Retrieve gamepad values
         leftStickX = myOpMode.gamepad1.left_stick_x.toDouble()
         leftStickY = -myOpMode.gamepad1.left_stick_y.toDouble()
@@ -77,7 +77,7 @@ class DriveSubsystem(ahwMap: HardwareMap, private var localizerSubsystem: Locali
 
         val slowPower = if (slowModeIsOn) VarConfig.slowMult else 1
 //
-        if (drivetrain.type == DrivetrainType.MECANUM) {
+        if (dt.type == DrivetrainType.MECANUM) {
             if (type == DriveType.FIELD_CENTRIC) {
                 val controllerAngle = Math.toDegrees(atan2(leftStickY, leftStickX))
                 val robotDegree = Math.toDegrees(localizerSubsystem.heading())
@@ -109,7 +109,7 @@ class DriveSubsystem(ahwMap: HardwareMap, private var localizerSubsystem: Locali
                 backLeftPower =
                     (leftStickY * abs(leftStickY) - leftStickX * abs(leftStickX) - turn) / slowPower
             }
-        } else if (drivetrain.type == DrivetrainType.TANK) {
+        } else if (dt.type == DrivetrainType.TANK) {
             frontLeftPower = Range.clip(leftStickY + rightStickX, -1.0, 1.0)
             backLeftPower = frontLeftPower
             frontRightPower = Range.clip(leftStickY - rightStickX, -1.0, 1.0)
@@ -169,8 +169,7 @@ class DriveSubsystem(ahwMap: HardwareMap, private var localizerSubsystem: Locali
 
     fun telemetry(telemetry: Telemetry) {
         telemetry.addData("DRIVE", "")
-        val drivetrain = CurrentDrivetrain.currentDrivetrain
-        drivetrain.telemetry(telemetry)
+        dt.telemetry(telemetry)
         if (reverse) {
             telemetry.addData("reversed", "")
         }

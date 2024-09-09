@@ -12,12 +12,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.VoltageSensor
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.Telemetry
-import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities
 import org.firstinspires.ftc.teamcode.customHardware.loopTime.PeriodicLoopTimeObject
 import org.firstinspires.ftc.teamcode.customHardware.loopTime.SpacedBooleanObject
-import org.firstinspires.ftc.teamcode.customHardware.sensorArray.SensorArray
-import org.firstinspires.ftc.teamcode.customHardware.sensors.BeamBreakSensor
-import org.firstinspires.ftc.teamcode.customHardware.servos.AxonServo
 import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.initLights
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.currentVoltage
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.initVSensor
@@ -26,8 +22,6 @@ import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.telemetry
 import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.LocalizerSubsystem
-import org.firstinspires.ftc.teamcode.subsystems.LocalizerSubsystem.LocalizationType
-import org.firstinspires.ftc.teamcode.subsystems.ReLocalizationSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.FastIntakeSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.LiftSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ScoringSubsystem
@@ -63,21 +57,20 @@ open class HardwareConfig(
 //    lateinit var reLocalizationSubsystem: ReLocalizationSubsystem
 
     companion object {
+        val dt = CurrentDrivetrain.currentDrivetrain
+
         //        fun isMainDrivetrain(): Boolean {
-//            return CurrentDrivetrain.currentDrivetrain.name == Drivetrain.DrivetrainNames.MAIN
+//            return dt.name == Drivetrain.DrivetrainNames.MAIN
 //        }
 //
         fun isOLDDrivetrain(): Boolean {
-            return CurrentDrivetrain.currentDrivetrain.name == Drivetrain.DrivetrainNames.OLD
+            return dt.name == Drivetrain.DrivetrainNames.OLD
         }
 
         lateinit var telemetry: Telemetry
         lateinit var dashboard: FtcDashboard
         lateinit var packet: TelemetryPacket
         val timer: ElapsedTime = ElapsedTime()
-
-        lateinit var axonServo: AxonServo
-        lateinit var beamBreakSensor: BeamBreakSensor
 
         var useFileWriter: Boolean = VarConfig.useFileWriter
         const val CAM1 = "Webcam 1"
@@ -89,7 +82,6 @@ open class HardwareConfig(
         lateinit var fileWriter: FileWriter
         lateinit var loopTimeController: LoopTimeController
 
-        lateinit var sensorArray: SensorArray
         var once = false
 
         private const val CURRENT_VERSION = "8.0.0"
@@ -102,11 +94,9 @@ open class HardwareConfig(
         auto: Boolean,
         startPose: Pose2d = Pose2d(0.0, 0.0, -Math.PI / 2)
     ) {
-        val drivetrain = CurrentDrivetrain.currentDrivetrain
-
         localizerSubsystem =
-            LocalizerSubsystem(ahwMap, startPose, LocalizationType.PPOTOS)
-        driveSubsystem = DriveSubsystem(ahwMap, localizerSubsystem)
+            LocalizerSubsystem(ahwMap, startPose)
+        driveSubsystem = DriveSubsystem(ahwMap, localizerSubsystem, dt)
 
         allHubs = ahwMap.getAll(LynxModule::class.java)
         for (hub in allHubs) {
@@ -152,7 +142,7 @@ open class HardwareConfig(
 
         telemetry.addData("Version", CURRENT_VERSION)
         telemetry.addData("Voltage", "%.2f", vSensor.currentVoltage())
-        drivetrain.telemetry(telemetry)
+        dt.telemetry(telemetry)
         if (vSensor.lowVoltage())
             telemetry.addData("lowBattery", "true")
 
@@ -164,7 +154,6 @@ open class HardwareConfig(
 
     //code to run all drive functions
     fun doBulk() {
-        localizerSubsystem.update(timer)
         bindDriverButtons(myOpMode, driveSubsystem, liftSubsystem)
         bindOtherButtons(
             myOpMode,
@@ -179,6 +168,8 @@ open class HardwareConfig(
             myOpMode,
         )
         driveSubsystem.update()
+
+        localizerSubsystem.update(timer)
 
         fastIntakeSubsystem.update(loopTimeController)
 

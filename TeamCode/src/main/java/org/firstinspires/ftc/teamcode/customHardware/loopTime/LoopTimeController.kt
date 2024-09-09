@@ -10,8 +10,8 @@ import org.firstinspires.ftc.teamcode.customHardware.loopTime.SpacedBooleanObjec
 class LoopTimeController(
     // loopTimeController.spacedObjectOf("name")!!.run(loopTimeController.currentTime)
     private val timer: ElapsedTime,
-    private val periodics: List<PeriodicLoopTimeObject>,
-    private val spacedBooleanObjects: List<SpacedBooleanObject>
+    private val periodics: List<PeriodicLoopTimeObject?>,
+    private val spacedBooleanObjects: List<SpacedBooleanObject?>
 ) {
     var loops: Int = 0
     private var lps = 0.0
@@ -31,14 +31,18 @@ class LoopTimeController(
     fun update() {
         currentTime = timer.seconds()
         doCalculations()
-        periodics.forEach { obj ->
-            obj.rr(currentTime)
-            if (obj.check(loops)) {
-                obj.run()
+        if (periodics.isNotEmpty()) {
+            periodics.forEach { obj ->
+                obj!!.rr(currentTime)
+                if (obj.check(loops)) {
+                    obj.run()
+                }
             }
         }
-        spacedBooleanObjects.forEach { obj ->
-            obj.update(currentTime)
+        if (spacedBooleanObjects.isNotEmpty()) {
+            spacedBooleanObjects.forEach { obj ->
+                obj!!.update(currentTime)
+            }
         }
     }
 
@@ -51,7 +55,7 @@ class LoopTimeController(
 
 
     fun spacedObjectOf(name: String): SpacedBooleanObject? {
-        return spacedBooleanObjects.find { it.name == name }
+        return spacedBooleanObjects.find { it!!.name == name }
     }
 
     companion object {

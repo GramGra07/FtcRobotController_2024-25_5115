@@ -17,17 +17,17 @@ Servo
 4 -
 5 -
 Digital
-0:1 - 
-2:3 - 
-4:5 - 
-6:7 - 
+0:1 -
+2:3 -
+4:5 -
+6:7 -
 I2C
 0 -
 1 - spark
 2 -
 3 -
 Analog
-0 - 
+0 -
 1 -
 2 -
 3 -
@@ -40,17 +40,17 @@ Motor
 0 - intakeMotor
 1 - motorExtension
 2 - motorRotation
-3 - 
+3 -
 Servo
 0 - intakePitch
 1 - claw
 2 - pitchServo
 3 - topPitchServo
-4 - 
+4 -
 5 -
 Digital
-0 - 
-1 - 
+0 -
+1 -
 2 -
 3 -
 4 -
@@ -60,10 +60,10 @@ Digital
 I2C
 0 - internal IMU BNO055:imu
 1 - Rev Color Sensor V3:intakeColor
-2 - 
+2 -
 3 -
 Analog
-0:1 - pitchServoEncoder - 
+0:1 - pitchServoEncoder -
 2:3 -
 
 RS485 - yes

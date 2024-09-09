@@ -13,9 +13,7 @@ import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.initColorSenso
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.telemetry
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.initServo
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.setPose
-import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ScoringSubsystem.ExtensionState
 import org.firstinspires.ftc.teamcode.subsystems.loopTime.LoopTimeController
-import org.firstinspires.ftc.teamcode.subsystems.loopTime.LoopTimeController.Companion.every
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.PIDVals
 
 class FastIntakeSubsystem(ahwMap: HardwareMap) {
@@ -39,7 +37,7 @@ class FastIntakeSubsystem(ahwMap: HardwareMap) {
     }
 
     enum class Color {
-        RED, BLUE, YELLOW,NONE
+        RED, BLUE, YELLOW, NONE
     }
 
     private var colorSensor: NormalizedColorSensor
@@ -49,7 +47,7 @@ class FastIntakeSubsystem(ahwMap: HardwareMap) {
     private var intakeMotor: DcMotor
     private var extendMotor: DcMotor
     private var extendState: ExtendState = ExtendState.IDLE
-    private var ePower:Double = 0.0
+    private var ePower: Double = 0.0
     private var eMax = 1.0
     private var eMin = -1.0
     val extendMaxTicks = 1000.0
@@ -68,6 +66,7 @@ class FastIntakeSubsystem(ahwMap: HardwareMap) {
         extendMotor = initMotor(ahwMap, "extendMotor", DcMotor.RunMode.RUN_USING_ENCODER)
         intakeServo = initServo(ahwMap, "intakePitch")
         colorSensor = initColorSensor(ahwMap, "intakeColor")
+        updatePID()
     }
 
     fun updateColor() {
@@ -88,8 +87,9 @@ class FastIntakeSubsystem(ahwMap: HardwareMap) {
         intakeState = IntakeState.REVERSED
         setIntakePower()
     }
+
     fun setPowerExtend(target: Double) {
-        updatePID()
+//        updatePID()
         when (extendState) {
             ExtendState.PID -> {
                 ePower =
@@ -111,10 +111,12 @@ class FastIntakeSubsystem(ahwMap: HardwareMap) {
             ExtendState.IDLE -> {}
         }
     }
+
     fun stopExtend() {
         extendState = ExtendState.STOPPED
     }
-    private fun setIntakePower(){
+
+    private fun setIntakePower() {
         when (intakeState) {
             IntakeState.RUNNING -> {
                 intakeMotor.power =
@@ -134,12 +136,13 @@ class FastIntakeSubsystem(ahwMap: HardwareMap) {
     }
 
     fun update(loopTimeController: LoopTimeController) {
-        updatePID()
+//        updatePID()
         updateServo()
 //        loopTimeController.every(1) {
 //            updateColor()
 //        }
     }
+
     private fun updatePID() {
         extendState = if (usePIDF) {
             ExtendState.PID

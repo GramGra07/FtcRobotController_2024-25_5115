@@ -12,6 +12,7 @@ class LiftSubsystem(ahwMap: HardwareMap) {
     enum class LiftState {
         PID_1,
         MANUAL_1,
+
         //        PID_2,
 //        MANUAL_2,
         STOPPED,
@@ -35,10 +36,11 @@ class LiftSubsystem(ahwMap: HardwareMap) {
     init {
         motorLift = initMotor(ahwMap, "liftMotor", DcMotor.RunMode.RUN_USING_ENCODER)
         idle()
+        updatePID()
     }
 
     fun setPower(target: Double) {
-        updatePID()
+//        updatePID()
         when (liftState) {
             LiftState.PID_1 -> {
                 lPower = calculatePID(liftPIDF, motorLift.currentPosition.toDouble(), target)
@@ -72,7 +74,7 @@ class LiftSubsystem(ahwMap: HardwareMap) {
     }
 
     fun stop() {
-        updatePID()
+//        updatePID()
         lPower = 0.0
         liftState = LiftState.STOPPED
     }
@@ -93,7 +95,7 @@ class LiftSubsystem(ahwMap: HardwareMap) {
     }
 
     fun update() {
-        updatePID()
+//        updatePID()
         power()
     }
 

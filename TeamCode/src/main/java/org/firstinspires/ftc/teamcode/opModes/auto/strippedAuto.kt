@@ -5,7 +5,6 @@ import org.firstinspires.ftc.teamcode.customHardware.AutoHardware
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.Alliance
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.StartSide
-import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.PROCESSORS
 
 class strippedAuto(private var alliance: Alliance, private var startSide: StartSide) :
     LinearOpMode() {

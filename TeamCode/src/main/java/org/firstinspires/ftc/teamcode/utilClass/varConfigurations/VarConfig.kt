@@ -22,7 +22,7 @@ object VarConfig {
     var useFileWriter = false
 
     @JvmField
-    var multipleDrivers = true
+    var multipleDrivers = false
 
 
     @JvmField

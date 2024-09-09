@@ -32,8 +32,8 @@ object ServoUtil {
     var pitchLow = 50.0
 
     @JvmField
-    var topPitchHigh = 150.0
+    var topPitchHigh = 100.0
 
     @JvmField
-    var topPitchLow = 105.0
+    var topPitchLow = 0.0
 }

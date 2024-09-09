@@ -30,12 +30,12 @@ class ScoringSubsystem(ahwMap: HardwareMap) {
 
 
     enum class PitchState {
-                          HIGH,LOW,
+        HIGH, LOW,
         IDLE,
     }
 
     enum class TopPitchState {
-                             FORWARD,REVERSE,
+        FORWARD, REVERSE,
         IDLE,
     }
 
@@ -68,12 +68,12 @@ class ScoringSubsystem(ahwMap: HardwareMap) {
 
         claw = initServo(ahwMap, "claw")
         pitchServo = initServo(ahwMap, "pitchServo")
-        topPitchServo = AxonServo(ahwMap, "topPitchServo",0.0)
-        update()
+        topPitchServo = AxonServo(ahwMap, "topPitchServo", 0.0)
+        updatePID()
     }
 
     fun setPowerE(target: Double) {
-        updatePID()
+//        updatePID()
         when (extensionState) {
             ExtensionState.PID -> {
                 motorExtension.power =
@@ -103,7 +103,7 @@ class ScoringSubsystem(ahwMap: HardwareMap) {
 
     fun update() {
         updateServos()
-        updatePID()
+//        updatePID()
     }
 
     private fun updatePID() {
@@ -153,10 +153,12 @@ class ScoringSubsystem(ahwMap: HardwareMap) {
     fun topPitchForward() {
         topPitchState = TopPitchState.FORWARD
     }
+
     fun topPitchReverse() {
         topPitchState = TopPitchState.REVERSE
     }
-    fun idleTopPitch(){
+
+    fun idleTopPitch() {
         topPitchState = TopPitchState.IDLE
     }
 
@@ -193,11 +195,10 @@ class ScoringSubsystem(ahwMap: HardwareMap) {
             }
 
             TopPitchState.REVERSE -> {
-                topPitchServo.setPosition(-ServoUtil.topPitchHigh)
+                topPitchServo.setPosition(ServoUtil.topPitchLow)
             }
 
             TopPitchState.IDLE -> {
-                topPitchServo.setPosition(ServoUtil.topPitchLow)
             }
         }
     }

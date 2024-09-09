@@ -5,6 +5,7 @@ import com.acmerobotics.dashboard.config.reflection.ReflectionConfig;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeRegistrar;
+
 import org.firstinspires.ftc.robotcore.internal.opmode.OpModeMeta;
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.Alliance;
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.StartSide;
@@ -27,8 +28,8 @@ import org.firstinspires.ftc.teamcode.opModes.tuners.OTOS.OTOSLinearScalarTuner;
 import org.firstinspires.ftc.teamcode.opModes.tuners.OTOS.OTOSOffsetAutoTuner;
 import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles;
 
-import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public final class bulkAutoMaker {
@@ -73,7 +74,7 @@ public final class bulkAutoMaker {
     }
 
     private String buildName(Pair<Alliance, StartSide> options) {
-        return options.first.toString().substring(0, 1) + options.second.toString().substring(0, 1) + "Auto";
+        return options.first.toString().charAt(0) + options.second.toString().charAt(0) + "Auto";
     }
 
     @OpModeRegistrar
@@ -116,7 +117,7 @@ public final class bulkAutoMaker {
             }
         }
         FtcDashboard.getInstance().withConfigRoot(configRoot -> {
-            for (Class<?> c : Arrays.asList(
+            for (Class<?> c : Collections.singletonList(
                     Circle.class
             )) {
                 configRoot.putVariable(c.getSimpleName(), ReflectionConfig.createVariableFromClass(c));

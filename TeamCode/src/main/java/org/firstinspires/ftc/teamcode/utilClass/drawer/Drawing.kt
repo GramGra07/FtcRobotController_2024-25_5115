@@ -3,11 +3,7 @@ package org.firstinspires.ftc.teamcode.utilClass.drawer
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS.Pose2D
-import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.AT.ATLocations
-import org.firstinspires.ftc.teamcode.subsystems.AvoidanceSubsystem.Companion.fields
-import org.firstinspires.ftc.teamcode.subsystems.AvoidanceSubsystem.Companion.rad
 import org.firstinspires.ftc.teamcode.subsystems.LocalizerSubsystem
-import org.firstinspires.ftc.teamcode.subsystems.LocalizerSubsystem.LocalizationType
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -41,10 +37,7 @@ class Drawing {
     private fun drawLocalization(packet: TelemetryPacket, localizerSubsystem: LocalizerSubsystem) {
         val fieldOverlay = packet.fieldOverlay()
         val roboRad = 8.0
-        val color = when (localizerSubsystem.type) {
-            LocalizationType.PP -> "green"
-            LocalizationType.PPOTOS -> "purple"
-        }
+        val color = "purple"
         val l = localizerSubsystem.pose()
         val h2 = l.heading.toDouble()
         val half2 = roboRad / 2
