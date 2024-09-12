@@ -9,10 +9,12 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig.Companion.lights
+import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.Alliance
 import org.firstinspires.ftc.teamcode.customHardware.camera.Camera
 import org.firstinspires.ftc.teamcode.customHardware.camera.CameraType
 import org.firstinspires.ftc.teamcode.customHardware.camera.LensIntrinsics
 import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.setPatternCo
+import org.firstinspires.ftc.teamcode.vision.TargetLock
 import org.firstinspires.ftc.teamcode.vision.VPObjectDetect
 import org.firstinspires.ftc.vision.VisionPortal
 import org.firstinspires.ftc.vision.VisionProcessor
@@ -37,23 +39,28 @@ object CameraUtilities {
             .stopCameraStream()
     }
 
-    var mainCamera: Camera = setupCameras(CameraType.ARDU_CAM)
+    private var mainCamera: Camera = setupCameras(CameraType.ARDU_CAM)
 
     private var runningProcessors: MutableList<VisionProcessor> =
         emptyList<VisionProcessor>().toMutableList()
 
     private lateinit var visionPortal: VisionPortal
-    lateinit var aprilTag: AprilTagProcessor
+    private lateinit var aprilTag: AprilTagProcessor
     private lateinit var objProcessor: VPObjectDetect
     private lateinit var pubProcessor: MeanColorOfAreaDetector
+    private lateinit var targetLockProcessor:TargetLock
     fun initializeProcessor(
+        alliance:Alliance,
         processor: PROCESSORS?,
         ahwMap: HardwareMap,
         camera: String,
         ftcDashboard: Boolean
     ): Boolean {
         when (processor) {
-            null,
+            PROCESSORS.TARGET_LOCK -> {
+                targetLockProcessor = TargetLock(alliance)
+                runningProcessors.add(targetLockProcessor)
+            }
             PROCESSORS.APRIL_TAG -> {
                 aprilTag =
                     AprilTagProcessor.Builder() // The following default settings are available to un-comment and edit as needed.
@@ -101,6 +108,7 @@ object CameraUtilities {
                 )
                 runningProcessors.add(pubProcessor)
             }
+            else -> return false
         }
         if (processor != null) {
             val builder = VisionPortal.Builder()
@@ -120,6 +128,10 @@ object CameraUtilities {
 
                 PROCESSORS.PUB_TEST -> {
                     builder.addProcessor(pubProcessor)
+                }
+
+                PROCESSORS.TARGET_LOCK -> {
+                    builder.addProcessor(targetLockProcessor)
                 }
             }
             visionPortal = builder.build()

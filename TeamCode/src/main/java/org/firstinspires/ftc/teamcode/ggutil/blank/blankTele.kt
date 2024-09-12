@@ -4,11 +4,14 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
+import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
+import org.firstinspires.ftc.teamcode.storage.GameStorage
+import org.firstinspires.ftc.teamcode.storage.PoseStorage
 
 @TeleOp
 @Disabled
 class blankTele : LinearOpMode() {
-    var robot = HardwareConfig(this, false)
+    var robot = HardwareConfig(this, false, StartLocation())
 
     @Throws(InterruptedException::class)
     override fun runOpMode() {

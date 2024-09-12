@@ -12,6 +12,10 @@ import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.VoltageSensor
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.Telemetry
+import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
+import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.Alliance
+import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities.initializeProcessor
+import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.PROCESSORS
 import org.firstinspires.ftc.teamcode.customHardware.loopTime.PeriodicLoopTimeObject
 import org.firstinspires.ftc.teamcode.customHardware.loopTime.SpacedBooleanObject
 import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.initLights
@@ -20,6 +24,7 @@ import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.initVSensor
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.lowVoltage
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.telemetry
 import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain
+import org.firstinspires.ftc.teamcode.storage.GameStorage
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.LocalizerSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.FastIntakeSubsystem
@@ -41,11 +46,12 @@ import java.io.FileWriter
 open class HardwareConfig(
     private val myOpMode: LinearOpMode,
     auto: Boolean,
+    startLocation: StartLocation,
     ahwMap: HardwareMap = myOpMode.hardwareMap
 ) {
 
     init {
-        initRobot(ahwMap, auto)
+        initRobot(ahwMap, auto, startLocation)
     }
 
     //    lateinit var sparkFunOTOS: SparkFunOTOS
@@ -92,10 +98,10 @@ open class HardwareConfig(
     fun initRobot(
         ahwMap: HardwareMap,
         auto: Boolean,
-        startPose: Pose2d = Pose2d(0.0, 0.0, -Math.PI / 2)
+        startLocation: StartLocation
     ) {
         localizerSubsystem =
-            LocalizerSubsystem(ahwMap, startPose)
+            LocalizerSubsystem(ahwMap, startLocation.startPose)
         driveSubsystem = DriveSubsystem(ahwMap, localizerSubsystem, dt)
 
         allHubs = ahwMap.getAll(LynxModule::class.java)
@@ -122,6 +128,8 @@ open class HardwareConfig(
         packet = TelemetryPacket()
         dashboard = FtcDashboard.getInstance()
         once = false
+
+        initializeProcessor(startLocation.alliance,PROCESSORS.TARGET_LOCK,ahwMap, CAM1,true)
 
         if (useFileWriter) {
             val file = String.format(

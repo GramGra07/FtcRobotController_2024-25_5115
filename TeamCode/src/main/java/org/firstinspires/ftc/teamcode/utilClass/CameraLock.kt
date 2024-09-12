@@ -7,7 +7,7 @@ import org.opencv.core.Point
 import org.opencv.core.Scalar
 import org.opencv.imgproc.Imgproc
 
-class CameraLock(var color:FastIntakeSubsystem.Color, var center:Point){
+class CameraLock(var color:FastIntakeSubsystem.Color, var center:Point, var angle:Double){
     fun draw(frame: Mat){
         cross(frame,center,10,Scalar(255.0,0.0,0.0))
         Imgproc.circle(frame,center,10,Scalar(255.0,0.0,0.0),1)

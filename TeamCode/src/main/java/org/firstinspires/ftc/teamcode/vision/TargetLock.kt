@@ -25,7 +25,7 @@ import kotlin.math.pow
 import kotlin.math.sqrt
 
 class TargetLock(private var alliance: Alliance) : VisionProcessor,
-    CameraStreamSource { //var alliance: Alliance
+    CameraStreamSource {
     private val lastFrame = AtomicReference(Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565))
     private var ycrcbMat = Mat()
 
@@ -98,7 +98,7 @@ class TargetLock(private var alliance: Alliance) : VisionProcessor,
             Imgproc.rectangle(frame, boundRect[i]!!.tl(), boundRect[i]!!.br(), c, 2)
         }
 
-        var closestLock: CameraLock = CameraLock(FastIntakeSubsystem.Color.NONE,Point(0.0,0.0))
+        var closestLock = CameraLock(FastIntakeSubsystem.Color.NONE,Point(0.0,0.0),0.0)
         var closestDistance = 10000.0
         for (center in centers) {
             val dist = sqrt(
@@ -106,10 +106,11 @@ class TargetLock(private var alliance: Alliance) : VisionProcessor,
             )
             if (dist < closestDistance) {
                 closestDistance = dist
-                closestLock = CameraLock(FastIntakeSubsystem.Color.YELLOW,Point(center.x, center.y))
+                closestLock = CameraLock(FastIntakeSubsystem.Color.YELLOW,Point(center.x, center.y),0.0) //TODO
             }
         }
-        closestLock.draw(frame)
+        cameraLock = closestLock
+        cameraLock.draw(frame)
 
         edges.release()
         yellow.release()
@@ -139,7 +140,6 @@ class TargetLock(private var alliance: Alliance) : VisionProcessor,
     }
 
     companion object {
-        var pointsX = intArrayOf(570, 680, 120, 230)
-        var pointsY = intArrayOf(70, 170, 50, 150)
+        var cameraLock:CameraLock = CameraLock(FastIntakeSubsystem.Color.NONE,Point(0.0,0.0),0.0)
     }
 }

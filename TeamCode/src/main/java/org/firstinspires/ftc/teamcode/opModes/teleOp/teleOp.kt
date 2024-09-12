@@ -1,8 +1,13 @@
 package org.firstinspires.ftc.teamcode.opModes.teleOp
 
+import com.acmerobotics.roadrunner.Pose2d
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
+import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
+import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.Alliance
+import org.firstinspires.ftc.teamcode.storage.GameStorage
+import org.firstinspires.ftc.teamcode.storage.PoseStorage
 import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles
 
 @TeleOp(group = GroupingTitles.tele) //@Disabled//disabling the opmode
@@ -10,7 +15,7 @@ import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles
 class teleOp : LinearOpMode() {
     //declaring the class
     override fun runOpMode() { //if opmode is started
-        val robot = HardwareConfig(this, false)
+        val robot = HardwareConfig(this, false, StartLocation(GameStorage.alliance,PoseStorage.currentPose))
         waitForStart()
         robot.once() //runs once
         while (opModeIsActive()) { //while the op mode is active

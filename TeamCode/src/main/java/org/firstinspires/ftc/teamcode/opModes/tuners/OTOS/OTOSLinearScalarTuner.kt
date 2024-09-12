@@ -4,6 +4,9 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
+import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
+import org.firstinspires.ftc.teamcode.storage.GameStorage
+import org.firstinspires.ftc.teamcode.storage.PoseStorage
 import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles
 
 @TeleOp(group = GroupingTitles.TESTING)
@@ -14,7 +17,7 @@ class OTOSLinearScalarTuner : LinearOpMode() {
     var distance = 30
     private var deltaDistance = 0.0
     override fun runOpMode() { //if opmode is started
-        val robot = HardwareConfig(this, false)
+        val robot = HardwareConfig(this, false, StartLocation(GameStorage.alliance, PoseStorage.currentPose))
         telemetry.addData(
             "Move the robot forward 30 inches",
             "It will tell you the correct linear scalar"
