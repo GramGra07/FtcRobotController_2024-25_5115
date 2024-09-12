@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.vision
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.robotcore.external.function.Consumer
 import org.firstinspires.ftc.robotcore.external.function.Continuation
 import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource
@@ -24,7 +25,7 @@ import java.util.concurrent.atomic.AtomicReference
 import kotlin.math.pow
 import kotlin.math.sqrt
 
-class TargetLock(private var alliance: Alliance) : VisionProcessor,
+class TargetLock(private var alliance: Alliance, private var fov:Double = 180.0) : VisionProcessor,
     CameraStreamSource {
     private val lastFrame = AtomicReference(Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565))
     private var ycrcbMat = Mat()
@@ -99,14 +100,15 @@ class TargetLock(private var alliance: Alliance) : VisionProcessor,
         }
 
         var closestLock = CameraLock(FastIntakeSubsystem.Color.NONE,Point(0.0,0.0),0.0)
-        var closestDistance = 10000.0
+        var closestDistance = Double.POSITIVE_INFINITY
         for (center in centers) {
             val dist = sqrt(
                 ((frame.width() / 2 - center!!.x).pow(2)) + (frame.height() / 2 - center.y).pow(2)
             )
             if (dist < closestDistance) {
                 closestDistance = dist
-                closestLock = CameraLock(FastIntakeSubsystem.Color.YELLOW,Point(center.x, center.y),0.0) //TODO
+                val angle = (fov/frame.width())*center.x
+                closestLock = CameraLock(FastIntakeSubsystem.Color.YELLOW,Point(center.x, center.y),angle)
             }
         }
         cameraLock = closestLock
@@ -141,5 +143,8 @@ class TargetLock(private var alliance: Alliance) : VisionProcessor,
 
     companion object {
         var cameraLock:CameraLock = CameraLock(FastIntakeSubsystem.Color.NONE,Point(0.0,0.0),0.0)
+        fun telemetry(telemetry: Telemetry){
+            telemetry.addData("Camera Lock", cameraLock.toString())
+        }
     }
 }

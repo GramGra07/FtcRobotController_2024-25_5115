@@ -49,4 +49,7 @@ object PoseExtensions {
     fun SparkFunOTOS.Pose2D.toPoint(): Point {
         return Point(this.x, this.y)
     }
+    fun org.opencv.core.Point.toString(): String {
+        return "x: ${this.x}, y: ${this.y}"
+    }
 }

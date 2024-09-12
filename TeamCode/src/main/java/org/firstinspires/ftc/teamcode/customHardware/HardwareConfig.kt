@@ -40,6 +40,7 @@ import org.firstinspires.ftc.teamcode.utilClass.FileWriterFTC.setUpFile
 import org.firstinspires.ftc.teamcode.utilClass.drawer.Drawing
 import org.firstinspires.ftc.teamcode.utilClass.drivetrain.Drivetrain
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.VarConfig
+import org.firstinspires.ftc.teamcode.vision.TargetLock
 import java.io.FileWriter
 
 
@@ -250,6 +251,7 @@ open class HardwareConfig(
 
         telemetry.addData("Version", CURRENT_VERSION)
         telemetry.update()
+        TargetLock.telemetry(telemetry)
         if (!loopTimeController.loopSaver) Drawing.drawAll(packet, dashboard, localizerSubsystem)
     }
 
