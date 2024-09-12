@@ -44,7 +44,7 @@ class AvoidanceSubsystem {
     }
 
 
-    var powers: Map<String, Double?>? = null
+    private var powers: Map<String, Double?>? = null
     private var currentAvoidanceTypes: AvoidanceTypes = AvoidanceTypes.OFF
 
     fun update(
