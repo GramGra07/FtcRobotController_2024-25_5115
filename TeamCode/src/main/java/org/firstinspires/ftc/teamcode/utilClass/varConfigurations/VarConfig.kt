@@ -19,9 +19,6 @@ object VarConfig {
     var slowMult = 3
 
     @JvmField
-    var useFileWriter = false
-
-    @JvmField
     var multipleDrivers = false
 
 

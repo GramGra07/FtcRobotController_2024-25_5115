@@ -41,7 +41,7 @@ class Drivetrain(
         var drivetrains: MutableList<Drivetrain> = mutableListOf(
             Drivetrain(
                 DrivetrainNames.MAIN,
-                DrivetrainType.MECANUM,
+                DrivetrainType.TANK,
                 DrivePARAMS(
                     783.0500500149055,
                     1678.229840435962,
@@ -123,7 +123,7 @@ class Drivetrain(
                     1.0,
                     1.011
                 ),
-                mutableListOf(Permission.RELOCALIZATION),
+                mutableListOf(),
             ),
             Drivetrain(
                 DrivetrainNames.OLD,
@@ -209,14 +209,7 @@ class Drivetrain(
                     1.0,
                     1.0
                 ),
-                mutableListOf(
-                    Permission.EXTRAS,
-                    Permission.EXTENDO,
-                    Permission.CLAW,
-                    Permission.ENDGAME,
-                    Permission.RELOCALIZATION,
-                    Permission.LIGHTS
-                ),
+                mutableListOf(),
             ),
         )
     }

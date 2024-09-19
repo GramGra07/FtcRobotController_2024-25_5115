@@ -36,7 +36,6 @@ import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers.currentField
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers.switchProfile
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Operators.bindOtherButtons
 import org.firstinspires.ftc.teamcode.subsystems.loopTime.LoopTimeController
-import org.firstinspires.ftc.teamcode.utilClass.FileWriterFTC.setUpFile
 import org.firstinspires.ftc.teamcode.utilClass.drawer.Drawing
 import org.firstinspires.ftc.teamcode.utilClass.drivetrain.Drivetrain
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.VarConfig
@@ -79,14 +78,12 @@ open class HardwareConfig(
         lateinit var packet: TelemetryPacket
         val timer: ElapsedTime = ElapsedTime()
 
-        var useFileWriter: Boolean = VarConfig.useFileWriter
         const val CAM1 = "Webcam 1"
         const val CAM2 = "Webcam 2"
         lateinit var lights: RevBlinkinLedDriver
         var lastTimeOpen = 0.0
 
         lateinit var vSensor: VoltageSensor
-        lateinit var fileWriter: FileWriter
         lateinit var loopTimeController: LoopTimeController
 
         var once = false
@@ -131,15 +128,6 @@ open class HardwareConfig(
         once = false
 
         initializeProcessor(startLocation.alliance,PROCESSORS.TARGET_LOCK,ahwMap, CAM1,true)
-
-        if (useFileWriter) {
-            val file = String.format(
-                "%s/FIRST/matchlogs/log.txt",
-                Environment.getExternalStorageDirectory().absolutePath
-            )
-            fileWriter = FileWriter(file, true)
-            setUpFile(fileWriter)
-        }
 
         if (!auto) {
             val loopTimePeriodics = emptyList<PeriodicLoopTimeObject>()
@@ -237,17 +225,6 @@ open class HardwareConfig(
         teleSpace()
         liftSubsystem.telemetry(telemetry)
         teleSpace()
-
-//        if (!loopTimeController.loopSaver) {
-//            reLocalizationSubsystem.telemetry(
-//                telemetry
-//            )
-//            teleSpace()
-//        }
-
-//        beamBreakSensor.telemetry(telemetry)
-        teleSpace()
-
 
         telemetry.addData("Version", CURRENT_VERSION)
         telemetry.update()
