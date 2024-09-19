@@ -9,7 +9,6 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.CustomFiltered
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.CustomPIDFCoefficients
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.KalmanFilterParameters
 import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain
-import org.firstinspires.ftc.teamcode.utilClass.objects.Permission
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.VarConfig
 
 class Drivetrain(
@@ -19,7 +18,6 @@ class Drivetrain(
     var pedroPathingPARAMS: PedroPathingPARAMS,
     var driveConfigPARAMS: DriveConfigPARAMS,
     var sparkFunOTOSParams: SparkFunOTOSParams,
-    var permissions: MutableList<Permission>,
 ) {
     fun telemetry(telemetry: Telemetry) {
         CurrentDrivetrain.currentDrivetrain.let {
@@ -123,7 +121,6 @@ class Drivetrain(
                     1.0,
                     1.011
                 ),
-                mutableListOf(),
             ),
             Drivetrain(
                 DrivetrainNames.OLD,
@@ -209,7 +206,6 @@ class Drivetrain(
                     1.0,
                     1.0
                 ),
-                mutableListOf(),
             ),
         )
     }
