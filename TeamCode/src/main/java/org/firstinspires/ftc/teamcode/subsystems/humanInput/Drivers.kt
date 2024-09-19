@@ -15,7 +15,7 @@ object Drivers {
 
     private var drivers = mutableListOf(
         Driver(AllDrivers.Camden, AvoidanceSubsystem.AvoidanceTypes.OFF, DriveType.ROBOT_CENTRIC),
-        Driver(AllDrivers.Grady, AvoidanceSubsystem.AvoidanceTypes.OFF, DriveType.FIELD_CENTRIC),
+        Driver(AllDrivers.Grady, AvoidanceSubsystem.AvoidanceTypes.OFF, DriveType.ROBOT_CENTRIC),
         Driver(AllDrivers.Michael, AvoidanceSubsystem.AvoidanceTypes.OFF, DriveType.ROBOT_CENTRIC),
         Driver(AllDrivers.Graden, AvoidanceSubsystem.AvoidanceTypes.OFF, DriveType.ROBOT_CENTRIC),
         Driver(AllDrivers.Delaney, AvoidanceSubsystem.AvoidanceTypes.OFF, DriveType.ROBOT_CENTRIC),
@@ -75,9 +75,9 @@ object Drivers {
                 driveSubsystem.slowModeIsOn = !driveSubsystem.slowModeIsOn
             }
 
-            if (myOpMode.gamepad1.triangle) {
+            if (myOpMode.gamepad1.buttonJustPressed(GamepadExtensions.PushButtons.TRIANGLE, 1)) {
                 liftSubsystem.setPower(liftSubsystem.maxLiftExtension)
-            } else if (myOpMode.gamepad1.circle) {
+            } else if (myOpMode.gamepad1.buttonJustPressed(GamepadExtensions.PushButtons.CROSS, 1)) {
                 liftSubsystem.setPower(liftSubsystem.minLiftExtension)
             } else {
                 liftSubsystem.stop()

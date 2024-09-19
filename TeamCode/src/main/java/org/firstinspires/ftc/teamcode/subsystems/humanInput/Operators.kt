@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.subsystems.humanInput
 
 import com.acmerobotics.dashboard.config.Config
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
+import org.firstinspires.ftc.teamcode.extensions.GamepadExtensions
+import org.firstinspires.ftc.teamcode.extensions.GamepadExtensions.buttonJustPressed
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.FastIntakeSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ScoringSubsystem
 
@@ -33,27 +35,27 @@ object Operators {
                 intakeSubsystem.turnOffIntake()
             }
 
-            if (myOpMode.gamepad2.square) {
+            if (myOpMode.gamepad2.buttonJustPressed(GamepadExtensions.PushButtons.SQUARE,2)) {
                 intakeSubsystem.pitchHigh()
-            } else if (myOpMode.gamepad2.circle) {
+            } else if (myOpMode.gamepad2.buttonJustPressed(GamepadExtensions.PushButtons.CIRCLE,2)) {
                 intakeSubsystem.pitchLow()
             }
 
-            if (myOpMode.gamepad2.right_bumper) {
+            if (myOpMode.gamepad2.buttonJustPressed(GamepadExtensions.PushButtons.RIGHT_BUMPER,2)) {
                 scoringSubsystem.openClaw()
             }
-            if (myOpMode.gamepad2.left_bumper) {
+            if (myOpMode.gamepad2.buttonJustPressed(GamepadExtensions.PushButtons.LEFT_BUMPER,2)) {
                 scoringSubsystem.closeClaw()
             }
 
-            if (myOpMode.gamepad2.dpad_left) {
+            if (myOpMode.gamepad2.buttonJustPressed(GamepadExtensions.PushButtons.DPAD_DOWN,2)) {
                 scoringSubsystem.pitchHigh()
-            } else if (myOpMode.gamepad2.dpad_up) {
+            } else if (myOpMode.gamepad2.buttonJustPressed(GamepadExtensions.PushButtons.DPAD_UP,2)) {
                 scoringSubsystem.pitchLow()
             }
-            if (myOpMode.gamepad2.dpad_down) {
+            if (myOpMode.gamepad2.buttonJustPressed(GamepadExtensions.PushButtons.DPAD_LEFT,2)) {
                 scoringSubsystem.topPitchForward()
-            } else if (myOpMode.gamepad2.dpad_right) {
+            } else if (myOpMode.gamepad2.buttonJustPressed(GamepadExtensions.PushButtons.DPAD_RIGHT,2)) {
                 scoringSubsystem.topPitchReverse()
             } else {
                 scoringSubsystem.idleTopPitch()
