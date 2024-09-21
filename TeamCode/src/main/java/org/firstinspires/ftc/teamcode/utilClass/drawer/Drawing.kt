@@ -8,15 +8,6 @@ import kotlin.math.cos
 import kotlin.math.sin
 
 class Drawing {
-    fun drawAll(
-        packet: TelemetryPacket,
-        dashboard: FtcDashboard,
-        localizerSubsystem: LocalizerSubsystem
-    ) {
-//        drawAvoidance(packet)
-        drawLocalization(packet, localizerSubsystem)
-        dashboard.sendTelemetryPacket(packet)
-    }
 
 //    private fun drawReLocalizer(packet: TelemetryPacket) {
 //        val fieldOverlay = packet.fieldOverlay()
@@ -34,7 +25,7 @@ class Drawing {
 //
 //    }
 
-    private fun drawLocalization(packet: TelemetryPacket, localizerSubsystem: LocalizerSubsystem) {
+    fun drawLocalization(packet: TelemetryPacket, localizerSubsystem: LocalizerSubsystem) {
         val fieldOverlay = packet.fieldOverlay()
         val roboRad = 8.0
         val color = "purple"
@@ -56,10 +47,12 @@ class Drawing {
     companion object {
         fun drawAll(
             packet: TelemetryPacket,
-            dashboard: FtcDashboard?,
+            dashboard: FtcDashboard,
             localizerSubsystem: LocalizerSubsystem
         ) {
-            Drawing().drawAll(packet, dashboard!!, localizerSubsystem)
+
+            Drawing().drawLocalization(packet, localizerSubsystem)
+            dashboard.sendTelemetryPacket(packet)
         }
     }
 }
