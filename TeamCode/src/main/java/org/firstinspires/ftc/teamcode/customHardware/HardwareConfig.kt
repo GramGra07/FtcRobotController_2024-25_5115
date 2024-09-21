@@ -1,10 +1,8 @@
 package org.firstinspires.ftc.teamcode.customHardware
 
-import android.os.Environment
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
-import com.acmerobotics.roadrunner.Pose2d
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
@@ -13,7 +11,6 @@ import com.qualcomm.robotcore.hardware.VoltageSensor
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
-import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.Alliance
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities.initializeProcessor
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.PROCESSORS
 import org.firstinspires.ftc.teamcode.customHardware.loopTime.PeriodicLoopTimeObject
@@ -24,7 +21,6 @@ import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.initVSensor
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.lowVoltage
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.telemetry
 import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain
-import org.firstinspires.ftc.teamcode.storage.GameStorage
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.LocalizerSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.FastIntakeSubsystem
@@ -35,12 +31,12 @@ import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers.bindDriverBu
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers.currentFieldCentric
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers.switchProfile
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Operators.bindOtherButtons
-import org.firstinspires.ftc.teamcode.subsystems.loopTime.LoopTimeController
+import org.firstinspires.ftc.teamcode.customHardware.loopTime.LoopTimeController
+import org.firstinspires.ftc.teamcode.customHardware.loopTime.LoopTimeController.Companion.every
 import org.firstinspires.ftc.teamcode.utilClass.drawer.Drawing
 import org.firstinspires.ftc.teamcode.utilClass.drivetrain.Drivetrain
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.VarConfig
 import org.firstinspires.ftc.teamcode.vision.TargetLock
-import java.io.FileWriter
 
 
 open class HardwareConfig(
@@ -65,10 +61,6 @@ open class HardwareConfig(
     companion object {
         val dt = CurrentDrivetrain.currentDrivetrain
 
-        //        fun isMainDrivetrain(): Boolean {
-//            return dt.name == Drivetrain.DrivetrainNames.MAIN
-//        }
-//
         fun isOLDDrivetrain(): Boolean {
             return dt.name == Drivetrain.DrivetrainNames.OLD
         }
@@ -104,7 +96,8 @@ open class HardwareConfig(
 
         allHubs = ahwMap.getAll(LynxModule::class.java)
         for (hub in allHubs) {
-            hub.bulkCachingMode = LynxModule.BulkCachingMode.MANUAL
+            hub.setConstant(15026849)
+            hub.bulkCachingMode = LynxModule.BulkCachingMode.AUTO
         }
 
         vSensor =
@@ -130,11 +123,7 @@ open class HardwareConfig(
         initializeProcessor(startLocation.alliance,PROCESSORS.TARGET_LOCK,ahwMap, CAM1,true)
 
         if (!auto) {
-            val loopTimePeriodics = emptyList<PeriodicLoopTimeObject>()
-            val spacedObjects: List<SpacedBooleanObject> = emptyList()
-            loopTimeController = LoopTimeController(
-                timer, loopTimePeriodics, spacedObjects
-            )
+            loopTimeController = LoopTimeController(timer)
         }
 
         telemetry.addData("Version", CURRENT_VERSION)
@@ -179,9 +168,10 @@ open class HardwareConfig(
 //            localizerSubsystem
 //        )
 //        }
-
-        buildTelemetry() //makes telemetry
-        lynxModules()
+        loopTimeController.every(3){
+            buildTelemetry() //makes telemetry
+        }
+//        lynxModules()
         loopTimeController.update()
     }
 

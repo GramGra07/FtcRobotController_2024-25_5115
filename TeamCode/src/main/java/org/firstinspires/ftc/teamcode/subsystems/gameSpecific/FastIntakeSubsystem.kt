@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.initColorSenso
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.telemetry
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.initServo
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.setPose
-import org.firstinspires.ftc.teamcode.subsystems.loopTime.LoopTimeController
+import org.firstinspires.ftc.teamcode.customHardware.loopTime.LoopTimeController
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.PIDVals
 
 class FastIntakeSubsystem(ahwMap: HardwareMap) {

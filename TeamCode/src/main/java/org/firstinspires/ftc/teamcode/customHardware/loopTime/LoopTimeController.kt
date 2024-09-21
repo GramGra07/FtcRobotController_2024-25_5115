@@ -1,17 +1,15 @@
-package org.firstinspires.ftc.teamcode.subsystems.loopTime
+package org.firstinspires.ftc.teamcode.customHardware.loopTime
 
 import com.acmerobotics.dashboard.config.Config
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.Telemetry
-import org.firstinspires.ftc.teamcode.customHardware.loopTime.PeriodicLoopTimeObject
-import org.firstinspires.ftc.teamcode.customHardware.loopTime.SpacedBooleanObject
 
 @Config
 class LoopTimeController(
     // loopTimeController.spacedObjectOf("name")!!.run(loopTimeController.currentTime)
     private val timer: ElapsedTime,
-    private val periodics: List<PeriodicLoopTimeObject?>,
-    private val spacedBooleanObjects: List<SpacedBooleanObject?>
+    private val periodics: List<PeriodicLoopTimeObject?>? = null,
+    private val spacedBooleanObjects: List<SpacedBooleanObject?>? = null
 ) {
     var loops: Int = 0
     private var lps = 0.0
@@ -31,18 +29,14 @@ class LoopTimeController(
     fun update() {
         currentTime = timer.seconds()
         doCalculations()
-        if (periodics.isNotEmpty()) {
-            periodics.forEach { obj ->
-                obj!!.rr(currentTime)
-                if (obj.check(loops)) {
-                    obj.run()
-                }
+        periodics?.forEach { obj ->
+            obj!!.rr(currentTime)
+            if (obj.check(loops)) {
+                obj.run()
             }
         }
-        if (spacedBooleanObjects.isNotEmpty()) {
-            spacedBooleanObjects.forEach { obj ->
-                obj!!.update(currentTime)
-            }
+        spacedBooleanObjects?.forEach { obj ->
+            obj!!.update(currentTime)
         }
     }
 
@@ -55,7 +49,7 @@ class LoopTimeController(
 
 
     fun spacedObjectOf(name: String): SpacedBooleanObject? {
-        return spacedBooleanObjects.find { it!!.name == name }
+        return spacedBooleanObjects?.find { it!!.name == name }
     }
 
     companion object {
