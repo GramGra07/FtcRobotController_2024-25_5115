@@ -135,7 +135,7 @@ open class HardwareConfig(
         if (!auto)
             telemetry.update()
 
-        if (!loopTimeController.loopSaver) Drawing.drawAll(packet, dashboard, localizerSubsystem)
+//        if (!loopTimeController.loopSaver) Drawing.drawAll(packet, dashboard, localizerSubsystem)
     }
 
     //code to run all drive functions
@@ -192,34 +192,36 @@ open class HardwareConfig(
     }
 
     private fun buildTelemetry() {
-        if (VarConfig.multipleDrivers) {
-            telemetry.addData(
-                "Drivers",
-                Drivers.currDriver.name.toString() + " " + Drivers.currOther.name.toString()
-            )
-            teleSpace()
-        }
-        if (vSensor.lowVoltage()) {
-            vSensor.telemetry(telemetry)
-            teleSpace()
-        }
         loopTimeController.telemetry(telemetry)
         teleSpace()
-        driveSubsystem.telemetry(telemetry)
-        teleSpace()
-        localizerSubsystem.telemetry(telemetry)
-        teleSpace()
-        fastIntakeSubsystem.telemetry(telemetry)
-        teleSpace()
-        scoringSubsystem.telemetry(telemetry)
-        teleSpace()
-        liftSubsystem.telemetry(telemetry)
-        teleSpace()
+        if (!loopTimeController.loopSaver) {
+            if (VarConfig.multipleDrivers) {
+                telemetry.addData(
+                    "Drivers",
+                    Drivers.currDriver.name.toString() + " " + Drivers.currOther.name.toString()
+                )
+                teleSpace()
+            }
+            if (vSensor.lowVoltage()) {
+                vSensor.telemetry(telemetry)
+                teleSpace()
+            }
+            driveSubsystem.telemetry(telemetry)
+            teleSpace()
+            localizerSubsystem.telemetry(telemetry)
+            teleSpace()
+            fastIntakeSubsystem.telemetry(telemetry)
+            teleSpace()
+            scoringSubsystem.telemetry(telemetry)
+            teleSpace()
+            liftSubsystem.telemetry(telemetry)
+            teleSpace()
 
-        telemetry.addData("Version", CURRENT_VERSION)
+            telemetry.addData("Version", CURRENT_VERSION)
+            TargetLock.telemetry(telemetry)
+//        if (!loopTimeController.loopSaver) Drawing.drawAll(packet, dashboard, localizerSubsystem)
+        }
         telemetry.update()
-        TargetLock.telemetry(telemetry)
-        if (!loopTimeController.loopSaver) Drawing.drawAll(packet, dashboard, localizerSubsystem)
     }
 
     private fun teleSpace() {
