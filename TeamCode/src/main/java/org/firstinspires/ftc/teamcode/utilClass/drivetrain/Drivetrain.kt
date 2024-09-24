@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.VarConfig
 class Drivetrain(
     val name: DrivetrainNames,
     val type: DrivetrainType,
-    val drivePARAMS: DrivePARAMS,
+    val rrPARAMS: rrPARAMS,
     var pedroPathingPARAMS: PedroPathingPARAMS,
     var driveConfigPARAMS: DriveConfigPARAMS,
     var sparkFunOTOSParams: SparkFunOTOSParams,
@@ -40,7 +40,7 @@ class Drivetrain(
             Drivetrain(
                 DrivetrainNames.MAIN,
                 DrivetrainType.MECANUM,
-                DrivePARAMS(
+                rrPARAMS(
                     783.0500500149055,
                     1678.229840435962,
                     0.002550207204,
@@ -125,7 +125,7 @@ class Drivetrain(
             Drivetrain(
                 DrivetrainNames.OLD,
                 DrivetrainType.MECANUM,
-                DrivePARAMS(
+                rrPARAMS(
                     -2187.424701924342,
                     -241.8308218367524,
                     0.0029780281585,

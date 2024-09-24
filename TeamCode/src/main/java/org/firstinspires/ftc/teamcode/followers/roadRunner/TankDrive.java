@@ -192,18 +192,18 @@ public final class TankDrive {
         public RevHubOrientationOnRobot.UsbFacingDirection usbFacingDirection = CurrentDrivetrain.Companion.getCurrentDrivetrain().getDriveConfigPARAMS().getUsbFacingDirection();
 
         // drive model parameters
-        public double inPerTick = CurrentDrivetrain.Companion.getCurrentDrivetrain().getDrivePARAMS().getInPerTick();
-        public double trackWidthTicks = CurrentDrivetrain.Companion.getCurrentDrivetrain().getDrivePARAMS().getTrackWidthTicks();
+        public double inPerTick = CurrentDrivetrain.Companion.getCurrentDrivetrain().getRrPARAMS().getInPerTick();
+        public double trackWidthTicks = CurrentDrivetrain.Companion.getCurrentDrivetrain().getRrPARAMS().getTrackWidthTicks();
 
         // feedforward parameters (in tick units)
-        public double kS = CurrentDrivetrain.Companion.getCurrentDrivetrain().getDrivePARAMS().getKS();
-        public double kV = CurrentDrivetrain.Companion.getCurrentDrivetrain().getDrivePARAMS().getKV();
-        public double kA = CurrentDrivetrain.Companion.getCurrentDrivetrain().getDrivePARAMS().getKA();
+        public double kS = CurrentDrivetrain.Companion.getCurrentDrivetrain().getRrPARAMS().getKS();
+        public double kV = CurrentDrivetrain.Companion.getCurrentDrivetrain().getRrPARAMS().getKV();
+        public double kA = CurrentDrivetrain.Companion.getCurrentDrivetrain().getRrPARAMS().getKA();
 
         // path profile parameters (in inches)
-        public double maxWheelVel = CurrentDrivetrain.Companion.getCurrentDrivetrain().getDrivePARAMS().getMaxWheelVel();
-        public double minProfileAccel = CurrentDrivetrain.Companion.getCurrentDrivetrain().getDrivePARAMS().getMinProfileAccel();
-        public double maxProfileAccel = CurrentDrivetrain.Companion.getCurrentDrivetrain().getDrivePARAMS().getMaxProfileAccel();
+        public double maxWheelVel = CurrentDrivetrain.Companion.getCurrentDrivetrain().getRrPARAMS().getMaxWheelVel();
+        public double minProfileAccel = CurrentDrivetrain.Companion.getCurrentDrivetrain().getRrPARAMS().getMinProfileAccel();
+        public double maxProfileAccel = CurrentDrivetrain.Companion.getCurrentDrivetrain().getRrPARAMS().getMaxProfileAccel();
 
         // turn profile parameters (in radians)
         public double maxAngVel = Math.PI; // shared with path
