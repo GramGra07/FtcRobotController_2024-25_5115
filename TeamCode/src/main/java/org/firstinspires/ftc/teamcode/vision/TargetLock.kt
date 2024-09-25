@@ -8,7 +8,6 @@ import org.firstinspires.ftc.robotcore.external.function.Continuation
 import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.Alliance
-import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.FastIntakeSubsystem
 import org.firstinspires.ftc.teamcode.utilClass.CameraLock
 import org.firstinspires.ftc.teamcode.utilClass.ScalarPair
 import org.firstinspires.ftc.vision.VisionProcessor
@@ -25,7 +24,11 @@ import java.util.concurrent.atomic.AtomicReference
 import kotlin.math.pow
 import kotlin.math.sqrt
 
-class TargetLock(private var alliance: Alliance, private var fov:Double = 180.0) : VisionProcessor,
+class TargetLock(
+    private var alliance: Alliance,
+    private var camOrientation: Double,
+    private var fov: Double = 180.0
+) : VisionProcessor,
     CameraStreamSource {
     private val lastFrame = AtomicReference(Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565))
     private var ycrcbMat = Mat()
@@ -35,9 +38,12 @@ class TargetLock(private var alliance: Alliance, private var fov:Double = 180.0)
     var detectionMat = Mat()
     var edges = Mat()
 
+
     //    var c = Scalar(255.0, 0.0, 0.0)
     var current = 0
-    private lateinit var scalar: ScalarPair
+    var minArea = 400
+    private var scalar: ScalarPair =
+        ScalarPair(Scalar(0.0, 0.0, 130.0), Scalar(255.0, 255.0, 255.0))
     private val scalarYellowLow = Scalar(0.0, 140.0, 140.0)
     private val scalarYellowHigh = Scalar(255.0, 255.0, 255.0)
 
@@ -49,7 +55,7 @@ class TargetLock(private var alliance: Alliance, private var fov:Double = 180.0)
         if (alliance == Alliance.RED) {
             scalar.low = Scalar(0.0, 140.0, 0.0)
             scalar.high = Scalar(255.0, 255.0, 255.0)
-        } else if (alliance == Alliance.BLUE) {
+        } else {
             scalar.low = Scalar(0.0, 0.0, 130.0)
             scalar.high = Scalar(255.0, 255.0, 255.0)
         }
@@ -99,16 +105,17 @@ class TargetLock(private var alliance: Alliance, private var fov:Double = 180.0)
             Imgproc.rectangle(frame, boundRect[i]!!.tl(), boundRect[i]!!.br(), c, 2)
         }
 
-        var closestLock = CameraLock(FastIntakeSubsystem.Color.NONE,Point(0.0,0.0),0.0)
+        var closestLock = CameraLock(Point(0.0, 0.0), 0.0)
         var closestDistance = Double.POSITIVE_INFINITY
         for (center in centers) {
             val dist = sqrt(
                 ((frame.width() / 2 - center!!.x).pow(2)) + (frame.height() / 2 - center.y).pow(2)
             )
-            if (dist < closestDistance) {
+            if (dist < closestDistance && boundRect[centers.indexOf(center)]!!.area()>minArea) {
                 closestDistance = dist
-                val angle = (fov/frame.width())*center.x
-                closestLock = CameraLock(FastIntakeSubsystem.Color.YELLOW,Point(center.x, center.y),angle)
+                val angle =
+                    (fov / frame.width()) * (center.x - (frame.width() / 2)) - camOrientation
+                closestLock = CameraLock(Point(center.x, center.y), angle)
             }
         }
         cameraLock = closestLock
@@ -142,8 +149,8 @@ class TargetLock(private var alliance: Alliance, private var fov:Double = 180.0)
     }
 
     companion object {
-        var cameraLock:CameraLock = CameraLock(FastIntakeSubsystem.Color.NONE,Point(0.0,0.0),0.0)
-        fun telemetry(telemetry: Telemetry){
+        var cameraLock: CameraLock = CameraLock(Point(0.0, 0.0), 0.0)
+        fun telemetry(telemetry: Telemetry) {
             telemetry.addData("Camera Lock", cameraLock.toString())
         }
     }

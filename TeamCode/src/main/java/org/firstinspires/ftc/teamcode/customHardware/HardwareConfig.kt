@@ -12,6 +12,8 @@ import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities.initializeProcessor
+import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities.startCameraStream
+import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities.stopCameraStream
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.PROCESSORS
 import org.firstinspires.ftc.teamcode.customHardware.loopTime.PeriodicLoopTimeObject
 import org.firstinspires.ftc.teamcode.customHardware.loopTime.SpacedBooleanObject
@@ -38,7 +40,6 @@ import org.firstinspires.ftc.teamcode.utilClass.drivetrain.Drivetrain
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.VarConfig
 import org.firstinspires.ftc.teamcode.vision.TargetLock
 
-
 open class HardwareConfig(
     private val myOpMode: LinearOpMode,
     auto: Boolean,
@@ -53,10 +54,11 @@ open class HardwareConfig(
     //    lateinit var sparkFunOTOS: SparkFunOTOS
     lateinit var driveSubsystem: DriveSubsystem
     lateinit var localizerSubsystem: LocalizerSubsystem
-    lateinit var fastIntakeSubsystem: FastIntakeSubsystem
-    lateinit var liftSubsystem: LiftSubsystem
-    lateinit var scoringSubsystem: ScoringSubsystem
+//    lateinit var fastIntakeSubsystem: FastIntakeSubsystem
+//    lateinit var liftSubsystem: LiftSubsystem
+//    lateinit var scoringSubsystem: ScoringSubsystem
 //    lateinit var reLocalizationSubsystem: ReLocalizationSubsystem
+
 
     companion object {
         val dt = CurrentDrivetrain.currentDrivetrain
@@ -80,7 +82,7 @@ open class HardwareConfig(
 
         var once = false
 
-        private const val CURRENT_VERSION = "8.0.0"
+        private const val CURRENT_VERSION = "8.1.0"
 
         var allHubs: List<LynxModule> = ArrayList()
     }
@@ -91,7 +93,7 @@ open class HardwareConfig(
         startLocation: StartLocation
     ) {
         localizerSubsystem =
-            LocalizerSubsystem(ahwMap, startLocation.startPose)
+            LocalizerSubsystem(ahwMap, startLocation.startPose, LocalizerSubsystem.LocalizerType.ROADRUNNER)
         driveSubsystem = DriveSubsystem(ahwMap, localizerSubsystem, dt)
 
         allHubs = ahwMap.getAll(LynxModule::class.java)
@@ -100,16 +102,18 @@ open class HardwareConfig(
             hub.bulkCachingMode = LynxModule.BulkCachingMode.AUTO
         }
 
+//        vSensor =
+//            initVSensor(ahwMap, "Expansion Hub 2")
         vSensor =
-            initVSensor(ahwMap, "Expansion Hub 2")
+            initVSensor(ahwMap, "Control Hub")
         lights =
             initLights(ahwMap, "blinkin")
-        fastIntakeSubsystem =
-            FastIntakeSubsystem(ahwMap)
-        liftSubsystem =
-            LiftSubsystem(ahwMap)
-        scoringSubsystem =
-            ScoringSubsystem(ahwMap)
+//        fastIntakeSubsystem =
+//            FastIntakeSubsystem(ahwMap)
+//        liftSubsystem =
+//            LiftSubsystem(ahwMap)
+//        scoringSubsystem =
+//            ScoringSubsystem(ahwMap)
 
 //        reLocalizationSubsystem =
 //            ReLocalizationSubsystem(ahwMap)
@@ -140,11 +144,13 @@ open class HardwareConfig(
 
     //code to run all drive functions
     fun doBulk() {
-        bindDriverButtons(myOpMode, driveSubsystem, liftSubsystem)
+        bindDriverButtons(myOpMode, driveSubsystem,
+//            liftSubsystem,
+            )
         bindOtherButtons(
             myOpMode,
-            fastIntakeSubsystem,
-            scoringSubsystem
+//            fastIntakeSubsystem,
+//            scoringSubsystem
         )
         if (VarConfig.multipleDrivers) {
             switchProfile(myOpMode)
@@ -157,11 +163,11 @@ open class HardwareConfig(
 
         localizerSubsystem.update(timer)
 
-        fastIntakeSubsystem.update(loopTimeController)
-
-        scoringSubsystem.update()
-
-        liftSubsystem.update()
+//        fastIntakeSubsystem.update(loopTimeController)
+//
+//        scoringSubsystem.update()
+//
+//        liftSubsystem.update()
 
 //        loopTimeController.every(3) {
 //         reLocalizationSubsystem.relocalize(
@@ -172,6 +178,11 @@ open class HardwareConfig(
             buildTelemetry() //makes telemetry
         }
 //        lynxModules()
+        if (!loopTimeController.loopSaver){ startCameraStream()
+        }else{
+            stopCameraStream()
+        }
+
         loopTimeController.update()
     }
 
@@ -210,15 +221,17 @@ open class HardwareConfig(
             teleSpace()
             localizerSubsystem.telemetry(telemetry)
             teleSpace()
-            fastIntakeSubsystem.telemetry(telemetry)
-            teleSpace()
-            scoringSubsystem.telemetry(telemetry)
-            teleSpace()
-            liftSubsystem.telemetry(telemetry)
-            teleSpace()
+            LoopTimeController
+//            fastIntakeSubsystem.telemetry(telemetry)
+//            teleSpace()
+//            scoringSubsystem.telemetry(telemetry)
+//            teleSpace()
+//            liftSubsystem.telemetry(telemetry)
+//            teleSpace()
 
-            telemetry.addData("Version", CURRENT_VERSION)
             TargetLock.telemetry(telemetry)
+            teleSpace()
+            telemetry.addData("Version", CURRENT_VERSION)
 //        if (!loopTimeController.loopSaver) Drawing.drawAll(packet, dashboard, localizerSubsystem)
         }
         telemetry.update()

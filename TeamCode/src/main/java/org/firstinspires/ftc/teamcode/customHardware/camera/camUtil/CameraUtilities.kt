@@ -29,17 +29,39 @@ import org.opencv.core.Rect
 import org.opencv.core.Scalar
 
 object CameraUtilities {
-    private fun startCameraStream(streamSource: CameraStreamSource? = this.visionPortal) {
-        FtcDashboard.getInstance()
-            .startCameraStream(streamSource, 0.0)
+    var state: CAM_STATE = CAM_STATE.STOPPED
+
+    enum class CAM_STATE {
+        STOPPED,
+        STARTED
+    }
+    fun startCameraStream(streamSource: CameraStreamSource? = this.visionPortal) {
+        when (state) {
+            CAM_STATE.STOPPED -> {
+                FtcDashboard.getInstance()
+                    .startCameraStream(streamSource, 0.0)
+                state = CAM_STATE.STARTED
+            }
+            else -> {
+                return
+            }
+        }
     }
 
     fun stopCameraStream() {
-        FtcDashboard.getInstance()
-            .stopCameraStream()
+        when (state) {
+            CAM_STATE.STARTED -> {
+                FtcDashboard.getInstance()
+                    .stopCameraStream()
+                state = CAM_STATE.STOPPED
+            }
+            else -> {
+                return
+            }
+        }
     }
 
-    private var mainCamera: Camera = setupCameras(CameraType.ARDU_CAM)
+    private var mainCamera: Camera = setupCameras(CameraType.LOGITECH)
 
     private var runningProcessors: MutableList<VisionProcessor> =
         emptyList<VisionProcessor>().toMutableList()
@@ -58,7 +80,7 @@ object CameraUtilities {
     ): Boolean {
         when (processor) {
             PROCESSORS.TARGET_LOCK -> {
-                targetLockProcessor = TargetLock(alliance)
+                targetLockProcessor = TargetLock(alliance,20.0)
                 runningProcessors.add(targetLockProcessor)
             }
             PROCESSORS.APRIL_TAG -> {
@@ -114,6 +136,7 @@ object CameraUtilities {
             val builder = VisionPortal.Builder()
             builder.setCamera(ahwMap.get(WebcamName::class.java, camera))
                 .setCameraResolution(mainCamera.size)
+                .setStreamFormat(VisionPortal.StreamFormat.MJPEG)
             if (runningProcessors.size > 1) {
                 builder.setLiveViewContainerId(0)
             }

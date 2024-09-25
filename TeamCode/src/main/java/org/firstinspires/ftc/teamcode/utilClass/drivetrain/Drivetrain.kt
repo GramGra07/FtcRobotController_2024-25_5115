@@ -39,7 +39,7 @@ class Drivetrain(
         var drivetrains: MutableList<Drivetrain> = mutableListOf(
             Drivetrain(
                 DrivetrainNames.MAIN,
-                DrivetrainType.MECANUM,
+                DrivetrainType.TANK,
                 rrPARAMS(
                     783.0500500149055,
                     1678.229840435962,

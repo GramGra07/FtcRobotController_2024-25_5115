@@ -5,8 +5,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.followers.roadRunner.TankDrive;
+import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles;
 
-@TeleOp
+@TeleOp(group = GroupingTitles.pedroTuning)
 public class OTOSPositionOffsetTuner extends LinearOpMode {
 
     @Override

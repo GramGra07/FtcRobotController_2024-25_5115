@@ -59,29 +59,22 @@ object Drivers {
     fun bindDriverButtons(
         myOpMode: OpMode,
         driveSubsystem: DriveSubsystem,
-        liftSubsystem: LiftSubsystem,
+//        liftSubsystem: LiftSubsystem,
     ) {
         // "Camden", "Grady", "Michael","Graden", "Delaney", "Child"
         if (currDriver.name == AllDrivers.Grady) { //grady
             //slowmode
-//            if (myOpMode.gamepad1.circle && !slowModeButtonDown && !driveSubsystem.slowModeIsOn) {
-//                driveSubsystem.slowModeIsOn = true
-//            } else if (myOpMode.gamepad1.circle && !slowModeButtonDown && driveSubsystem.slowModeIsOn) {
-//                driveSubsystem.slowModeIsOn = false
-//            }
-//            slowModeButtonDown = myOpMode.gamepad1.circle
-            //TODO test
             if (myOpMode.gamepad1.buttonJustPressed(GamepadExtensions.PushButtons.CIRCLE, 1)) {
                 driveSubsystem.slowModeIsOn = !driveSubsystem.slowModeIsOn
             }
-
-            if (myOpMode.gamepad1.buttonJustPressed(GamepadExtensions.PushButtons.TRIANGLE, 1)) {
-                liftSubsystem.setPower(liftSubsystem.maxLiftExtension)
-            } else if (myOpMode.gamepad1.buttonJustPressed(GamepadExtensions.PushButtons.CROSS, 1)) {
-                liftSubsystem.setPower(liftSubsystem.minLiftExtension)
-            } else {
-                liftSubsystem.stop()
-            }
+//
+//            if (myOpMode.gamepad1.buttonJustPressed(GamepadExtensions.PushButtons.TRIANGLE, 1)) {
+//                liftSubsystem.setPower(liftSubsystem.maxLiftExtension)
+//            } else if (myOpMode.gamepad1.buttonJustPressed(GamepadExtensions.PushButtons.CROSS, 1)) {
+//                liftSubsystem.setPower(liftSubsystem.minLiftExtension)
+//            } else {
+//                liftSubsystem.stop()
+//            }
             DriverAid.doDriverAid()
         }
 
@@ -95,7 +88,7 @@ object Drivers {
 
         }
         if (currDriver.name == AllDrivers.Child) { //Child
-            driveSubsystem.slowModeIsOn = true
+//            driveSubsystem.slowModeIsOn = true
         }
     }
 

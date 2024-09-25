@@ -56,6 +56,7 @@ class DriveSubsystem(
                 DcMotor.RunMode.RUN_WITHOUT_ENCODER
             )
         motorBackLeft.direction = DcMotorSimple.Direction.REVERSE
+        motorFrontLeft.direction = DcMotorSimple.Direction.REVERSE
     }
 
     private var frontRightPower = 0.0
@@ -110,9 +111,9 @@ class DriveSubsystem(
                     (leftStickY * abs(leftStickY) - leftStickX * abs(leftStickX) - turn) / slowPower
             }
         } else if (dt.type == DrivetrainType.TANK) {
-        frontLeftPower = Range.clip(leftStickY + rightStickX, -1.0, 1.0)
+        frontLeftPower = Range.clip(leftStickY - rightStickX, -1.0, 1.0)
         backLeftPower = frontLeftPower
-        frontRightPower = Range.clip(leftStickY - rightStickX, -1.0, 1.0)
+        frontRightPower = Range.clip(leftStickY + rightStickX, -1.0, 1.0)
         backRightPower = frontRightPower
         }
     }
@@ -164,7 +165,6 @@ class DriveSubsystem(
     fun update(
     ) {
         power()
-
     }
 
     fun telemetry(telemetry: Telemetry) {

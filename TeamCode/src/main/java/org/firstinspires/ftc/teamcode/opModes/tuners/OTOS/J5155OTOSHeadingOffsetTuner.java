@@ -1,10 +1,12 @@
 package org.firstinspires.ftc.teamcode.opModes.tuners.OTOS;
 
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 @TeleOp
+@Disabled
 public class J5155OTOSHeadingOffsetTuner extends LinearOpMode {
 
     SparkFunOTOS drive;

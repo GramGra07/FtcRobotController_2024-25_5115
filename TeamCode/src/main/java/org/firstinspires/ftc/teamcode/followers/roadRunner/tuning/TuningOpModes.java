@@ -26,6 +26,7 @@ import org.firstinspires.ftc.robotcore.internal.opmode.OpModeMeta;
 import org.firstinspires.ftc.teamcode.followers.roadRunner.MecanumDrive;
 import org.firstinspires.ftc.teamcode.followers.roadRunner.SparkFunOTOSDrive;
 import org.firstinspires.ftc.teamcode.followers.roadRunner.TankDrive;
+import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,8 +35,8 @@ import java.util.List;
 public final class TuningOpModes {
     public static final Class<?> DRIVE_CLASS = SparkFunOTOSDrive.class;
 
-    public static final String GROUP = "quickstart";
-    public static final boolean DISABLED = false;
+    public static final String GROUP = GroupingTitles.rr;
+    public static final boolean DISABLED = true;
 
     private TuningOpModes() {}
 

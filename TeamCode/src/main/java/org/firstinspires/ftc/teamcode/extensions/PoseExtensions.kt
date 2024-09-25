@@ -42,7 +42,7 @@ object PoseExtensions {
         return "x: ${this.position.x.roundToInt()}, y: ${this.position.y.roundToInt()}, h: ${
             Math.toDegrees(
                 this.heading.toDouble()
-            )
+            ).roundToInt()
         }"
     }
 
