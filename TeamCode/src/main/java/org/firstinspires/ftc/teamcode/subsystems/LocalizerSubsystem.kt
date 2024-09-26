@@ -1,15 +1,21 @@
 package org.firstinspires.ftc.teamcode.subsystems
 
 //import org.firstinspires.ftc.teamcode.followers.rr.MecanumDrive
+import com.acmerobotics.dashboard.FtcDashboard
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.acmerobotics.roadrunner.Pose2d
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.Telemetry
+import org.firstinspires.ftc.robotcore.external.navigation.Pose3D
+import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
+import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig.Companion
 import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toPose
 import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toPose2d
 import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toString2
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.PoseUpdater
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.localizers.OTOSLocalizer
+import org.firstinspires.ftc.teamcode.followers.roadRunner.Drawing
 import org.firstinspires.ftc.teamcode.followers.roadRunner.SparkFunOTOSDrive
 import org.firstinspires.ftc.teamcode.storage.DistanceStorage
 import org.firstinspires.ftc.teamcode.storage.PoseStorage
@@ -17,23 +23,24 @@ import kotlin.math.sqrt
 
 
 //@Config
-class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose2d,val type:LocalizerType) {
+class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose2d, val type: LocalizerType) {
     enum class LocalizerType {
         PEDRO,
         ROADRUNNER
     }
 
     private lateinit var poseUpdater: PoseUpdater
-    private lateinit var sparkFunDrive:SparkFunOTOSDrive
+    private lateinit var sparkFunDrive: SparkFunOTOSDrive
 
     init {
-        when (type){
+        when (type) {
             LocalizerType.PEDRO -> {
                 poseUpdater = PoseUpdater(ahwMap, OTOSLocalizer(ahwMap, pose.toPose()))
                 poseUpdater.pose = pose.toPose()
             }
+
             LocalizerType.ROADRUNNER -> {
-                sparkFunDrive = SparkFunOTOSDrive(ahwMap,pose)
+                sparkFunDrive = SparkFunOTOSDrive(ahwMap, pose)
                 sparkFunDrive.pose = pose
             }
         }
@@ -67,6 +74,7 @@ class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose2d,val type:LocalizerTyp
             LocalizerType.PEDRO -> {
                 poseUpdater.update()
             }
+
             LocalizerType.ROADRUNNER -> {
                 sparkFunDrive.updatePoseEstimate()
             }
@@ -83,6 +91,7 @@ class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose2d,val type:LocalizerTyp
             LocalizerType.PEDRO -> {
                 poseUpdater.pose = pose.toPose()
             }
+
             LocalizerType.ROADRUNNER -> {
                 sparkFunDrive.pose = pose
             }
@@ -95,6 +104,7 @@ class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose2d,val type:LocalizerTyp
             LocalizerType.PEDRO -> {
                 telemetry.addData("Using", "PP OTOS")
             }
+
             LocalizerType.ROADRUNNER -> {
                 telemetry.addData("Using", "RR OTOS")
             }
@@ -121,6 +131,7 @@ class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose2d,val type:LocalizerTyp
             LocalizerType.PEDRO -> {
                 poseUpdater.pose.toPose2d()
             }
+
             LocalizerType.ROADRUNNER -> {
                 sparkFunDrive.pose
             }
@@ -132,6 +143,7 @@ class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose2d,val type:LocalizerTyp
             LocalizerType.PEDRO -> {
                 poseUpdater.pose.x
             }
+
             LocalizerType.ROADRUNNER -> {
                 sparkFunDrive.pose.position.x
             }
@@ -143,9 +155,20 @@ class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose2d,val type:LocalizerTyp
             LocalizerType.PEDRO -> {
                 poseUpdater.pose.y
             }
+
             LocalizerType.ROADRUNNER -> {
                 sparkFunDrive.pose.position.y
             }
         }
+    }
+
+    fun draw(packet: TelemetryPacket, dashboard: FtcDashboard) {
+        packet.field()
+        packet.fieldOverlay().setStroke("#3F51B5")
+        Drawing.drawRobot(packet.fieldOverlay(), pose())
+        dashboard.sendTelemetryPacket(packet)
+    }
+    fun relocalize(pose:Pose3D){
+        setPose(Pose2d(pose.position.x,pose.position.y,this.heading()))
     }
 }

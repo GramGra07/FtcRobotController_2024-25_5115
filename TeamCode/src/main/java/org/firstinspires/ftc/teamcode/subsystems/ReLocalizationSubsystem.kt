@@ -5,21 +5,54 @@ import com.acmerobotics.roadrunner.Vector2d
 import com.qualcomm.hardware.limelightvision.Limelight3A
 import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.robotcore.external.Telemetry
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
+import org.firstinspires.ftc.robotcore.external.navigation.Orientation
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D
+import org.firstinspires.ftc.robotcore.external.navigation.Position
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles
 
 class ReLocalizationSubsystem(ahwMap: HardwareMap) {
     private var limelight3A: Limelight3A
-    private var pose: Pose3D
+    lateinit var pose: Pose3D
+    val nullPose = Pose3D(
+        Position(DistanceUnit.INCH, 0.0, 0.0, 0.0, 0L), YawPitchRollAngles(AngleUnit.DEGREES,0.0,0.0,0.0,0L)
+    )
 
     init {
         limelight3A = ahwMap.get(Limelight3A::class.java, "limelight")
-        limelight3A.pipelineSwitch(0)
-        pose = limelight3A.getPose()
+        if (!limelight3A.pipelineSwitch(0)) {
+            throw Exception("Not initialized")
+        }
+//        pose = limelight3A.getPose()
         limelight3A.start()
     }
 
+    fun update() {
+        limelight3A.getPose()
+    }
+
     fun Limelight3A.getPose(): Pose3D {
-        return this.latestResult.botpose
+        val m = 39.37
+        val botpose = this.latestResult.botpose
+        val position = botpose.position
+        val result = Pose3D(
+            Position(
+                DistanceUnit.INCH,
+                position.x * m,
+                position.y * m,
+                position.z * m,
+                position.acquisitionTime
+            ), botpose.orientation
+        )
+        if (result != nullPose) pose = result
+        return result
+    }
+
+    fun getExistingPose(): Pose3D {
+        return pose
     }
 
     fun relocalize(localizerSubsystem: LocalizerSubsystem) {
@@ -27,7 +60,7 @@ class ReLocalizationSubsystem(ahwMap: HardwareMap) {
         localizerSubsystem.setPose(
             Pose2d(
                 Vector2d(pose.position.x, pose.position.y),
-                localizerSubsystem.heading()
+                localizerSubsystem.heading() //pose.orientation.yaw.toDouble()
             )
         )
     }
@@ -41,10 +74,10 @@ class ReLocalizationSubsystem(ahwMap: HardwareMap) {
             "LL", "Temp: %.1fC, CPU: %.1f%%, FPS: %d",
             status.temp, status.cpu, status.fps.toInt()
         )
-        val detectorResults = limelight3A.latestResult.detectorResults
-        for (dr in detectorResults) {
-            telemetry.addData("Detector", "Class: %s, Area: %.2f", dr.className, dr.targetArea)
-        }
+//        val detectorResults = limelight3A.latestResult.detectorResults
+//        for (dr in detectorResults) {
+//            telemetry.addData("Detector", "Class: %s, Area: %.2f", dr.className, dr.targetArea)
+//        }
     }
 
 //    private var currentDetections: List<AprilTagDetection> = emptyList()
