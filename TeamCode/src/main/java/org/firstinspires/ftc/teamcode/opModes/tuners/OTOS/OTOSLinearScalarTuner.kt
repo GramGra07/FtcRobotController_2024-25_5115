@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.storage.PoseStorage
 import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles
 
 @TeleOp(group = GroupingTitles.TESTING)
-@Disabled//disabling the opmode
+//@Disabled//disabling the opmode
 //@Config
 class OTOSLinearScalarTuner : LinearOpMode() {
     //declaring the class
@@ -23,13 +23,14 @@ class OTOSLinearScalarTuner : LinearOpMode() {
             "It will tell you the correct linear scalar"
         )
         robot.localizerSubsystem.update(null)
-        val startY = robot.localizerSubsystem.y()
+        val startY = robot.localizerSubsystem.x()
         val targetY = startY + distance
         telemetry.update()
         waitForStart()
         while (opModeIsActive()) {
             robot.localizerSubsystem.update(null)
             deltaDistance = robot.localizerSubsystem.y() + startY
+            telemetry.addData("traveled",robot.localizerSubsystem.x())
             telemetry.addData("deltaDistance", deltaDistance)
             telemetry.addData("targetY", targetY)
             telemetry.addData("Linear scalar", targetY / deltaDistance)

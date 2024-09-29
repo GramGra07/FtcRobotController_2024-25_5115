@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles
 class teleOp : LinearOpMode() {
     //declaring the class
     override fun runOpMode() { //if opmode is started
-        val robot = HardwareConfig(this, false, StartLocation(GameStorage.alliance,PoseStorage.currentPose))
+        val robot = HardwareConfig(this, false, StartLocation(GameStorage.alliance))
         waitForStart()
         robot.once() //runs once
         while (opModeIsActive()) { //while the op mode is active

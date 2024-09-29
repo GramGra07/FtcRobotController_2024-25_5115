@@ -15,6 +15,10 @@ class LoopTimeController(
     private var lps = 0.0
     private var currentTime: Double = 0.0
     private val correctedLPS: Double = 5.0
+    private var lastSecond:Double = 0.0
+    private var lastSecondLPast:Double = 0.0
+    private var lastSecondL:Double = 0.0
+    private var lastSecondT:Double = 0.0
 
     @JvmField
     var loopSaver: Boolean = false
@@ -23,6 +27,12 @@ class LoopTimeController(
         lps = loops / (currentTime - correctedLPS)
         if (currentTime > correctedLPS) {
             loops++
+        }
+        if (currentTime-1>lastSecondT){
+            lastSecondL = loops - lastSecondLPast
+            lastSecond = lastSecondL/(currentTime-lastSecondT)
+            lastSecondLPast = loops.toDouble()
+            lastSecondT = currentTime
         }
     }
 
@@ -45,6 +55,10 @@ class LoopTimeController(
         telemetry.addData("Timer", "%.1f", currentTime)
         telemetry.addData("Loops", loops)
         telemetry.addData("Current LPS", "%.1f", lps)
+//        telemetry.addData("lastsecondloops",lastSecondL)
+//        telemetry.addData("pastlastsecondloops",lastSecondLPast)
+//        telemetry.addData("lastsecondt",lastSecondT)
+        telemetry.addData("Last Second LPS","%.1f",lastSecond)
     }
 
 

@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -28,6 +29,7 @@ import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles;
  */
 @Config
 @Autonomous(name = "Straight Back And Forth", group = GroupingTitles.pedroTuning)
+@Disabled
 public class StraightBackAndForth extends OpMode {
     public static double DISTANCE = 40;
     private Telemetry telemetryA;

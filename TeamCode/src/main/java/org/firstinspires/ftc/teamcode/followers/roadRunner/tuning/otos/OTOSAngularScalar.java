@@ -2,9 +2,11 @@ package org.firstinspires.ftc.teamcode.followers.roadRunner.tuning.otos;
 
 import com.acmerobotics.roadrunner.Pose2d;
 import com.acmerobotics.roadrunner.Rotation2d;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.followers.roadRunner.SparkFunOTOSDrive;
 import org.firstinspires.ftc.teamcode.followers.roadRunner.TankDrive;
 import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles;
 
@@ -13,7 +15,7 @@ public class OTOSAngularScalar extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        TankDrive drive = new TankDrive(hardwareMap, new Pose2d(0,0,0));
+        SparkFunOTOSDrive drive = new SparkFunOTOSDrive(hardwareMap, new Pose2d(0,0,0));
         double radsTurned = 0;
         Rotation2d lastHeading = Rotation2d.fromDouble(0);
         telemetry.addLine("OTOS Angular Scalar Tuner");

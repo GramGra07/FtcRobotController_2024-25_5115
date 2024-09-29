@@ -39,7 +39,7 @@ class Drivetrain(
         var drivetrains: MutableList<Drivetrain> = mutableListOf(
             Drivetrain(
                 DrivetrainNames.MAIN,
-                DrivetrainType.TANK,
+                DrivetrainType.MECANUM,
                 rrPARAMS(
                     783.0500500149055,
                     1678.229840435962,
@@ -118,8 +118,8 @@ class Drivetrain(
                         VarConfig.OTOSyOffset,
                         VarConfig.OTOShOffset
                     ),
-                    1.0,
-                    1.011
+                    VarConfig.linearScalar,
+                    1.0105
                 ),
             ),
             Drivetrain(

@@ -47,7 +47,6 @@ open class HardwareConfig(
         initRobot(ahwMap, auto, startLocation)
     }
 
-    //    lateinit var sparkFunOTOS: SparkFunOTOS
     lateinit var driveSubsystem: DriveSubsystem
     lateinit var localizerSubsystem: LocalizerSubsystem
 
@@ -118,8 +117,8 @@ open class HardwareConfig(
         reLocalizationSubsystem =
             ReLocalizationSubsystem(ahwMap)
 
-        telemetry =
-            MultipleTelemetry(myOpMode.telemetry, FtcDashboard.getInstance().telemetry)
+        telemetry = myOpMode.telemetry
+//            MultipleTelemetry(myOpMode.telemetry, FtcDashboard.getInstance().telemetry)
         dashboard = FtcDashboard.getInstance()
         once = false
 
@@ -137,6 +136,8 @@ open class HardwareConfig(
 
         if (!auto)
             telemetry.update()
+
+        localizerSubsystem.draw(dashboard)
     }
 
     //code to run all drive functions
@@ -166,20 +167,22 @@ open class HardwareConfig(
 //        scoringSubsystem.update()
 //
 //        liftSubsystem.update()
-        reLocalizationSubsystem.update()
-        localizerSubsystem.relocalize(reLocalizationSubsystem.getExistingPose())
 
-        loopTimeController.every(3) {
+        loopTimeController.every(10) {
+            reLocalizationSubsystem.update(localizerSubsystem)
+        }
+
+        loopTimeController.every(10) {
             buildTelemetry() //makes telemetry
         }
-//        lynxModules()
-        if (!loopTimeController.loopSaver) {
-            startCameraStream()
-        } else {
-            stopCameraStream()
-        }
 
-        localizerSubsystem.draw(TelemetryPacket(), dashboard)
+//        if (!loopTimeController.loopSaver) {
+//            startCameraStream()
+//        } else {
+            stopCameraStream()
+//        }
+
+        localizerSubsystem.draw(dashboard)
 
         loopTimeController.update()
     }
@@ -215,7 +218,7 @@ open class HardwareConfig(
                 vSensor.telemetry(telemetry)
                 teleSpace()
             }
-            driveSubsystem.telemetry(telemetry)
+            driveSubsystem.telemetry(telemetry,false)
             teleSpace()
             reLocalizationSubsystem.telemetry(telemetry)
             teleSpace()

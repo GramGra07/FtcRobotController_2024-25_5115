@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.teamcode.followers.roadRunner.tuning.otos;
 
 import com.acmerobotics.roadrunner.Pose2d;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.followers.roadRunner.SparkFunOTOSDrive;
 import org.firstinspires.ftc.teamcode.followers.roadRunner.TankDrive;
 import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles;
 
@@ -12,7 +14,7 @@ public class OTOSHeadingOffsetTuner extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        TankDrive drive = new TankDrive(hardwareMap, new Pose2d(0,0,0));
+        SparkFunOTOSDrive drive = new SparkFunOTOSDrive(hardwareMap, new Pose2d(0,0,0));
         telemetry.addLine("OTOS Heading Offset Tuner");
         telemetry.addLine("Line the side of the robot against a wall and Press START.");
         telemetry.addLine("Then push the robot forward some distance.");

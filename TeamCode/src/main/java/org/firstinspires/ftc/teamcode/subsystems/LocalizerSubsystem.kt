@@ -93,6 +93,7 @@ class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose2d, val type: LocalizerT
             }
 
             LocalizerType.ROADRUNNER -> {
+                PoseStorage.currentPose = pose
                 sparkFunDrive.pose = pose
             }
         }
@@ -162,13 +163,14 @@ class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose2d, val type: LocalizerT
         }
     }
 
-    fun draw(packet: TelemetryPacket, dashboard: FtcDashboard) {
+    fun draw( dashboard: FtcDashboard,packet: TelemetryPacket= TelemetryPacket()) {
+        dashboard.clearTelemetry()
         packet.field()
         packet.fieldOverlay().setStroke("#3F51B5")
         Drawing.drawRobot(packet.fieldOverlay(), pose())
         dashboard.sendTelemetryPacket(packet)
     }
     fun relocalize(pose:Pose3D){
-        setPose(Pose2d(pose.position.x,pose.position.y,this.heading()))
+        setPose(Pose2d(pose.position.x,pose.position.y,this.heading()))//this.heading()
     }
 }

@@ -27,7 +27,7 @@ import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles;
  */
 @Config
 @Autonomous(name = "Circle", group = GroupingTitles.pedroTuning)
-//@Disabled
+@Disabled
 public class Circle extends OpMode {
     public static double RADIUS = 10;
     private Telemetry telemetryA;

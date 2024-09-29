@@ -167,18 +167,20 @@ class DriveSubsystem(
         power()
     }
 
-    fun telemetry(telemetry: Telemetry) {
+    fun telemetry(telemetry: Telemetry, minimal:Boolean) {
         telemetry.addData("DRIVE", "")
-        dt.telemetry(telemetry)
-        if (reverse) {
-            telemetry.addData("reversed", "")
+        if (!minimal) {
+            dt.telemetry(telemetry)
+            if (reverse) {
+                telemetry.addData("reversed", "")
+            }
+            when (Drivers.currentFieldCentric) {
+                DriveType.FIELD_CENTRIC -> telemetry.addData("fieldCentric", "")
+                DriveType.ROBOT_CENTRIC -> telemetry.addData("robotCentric", "")
+            }
         }
         if (slowModeIsOn) {
             telemetry.addData("slowMode", "")
-        }
-        when (Drivers.currentFieldCentric) {
-            DriveType.FIELD_CENTRIC -> telemetry.addData("fieldCentric", "")
-            DriveType.ROBOT_CENTRIC -> telemetry.addData("robotCentric", "")
         }
     }
 }

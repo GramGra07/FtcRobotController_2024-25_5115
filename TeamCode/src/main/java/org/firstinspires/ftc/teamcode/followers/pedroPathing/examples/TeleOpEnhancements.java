@@ -6,6 +6,7 @@ import static org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.Follo
 import static org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants.rightRearMotorName;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -25,6 +26,7 @@ import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles;
  */
 @Config
 @TeleOp(name = "Pedro Pathing TeleOp Enhancements", group = GroupingTitles.pedroTuning)
+@Disabled
 public class TeleOpEnhancements extends OpMode {
     private Follower follower;
 
