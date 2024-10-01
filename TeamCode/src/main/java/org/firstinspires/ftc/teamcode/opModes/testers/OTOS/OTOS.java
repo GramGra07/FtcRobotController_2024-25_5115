@@ -15,7 +15,7 @@ public class OTOS extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        hardwareMap.get(SparkFunOTOS.class, "spark");
+        sparkFunOTOS = hardwareMap.get(SparkFunOTOS.class, "spark");
         sparkFunOTOS.setLinearUnit(DistanceUnit.INCH);
         sparkFunOTOS.setAngularUnit(AngleUnit.DEGREES);
         //For example, if

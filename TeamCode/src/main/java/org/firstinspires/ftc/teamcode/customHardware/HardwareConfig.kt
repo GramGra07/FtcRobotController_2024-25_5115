@@ -91,7 +91,7 @@ open class HardwareConfig(
             LocalizerSubsystem(
                 ahwMap,
                 startLocation.startPose,
-                LocalizerSubsystem.LocalizerType.ROADRUNNER
+                LocalizerSubsystem.LocalizerType.PEDRO
             )
         driveSubsystem = DriveSubsystem(ahwMap, localizerSubsystem, dt)
 
