@@ -169,7 +169,7 @@ open class HardwareConfig(
 //        liftSubsystem.update()
 
         loopTimeController.every(10) {
-            reLocalizationSubsystem.update(localizerSubsystem)
+            reLocalizationSubsystem.update(localizerSubsystem,VarConfig.relocalize)
         }
 
         loopTimeController.every(10) {

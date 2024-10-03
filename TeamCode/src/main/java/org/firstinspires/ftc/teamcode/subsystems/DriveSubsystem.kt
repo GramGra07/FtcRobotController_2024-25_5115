@@ -59,7 +59,7 @@ class DriveSubsystem(
         motorFrontLeft.direction = DcMotorSimple.Direction.REVERSE
     }
 
-    private var frontRightPower = 0.0
+    private var frontRightPower: Double = 0.0
     private var frontLeftPower = 0.0
     private var backRightPower = 0.0
     private var backLeftPower = 0.0
@@ -76,7 +76,7 @@ class DriveSubsystem(
         leftStickY = -myOpMode.gamepad1.left_stick_y.toDouble()
         rightStickX = -myOpMode.gamepad1.right_stick_x.toDouble()
 
-        val slowPower = if (slowModeIsOn) VarConfig.slowMult else 1
+        val slowPower = if (slowModeIsOn) VarConfig.slowMult else 1.0
 //
         if (dt.type == DrivetrainType.MECANUM) {
             if (type == DriveType.FIELD_CENTRIC) {
@@ -111,10 +111,10 @@ class DriveSubsystem(
                     (leftStickY * abs(leftStickY) - leftStickX * abs(leftStickX) - turn) / slowPower
             }
         } else if (dt.type == DrivetrainType.TANK) {
-        frontLeftPower = Range.clip(leftStickY - rightStickX, -1.0, 1.0)
-        backLeftPower = frontLeftPower
-        frontRightPower = Range.clip(leftStickY + rightStickX, -1.0, 1.0)
-        backRightPower = frontRightPower
+            frontLeftPower = Range.clip(leftStickY - rightStickX, -1.0, 1.0)
+            backLeftPower = frontLeftPower
+            frontRightPower = Range.clip(leftStickY + rightStickX, -1.0, 1.0)
+            backRightPower = frontRightPower
         }
     }
 
@@ -167,7 +167,7 @@ class DriveSubsystem(
         power()
     }
 
-    fun telemetry(telemetry: Telemetry, minimal:Boolean) {
+    fun telemetry(telemetry: Telemetry, minimal: Boolean) {
         telemetry.addData("DRIVE", "")
         if (!minimal) {
             dt.telemetry(telemetry)
