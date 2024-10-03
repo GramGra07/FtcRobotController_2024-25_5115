@@ -9,7 +9,9 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.CustomFiltered
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.CustomPIDFCoefficients;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.KalmanFilterParameters;
 import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain;
+import org.firstinspires.ftc.teamcode.utilClass.drivetrain.Drivetrain;
 import org.firstinspires.ftc.teamcode.utilClass.drivetrain.PedroPathingPARAMS;
+
 
 /**
  * This is the FollowerConstants class. It holds many constants and parameters for various parts of
@@ -23,28 +25,11 @@ import org.firstinspires.ftc.teamcode.utilClass.drivetrain.PedroPathingPARAMS;
  */
 @Config
 public class FollowerConstants {
-
-    // This section is for setting the actual drive vector for the front left wheel, if the robot
-    // is facing a heading of 0 radians with the wheel centered at (0,0)
-    private static final double xMovement = CurrentDrivetrain.Companion.getCurrentDrivetrain().getPedroPathingPARAMS().getXMovement();
-    private static final double yMovement = CurrentDrivetrain.Companion.getCurrentDrivetrain().getPedroPathingPARAMS().getYMovement();
-    private static final double[] convertToPolar = Point.cartesianToPolar(xMovement, -yMovement);
-    public static Vector frontLeftVector = MathFunctions.normalizeVector(new Vector(convertToPolar[0], convertToPolar[1]));
     // This section is for configuring your motors
     public static String leftFrontMotorName = "motorFrontLeft";
     public static String leftRearMotorName = "motorBackLeft";
-    public static String rightFrontMotorName = "motorBackRight";
-    public static String rightRearMotorName = "motorFrontRight";
-    // Feed forward constant added on to the drive PIDF
-    public static double drivePIDFFeedForward = 0.01;
-    // A multiplier for the zero power acceleration to change the speed the robot decelerates at
-    // the end of paths.
-    // Increasing this will cause the robot to try to decelerate faster, at the risk of overshoots
-    // or localization slippage.
-    // Decreasing this will cause the deceleration at the end of the Path to be slower, making the
-    // robot slower but reducing risk of end-of-path overshoots or localization slippage.
-    // This can be set individually for each Path, but this is the default.
-    public static double zeroPowerAccelerationMultiplier = 4;
+    public static String rightFrontMotorName = "motorFrontRight";
+    public static String rightRearMotorName = "motorBackRight";
     // When the robot is at the end of its current Path or PathChain and the velocity goes below
     // this value, then end the Path. This is in inches/second.
     // This can be custom set for each Path.
@@ -122,29 +107,47 @@ public class FollowerConstants {
             0);
     // Feed forward constant added on to the secondary drive PIDF
     public static double secondaryDrivePIDFFeedForward = 0.01;
-    static PedroPathingPARAMS pedroParams = CurrentDrivetrain.Companion.getCurrentDrivetrain().getPedroPathingPARAMS();
+    private static final Drivetrain currentDrivetrain = CurrentDrivetrain.Companion.getCurrentDrivetrain();
+    private static final PedroPathingPARAMS params = currentDrivetrain.getPedroPathingPARAMS();
+    // This section is for setting the actual drive vector for the front left wheel, if the robot
+    // is facing a heading of 0 radians with the wheel centered at (0,0)
+    private static final double xMovement = params.getXMovement();
+    private static final double yMovement = params.getYMovement();
+    private static final double[] convertToPolar = Point.cartesianToPolar(xMovement, -yMovement);
+    public static Vector frontLeftVector = MathFunctions.normalizeVector(new Vector(convertToPolar[0], convertToPolar[1]));
     // Translational PIDF coefficients (don't use integral)
-    public static CustomPIDFCoefficients translationalPIDFCoefficients = pedroParams.getTranslationalPIDFCoefficients();
+    public static CustomPIDFCoefficients translationalPIDFCoefficients = params.getTranslationalPIDFCoefficients();
     // Translational Integral
-    public static CustomPIDFCoefficients translationalIntegral = pedroParams.getTranslationalIntegral();
+    public static CustomPIDFCoefficients translationalIntegral = params.getTranslationalIntegral();
     // Feed forward constant added on to the translational PIDF
-    public static double translationalPIDFFeedForward = pedroParams.getTranslationalPIDFFeedForward();
+    public static double translationalPIDFFeedForward = params.getTranslationalPIDFFeedForward();
     // Heading error PIDF coefficients
-    public static CustomPIDFCoefficients headingPIDFCoefficients = pedroParams.getHeadingPIDFCoefficients();
+    public static CustomPIDFCoefficients headingPIDFCoefficients = params.getHeadingPIDFCoefficients();
     // Feed forward constant added on to the heading PIDF
-    public static double headingPIDFFeedForward = pedroParams.getHeadingPIDFFeedForward();
+    public static double headingPIDFFeedForward = params.getHeadingPIDFFeedForward();
     // Drive PIDF coefficients
-    public static CustomFilteredPIDFCoefficients drivePIDFCoefficients = pedroParams.getDrivePIDFCoefficients();
+    public static CustomFilteredPIDFCoefficients drivePIDFCoefficients = params.getDrivePIDFCoefficients();
+    // Feed forward constant added on to the drive PIDF
+    public static double drivePIDFFeedForward = params.getDrivePIDFFeedForward();
     // Kalman filter parameters for the drive error Kalman filter
-    public static KalmanFilterParameters driveKalmanFilterParameters = pedroParams.getDriveKalmanFilterParameters();
+    public static KalmanFilterParameters driveKalmanFilterParameters =
+            params.getDriveKalmanFilterParameters();
     // Mass of robot in kilograms
-    public static double mass = pedroParams.getMass();
+    public static double mass = params.getMass();
     // Centripetal force to power scaling
-    public static double centripetalScaling = pedroParams.getCentripetalScaling();
+    public static double centripetalScaling = params.getCentripetalScaling();
     // Acceleration of the drivetrain when power is cut in inches/second^2 (should be negative)
     // if not negative, then the robot thinks that its going to go faster under 0 power
-    public static double forwardZeroPowerAcceleration = pedroParams.getForwardZeroPowerAcceleration();
+    public static double forwardZeroPowerAcceleration = params.getForwardZeroPowerAcceleration();
     // Acceleration of the drivetrain when power is cut in inches/second^2 (should be negative)
     // if not negative, then the robot thinks that its going to go faster under 0 power
-    public static double lateralZeroPowerAcceleration = pedroParams.getLateralZeroPowerAcceleration();
+    public static double lateralZeroPowerAcceleration = params.getLateralZeroPowerAcceleration();
+    // A multiplier for the zero power acceleration to change the speed the robot decelerates at
+    // the end of paths.
+    // Increasing this will cause the robot to try to decelerate faster, at the risk of overshoots
+    // or localization slippage.
+    // Decreasing this will cause the deceleration at the end of the Path to be slower, making the
+    // robot slower but reducing risk of end-of-path overshoots or localization slippage.
+    // This can be set individually for each Path, but this is the default.
+    public static double zeroPowerAccelerationMultiplier = params.getZeroPowerAccelerationMultiplier();
 }

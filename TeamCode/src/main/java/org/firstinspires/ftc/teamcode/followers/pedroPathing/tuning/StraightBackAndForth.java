@@ -4,7 +4,6 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -12,7 +11,6 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.follower.Follower;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.BezierLine;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Path;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Point;
-import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles;
 
 /**
  * This is the StraightBackAndForth autonomous OpMode. It runs the robot in a specified distance
@@ -28,8 +26,7 @@ import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles;
  * @version 1.0, 3/12/2024
  */
 @Config
-@Autonomous(name = "Straight Back And Forth", group = GroupingTitles.pedroTuning)
-@Disabled
+@Autonomous(name = "Straight Back And Forth", group = "Autonomous Pathing Tuning")
 public class StraightBackAndForth extends OpMode {
     public static double DISTANCE = 40;
     private Telemetry telemetryA;

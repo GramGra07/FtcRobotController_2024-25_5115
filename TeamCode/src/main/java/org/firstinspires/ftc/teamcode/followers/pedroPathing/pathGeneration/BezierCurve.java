@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration;
 
-
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants;
 
 import java.util.ArrayList;

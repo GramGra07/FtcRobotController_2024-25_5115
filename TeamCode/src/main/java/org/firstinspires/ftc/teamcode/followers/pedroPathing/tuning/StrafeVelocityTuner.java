@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning;
 
-
 import static org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants.leftFrontMotorName;
 import static org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants.leftRearMotorName;
 import static org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants.rightFrontMotorName;
@@ -10,7 +9,6 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -21,7 +19,6 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.PoseUpdater;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.MathFunctions;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Vector;
-import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -43,8 +40,7 @@ import java.util.List;
  * @version 1.0, 3/13/2024
  */
 @Config
-@Autonomous(name = "Strafe Velocity Tuner", group = GroupingTitles.pedroTuning)
-@Disabled
+@Autonomous(name = "Strafe Velocity Tuner", group = "Autonomous Pathing Tuning")
 public class StrafeVelocityTuner extends OpMode {
     public static double DISTANCE = 40;
     public static double RECORD_NUMBER = 10;

@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Path
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Point;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Vector;
 
+
 /**
  * This is the Drawing class. It handles the drawing of stuff on FTC Dashboard, like the robot.
  *

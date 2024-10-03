@@ -20,8 +20,11 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Vect
  */
 public class PoseUpdater {
     private final HardwareMap hardwareMap;
-    private final Localizer localizer;
+
     private IMU imu;
+
+    private final Localizer localizer;
+
     private Pose startingPose = new Pose(0, 0, 0);
 
     private Pose currentPose = startingPose;
@@ -331,5 +334,12 @@ public class PoseUpdater {
      */
     public Localizer getLocalizer() {
         return localizer;
+    }
+
+    /**
+     *
+     */
+    public void resetIMU() {
+        localizer.resetIMU();
     }
 }

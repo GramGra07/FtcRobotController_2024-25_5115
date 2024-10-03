@@ -9,7 +9,6 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.Locali
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.Pose;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.MathFunctions;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Vector;
-import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain;
 
 /**
  * This is the OTOSLocalizer class. This class extends the Localizer superclass and is a
@@ -40,8 +39,8 @@ import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain;
  */
 public class OTOSLocalizer extends Localizer {
     private final HardwareMap hardwareMap;
-    private final SparkFunOTOS otos;
     private Pose startPose;
+    private final SparkFunOTOS otos;
     private double previousHeading;
     private double totalHeading;
 
@@ -65,8 +64,13 @@ public class OTOSLocalizer extends Localizer {
     public OTOSLocalizer(HardwareMap map, Pose setStartPose) {
         hardwareMap = map;
 
+        /*
+         TODO: If you want to use the "SparkFunOTOSCorrected" version of OTOS, then replace the
+          'SparkFunOTOS.class' below with 'SparkFunOTOSCorrected.class' and set the OTOS as a
+          "SparkFunOTOS Corrected" in your robot config
+         */
         // TODO: replace this with your OTOS port
-        otos = hardwareMap.get(SparkFunOTOS.class, CurrentDrivetrain.Companion.getCurrentDrivetrain().getSparkFunOTOSParams().getName());
+        otos = hardwareMap.get(SparkFunOTOS.class, "sensor_otos");
 
         otos.setLinearUnit(DistanceUnit.INCH);
         otos.setAngularUnit(AngleUnit.RADIANS);
@@ -75,11 +79,11 @@ public class OTOSLocalizer extends Localizer {
         // For the OTOS, left/right is the y axis and forward/backward is the x axis, with left being
         // positive y and forward being positive x. PI/2 radians is facing forward, and clockwise
         // rotation is negative rotation.
-        otos.setOffset(CurrentDrivetrain.Companion.getCurrentDrivetrain().getSparkFunOTOSParams().getOffset());
+        otos.setOffset(new SparkFunOTOS.Pose2D(0, 0, Math.PI / 2));
 
         // TODO: replace these with your tuned multipliers
-        otos.setLinearScalar(CurrentDrivetrain.Companion.getCurrentDrivetrain().getSparkFunOTOSParams().getLinearScalar());
-        otos.setAngularScalar(CurrentDrivetrain.Companion.getCurrentDrivetrain().getSparkFunOTOSParams().getAngularScalar());
+        otos.setLinearScalar(1.0);
+        otos.setAngularScalar(1.0);
 
         otos.calibrateImu();
         otos.resetTracking();
@@ -203,5 +207,11 @@ public class OTOSLocalizer extends Localizer {
      */
     public double getTurningMultiplier() {
         return otos.getAngularScalar();
+    }
+
+    /**
+     * This does nothing since this localizer does not use the IMU.
+     */
+    public void resetIMU() {
     }
 }

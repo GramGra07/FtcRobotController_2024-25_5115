@@ -10,7 +10,6 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.PoseUpdater;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.DashboardPoseTracker;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.Drawing;
-import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles;
 
 /**
  * This is the ForwardTuner OpMode. This tracks the forward movement of the robot and displays the
@@ -26,8 +25,8 @@ import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles;
  * @version 1.0, 5/6/2024
  */
 @Config
-@Autonomous(name = "Forward Localizer Tuner", group = GroupingTitles.pedroTuning)
-public class FowardTuner extends OpMode {
+@Autonomous(name = "Forward Localizer Tuner", group = "Autonomous Pathing Tuning")
+public class ForwardTuner extends OpMode {
     public static double DISTANCE = 30;
     private PoseUpdater poseUpdater;
     private DashboardPoseTracker dashboardPoseTracker;

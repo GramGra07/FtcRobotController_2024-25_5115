@@ -1,11 +1,11 @@
 package org.firstinspires.ftc.teamcode.followers.pedroPathing.examples;
 
+
 import static org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants.leftFrontMotorName;
 import static org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants.leftRearMotorName;
 import static org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants.rightFrontMotorName;
 import static org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants.rightRearMotorName;
 
-import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.follower.Follower;
-import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles;
+
 
 /**
  * This is the TeleOpEnhancements OpMode. It is an example usage of the TeleOp enhancements that
@@ -24,8 +24,7 @@ import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles;
  * @author Harrison Womack - 10158 Scott's Bots
  * @version 1.0, 3/21/2024
  */
-@Config
-@TeleOp(name = "Pedro Pathing TeleOp Enhancements", group = GroupingTitles.pedroTuning)
+@TeleOp(name = "Pedro Pathing TeleOp Enhancements", group = "Test")
 @Disabled
 public class TeleOpEnhancements extends OpMode {
     private Follower follower;

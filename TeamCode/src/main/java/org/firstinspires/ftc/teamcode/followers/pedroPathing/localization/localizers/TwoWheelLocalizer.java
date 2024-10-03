@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.localizers;
 
-
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -8,7 +7,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.Encoder;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.Localizer;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.Matrix;
@@ -16,8 +14,6 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.Pose;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.MathFunctions;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Vector;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.NanoTimer;
-import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain;
-import org.firstinspires.ftc.teamcode.utilClass.drivetrain.PedroPathingPARAMS;
 
 /**
  * This is the TwoWheelLocalizer class. This class extends the Localizer superclass and is a
@@ -48,21 +44,20 @@ import org.firstinspires.ftc.teamcode.utilClass.drivetrain.PedroPathingPARAMS;
  */
 @Config
 public class TwoWheelLocalizer extends Localizer { // todo: make two wheel odo work
-    static PedroPathingPARAMS pedroPathingPARAMS = CurrentDrivetrain.Companion.getCurrentDrivetrain().getPedroPathingPARAMS();
-    public static double FORWARD_TICKS_TO_INCHES = pedroPathingPARAMS.getForwardTicksToInches();
-    public static double STRAFE_TICKS_TO_INCHES = pedroPathingPARAMS.getLateralTicksToInches();
+    public static double FORWARD_TICKS_TO_INCHES = 8192 * 1.37795 * 2 * Math.PI * 0.5008239963;
+    public static double STRAFE_TICKS_TO_INCHES = 8192 * 1.37795 * 2 * Math.PI * 0.5018874659;
     private final HardwareMap hardwareMap;
     private final IMU imu;
-    private final NanoTimer timer;
-    private final Encoder forwardEncoder;
-    private final Encoder strafeEncoder;
-    private final Pose forwardEncoderPose;
-    private final Pose strafeEncoderPose;
     private Pose startPose;
     private Pose displacementPose;
     private Pose currentVelocity;
     private Matrix prevRotationMatrix;
+    private final NanoTimer timer;
     private long deltaTimeNano;
+    private final Encoder forwardEncoder;
+    private final Encoder strafeEncoder;
+    private final Pose forwardEncoderPose;
+    private final Pose strafeEncoderPose;
     private double previousIMUOrientation;
     private double deltaRadians;
     private double totalHeading;
@@ -86,22 +81,22 @@ public class TwoWheelLocalizer extends Localizer { // todo: make two wheel odo w
      */
     public TwoWheelLocalizer(HardwareMap map, Pose setStartPose) {
         // TODO: replace these with your encoder positions
-        forwardEncoderPose = pedroPathingPARAMS.getForwardEncoderPose();
-        strafeEncoderPose = pedroPathingPARAMS.getLateralEncoderPose();
+        forwardEncoderPose = new Pose(-18.5 / 25.4 - 0.1, 164.4 / 25.4, 0);
+        strafeEncoderPose = new Pose(-107.9 / 25.4 + 0.25, -1.1 / 25.4 - 0.23, Math.toRadians(90));
 
         hardwareMap = map;
 
         imu = hardwareMap.get(IMU.class, "imu");
-        imu.initialize(new IMU.Parameters(new RevHubOrientationOnRobot(CurrentDrivetrain.Companion.getCurrentDrivetrain().getDriveConfigPARAMS().getLogoFacingDirection(), CurrentDrivetrain.Companion.getCurrentDrivetrain().getDriveConfigPARAMS().getUsbFacingDirection())));
+        // TODO: replace this with your IMU's orientation
+        imu.initialize(new IMU.Parameters(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.LEFT)));
 
         // TODO: replace these with your encoder ports
-        forwardEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, CurrentDrivetrain.Companion.getCurrentDrivetrain().getDriveConfigPARAMS().getParEncoder()));
-        strafeEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, CurrentDrivetrain.Companion.getCurrentDrivetrain().getDriveConfigPARAMS().getPerEncoder()));
+        forwardEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "leftRear"));
+        strafeEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "strafeEncoder"));
 
         // TODO: reverse any encoders necessary
         forwardEncoder.setDirection(Encoder.REVERSE);
-        if (HardwareConfig.Companion.isOLDDrivetrain())
-            strafeEncoder.setDirection(Encoder.REVERSE);
+        strafeEncoder.setDirection(Encoder.FORWARD);
 
         setStartPose(setStartPose);
         timer = new NanoTimer();
@@ -293,5 +288,12 @@ public class TwoWheelLocalizer extends Localizer { // todo: make two wheel odo w
      */
     public double getTurningMultiplier() {
         return 1;
+    }
+
+    /**
+     * This resets the IMU.
+     */
+    public void resetIMU() {
+        imu.resetYaw();
     }
 }
