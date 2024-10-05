@@ -67,15 +67,15 @@ class Drivetrain(
                     Pose(0.0, 809.2789524675853, 0.0), //fwd //parallel
                     Pose(1745.8006924415185, 0.0, 0.0), //lateral //perp
                     6.1,
-                    60.758503953976685,
-                    40.8115164940066,
-                    -50.12846614166424,
-                    -77.35699334482771,
+                    69.6053,
+                    54.3784,
+                    -71.9396,
+                    -70.1854,
                     CustomPIDFCoefficients(
-                        0.009,
-                        0.0006,
+                        0.04,
+                        0.00009,
                         0.002,
-                        0.0005
+                        0.005
                     ),
                     CustomPIDFCoefficients(
                         0.0,
@@ -92,10 +92,10 @@ class Drivetrain(
                     ),
                     0.01,
                     CustomFilteredPIDFCoefficients(
-                        0.02,
-                        0.0,
-                        0.000005,
-                        0.0, 0.0
+                        0.002, //speed
+                        0.0005,
+                        0.00005,
+                        0.0, 0.04
                     ),
                     0.01,
                     KalmanFilterParameters(

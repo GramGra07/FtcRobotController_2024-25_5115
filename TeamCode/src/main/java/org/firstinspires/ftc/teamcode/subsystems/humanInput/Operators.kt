@@ -1,13 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems.humanInput
 
-import com.acmerobotics.dashboard.config.Config
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
-import org.firstinspires.ftc.teamcode.extensions.GamepadExtensions
-import org.firstinspires.ftc.teamcode.extensions.GamepadExtensions.buttonJustPressed
-import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.FastIntakeSubsystem
-import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ScoringSubsystem
 
-@Config
 object Operators {
 
     @JvmField

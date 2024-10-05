@@ -111,21 +111,19 @@ class ppTestAuto : LinearOpMode() {
                 )
             )
             .build()
-        follower.followPath(fullSpline)
-        follower.setStartingPose(Pose(36.0, 36.0, Math.toRadians(180.0)))
+
+        val square = follower.pathBuilder()
+            .addPath(
+                BezierLine(Point(Pose(24.0,0.0)),Point(Pose(48.0,0.0)))
+            )
+            .build()
+        follower.followPath(square)
+        follower.setStartingPose(Pose(24.0, 0.0, Math.toRadians(180.0)))
         waitForStart()
         while (opModeIsActive()) {
             follower.update()
 
             follower.telemetryDebug(telemetryA)
-//            if (follower.atParametricEnd()) {
-//                index++
-//                if (index % 2 == 0) {
-//                    follower.followPath(spline)
-//                } else {
-//                    follower.followPath(spline2)
-//                }
-//            }
         }
     }
 }

@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.customHardware.servos.AxonServo
 import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.initMotor
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.initServo
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.setPose
+import org.firstinspires.ftc.teamcode.utilClass.ServoFunc
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.PIDVals
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.ServoUtil
 
@@ -165,12 +166,12 @@ class ScoringSubsystem(ahwMap: HardwareMap) {
     private fun updateServos() {
         when (clawState) {
             ClawState.OPEN -> {
-                ServoUtil.openClaw(claw)
+                ServoFunc.openClaw(claw)
                 clawState = ClawState.IDLE
             }
 
             ClawState.CLOSE -> {
-                ServoUtil.closeClaw(claw)
+                ServoFunc.closeClaw(claw)
                 clawState = ClawState.IDLE
             }
 

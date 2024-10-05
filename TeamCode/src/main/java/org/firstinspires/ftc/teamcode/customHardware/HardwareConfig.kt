@@ -1,8 +1,6 @@
 package org.firstinspires.ftc.teamcode.customHardware
 
 import com.acmerobotics.dashboard.FtcDashboard
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
-import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
@@ -12,7 +10,6 @@ import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities.initializeProcessor
-import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities.startCameraStream
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities.stopCameraStream
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.PROCESSORS
 import org.firstinspires.ftc.teamcode.customHardware.loopTime.LoopTimeController
@@ -22,7 +19,6 @@ import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.currentVoltage
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.initVSensor
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.lowVoltage
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.telemetry
-import org.firstinspires.ftc.teamcode.followers.roadRunner.Drawing
 import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.LocalizerSubsystem
@@ -168,18 +164,18 @@ open class HardwareConfig(
 //
 //        liftSubsystem.update()
 
-        loopTimeController.every(10) {
-            reLocalizationSubsystem.update(localizerSubsystem,VarConfig.relocalize)
+        loopTimeController.every(if (VarConfig.loopSaver) 30 else 10) {
+            reLocalizationSubsystem.update(localizerSubsystem, VarConfig.relocalize)
         }
 
-        loopTimeController.every(10) {
+        loopTimeController.every(if (VarConfig.loopSaver) 30 else 10) {
             buildTelemetry() //makes telemetry
         }
 
 //        if (!loopTimeController.loopSaver) {
 //            startCameraStream()
 //        } else {
-            stopCameraStream()
+        stopCameraStream()
 //        }
 
         localizerSubsystem.draw(dashboard)
@@ -206,24 +202,23 @@ open class HardwareConfig(
     private fun buildTelemetry() {
         loopTimeController.telemetry(telemetry)
         teleSpace()
-        if (!loopTimeController.loopSaver) {
-            if (VarConfig.multipleDrivers) {
-                telemetry.addData(
-                    "Drivers",
-                    Drivers.currDriver.name.toString() + " " + Drivers.currOther.name.toString()
-                )
-                teleSpace()
-            }
-            if (vSensor.lowVoltage()) {
-                vSensor.telemetry(telemetry)
-                teleSpace()
-            }
-            driveSubsystem.telemetry(telemetry,false)
+        if (VarConfig.multipleDrivers) {
+            telemetry.addData(
+                "Drivers",
+                Drivers.currDriver.name.toString() + " " + Drivers.currOther.name.toString()
+            )
             teleSpace()
-            reLocalizationSubsystem.telemetry(telemetry)
+        }
+        if (vSensor.lowVoltage()) {
+            vSensor.telemetry(telemetry)
             teleSpace()
-            localizerSubsystem.telemetry(telemetry)
-            teleSpace()
+        }
+        driveSubsystem.telemetry(telemetry, false)
+        teleSpace()
+        reLocalizationSubsystem.telemetry(telemetry)
+        teleSpace()
+        localizerSubsystem.telemetry(telemetry)
+        teleSpace()
 //            fastIntakeSubsystem.telemetry(telemetry)
 //            teleSpace()
 //            scoringSubsystem.telemetry(telemetry)
@@ -231,10 +226,9 @@ open class HardwareConfig(
 //            liftSubsystem.telemetry(telemetry)
 //            teleSpace()
 
-            TargetLock.telemetry(telemetry)
-            teleSpace()
-            telemetry.addData("Version", CURRENT_VERSION)
-        }
+        TargetLock.telemetry(telemetry)
+        teleSpace()
+        telemetry.addData("Version", CURRENT_VERSION)
         telemetry.update()
     }
 

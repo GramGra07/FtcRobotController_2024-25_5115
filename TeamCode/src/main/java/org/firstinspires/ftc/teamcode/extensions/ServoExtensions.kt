@@ -1,10 +1,8 @@
 package org.firstinspires.ftc.teamcode.extensions
 
-import com.acmerobotics.dashboard.config.Config
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.Servo
 
-@Config
 object ServoExtensions {
     fun initServo(hw: HardwareMap, name: String): Servo {
         return hw.get(Servo::class.java, name)

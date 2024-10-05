@@ -42,11 +42,10 @@ import org.firstinspires.ftc.teamcode.utilClass.drivetrain.Drivetrain;
  */
 public class OTOSLocalizer extends Localizer {
 
-    private Drivetrain dt = CurrentDrivetrain.Companion.getCurrentDrivetrain();
-
     private final HardwareMap hardwareMap;
-    private Pose startPose;
     private final SparkFunOTOS otos;
+    private final Drivetrain dt = CurrentDrivetrain.Companion.getCurrentDrivetrain();
+    private Pose startPose;
     private double previousHeading;
     private double totalHeading;
 

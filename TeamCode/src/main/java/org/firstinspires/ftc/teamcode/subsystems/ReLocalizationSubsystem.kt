@@ -56,11 +56,12 @@ class ReLocalizationSubsystem(ahwMap: HardwareMap) {
                 position.acquisitionTime
             ), botpose.orientation
         )
-        pose = if (result.position.x.toInt() != 0|| ((res.isValid) && res.staleness < 100L) && (dist < 24 * m)) {
-            result
-        } else {
-            null
-        }
+        pose =
+            if (result.position.x.toInt() != 0 || ((res.isValid) && res.staleness < 100L) && (dist < 24 * m)) {
+                result
+            } else {
+                null
+            }
         return result
     }
 
@@ -69,7 +70,7 @@ class ReLocalizationSubsystem(ahwMap: HardwareMap) {
             telemetry.addData("RELOCALIZATION", "")
             telemetry.addData("X", pose!!.position.x)
             telemetry.addData("Y", pose!!.position.y)
-            telemetry.addData("H",pose!!.orientation.yaw)
+            telemetry.addData("H", pose!!.orientation.yaw)
             val status = limelight3A.status
             telemetry.addData(
                 "LL", "Temp: %.1fC, CPU: %.1f%%, FPS: %d",

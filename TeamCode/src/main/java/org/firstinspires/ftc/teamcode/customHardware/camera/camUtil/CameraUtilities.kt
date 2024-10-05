@@ -35,6 +35,7 @@ object CameraUtilities {
         STOPPED,
         STARTED
     }
+
     fun startCameraStream(streamSource: CameraStreamSource? = this.visionPortal) {
         when (state) {
             CAM_STATE.STOPPED -> {
@@ -42,6 +43,7 @@ object CameraUtilities {
                     .startCameraStream(streamSource, 0.0)
                 state = CAM_STATE.STARTED
             }
+
             else -> {
                 return
             }
@@ -55,6 +57,7 @@ object CameraUtilities {
                     .stopCameraStream()
                 state = CAM_STATE.STOPPED
             }
+
             else -> {
                 return
             }
@@ -70,9 +73,9 @@ object CameraUtilities {
     private lateinit var aprilTag: AprilTagProcessor
     private lateinit var objProcessor: VPObjectDetect
     private lateinit var pubProcessor: MeanColorOfAreaDetector
-    private lateinit var targetLockProcessor:TargetLock
+    private lateinit var targetLockProcessor: TargetLock
     fun initializeProcessor(
-        alliance:Alliance,
+        alliance: Alliance,
         processor: PROCESSORS?,
         ahwMap: HardwareMap,
         camera: String,
@@ -80,9 +83,10 @@ object CameraUtilities {
     ): Boolean {
         when (processor) {
             PROCESSORS.TARGET_LOCK -> {
-                targetLockProcessor = TargetLock(alliance,20.0)
+                targetLockProcessor = TargetLock(alliance, 20.0)
                 runningProcessors.add(targetLockProcessor)
             }
+
             PROCESSORS.APRIL_TAG -> {
                 aprilTag =
                     AprilTagProcessor.Builder() // The following default settings are available to un-comment and edit as needed.
@@ -130,6 +134,7 @@ object CameraUtilities {
                 )
                 runningProcessors.add(pubProcessor)
             }
+
             else -> return false
         }
         if (processor != null) {

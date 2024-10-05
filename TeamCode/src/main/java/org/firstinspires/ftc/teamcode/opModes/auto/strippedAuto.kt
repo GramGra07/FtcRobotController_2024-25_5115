@@ -5,9 +5,8 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.firstinspires.ftc.teamcode.customHardware.AutoHardware
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.Alliance
-import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.StartSide
 
-class strippedAuto(private var alliance: Alliance,) :
+class strippedAuto(private var alliance: Alliance) :
     LinearOpMode() {
     private lateinit var robot: AutoHardware
 

@@ -14,9 +14,10 @@ class CameraLock(var center: Point, var angle: Double) {
     }
 
     override fun toString(): String {
-        return "Center: ${center.toString()}, Angle: $angle"
+        return "Center: $center, Angle: $angle"
     }
-    fun Point.toString():String{
+
+    fun Point.toString(): String {
         return "${center.x.roundToInt()}, ${center.y.roundToInt()}"
     }
 }

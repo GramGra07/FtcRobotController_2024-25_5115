@@ -5,7 +5,6 @@ import org.firstinspires.ftc.teamcode.extensions.GamepadExtensions
 import org.firstinspires.ftc.teamcode.extensions.GamepadExtensions.buttonJustPressed
 import org.firstinspires.ftc.teamcode.ggutil.AvoidanceSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
-import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.LiftSubsystem
 import org.firstinspires.ftc.teamcode.utilClass.DriverAid
 import org.firstinspires.ftc.teamcode.utilClass.objects.DriveType
 import org.firstinspires.ftc.teamcode.utilClass.objects.Driver

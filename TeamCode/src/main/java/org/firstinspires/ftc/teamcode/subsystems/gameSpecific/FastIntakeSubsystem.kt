@@ -7,13 +7,13 @@ import com.qualcomm.robotcore.hardware.NormalizedColorSensor
 import com.qualcomm.robotcore.hardware.Servo
 import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.robotcore.external.Telemetry
+import org.firstinspires.ftc.teamcode.customHardware.loopTime.LoopTimeController
 import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.initMotor
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.getColor
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.initColorSensor
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.telemetry
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.initServo
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.setPose
-import org.firstinspires.ftc.teamcode.customHardware.loopTime.LoopTimeController
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.PIDVals
 
 class FastIntakeSubsystem(ahwMap: HardwareMap) {

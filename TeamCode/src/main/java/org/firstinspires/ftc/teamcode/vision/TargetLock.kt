@@ -111,7 +111,7 @@ class TargetLock(
             val dist = sqrt(
                 ((frame.width() / 2 - center!!.x).pow(2)) + (frame.height() / 2 - center.y).pow(2)
             )
-            if (dist < closestDistance && boundRect[centers.indexOf(center)]!!.area()>minArea) {
+            if (dist < closestDistance && boundRect[centers.indexOf(center)]!!.area() > minArea) {
                 closestDistance = dist
                 val angle =
                     (fov / frame.width()) * (center.x - (frame.width() / 2)) - camOrientation

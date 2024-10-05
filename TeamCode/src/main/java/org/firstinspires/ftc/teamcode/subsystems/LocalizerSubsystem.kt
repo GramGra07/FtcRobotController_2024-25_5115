@@ -8,8 +8,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D
-import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
-import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig.Companion
 import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toPose
 import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toPose2d
 import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toString2
@@ -163,14 +161,15 @@ class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose2d, val type: LocalizerT
         }
     }
 
-    fun draw( dashboard: FtcDashboard,packet: TelemetryPacket= TelemetryPacket()) {
+    fun draw(dashboard: FtcDashboard, packet: TelemetryPacket = TelemetryPacket()) {
         dashboard.clearTelemetry()
         packet.field()
         packet.fieldOverlay().setStroke("#3F51B5")
         Drawing.drawRobot(packet.fieldOverlay(), pose())
         dashboard.sendTelemetryPacket(packet)
     }
-    fun relocalize(pose:Pose3D){
-        setPose(Pose2d(pose.position.x,pose.position.y,this.heading()))//this.heading()
+
+    fun relocalize(pose: Pose3D) {
+        setPose(Pose2d(pose.position.x, pose.position.y, this.heading()))//this.heading()
     }
 }

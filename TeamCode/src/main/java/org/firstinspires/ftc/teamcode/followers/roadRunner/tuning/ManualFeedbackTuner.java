@@ -5,7 +5,6 @@ import com.acmerobotics.roadrunner.ftc.Actions;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.teamcode.followers.roadRunner.SparkFunOTOSDrive;
-import org.firstinspires.ftc.teamcode.followers.roadRunner.TankDrive;
 
 public final class ManualFeedbackTuner extends LinearOpMode {
     public static double DISTANCE = 64;
@@ -15,14 +14,14 @@ public final class ManualFeedbackTuner extends LinearOpMode {
 
         SparkFunOTOSDrive drive = new SparkFunOTOSDrive(hardwareMap, new Pose2d(0, 0, 0));
 
-            waitForStart();
+        waitForStart();
 
-            while (opModeIsActive()) {
-                Actions.runBlocking(
-                        drive.actionBuilder(new Pose2d(0, 0, 0))
-                                .lineToX(DISTANCE)
-                                .lineToX(0)
-                                .build());
-            }
+        while (opModeIsActive()) {
+            Actions.runBlocking(
+                    drive.actionBuilder(new Pose2d(0, 0, 0))
+                            .lineToX(DISTANCE)
+                            .lineToX(0)
+                            .build());
+        }
     }
 }

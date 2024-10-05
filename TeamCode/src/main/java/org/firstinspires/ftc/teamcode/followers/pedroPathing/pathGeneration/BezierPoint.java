@@ -18,9 +18,8 @@ public class BezierPoint extends BezierCurve {
     private final Point point;
 
     private final Vector endTangent = new Vector();
-
-    private double UNIT_TO_TIME;
     private final double length;
+    private double UNIT_TO_TIME;
 
     /**
      * This creates a new BezierPoint with a specified Point.

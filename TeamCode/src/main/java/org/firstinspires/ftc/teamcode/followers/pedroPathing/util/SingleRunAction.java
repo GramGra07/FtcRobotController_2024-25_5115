@@ -11,9 +11,8 @@ package org.firstinspires.ftc.teamcode.followers.pedroPathing.util;
  * @version 1.0, 3/6/2024
  */
 public class SingleRunAction {
-    private boolean hasBeenRun;
-
     private final Runnable runnable;
+    private boolean hasBeenRun;
 
     /**
      * This creates a new SingleRunAction with a Runnable containing the code to be run for this action.

@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.opModes.auto.demos
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
+import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.follower.Follower
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.BezierPoint
@@ -8,7 +9,7 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Poin
 import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles
 
 @Autonomous(group = GroupingTitles.demos)
-class stayDemoPP : OpMode() {
+class stayDemoPP : LinearOpMode() {
 
     private var follower: Follower? = null
 
@@ -16,11 +17,12 @@ class stayDemoPP : OpMode() {
      * This initializes the Follower and creates the forward and backward Paths. Additionally, this
      * initializes the FTC Dashboard telemetry.
      */
-    override fun init() {
-        follower = Follower(hardwareMap)
-    }
 
-    override fun loop() {
-        follower!!.holdPoint(BezierPoint(Point(0.0, 0.0, 0)), Math.toRadians(90.0))
+    override fun runOpMode() {
+        follower = Follower(hardwareMap)
+        waitForStart()
+        while (opModeIsActive()) {
+            follower!!.holdPoint(BezierPoint(Point(0.0, 0.0, 0)), Math.toRadians(90.0))
+        }
     }
 }
