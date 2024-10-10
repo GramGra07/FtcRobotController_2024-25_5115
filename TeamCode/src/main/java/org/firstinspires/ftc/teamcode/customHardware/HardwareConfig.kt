@@ -175,7 +175,7 @@ open class HardwareConfig(
 //        if (!loopTimeController.loopSaver) {
 //            startCameraStream()
 //        } else {
-        stopCameraStream()
+//        stopCameraStream()
 //        }
 
         localizerSubsystem.draw(dashboard)

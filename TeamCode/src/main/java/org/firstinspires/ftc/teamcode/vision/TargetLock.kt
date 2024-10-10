@@ -20,7 +20,10 @@ import org.opencv.core.Point
 import org.opencv.core.Rect
 import org.opencv.core.Scalar
 import org.opencv.imgproc.Imgproc
+import java.lang.Math.toDegrees
 import java.util.concurrent.atomic.AtomicReference
+import kotlin.math.abs
+import kotlin.math.atan
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -112,9 +115,14 @@ class TargetLock(
                 ((frame.width() / 2 - center!!.x).pow(2)) + (frame.height() / 2 - center.y).pow(2)
             )
             if (dist < closestDistance && boundRect[centers.indexOf(center)]!!.area() > minArea) {
+                val the = boundRect[centers.indexOf(center)]
+                val x = abs(the!!.br().x - the.tl().x)
+                val y = abs(the.br().y - the.tl().y)
+                val angle = toDegrees(atan(y / x))
                 closestDistance = dist
-                val angle =
-                    (fov / frame.width()) * (center.x - (frame.width() / 2)) - camOrientation
+//                val angle =
+//                    (fov / frame.width()) * (center.x - (frame.width() / 2)) - camOrientation
+
                 closestLock = CameraLock(Point(center.x, center.y), angle)
             }
         }
