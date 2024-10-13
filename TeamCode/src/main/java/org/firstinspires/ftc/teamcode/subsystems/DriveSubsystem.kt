@@ -72,7 +72,7 @@ class DriveSubsystem(
     var rightStickX = 0.0
     fun driveByGamepads(type: DriveType, myOpMode: OpMode) {
         // Retrieve gamepad values
-        leftStickX = myOpMode.gamepad1.left_stick_x.toDouble()
+        leftStickX = -myOpMode.gamepad1.left_stick_x.toDouble()
         leftStickY = -myOpMode.gamepad1.left_stick_y.toDouble()
         rightStickX = -myOpMode.gamepad1.right_stick_x.toDouble()
 

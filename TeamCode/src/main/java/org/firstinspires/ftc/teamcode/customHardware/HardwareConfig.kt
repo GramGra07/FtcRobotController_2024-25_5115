@@ -55,10 +55,6 @@ open class HardwareConfig(
     companion object {
         val dt = CurrentDrivetrain.currentDrivetrain
 
-        fun isOLDDrivetrain(): Boolean {
-            return dt.name == Drivetrain.DrivetrainNames.OLD
-        }
-
         lateinit var telemetry: Telemetry
         lateinit var dashboard: FtcDashboard
         val timer: ElapsedTime = ElapsedTime()
@@ -93,7 +89,7 @@ open class HardwareConfig(
 
         allHubs = ahwMap.getAll(LynxModule::class.java)
         for (hub in allHubs) {
-            hub.setConstant(15026849)
+//            hub.setConstant(15026849)
             hub.bulkCachingMode = LynxModule.BulkCachingMode.AUTO
         }
 

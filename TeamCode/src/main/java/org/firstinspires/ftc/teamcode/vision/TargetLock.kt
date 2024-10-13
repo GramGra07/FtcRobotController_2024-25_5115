@@ -36,10 +36,10 @@ class TargetLock(
     private val lastFrame = AtomicReference(Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565))
     private var ycrcbMat = Mat()
 
-    var yellow = Mat()
-    var allianceColor = Mat()
-    var detectionMat = Mat()
-    var edges = Mat()
+    private var yellow = Mat()
+    private var allianceColor = Mat()
+    private var detectionMat = Mat()
+    private var edges = Mat()
 
 
     //    var c = Scalar(255.0, 0.0, 0.0)
@@ -95,6 +95,7 @@ class TargetLock(
                 true
             )
             boundRect[i] = Imgproc.boundingRect(MatOfPoint(*contoursPoly[i]?.toArray()))
+
             centers[i] = Point()
             Imgproc.minEnclosingCircle(contoursPoly[i], centers[i], radius[i])
         }
@@ -115,6 +116,15 @@ class TargetLock(
                 ((frame.width() / 2 - center!!.x).pow(2)) + (frame.height() / 2 - center.y).pow(2)
             )
             if (dist < closestDistance && boundRect[centers.indexOf(center)]!!.area() > minArea) {
+                val rect = Imgproc.minAreaRect(contoursPoly[centers.indexOf(center)])
+                Imgproc.rectangle(
+                    frame,
+                    rect.boundingRect().tl(),
+                    rect.boundingRect().br(),
+                    Scalar(0.0, 255.0, 255.0),
+                    2
+                )
+
                 val the = boundRect[centers.indexOf(center)]
                 val x = abs(the!!.br().x - the.tl().x)
                 val y = abs(the.br().y - the.tl().y)

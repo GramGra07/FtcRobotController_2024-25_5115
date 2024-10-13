@@ -118,7 +118,7 @@ class ppTestAuto : LinearOpMode() {
             )
             .build()
         follower.followPath(square)
-        follower.setStartingPose(Pose(24.0, 0.0, Math.toRadians(180.0)))
+        follower.setStartingPose(Pose(24.0, 0.0, Math.toRadians(90.0)))
         waitForStart()
         while (opModeIsActive()) {
             follower.update()
