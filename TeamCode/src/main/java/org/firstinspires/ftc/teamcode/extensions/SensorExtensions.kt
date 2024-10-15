@@ -7,7 +7,9 @@ import com.qualcomm.robotcore.hardware.NormalizedColorSensor
 import com.qualcomm.robotcore.hardware.VoltageSensor
 import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.robotcore.external.Telemetry
+import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.Encoder
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.FastIntakeSubsystem
+import org.openftc.easyopencv.PipelineRecordingParameters
 import kotlin.math.min
 
 object SensorExtensions {
