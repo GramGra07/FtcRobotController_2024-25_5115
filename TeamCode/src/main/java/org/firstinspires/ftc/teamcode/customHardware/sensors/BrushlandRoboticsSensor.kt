@@ -14,7 +14,7 @@ class BrushlandRoboticsSensor (hw:HardwareMap, val name:String) {
     enum class Color{
         RED,BLUE,YELLOW,NONE
     }
-    var color = Color.RED
+    var color = Color.NONE
 
     fun telemetry(telemetry: Telemetry) {
 //        telemetry.addData("Sensor 1:",pin1.state)

@@ -19,9 +19,6 @@ class ReLocalizationSubsystem(ahwMap: HardwareMap) {
 
     init {
         limelight3A = ahwMap.get(Limelight3A::class.java, "limelight")
-        if (!limelight3A.pipelineSwitch(0)) {
-            throw Exception("Not initialized")
-        }
         limelight3A.start()
     }
 
