@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.customHardware
 import com.acmerobotics.dashboard.FtcDashboard
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver
+import com.qualcomm.hardware.rev.RevColorSensorV3
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.VoltageSensor
@@ -14,6 +15,8 @@ import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilit
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.PROCESSORS
 import org.firstinspires.ftc.teamcode.customHardware.loopTime.LoopTimeController
 import org.firstinspires.ftc.teamcode.customHardware.loopTime.LoopTimeController.Companion.every
+import org.firstinspires.ftc.teamcode.customHardware.sensors.BeamBreakSensor
+import org.firstinspires.ftc.teamcode.customHardware.sensors.BrushlandRoboticsSensor
 import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.initLights
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.currentVoltage
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.initVSensor
@@ -23,6 +26,8 @@ import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.LocalizerSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.ReLocalizationSubsystem
+import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ArmSubsystem
+import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ScoringSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers.bindDriverButtons
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers.currentFieldCentric
@@ -46,11 +51,12 @@ open class HardwareConfig(
     lateinit var driveSubsystem: DriveSubsystem
     lateinit var localizerSubsystem: LocalizerSubsystem
 
-    //    lateinit var fastIntakeSubsystem: FastIntakeSubsystem
-//    lateinit var liftSubsystem: LiftSubsystem
+//    lateinit var armSubsystem: ArmSubsystem
 //    lateinit var scoringSubsystem: ScoringSubsystem
     lateinit var reLocalizationSubsystem: ReLocalizationSubsystem
 
+    lateinit var brush: BrushlandRoboticsSensor
+    lateinit var beamBreakSensor: BeamBreakSensor
 
     companion object {
         val dt = CurrentDrivetrain.currentDrivetrain
@@ -79,6 +85,11 @@ open class HardwareConfig(
         auto: Boolean,
         startLocation: StartLocation
     ) {
+
+        brush = BrushlandRoboticsSensor(ahwMap,"brush")
+        beamBreakSensor = BeamBreakSensor(ahwMap,"beam")
+
+
         localizerSubsystem =
             LocalizerSubsystem(
                 ahwMap,
@@ -89,7 +100,6 @@ open class HardwareConfig(
 
         allHubs = ahwMap.getAll(LynxModule::class.java)
         for (hub in allHubs) {
-//            hub.setConstant(15026849)
             hub.bulkCachingMode = LynxModule.BulkCachingMode.AUTO
         }
 
@@ -99,10 +109,8 @@ open class HardwareConfig(
             initVSensor(ahwMap, "Control Hub")
         lights =
             initLights(ahwMap, "blinkin")
-//        fastIntakeSubsystem =
-//            FastIntakeSubsystem(ahwMap)
-//        liftSubsystem =
-//            LiftSubsystem(ahwMap)
+//        armSubsystem =
+//            ArmSubsystem(ahwMap)
 //        scoringSubsystem =
 //            ScoringSubsystem(ahwMap)
 
@@ -140,8 +148,8 @@ open class HardwareConfig(
         )
         bindOtherButtons(
             myOpMode,
-//            fastIntakeSubsystem,
-//            scoringSubsystem
+//            scoringSubsystem,
+//            armSubsystem
         )
         if (VarConfig.multipleDrivers) {
             switchProfile(myOpMode)
@@ -154,11 +162,10 @@ open class HardwareConfig(
 
         localizerSubsystem.update(timer)
 
-//        fastIntakeSubsystem.update(loopTimeController)
-//
 //        scoringSubsystem.update()
 //
-//        liftSubsystem.update()
+//        armSubsystem.update()
+
 
         loopTimeController.every(if (VarConfig.loopSaver) 30 else 10) {
             reLocalizationSubsystem.update(localizerSubsystem, VarConfig.relocalize)
@@ -196,6 +203,9 @@ open class HardwareConfig(
     }
 
     private fun buildTelemetry() {
+        brush.telemetry(telemetry)
+        beamBreakSensor.telemetry(telemetry)
+
         loopTimeController.telemetry(telemetry)
         teleSpace()
         if (VarConfig.multipleDrivers) {
@@ -215,12 +225,11 @@ open class HardwareConfig(
         teleSpace()
         localizerSubsystem.telemetry(telemetry)
         teleSpace()
-//            fastIntakeSubsystem.telemetry(telemetry)
-//            teleSpace()
-//            scoringSubsystem.telemetry(telemetry)
-//            teleSpace()
-//            liftSubsystem.telemetry(telemetry)
-//            teleSpace()
+//        armSubsystem.telemetry(telemetry)
+//        teleSpace()
+//        scoringSubsystem.telemetry(telemetry)
+//        teleSpace()
+
 
         TargetLock.telemetry(telemetry)
         teleSpace()

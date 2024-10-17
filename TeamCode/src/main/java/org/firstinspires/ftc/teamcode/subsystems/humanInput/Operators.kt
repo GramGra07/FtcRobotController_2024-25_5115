@@ -1,6 +1,10 @@
 package org.firstinspires.ftc.teamcode.subsystems.humanInput
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
+import org.firstinspires.ftc.teamcode.extensions.GamepadExtensions
+import org.firstinspires.ftc.teamcode.extensions.GamepadExtensions.buttonJustPressed
+import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ArmSubsystem
+import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ScoringSubsystem
 
 object Operators {
 
@@ -11,8 +15,8 @@ object Operators {
     private var xPressed = false
     fun bindOtherButtons(
         myOpMode: OpMode,
-//        intakeSubsystem: FastIntakeSubsystem,
-//        scoringSubsystem: ScoringSubsystem,
+//        scoringSubsystem: ScoringSubsystem?,
+//        armSubsystem: ArmSubsystem?
     ) {
 
         // "Camden", "Grady", "Michael","Graden", "Delaney", "Child"
@@ -20,74 +24,30 @@ object Operators {
         val currOther = Drivers.currOther
         if (currOther === otherControls[0]) { //Camden
             touchPressed = myOpMode.gamepad2.touchpad
-
-//            if (myOpMode.gamepad2.left_trigger > 0.0) {
-//                intakeSubsystem.turnOnIntake()
-//            } else if (myOpMode.gamepad2.right_trigger > 0.0) {
-//                intakeSubsystem.reverseIntake()
-//            } else {
-//                intakeSubsystem.turnOffIntake()
-//            }
-//
-//            if (myOpMode.gamepad2.buttonJustPressed(GamepadExtensions.PushButtons.SQUARE,2)) {
-//                intakeSubsystem.pitchHigh()
-//            } else if (myOpMode.gamepad2.buttonJustPressed(GamepadExtensions.PushButtons.CIRCLE,2)) {
-//                intakeSubsystem.pitchLow()
-//            }
-//
 //            if (myOpMode.gamepad2.buttonJustPressed(GamepadExtensions.PushButtons.RIGHT_BUMPER,2)) {
 //                scoringSubsystem.openClaw()
-//            }
-//            if (myOpMode.gamepad2.buttonJustPressed(GamepadExtensions.PushButtons.LEFT_BUMPER,2)) {
+//            }else if (myOpMode.gamepad2.buttonJustPressed(GamepadExtensions.PushButtons.LEFT_BUMPER,2)) {
 //                scoringSubsystem.closeClaw()
 //            }
 //
-//            if (myOpMode.gamepad2.buttonJustPressed(GamepadExtensions.PushButtons.DPAD_DOWN,2)) {
-//                scoringSubsystem.pitchHigh()
-//            } else if (myOpMode.gamepad2.buttonJustPressed(GamepadExtensions.PushButtons.DPAD_UP,2)) {
-//                scoringSubsystem.pitchLow()
-//            }
-//            if (myOpMode.gamepad2.buttonJustPressed(GamepadExtensions.PushButtons.DPAD_LEFT,2)) {
-//                scoringSubsystem.topPitchForward()
-//            } else if (myOpMode.gamepad2.buttonJustPressed(GamepadExtensions.PushButtons.DPAD_RIGHT,2)) {
-//                scoringSubsystem.topPitchReverse()
+////
+//            if (myOpMode.gamepad2.right_stick_y < -deadZone) {
+//                armSubsystem.setPowerPitch(-armSubsystem.maxPitchTicks.toDouble())
+//            } else if (myOpMode.gamepad2.right_stick_y > deadZone) {
+//                armSubsystem.setPowerPitch(armSubsystem.maxPitchTicks.toDouble())
 //            } else {
-//                scoringSubsystem.idleTopPitch()
+//                armSubsystem.stopExtend()
 //            }
-//
-//            if (myOpMode.gamepad2.right_stick_y < -deadZone && intakeSubsystem.usePIDF) {
-//                intakeSubsystem.setPowerExtend(intakeSubsystem.extendMaxTicks)
-//            } else if (myOpMode.gamepad2.right_stick_y > deadZone && intakeSubsystem.usePIDF) {
-//                intakeSubsystem.setPowerExtend(intakeSubsystem.extendMinTicks)
+////
+//            if (myOpMode.gamepad2.left_stick_y > deadZone) {
+//                armSubsystem.setPowerExtend(armSubsystem.maxExtendTicks.toDouble())
+//            } else if (myOpMode.gamepad2.left_stick_y < -deadZone) {
+//                armSubsystem.setPowerExtend(-armSubsystem.maxExtendTicks.toDouble())
 //            } else {
-//                intakeSubsystem.stopExtend()
+//                armSubsystem.stopExtend()
 //            }
-//
-//            if (myOpMode.gamepad2.left_stick_y > deadZone && scoringSubsystem.usePIDF) {
-//                scoringSubsystem.setPowerE(scoringSubsystem.extensionMinTicks.toDouble())
-//            } else if (myOpMode.gamepad2.left_stick_y < -deadZone && scoringSubsystem.usePIDF) {
-//                scoringSubsystem.setPowerE(scoringSubsystem.extensionMaxTicks.toDouble())
-//            } else {
-//                scoringSubsystem.stopE()
-//            }
-//
-//            if (myOpMode.gamepad2.cross && !xPressed && scoringSubsystem.usePIDF) {
-//                scoringSubsystem.usePIDF = false
-//            } else if (myOpMode.gamepad2.cross && !xPressed && !scoringSubsystem.usePIDF) {
-//                scoringSubsystem.usePIDF = true
-//            }
-//            xPressed = myOpMode.gamepad2.cross
-//
-//            if (!scoringSubsystem.usePIDF) {
-//                scoringSubsystem.setPowerE(
-//                    -myOpMode.gamepad2.left_stick_y.toDouble()
-//                )
-//            }
-//            if (!intakeSubsystem.usePIDF) {
-//                intakeSubsystem.setPowerExtend(
-//                    -myOpMode.gamepad2.right_stick_y.toDouble()
-//                )
-//            }
+
+
         }
         if (currOther === otherControls[1]) { //Grady
         }

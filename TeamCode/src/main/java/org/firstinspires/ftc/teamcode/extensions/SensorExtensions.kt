@@ -7,9 +7,7 @@ import com.qualcomm.robotcore.hardware.NormalizedColorSensor
 import com.qualcomm.robotcore.hardware.VoltageSensor
 import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.robotcore.external.Telemetry
-import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.Encoder
-import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.FastIntakeSubsystem
-import org.openftc.easyopencv.PipelineRecordingParameters
+import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ArmSubsystem
 import kotlin.math.min
 
 object SensorExtensions {
@@ -97,22 +95,5 @@ object SensorExtensions {
 
     fun initColorSensor(hw: HardwareMap, name: String): NormalizedColorSensor {
         return hw.get(NormalizedColorSensor::class.java, name)
-    }
-
-    fun NormalizedColorSensor.getColor(): FastIntakeSubsystem.Color {
-        val red = this.normalizedColors.red
-        val green = this.normalizedColors.green
-        val blue = this.normalizedColors.blue
-        return if (red > blue && red > green) {
-            FastIntakeSubsystem.Color.RED
-        } else if (blue > red && blue > green) {
-            FastIntakeSubsystem.Color.BLUE
-        } else {
-            FastIntakeSubsystem.Color.YELLOW
-        }
-    }
-
-    fun NormalizedColorSensor.telemetry(telemetry: Telemetry) {
-        telemetry.addData("Color", this.getColor().name)
     }
 }
