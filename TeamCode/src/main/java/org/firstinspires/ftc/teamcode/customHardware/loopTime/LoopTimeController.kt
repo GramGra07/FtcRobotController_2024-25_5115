@@ -18,6 +18,9 @@ class LoopTimeController(
     private var lastSecondL: Double = 0.0
     private var lastSecondT: Double = 0.0
 
+    private var comparison:Double = 70.0
+    private var comparisonDate:String = "10/16/2024"
+
 
     private fun doCalculations() {
         lps = loops / (currentTime - correctedLPS)
@@ -51,6 +54,7 @@ class LoopTimeController(
         telemetry.addData("Timer", "%.1f", currentTime)
         telemetry.addData("Loops", loops)
         telemetry.addData("Current LPS", "%.1f", lps)
+        telemetry.addData(comparisonDate, "%.1f", comparison-lps)
 //        telemetry.addData("lastsecondloops",lastSecondL)
 //        telemetry.addData("pastlastsecondloops",lastSecondLPast)
 //        telemetry.addData("lastsecondt",lastSecondT)
