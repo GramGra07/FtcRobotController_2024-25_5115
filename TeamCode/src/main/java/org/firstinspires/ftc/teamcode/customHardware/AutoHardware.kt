@@ -6,7 +6,7 @@ import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
 import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.setPatternCo
 import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toPose
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.follower.Follower
-import org.firstinspires.ftc.teamcode.storage.GameStorage
+import org.firstinspires.ftc.teamcode.utilClass.storage.GameStorage
 
 class AutoHardware(
     opmode: LinearOpMode,

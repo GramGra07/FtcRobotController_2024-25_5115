@@ -15,8 +15,8 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.PoseUp
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.localizers.OTOSLocalizer
 import org.firstinspires.ftc.teamcode.followers.roadRunner.Drawing
 import org.firstinspires.ftc.teamcode.followers.roadRunner.SparkFunOTOSDrive
-import org.firstinspires.ftc.teamcode.storage.DistanceStorage
-import org.firstinspires.ftc.teamcode.storage.PoseStorage
+import org.firstinspires.ftc.teamcode.utilClass.storage.DistanceStorage
+import org.firstinspires.ftc.teamcode.utilClass.storage.PoseStorage
 import kotlin.math.sqrt
 
 

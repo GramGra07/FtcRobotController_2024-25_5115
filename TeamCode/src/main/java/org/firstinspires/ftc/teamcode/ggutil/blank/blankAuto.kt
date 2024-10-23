@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.firstinspires.ftc.teamcode.customHardware.AutoHardware
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.Alliance
-import org.firstinspires.ftc.teamcode.storage.PoseStorage
+import org.firstinspires.ftc.teamcode.utilClass.storage.PoseStorage
 
 @Autonomous
 @Disabled

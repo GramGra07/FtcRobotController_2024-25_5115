@@ -14,7 +14,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.followers.roadRunner.messages.PoseMessage;
-import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain;
+import org.firstinspires.ftc.teamcode.utilClass.storage.CurrentDrivetrain;
 
 /**
  * Experimental extension of MecanumDrive that uses the SparkFun OTOS sensor for localization.

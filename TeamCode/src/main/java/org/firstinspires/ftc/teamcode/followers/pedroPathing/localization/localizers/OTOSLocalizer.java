@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.Locali
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.Pose;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.MathFunctions;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Vector;
-import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain;
+import org.firstinspires.ftc.teamcode.utilClass.storage.CurrentDrivetrain;
 import org.firstinspires.ftc.teamcode.utilClass.drivetrain.Drivetrain;
 
 /**

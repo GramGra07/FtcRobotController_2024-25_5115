@@ -54,7 +54,7 @@ import org.firstinspires.ftc.teamcode.followers.roadRunner.messages.DriveCommand
 import org.firstinspires.ftc.teamcode.followers.roadRunner.messages.MecanumCommandMessage;
 import org.firstinspires.ftc.teamcode.followers.roadRunner.messages.MecanumLocalizerInputsMessage;
 import org.firstinspires.ftc.teamcode.followers.roadRunner.messages.PoseMessage;
-import org.firstinspires.ftc.teamcode.storage.CurrentDrivetrain;
+import org.firstinspires.ftc.teamcode.utilClass.storage.CurrentDrivetrain;
 import org.firstinspires.ftc.teamcode.utilClass.drivetrain.Drivetrain;
 
 import java.util.Arrays;
