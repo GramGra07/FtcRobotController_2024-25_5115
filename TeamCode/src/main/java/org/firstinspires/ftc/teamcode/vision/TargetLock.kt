@@ -17,13 +17,9 @@ import org.opencv.core.Mat
 import org.opencv.core.MatOfPoint
 import org.opencv.core.MatOfPoint2f
 import org.opencv.core.Point
-import org.opencv.core.Rect
 import org.opencv.core.Scalar
 import org.opencv.imgproc.Imgproc
-import java.lang.Math.toDegrees
 import java.util.concurrent.atomic.AtomicReference
-import kotlin.math.abs
-import kotlin.math.atan
 import kotlin.math.pow
 import kotlin.math.sqrt
 
@@ -38,17 +34,13 @@ class TargetLock(
 
     private var yellow = Mat()
     private var allianceColor = Mat()
-    private var detectionMat = Mat()
-    private var edges = Mat()
+    private var edgesA = Mat()
+    private var edgesY = Mat()
 
-
-    //    var c = Scalar(255.0, 0.0, 0.0)
     var current = 0
-    var minArea = 400
+    private var minArea = 1600
     private var scalar: ScalarPair =
         ScalarPair(Scalar(0.0, 0.0, 130.0), Scalar(255.0, 255.0, 255.0))
-    private val scalarYellowLow = Scalar(0.0, 140.0, 140.0)
-    private val scalarYellowHigh = Scalar(255.0, 255.0, 255.0)
 
     override fun init(width: Int, height: Int, calibration: CameraCalibration) {
         lastFrame.set(Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565))
@@ -56,93 +48,147 @@ class TargetLock(
 
     override fun processFrame(frame: Mat, captureTimeNanos: Long): Any {
         if (alliance == Alliance.RED) {
-            scalar.low = Scalar(0.0, 140.0, 0.0)
-            scalar.high = Scalar(255.0, 255.0, 255.0)
+            scalar.low = ConfigScalars.redLow
+            scalar.high = ConfigScalars.redHigh
         } else {
-            scalar.low = Scalar(0.0, 0.0, 130.0)
-            scalar.high = Scalar(255.0, 255.0, 255.0)
+            scalar.low = ConfigScalars.blueLow
+            scalar.high = ConfigScalars.blueHigh
         }
-        Imgproc.cvtColor(frame, ycrcbMat, Imgproc.COLOR_RGB2YCrCb)
+        // Convert RGB to YCrCb color space
+        Imgproc.cvtColor(frame, ycrcbMat, Imgproc.COLOR_BGR2YCrCb)
 
         Core.inRange(ycrcbMat, scalar.low, scalar.high, allianceColor)
-        Core.inRange(ycrcbMat, scalarYellowLow, scalarYellowHigh, yellow)
+        Core.inRange(ycrcbMat, ConfigScalars.yellowLow, ConfigScalars.yellowHigh, yellow)
+        Imgproc.Canny(allianceColor, edgesA, 200.0, 255.0)
+        var closestLockA = CameraLock(Point(0.0, 0.0), 0.0, Scalar(0.0, 0.0, 0.0))
+        var closestDistance = Double.POSITIVE_INFINITY
+        var largestA = 0
 
-        ycrcbMat.release()
-
-        Core.bitwise_or(allianceColor, yellow, detectionMat)
-        Imgproc.Canny(detectionMat, edges, 50.0, 150.0)
-
-        detectionMat.release()
-
-        val contours: List<MatOfPoint> = ArrayList<MatOfPoint>()
+        val contours: List<MatOfPoint> = ArrayList()
         Imgproc.findContours(
-            edges,
+            edgesA,
             contours,
             Mat(),
             Imgproc.RETR_TREE,
             Imgproc.CHAIN_APPROX_SIMPLE
         )
-        val contoursPoly: Array<MatOfPoint2f?> = arrayOfNulls<MatOfPoint2f>(contours.size)
-        val boundRect = arrayOfNulls<Rect>(contours.size)
+
+        val contoursPoly: Array<MatOfPoint2f?> = arrayOfNulls(contours.size)
         val centers = arrayOfNulls<Point>(contours.size)
-        val radius = Array(contours.size) { FloatArray(1) }
         for (i in contours.indices) {
+            // Approximate each contour to a polygon
             contoursPoly[i] = MatOfPoint2f()
-            Imgproc.approxPolyDP(
-                MatOfPoint2f(*contours[i].toArray()),
-                contoursPoly[i],
-                3.0,
-                true
-            )
-            boundRect[i] = Imgproc.boundingRect(MatOfPoint(*contoursPoly[i]?.toArray()))
+            Imgproc.approxPolyDP(MatOfPoint2f(*contours[i].toArray()), contoursPoly[i], 3.0, true)
 
-            centers[i] = Point()
-            Imgproc.minEnclosingCircle(contoursPoly[i], centers[i], radius[i])
-        }
-        val contoursPolyList: MutableList<MatOfPoint> = ArrayList(contoursPoly.size)
-        for (poly in contoursPoly) {
-            contoursPolyList.add(MatOfPoint(*poly?.toArray()))
-        }
-        for (i in contours.indices) {
-            val c: Scalar = scalar.low
-            Imgproc.drawContours(frame, contoursPolyList, i, c)
-            Imgproc.rectangle(frame, boundRect[i]!!.tl(), boundRect[i]!!.br(), c, 2)
-        }
+            // Create a rotated rectangle around the detected object
+            val rotatedRect = Imgproc.minAreaRect(contoursPoly[i])
+            val rectPoints = arrayOfNulls<Point>(4)
+            rotatedRect.points(rectPoints)
+            val center = rotatedRect.center
+            if (rotatedRect.size.area() > minArea) {
+                centers[i] = center
+                // Draw the rotated rectangle
+                for (j in 0 until 4) {
+                    Imgproc.line(
+                        frame,
+                        rectPoints[j],
+                        rectPoints[(j + 1) % 4],
+                        scalar.low,
+                        2
+                    )
+                }
 
-        var closestLock = CameraLock(Point(0.0, 0.0), 0.0)
-        var closestDistance = Double.POSITIVE_INFINITY
-        for (center in centers) {
-            val dist = sqrt(
-                ((frame.width() / 2 - center!!.x).pow(2)) + (frame.height() / 2 - center.y).pow(2)
-            )
-            if (dist < closestDistance && boundRect[centers.indexOf(center)]!!.area() > minArea) {
-                val rect = Imgproc.minAreaRect(contoursPoly[centers.indexOf(center)])
-                Imgproc.rectangle(
-                    frame,
-                    rect.boundingRect().tl(),
-                    rect.boundingRect().br(),
-                    Scalar(0.0, 255.0, 255.0),
-                    2
-                )
-
-                val the = boundRect[centers.indexOf(center)]
-                val x = abs(the!!.br().x - the.tl().x)
-                val y = abs(the.br().y - the.tl().y)
-                val angle = toDegrees(atan(y / x))
-                closestDistance = dist
-//                val angle =
-//                    (fov / frame.width()) * (center.x - (frame.width() / 2)) - camOrientation
-
-                closestLock = CameraLock(Point(center.x, center.y), angle)
+                val dist =
+                    sqrt(
+                        (frame.width() / 2 - center.x).pow(2) + (frame.height() / 2 - center.y).pow(
+                            2
+                        )
+                    )
+                if (dist < closestDistance && rotatedRect.size.area() > minArea && rotatedRect.size.area() > largestA) {
+                    largestA = rotatedRect.size.area().toInt()
+                    closestDistance = dist
+                    closestLockA = CameraLock(center, rotatedRect.angle, scalar.low)
+                }
             }
         }
-        cameraLock = closestLock
-        cameraLock.draw(frame)
 
-        edges.release()
+        Imgproc.Canny(yellow, edgesY, 200.0, 255.0)
+        var closestLockY = CameraLock(Point(0.0, 0.0), 0.0, Scalar(0.0, 0.0, 0.0))
+        var closestDistancey = Double.POSITIVE_INFINITY
+        var largestY = 0
+
+        val contoursy: List<MatOfPoint> = ArrayList()
+        Imgproc.findContours(
+            edgesY,
+            contoursy,
+            Mat(),
+            Imgproc.RETR_TREE,
+            Imgproc.CHAIN_APPROX_SIMPLE
+        )
+
+        val contoursPolyy: Array<MatOfPoint2f?> = arrayOfNulls(contoursy.size)
+        val centersy = arrayOfNulls<Point>(contoursy.size)
+        for (i in contoursy.indices) {
+            // Approximate each contour to a polygon
+            contoursPolyy[i] = MatOfPoint2f()
+            Imgproc.approxPolyDP(MatOfPoint2f(*contoursy[i].toArray()), contoursPolyy[i], 3.0, true)
+
+            // Create a rotated rectangle around the detected object
+            val rotatedRecty = Imgproc.minAreaRect(contoursPolyy[i])
+            val rectPointsy = arrayOfNulls<Point>(4)
+            rotatedRecty.points(rectPointsy)
+            val center = rotatedRecty.center
+            if (rotatedRecty.size.area() > minArea) {
+                centersy[i] = center
+                // Draw the rotated rectangle
+                for (j in 0 until 4) {
+                    Imgproc.line(
+                        frame,
+                        rectPointsy[j],
+                        rectPointsy[(j + 1) % 4],
+                        Scalar(0.0, 100.0, 100.0),
+                        2
+                    )
+                }
+
+                val dist =
+                    sqrt(
+                        (frame.width() / 2 - center.x).pow(2) + (frame.height() / 2 - center.y).pow(
+                            2
+                        )
+                    )
+                if (dist < closestDistancey && rotatedRecty.size.area() > minArea && rotatedRecty.size.area() > largestY) {
+                    closestDistancey = dist
+                    largestY = rotatedRecty.size.area().toInt()
+                    closestLockY = CameraLock(center, rotatedRecty.angle, ConfigScalars.yellowLow)
+                }
+            }
+        }
+
+        //get closest between each
+        val dista =
+            sqrt(
+                (frame.width() / 2 - closestLockA.center.x).pow(2) + (frame.height() / 2 - closestLockA.center.y).pow(
+                    2
+                )
+            )
+        val disty =
+            sqrt(
+                (frame.width() / 2 - closestLockY.center.x).pow(2) + (frame.height() / 2 - closestLockY.center.y).pow(
+                    2
+                )
+            )
+        cameraLock = if (dista > disty) {
+            closestLockY
+        } else {
+            closestLockA
+        }
+        cameraLock.draw(frame)
+        edgesA.release()
         yellow.release()
         allianceColor.release()
-        val b = Bitmap.createBitmap(frame.width(), frame.height(), Bitmap.Config.RGB_565)
+        val b =
+            Bitmap.createBitmap(frame.width(), frame.height(), Bitmap.Config.RGB_565)
         Utils.matToBitmap(frame, b)
         lastFrame.set(b)
         return frame
@@ -167,7 +213,7 @@ class TargetLock(
     }
 
     companion object {
-        var cameraLock: CameraLock = CameraLock(Point(0.0, 0.0), 0.0)
+        var cameraLock: CameraLock = CameraLock(Point(0.0, 0.0), 0.0, Scalar(0.0, 0.0, 0.0))
         fun telemetry(telemetry: Telemetry) {
             telemetry.addData("Camera Lock", cameraLock.toString())
         }

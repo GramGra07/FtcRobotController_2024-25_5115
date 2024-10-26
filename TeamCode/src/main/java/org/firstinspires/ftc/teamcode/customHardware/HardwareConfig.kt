@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.customHardware
 import com.acmerobotics.dashboard.FtcDashboard
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver
-import com.qualcomm.hardware.rev.RevColorSensorV3
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.VoltageSensor
@@ -11,7 +10,6 @@ import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities.initializeProcessor
-import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities.stopCameraStream
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.PROCESSORS
 import org.firstinspires.ftc.teamcode.customHardware.loopTime.LoopTimeController
 import org.firstinspires.ftc.teamcode.customHardware.loopTime.LoopTimeController.Companion.every
@@ -22,18 +20,15 @@ import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.currentVoltage
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.initVSensor
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.lowVoltage
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.telemetry
-import org.firstinspires.ftc.teamcode.utilClass.storage.CurrentDrivetrain
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.LocalizerSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.ReLocalizationSubsystem
-import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ArmSubsystem
-import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ScoringSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers.bindDriverButtons
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers.currentFieldCentric
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers.switchProfile
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Operators.bindOtherButtons
-import org.firstinspires.ftc.teamcode.utilClass.drivetrain.Drivetrain
+import org.firstinspires.ftc.teamcode.utilClass.storage.CurrentDrivetrain
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.VarConfig
 import org.firstinspires.ftc.teamcode.vision.TargetLock
 
@@ -51,7 +46,7 @@ open class HardwareConfig(
     lateinit var driveSubsystem: DriveSubsystem
     lateinit var localizerSubsystem: LocalizerSubsystem
 
-//    lateinit var armSubsystem: ArmSubsystem
+    //    lateinit var armSubsystem: ArmSubsystem
 //    lateinit var scoringSubsystem: ScoringSubsystem
     lateinit var reLocalizationSubsystem: ReLocalizationSubsystem
 
@@ -86,8 +81,8 @@ open class HardwareConfig(
         startLocation: StartLocation
     ) {
 
-        brush = BrushlandRoboticsSensor(ahwMap,"brush")
-        beamBreakSensor = BeamBreakSensor(ahwMap,"beam")
+        brush = BrushlandRoboticsSensor(ahwMap, "brush")
+        beamBreakSensor = BeamBreakSensor(ahwMap, "beam")
 
 
         localizerSubsystem =

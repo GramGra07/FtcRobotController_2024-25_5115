@@ -3,19 +3,13 @@ package org.firstinspires.ftc.teamcode.subsystems
 import com.qualcomm.hardware.limelightvision.Limelight3A
 import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.robotcore.external.Telemetry
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D
 import org.firstinspires.ftc.robotcore.external.navigation.Position
-import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles
 
 class ReLocalizationSubsystem(ahwMap: HardwareMap) {
     private var limelight3A: Limelight3A
     var pose: Pose3D? = null
-    private val nullPose = Pose3D(
-        Position(DistanceUnit.INCH, 0.0, 0.0, 0.0, 0L),
-        YawPitchRollAngles(AngleUnit.DEGREES, 0.0, 0.0, 0.0, 0L)
-    )
 
     init {
         limelight3A = ahwMap.get(Limelight3A::class.java, "limelight")

@@ -7,7 +7,7 @@ import org.opencv.core.Scalar
 import org.opencv.imgproc.Imgproc
 import kotlin.math.roundToInt
 
-class CameraLock(var center: Point, var angle: Double) {
+class CameraLock(var center: Point, var angle: Double, var color: Scalar) {
     fun draw(frame: Mat) {
         cross(frame, center, 10, Scalar(255.0, 0.0, 0.0))
         Imgproc.circle(frame, center, 10, Scalar(255.0, 0.0, 0.0), 1)
