@@ -1,15 +1,16 @@
 package org.firstinspires.ftc.teamcode.opModes.tuners.OTOS
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
+import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles
 import org.firstinspires.ftc.teamcode.utilClass.storage.GameStorage
 import org.firstinspires.ftc.teamcode.utilClass.storage.PoseStorage
-import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles
 
 @TeleOp(group = GroupingTitles.TESTING)
-//@Disabled//disabling the opmode
+@Disabled//disabling the opmode
 //@Config
 class OTOSLinearScalarTuner : LinearOpMode() {
     //declaring the class

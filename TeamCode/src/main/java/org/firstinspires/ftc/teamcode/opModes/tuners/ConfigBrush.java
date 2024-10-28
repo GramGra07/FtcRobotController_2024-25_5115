@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.ggutil;
+package org.firstinspires.ftc.teamcode.opModes.tuners;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.qualcomm.hardware.rev.RevColorSensorV3;
@@ -157,6 +157,7 @@ class ColorRangefinder {
 
     /**
      * Read distance via I2C
+     *
      * @return distance in millimeters
      */
     public double readDistance() {
