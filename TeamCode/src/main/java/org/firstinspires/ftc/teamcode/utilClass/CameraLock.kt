@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.utilClass
 
+import org.firstinspires.ftc.teamcode.customHardware.sensors.BrushlandRoboticsSensor
 import org.firstinspires.ftc.teamcode.extensions.VisionExtensions.cross
 import org.opencv.core.Mat
 import org.opencv.core.Point
@@ -7,7 +8,7 @@ import org.opencv.core.Scalar
 import org.opencv.imgproc.Imgproc
 import kotlin.math.roundToInt
 
-class CameraLock(var center: Point, var angle: Double, var color: Scalar) {
+class CameraLock(var center: Point, var angle: Double, var color: BrushlandRoboticsSensor.Color) {
     fun draw(frame: Mat) {
         cross(frame, center, 10, Scalar(255.0, 0.0, 0.0))
         Imgproc.circle(frame, center, 10, Scalar(255.0, 0.0, 0.0), 1)

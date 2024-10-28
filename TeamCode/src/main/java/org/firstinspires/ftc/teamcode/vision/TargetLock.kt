@@ -8,6 +8,7 @@ import org.firstinspires.ftc.robotcore.external.function.Continuation
 import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.Alliance
+import org.firstinspires.ftc.teamcode.customHardware.sensors.BrushlandRoboticsSensor
 import org.firstinspires.ftc.teamcode.utilClass.CameraLock
 import org.firstinspires.ftc.teamcode.utilClass.ScalarPair
 import org.firstinspires.ftc.vision.VisionProcessor
@@ -60,7 +61,7 @@ class TargetLock(
         Core.inRange(ycrcbMat, scalar.low, scalar.high, allianceColor)
         Core.inRange(ycrcbMat, ConfigScalars.yellowLow, ConfigScalars.yellowHigh, yellow)
         Imgproc.Canny(allianceColor, edgesA, 200.0, 255.0)
-        var closestLockA = CameraLock(Point(0.0, 0.0), 0.0, Scalar(0.0, 0.0, 0.0))
+        var closestLockA = CameraLock(Point(0.0, 0.0), 0.0, BrushlandRoboticsSensor.Color.NONE)
         var closestDistance = Double.POSITIVE_INFINITY
         var largestA = 0
 
@@ -107,13 +108,18 @@ class TargetLock(
                 if (dist < closestDistance && rotatedRect.size.area() > minArea && rotatedRect.size.area() > largestA) {
                     largestA = rotatedRect.size.area().toInt()
                     closestDistance = dist
-                    closestLockA = CameraLock(center, rotatedRect.angle, scalar.low)
+                    val color = if (alliance == Alliance.RED) {
+                        BrushlandRoboticsSensor.Color.RED
+                    } else {
+                        BrushlandRoboticsSensor.Color.BLUE
+                    }
+                    closestLockA = CameraLock(center, rotatedRect.angle, color)
                 }
             }
         }
 
         Imgproc.Canny(yellow, edgesY, 200.0, 255.0)
-        var closestLockY = CameraLock(Point(0.0, 0.0), 0.0, Scalar(0.0, 0.0, 0.0))
+        var closestLockY = CameraLock(Point(0.0, 0.0), 0.0, BrushlandRoboticsSensor.Color.NONE)
         var closestDistancey = Double.POSITIVE_INFINITY
         var largestY = 0
 
@@ -129,24 +135,20 @@ class TargetLock(
         val contoursPolyy: Array<MatOfPoint2f?> = arrayOfNulls(contoursy.size)
         val centersy = arrayOfNulls<Point>(contoursy.size)
         for (i in contoursy.indices) {
-            // Approximate each contour to a polygon
             contoursPolyy[i] = MatOfPoint2f()
             Imgproc.approxPolyDP(MatOfPoint2f(*contoursy[i].toArray()), contoursPolyy[i], 3.0, true)
-
-            // Create a rotated rectangle around the detected object
             val rotatedRecty = Imgproc.minAreaRect(contoursPolyy[i])
             val rectPointsy = arrayOfNulls<Point>(4)
             rotatedRecty.points(rectPointsy)
             val center = rotatedRecty.center
             if (rotatedRecty.size.area() > minArea) {
                 centersy[i] = center
-                // Draw the rotated rectangle
                 for (j in 0 until 4) {
                     Imgproc.line(
                         frame,
                         rectPointsy[j],
                         rectPointsy[(j + 1) % 4],
-                        Scalar(0.0, 100.0, 100.0),
+                        Scalar(210.0, 146.0, 16.0),
                         2
                     )
                 }
@@ -160,12 +162,12 @@ class TargetLock(
                 if (dist < closestDistancey && rotatedRecty.size.area() > minArea && rotatedRecty.size.area() > largestY) {
                     closestDistancey = dist
                     largestY = rotatedRecty.size.area().toInt()
-                    closestLockY = CameraLock(center, rotatedRecty.angle, ConfigScalars.yellowLow)
+                    closestLockY =
+                        CameraLock(center, rotatedRecty.angle, BrushlandRoboticsSensor.Color.YELLOW)
                 }
             }
         }
 
-        //get closest between each
         val dista =
             sqrt(
                 (frame.width() / 2 - closestLockA.center.x).pow(2) + (frame.height() / 2 - closestLockA.center.y).pow(
@@ -213,7 +215,9 @@ class TargetLock(
     }
 
     companion object {
-        var cameraLock: CameraLock = CameraLock(Point(0.0, 0.0), 0.0, Scalar(0.0, 0.0, 0.0))
+        var cameraLock: CameraLock =
+            CameraLock(Point(0.0, 0.0), 0.0, BrushlandRoboticsSensor.Color.NONE)
+
         fun telemetry(telemetry: Telemetry) {
             telemetry.addData("Camera Lock", cameraLock.toString())
         }
