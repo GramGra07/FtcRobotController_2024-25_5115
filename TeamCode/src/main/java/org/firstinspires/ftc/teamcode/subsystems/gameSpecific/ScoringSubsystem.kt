@@ -1,18 +1,10 @@
 package org.firstinspires.ftc.teamcode.subsystems.gameSpecific
 
-import com.arcrobotics.ftclib.controller.PIDFController
-import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.Servo
-import com.qualcomm.robotcore.util.Range
-import org.firstinspires.ftc.robotcore.external.Telemetry
-import org.firstinspires.ftc.teamcode.customHardware.servos.AxonServo
-import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.initMotor
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.initServo
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.setPose
 import org.firstinspires.ftc.teamcode.utilClass.ServoFunc
-import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.PIDVals
-import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.ServoUtil
 
 class ScoringSubsystem(ahwMap: HardwareMap) {
     enum class ClawState {
@@ -20,22 +12,41 @@ class ScoringSubsystem(ahwMap: HardwareMap) {
         CLOSE,
         IDLE,
     }
-    private var claw: Servo
 
+    private var claw: Servo
     private var clawState: ClawState = ClawState.IDLE
+
+
+    enum class PitchState {
+        HIGH,
+        LOW,
+        IDLE,
+    }
+
+    private var pitchServo: Servo
+    private var pitchState: PitchState = PitchState.IDLE
+    private var pitchServo2: Servo
+    private var pitchState2: PitchState = PitchState.IDLE
+
+    enum class RotateState {
+        LEFT,
+        RIGHT,
+        IDLE,
+    }
+
+    private var rotateServo: Servo
+    private var rotateState: RotateState = RotateState.IDLE
 
     init {
         claw = initServo(ahwMap, "claw")
+        pitchServo = initServo(ahwMap, "pitchServo")
+        pitchServo2 = initServo(ahwMap, "pitchServo2")
+        rotateServo = initServo(ahwMap, "rotateServo")
     }
 
     fun update() {
         updateServos()
-//        updatePID()
     }
-//    fun telemetry(telemetry: Telemetry) {
-//        telemetry.addData("Scoring Subsystem", "")
-//        telemetry.addData("Extension Position", motorExtension.currentPosition)
-//    }
 
     fun openClaw() {
         clawState = ClawState.OPEN
@@ -43,6 +54,30 @@ class ScoringSubsystem(ahwMap: HardwareMap) {
 
     fun closeClaw() {
         clawState = ClawState.CLOSE
+    }
+
+    fun setPitchHigh() {
+        pitchState = PitchState.HIGH
+    }
+
+    fun setPitchLow() {
+        pitchState = PitchState.LOW
+    }
+
+    fun setPitchHigh2() {
+        pitchState2 = PitchState.HIGH
+    }
+
+    fun setPitchLow2() {
+        pitchState2 = PitchState.LOW
+    }
+
+    fun setRotateLeft() {
+        rotateState = RotateState.LEFT
+    }
+
+    fun setRotateRight() {
+        rotateState = RotateState.RIGHT
     }
 
     private fun updateServos() {
@@ -58,6 +93,48 @@ class ScoringSubsystem(ahwMap: HardwareMap) {
             }
 
             ClawState.IDLE -> {}
+        }
+
+        when (pitchState) {
+            PitchState.HIGH -> {
+                pitchServo.setPose(170.0)
+                pitchState = PitchState.IDLE
+            }
+
+            PitchState.LOW -> {
+                pitchServo.setPose(0.0)
+                pitchState = PitchState.IDLE
+            }
+
+            PitchState.IDLE -> {}
+        }
+
+        when (pitchState2) {
+            PitchState.HIGH -> {
+                pitchServo2.setPose(170.0)
+                pitchState2 = PitchState.IDLE
+            }
+
+            PitchState.LOW -> {
+                pitchServo2.setPose(0.0)
+                pitchState2 = PitchState.IDLE
+            }
+
+            PitchState.IDLE -> {}
+        }
+
+        when (rotateState) {
+            RotateState.LEFT -> {
+                rotateServo.setPose(170.0)
+                rotateState = RotateState.IDLE
+            }
+
+            RotateState.RIGHT -> {
+                rotateServo.setPose(0.0)
+                rotateState = RotateState.IDLE
+            }
+
+            RotateState.IDLE -> {}
         }
     }
 }

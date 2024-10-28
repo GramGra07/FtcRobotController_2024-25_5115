@@ -5,12 +5,8 @@ import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.robotcore.external.Telemetry
-import org.firstinspires.ftc.teamcode.customHardware.loopTime.LoopTimeController
 import org.firstinspires.ftc.teamcode.customHardware.sensors.DualEncoder
 import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.initMotor
-import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.telemetry
-import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.setPose
-import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.Encoder
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.PIDVals
 
 class ArmSubsystem(ahwMap: HardwareMap) {
@@ -29,7 +25,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
 
     var usePIDF = false
     private var pitchMotor: DcMotor
-    private var pitchMotor2:DcMotor
+    private var pitchMotor2: DcMotor
     private var pitchState: PitchState = PitchState.IDLE
     private var pPower: Double = 0.0
     private var pMax = 1.0
@@ -37,7 +33,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     private var pitchPIDF: PIDFController = PIDFController(0.0, 0.0, 0.0, 0.0)
 
     private var extendMotor: DcMotor
-    private var extendMotor2:DcMotor
+    private var extendMotor2: DcMotor
     private var extendState: ExtendState = ExtendState.IDLE
     private var ePower: Double = 0.0
     private var eMax = 1.0
@@ -57,7 +53,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
         extendMotor = initMotor(ahwMap, "extendMotor", DcMotor.RunMode.RUN_USING_ENCODER)
         extendMotor2 = initMotor(ahwMap, "extendMotor2", DcMotor.RunMode.RUN_USING_ENCODER)
         extendEncoder = extendMotor
-        pitchEncoder = DualEncoder(ahwMap,"pitchMotor", "pitchMotor2", "armSubsystem")
+        pitchEncoder = DualEncoder(ahwMap, "pitchMotor", "pitchMotor2", "armSubsystem")
         updatePID()
     }
 
@@ -109,31 +105,31 @@ class ArmSubsystem(ahwMap: HardwareMap) {
 
     fun update() {
         power()
-//        loopTimeController.every(1) {
-//            updateColor()
-//        }
     }
-    private fun power(){
-        when (extendState){
+
+    private fun power() {
+        when (extendState) {
             ExtendState.PID,
-            ExtendState.MANUAL->{
+            ExtendState.MANUAL -> {
                 extendMotor.power = ePower
                 extendMotor2.power = ePower
             }
+
             ExtendState.STOPPED,
-            ExtendState.IDLE->{
+            ExtendState.IDLE -> {
                 extendMotor.power = 0.0
                 extendMotor2.power = 0.0
             }
         }
-        when (pitchState){
+        when (pitchState) {
             PitchState.PID,
-            PitchState.MANUAL->{
+            PitchState.MANUAL -> {
                 pitchMotor.power = pPower
                 pitchMotor2.power = pPower
             }
+
             PitchState.STOPPED,
-            PitchState.IDLE->{
+            PitchState.IDLE -> {
                 pitchMotor.power = 0.0
                 pitchMotor2.power = 0.0
             }
@@ -177,6 +173,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     fun idleExtend() {
         extendState = ExtendState.IDLE
     }
+
     fun idlePitch() {
         pitchState = PitchState.IDLE
     }
@@ -184,6 +181,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     fun stopExtend() {
         extendState = ExtendState.STOPPED
     }
+
     fun stopPitch() {
         pitchState = PitchState.STOPPED
     }

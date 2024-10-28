@@ -35,7 +35,7 @@ class ReLocalizationSubsystem(ahwMap: HardwareMap) {
     fun Limelight3A.getPose(): Pose3D {
         val m = 39.37
         val res = this.latestResult
-        val botpose = res.botpose_MT2
+        val botpose = res.botpose
         val dist = res.botposeAvgDist
         val position = botpose.position
         val result = Pose3D(
