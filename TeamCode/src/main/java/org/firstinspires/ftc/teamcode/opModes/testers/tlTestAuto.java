@@ -1,9 +1,10 @@
-package org.firstinspires.ftc.teamcode.opModes.auto;
+package org.firstinspires.ftc.teamcode.opModes.testers;
 
 import android.util.Size;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
@@ -13,7 +14,7 @@ import org.firstinspires.ftc.teamcode.vision.TargetLock;
 import org.firstinspires.ftc.vision.VisionPortal;
 
 @Autonomous(group = GroupingTitles.auto)
-//@Disabled
+@Disabled
 public class tlTestAuto extends LinearOpMode {
     private TargetLock processor;
     private VisionPortal portal;

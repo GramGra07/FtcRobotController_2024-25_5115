@@ -1,8 +1,9 @@
-package org.firstinspires.ftc.teamcode.opModes.auto
+package org.firstinspires.ftc.teamcode.opModes.testers
 
 import com.acmerobotics.dashboard.FtcDashboard
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.follower.Follower
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.Pose
@@ -14,6 +15,7 @@ import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles
 
 
 @Autonomous(group = GroupingTitles.auto)
+@Disabled
 class ppTestAuto : LinearOpMode() {
     override fun runOpMode() {
         val follower = Follower(hardwareMap)
@@ -114,7 +116,7 @@ class ppTestAuto : LinearOpMode() {
 
         val square = follower.pathBuilder()
             .addPath(
-                BezierLine(Point(Pose(24.0,0.0)),Point(Pose(48.0,0.0)))
+                BezierLine(Point(Pose(24.0, 0.0)), Point(Pose(48.0, 0.0)))
             )
             .build()
         follower.followPath(square)
