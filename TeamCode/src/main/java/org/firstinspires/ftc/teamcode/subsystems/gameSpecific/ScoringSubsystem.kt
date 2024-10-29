@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.subsystems.gameSpecific
 
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.Servo
+import org.firstinspires.ftc.teamcode.customHardware.servos.SynchronizedServo
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.initServo
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.setPose
 import org.firstinspires.ftc.teamcode.utilClass.ServoFunc
@@ -23,10 +24,8 @@ class ScoringSubsystem(ahwMap: HardwareMap) {
         IDLE,
     }
 
-    private var pitchServo: Servo
+    private var pitchServo: SynchronizedServo
     private var pitchState: PitchState = PitchState.IDLE
-    private var pitchServo2: Servo
-    private var pitchState2: PitchState = PitchState.IDLE
 
     enum class RotateState {
         LEFT,
@@ -39,8 +38,7 @@ class ScoringSubsystem(ahwMap: HardwareMap) {
 
     init {
         claw = initServo(ahwMap, "claw")
-        pitchServo = initServo(ahwMap, "pitchServo")
-        pitchServo2 = initServo(ahwMap, "pitchServo2")
+        pitchServo = SynchronizedServo(ahwMap, "pitchServo")
         rotateServo = initServo(ahwMap, "rotateServo")
     }
 
@@ -62,14 +60,6 @@ class ScoringSubsystem(ahwMap: HardwareMap) {
 
     fun setPitchLow() {
         pitchState = PitchState.LOW
-    }
-
-    fun setPitchHigh2() {
-        pitchState2 = PitchState.HIGH
-    }
-
-    fun setPitchLow2() {
-        pitchState2 = PitchState.LOW
     }
 
     fun setRotateLeft() {
@@ -104,20 +94,6 @@ class ScoringSubsystem(ahwMap: HardwareMap) {
             PitchState.LOW -> {
                 pitchServo.setPose(0.0)
                 pitchState = PitchState.IDLE
-            }
-
-            PitchState.IDLE -> {}
-        }
-
-        when (pitchState2) {
-            PitchState.HIGH -> {
-                pitchServo2.setPose(170.0)
-                pitchState2 = PitchState.IDLE
-            }
-
-            PitchState.LOW -> {
-                pitchServo2.setPose(0.0)
-                pitchState2 = PitchState.IDLE
             }
 
             PitchState.IDLE -> {}
