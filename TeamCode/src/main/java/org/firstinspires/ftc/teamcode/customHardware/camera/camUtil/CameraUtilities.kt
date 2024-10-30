@@ -56,7 +56,7 @@ object CameraUtilities {
         }
     }
 
-    private var mainCamera: Camera = setupCameras(CameraType.LOGITECH)
+    private var mainCamera: Camera = setupCameras(CameraType.ARDU_CAM)
 
     private var runningProcessors: MutableList<VisionProcessor> =
         emptyList<VisionProcessor>().toMutableList()

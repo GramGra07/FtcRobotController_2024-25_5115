@@ -57,17 +57,17 @@ class ReLocalizationSubsystem(ahwMap: HardwareMap) {
     }
 
     fun telemetry(telemetry: Telemetry) {
-        if (pose != null) {
-            telemetry.addData("RELOCALIZATION", "")
-            telemetry.addData("X", pose!!.position.x)
-            telemetry.addData("Y", pose!!.position.y)
-            telemetry.addData("H", pose!!.orientation.yaw)
-            val status = limelight3A.status
-            telemetry.addData(
-                "LL", "Temp: %.1fC, CPU: %.1f%%, FPS: %d",
-                status.temp, status.cpu, status.fps.toInt()
-            )
-        }
+//        if (pose != null) {
+        telemetry.addData("RELOCALIZATION", "")
+        telemetry.addData("X", pose!!.position.x)
+        telemetry.addData("Y", pose!!.position.y)
+        telemetry.addData("H", pose!!.orientation.yaw)
+        val status = limelight3A.status
+        telemetry.addData(
+            "LL", "Temp: %.1fC, CPU: %.1f%%, FPS: %d",
+            status.temp, status.cpu, status.fps.toInt()
+        )
+//        }
 
 //        val detectorResults = limelight3A.latestResult.detectorResults
 //        for (dr in detectorResults) {
