@@ -52,6 +52,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
         pitchMotor2 = initMotor(ahwMap, "pitchMotor2", DcMotor.RunMode.RUN_USING_ENCODER)
         extendMotor = initMotor(ahwMap, "extendMotor", DcMotor.RunMode.RUN_USING_ENCODER)
         extendMotor2 = initMotor(ahwMap, "extendMotor2", DcMotor.RunMode.RUN_USING_ENCODER)
+
         extendEncoder = DualEncoder(ahwMap, "extendMotor", "extendMotor2", "armSubsystem")
         pitchEncoder = DualEncoder(ahwMap, "pitchMotor", "pitchMotor2", "armSubsystem")
         updatePID()

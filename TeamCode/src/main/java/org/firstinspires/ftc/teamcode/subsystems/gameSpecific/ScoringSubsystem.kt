@@ -120,4 +120,9 @@ class ScoringSubsystem(ahwMap: HardwareMap) {
             RotateState.IDLE -> {}
         }
     }
+
+    fun setup() {
+        pitchServo.setPose(0.0)
+        rotateServo.setPosition(ServoUtil.rotateCenter)
+    }
 }
