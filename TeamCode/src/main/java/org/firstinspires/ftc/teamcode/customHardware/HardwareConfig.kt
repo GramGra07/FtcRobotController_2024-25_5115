@@ -9,6 +9,8 @@ import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities.initializeProcessor
+import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities.startCameraStream
+import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities.stopCameraStream
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.PROCESSORS
 import org.firstinspires.ftc.teamcode.customHardware.loopTime.LoopTimeController
 import org.firstinspires.ftc.teamcode.customHardware.loopTime.LoopTimeController.Companion.every
@@ -21,6 +23,7 @@ import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.telemetry
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.LocalizerSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.ReLocalizationSubsystem
+import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ArmSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ScoringSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers.bindDriverButtons
@@ -45,7 +48,7 @@ open class HardwareConfig(
     lateinit var driveSubsystem: DriveSubsystem
     lateinit var localizerSubsystem: LocalizerSubsystem
 
-    //    lateinit var armSubsystem: ArmSubsystem
+    lateinit var armSubsystem: ArmSubsystem
     lateinit var scoringSubsystem: ScoringSubsystem
     lateinit var reLocalizationSubsystem: ReLocalizationSubsystem
 
@@ -98,14 +101,12 @@ open class HardwareConfig(
             hub.bulkCachingMode = LynxModule.BulkCachingMode.AUTO
         }
 
-//        vSensor =
-//            initVSensor(ahwMap, "Expansion Hub 2")
         vSensor =
-            initVSensor(ahwMap, "Control Hub")
+            initVSensor(ahwMap, "Expansion Hub 2")
 //        lights =
 //            initLights(ahwMap, "blinkin")
-//        armSubsystem =
-//            ArmSubsystem(ahwMap)
+        armSubsystem =
+            ArmSubsystem(ahwMap)
         scoringSubsystem =
             ScoringSubsystem(ahwMap)
 
@@ -144,7 +145,7 @@ open class HardwareConfig(
         bindOtherButtons(
             myOpMode,
             scoringSubsystem,
-//            armSubsystem
+            armSubsystem
         )
         if (VarConfig.multipleDrivers) {
             switchProfile(myOpMode)
@@ -158,8 +159,8 @@ open class HardwareConfig(
         localizerSubsystem.update(timer)
 
         scoringSubsystem.update()
-//
-//        armSubsystem.update()
+
+        armSubsystem.update()
 
 
         loopTimeController.every(if (VarConfig.loopSaver) 30 else 10) {
@@ -170,11 +171,11 @@ open class HardwareConfig(
             buildTelemetry() //makes telemetry
         }
 
-//        if (!loopTimeController.loopSaver) {
-//            startCameraStream()
-//        } else {
-//        stopCameraStream()
-//        }
+        if (!VarConfig.loopSaver) {
+            startCameraStream()
+        } else {
+            stopCameraStream()
+        }
 
         localizerSubsystem.draw(dashboard)
 
@@ -220,8 +221,8 @@ open class HardwareConfig(
         teleSpace()
         localizerSubsystem.telemetry(telemetry)
         teleSpace()
-//        armSubsystem.telemetry(telemetry)
-//        teleSpace()
+        armSubsystem.telemetry(telemetry)
+        teleSpace()
         scoringSubsystem.telemetry(telemetry)
         teleSpace()
 

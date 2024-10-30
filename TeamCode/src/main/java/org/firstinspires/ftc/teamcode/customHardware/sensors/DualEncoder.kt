@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.customHardware.sensors
 
-import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.robotcore.external.Telemetry
@@ -17,7 +16,6 @@ class DualEncoder(
     init {
         encoder = hw.get(DcMotorEx::class.java, name1)
         reversedEncoder = hw.get(DcMotorEx::class.java, name2)
-        resetEncoders()
     }
 
     fun getAverage(): Double {
@@ -40,12 +38,5 @@ class DualEncoder(
         } else {
             -this.currentPosition.toDouble()
         }
-    }
-
-    private fun resetEncoders() {
-        encoder.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-        reversedEncoder.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
-        encoder.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
-        reversedEncoder.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
     }
 }

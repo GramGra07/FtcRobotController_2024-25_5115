@@ -40,7 +40,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     private var eMin = -1.0
     private var extendPIDF: PIDFController = PIDFController(0.0, 0.0, 0.0, 0.0)
 
-    private var extendEncoder: DcMotor
+    private var extendEncoder: DualEncoder
     private var pitchEncoder: DualEncoder
 
     val maxExtendTicks = 100
@@ -48,25 +48,25 @@ class ArmSubsystem(ahwMap: HardwareMap) {
 
 
     init {
-        pitchMotor = initMotor(ahwMap, "pitchMotor", DcMotor.RunMode.RUN_WITHOUT_ENCODER)
-        pitchMotor2 = initMotor(ahwMap, "pitchMotor2", DcMotor.RunMode.RUN_WITHOUT_ENCODER)
+        pitchMotor = initMotor(ahwMap, "pitchMotor", DcMotor.RunMode.RUN_USING_ENCODER)
+        pitchMotor2 = initMotor(ahwMap, "pitchMotor2", DcMotor.RunMode.RUN_USING_ENCODER)
         extendMotor = initMotor(ahwMap, "extendMotor", DcMotor.RunMode.RUN_USING_ENCODER)
         extendMotor2 = initMotor(ahwMap, "extendMotor2", DcMotor.RunMode.RUN_USING_ENCODER)
-        extendEncoder = extendMotor
+        extendEncoder = DualEncoder(ahwMap, "extendMotor", "extendMotor2", "armSubsystem")
         pitchEncoder = DualEncoder(ahwMap, "pitchMotor", "pitchMotor2", "armSubsystem")
         updatePID()
     }
 
-    fun setPowerExtend(target: Double) {
+    fun setPowerExtend(power: Double, target: Double) {
         when (extendState) {
             ExtendState.PID -> {
                 ePower =
-                    calculatePID(extendPIDF, extendEncoder.currentPosition.toDouble(), target)
+                    calculatePID(extendPIDF, extendEncoder.getAverage(), target)
             }
 
             ExtendState.MANUAL -> {
                 ePower = Range.clip(
-                    target,
+                    power,
                     eMin,
                     eMax
                 )
@@ -80,7 +80,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
         }
     }
 
-    fun setPowerPitch(target: Double) {
+    fun setPowerPitch(power: Double, target: Double) {
         when (pitchState) {
             PitchState.PID -> {
                 pPower =
@@ -89,7 +89,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
 
             PitchState.MANUAL -> {
                 pPower = Range.clip(
-                    0.0,
+                    power,
                     pMin,
                     pMax
                 )
@@ -170,14 +170,6 @@ class ArmSubsystem(ahwMap: HardwareMap) {
         )
     }
 
-    fun idleExtend() {
-        extendState = ExtendState.IDLE
-    }
-
-    fun idlePitch() {
-        pitchState = PitchState.IDLE
-    }
-
     fun stopExtend() {
         extendState = ExtendState.STOPPED
     }
@@ -190,6 +182,6 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     fun telemetry(telemetry: Telemetry) {
         telemetry.addData("Intake Subsystem", "")
         telemetry.addData("Pitch Encoder", pitchEncoder.getAverage())
-        telemetry.addData("Extend Encoder", extendEncoder.currentPosition)
+        telemetry.addData("Extend Encoder", extendEncoder.getAverage())
     }
 }
