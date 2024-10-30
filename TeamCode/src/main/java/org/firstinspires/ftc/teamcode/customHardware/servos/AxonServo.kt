@@ -15,7 +15,7 @@ class AxonServo(hw: HardwareMap, val name: String, private val defaultPose: Doub
     init {
         encoder = initAEncoder(hw)
         servo = initServo(hw, name)
-        servo.setPose(this.defaultPose)
+//        servo.setPose(this.defaultPose)
     }
 
     private fun initAEncoder(hw: HardwareMap): AnalogInput {

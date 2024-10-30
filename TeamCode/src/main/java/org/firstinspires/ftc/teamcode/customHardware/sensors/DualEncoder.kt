@@ -6,8 +6,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry
 
 class DualEncoder(
     hw: HardwareMap,
-    private val name1: String,
-    private val name2: String,
+    name1: String,
+    name2: String,
     private val subsystemName: String
 ) {
     private val encoder: DcMotorEx
