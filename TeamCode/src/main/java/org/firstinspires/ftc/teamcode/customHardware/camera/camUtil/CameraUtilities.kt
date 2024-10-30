@@ -1,32 +1,24 @@
 package org.firstinspires.ftc.teamcode.customHardware.camera.camUtil
 
+//import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig.Companion.lights
 import android.util.Size
 import com.acmerobotics.dashboard.FtcDashboard
-import com.qualcomm.hardware.rev.RevBlinkinLedDriver
 import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource
-import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig.Companion.lights
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.Alliance
 import org.firstinspires.ftc.teamcode.customHardware.camera.Camera
 import org.firstinspires.ftc.teamcode.customHardware.camera.CameraType
 import org.firstinspires.ftc.teamcode.customHardware.camera.LensIntrinsics
-import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.setPatternCo
 import org.firstinspires.ftc.teamcode.vision.TargetLock
 import org.firstinspires.ftc.teamcode.vision.VPObjectDetect
 import org.firstinspires.ftc.vision.VisionPortal
 import org.firstinspires.ftc.vision.VisionProcessor
 import org.firstinspires.ftc.vision.apriltag.AprilTagGameDatabase
 import org.firstinspires.ftc.vision.apriltag.AprilTagProcessor
-import org.gentrifiedApps.velocityvision.enums.CSpace
-import org.gentrifiedApps.velocityvision.pipelines.moa.AssumedBuilder
-import org.gentrifiedApps.velocityvision.pipelines.moa.DetectionBuilder
 import org.gentrifiedApps.velocityvision.pipelines.moa.MeanColorOfAreaDetector
-import org.opencv.core.Point
-import org.opencv.core.Rect
-import org.opencv.core.Scalar
 
 object CameraUtilities {
     var state: CAM_STATE = CAM_STATE.STOPPED
@@ -118,21 +110,21 @@ object CameraUtilities {
             }
 
             PROCESSORS.PUB_TEST -> {
-                pubProcessor = MeanColorOfAreaDetector(
-                    CSpace.YCrCb,
-                    DetectionBuilder(
-                        Rect(Point(120.0, 50.0), Point(230.0, 150.0)), "middle",
-                        Scalar(0.0, 140.0, 0.0),
-                        Scalar(255.0, 255.0, 255.0)
-                    ) { lights.setPatternCo(RevBlinkinLedDriver.BlinkinPattern.CONFETTI) },
-                    DetectionBuilder(
-                        Rect(Point(570.0, 70.0), Point(680.0, 170.0)), "right",
-                        Scalar(0.0, 140.0, 0.0),
-                        Scalar(255.0, 255.0, 255.0)
-                    ) { lights.setPatternCo(RevBlinkinLedDriver.BlinkinPattern.WHITE) },
-                    AssumedBuilder("left") { lights.setPatternCo(RevBlinkinLedDriver.BlinkinPattern.GOLD) }
-                )
-                runningProcessors.add(pubProcessor)
+//                pubProcessor = MeanColorOfAreaDetector(
+//                    CSpace.YCrCb,
+//                    DetectionBuilder(
+//                        Rect(Point(120.0, 50.0), Point(230.0, 150.0)), "middle",
+//                        Scalar(0.0, 140.0, 0.0),
+//                        Scalar(255.0, 255.0, 255.0)
+//                    ) { lights.setPatternCo(RevBlinkinLedDriver.BlinkinPattern.CONFETTI) },
+//                    DetectionBuilder(
+//                        Rect(Point(570.0, 70.0), Point(680.0, 170.0)), "right",
+//                        Scalar(0.0, 140.0, 0.0),
+//                        Scalar(255.0, 255.0, 255.0)
+//                    ) { lights.setPatternCo(RevBlinkinLedDriver.BlinkinPattern.WHITE) },
+//                    AssumedBuilder("left") { lights.setPatternCo(RevBlinkinLedDriver.BlinkinPattern.GOLD) }
+//                )
+//                runningProcessors.add(pubProcessor)
             }
 
             else -> return false
