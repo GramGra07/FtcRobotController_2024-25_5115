@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.subsystems.humanInput
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import org.firstinspires.ftc.teamcode.extensions.GamepadExtensions
 import org.firstinspires.ftc.teamcode.extensions.GamepadExtensions.buttonJustPressed
-import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ArmSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ScoringSubsystem
 
 object Operators {
@@ -15,7 +14,7 @@ object Operators {
     private var xPressed = false
     fun bindOtherButtons(
         myOpMode: OpMode,
-//        scoringSubsystem: ScoringSubsystem?,
+        scoringSubsystem: ScoringSubsystem,
 //        armSubsystem: ArmSubsystem?
     ) {
 
@@ -23,12 +22,29 @@ object Operators {
         val otherControls = Drivers.others
         val currOther = Drivers.currOther
         if (currOther === otherControls[0]) { //Camden
-            touchPressed = myOpMode.gamepad2.touchpad
-//            if (myOpMode.gamepad2.buttonJustPressed(GamepadExtensions.PushButtons.RIGHT_BUMPER,2)) {
-//                scoringSubsystem.openClaw()
-//            }else if (myOpMode.gamepad2.buttonJustPressed(GamepadExtensions.PushButtons.LEFT_BUMPER,2)) {
-//                scoringSubsystem.closeClaw()
-//            }
+            if (myOpMode.gamepad2.buttonJustPressed(
+                    GamepadExtensions.PushButtons.RIGHT_BUMPER,
+                    2
+                )
+            ) {
+                scoringSubsystem.openClaw()
+            } else if (myOpMode.gamepad2.buttonJustPressed(
+                    GamepadExtensions.PushButtons.LEFT_BUMPER,
+                    2
+                )
+            ) {
+                scoringSubsystem.closeClaw()
+            }
+
+            if (myOpMode.gamepad2.buttonJustPressed(GamepadExtensions.PushButtons.DPAD_UP, 2)) {
+                scoringSubsystem.setRotateCenter()
+            } else if (myOpMode.gamepad2.buttonJustPressed(
+                    GamepadExtensions.PushButtons.DPAD_LEFT,
+                    2
+                )
+            ) {
+                scoringSubsystem.setRotateLeft()
+            }
 //
 ////
 //            if (myOpMode.gamepad2.right_stick_y < -deadZone) {

@@ -12,27 +12,23 @@ class SetupServo : LinearOpMode() {
     override fun runOpMode() {
         servo = hardwareMap.get(Servo::class.java, "servo")
         waitForStart()
-        if (opModeIsActive()) {
+        while (opModeIsActive()) {
             telemetry.addData("Press square to set servo to 0.0", "")
             telemetry.update()
             while (!gamepad1.square && opModeIsActive() && !isStopRequested) {
-                servo.setPose(0.0)
             }
-            telemetry.addData("Press circle to set servo to 1", "")
+            servo.setPose(0.0)
+            telemetry.addData("Press circle to set servo to 180", "")
             telemetry.update()
             while (!gamepad1.circle && opModeIsActive() && !isStopRequested) {
-                servo.setPose(1.0)
             }
-            telemetry.addData("Press triangle to set servo to 0.5", "")
+            servo.setPose(180.0)
+            telemetry.addData("Press triangle to set servo to 90", "")
             telemetry.update()
             while (!gamepad1.triangle && opModeIsActive() && !isStopRequested) {
-                servo.setPose(0.5)
             }
-            telemetry.addData("Press square to set servo back to 0.0", "")
-            telemetry.update()
-            while (!gamepad1.square && opModeIsActive() && !isStopRequested) {
-                servo.setPose(0.0)
-            }
+            servo.setPose(90.0)
+
         }
     }
 }

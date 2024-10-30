@@ -47,7 +47,7 @@ dependencies {
 
     implementation 'com.github.GramGra07:StateMachineFTC:1.2.1'
     implementation 'com.github.GramGra07:VelocityVision:1.0.1'
-    implementation 'com.github.GramGra07:GentrifiedAppsUtil:1.0.8'
+    implementation 'com.github.GramGra07:GentrifiedAppsUtil:1.0.9'
 
 //    implementation 'com.github.DaCodingBeast:pso4pids:1.2.0'
 }

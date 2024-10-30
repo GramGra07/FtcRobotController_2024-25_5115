@@ -83,7 +83,7 @@ object CameraUtilities {
     ): Boolean {
         when (processor) {
             PROCESSORS.TARGET_LOCK -> {
-                targetLockProcessor = TargetLock(alliance, 20.0)
+                targetLockProcessor = TargetLock(alliance)
                 runningProcessors.add(targetLockProcessor)
             }
 

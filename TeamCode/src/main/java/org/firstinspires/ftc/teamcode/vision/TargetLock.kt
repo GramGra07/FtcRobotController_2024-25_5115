@@ -26,10 +26,10 @@ import kotlin.math.sqrt
 
 class TargetLock(
     private var alliance: Alliance,
-    private var camOrientation: Double,
-    private var fov: Double = 180.0
+    private var camOrientation: Double? = 0.0,
 ) : VisionProcessor,
     CameraStreamSource {
+    private var sentAngle = camOrientation
     private val lastFrame = AtomicReference(Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565))
     private var ycrcbMat = Mat()
 
@@ -113,7 +113,7 @@ class TargetLock(
                     } else {
                         BrushlandRoboticsSensor.Color.BLUE
                     }
-                    closestLockA = CameraLock(center, rotatedRect.angle, color)
+                    closestLockA = CameraLock(center, rotatedRect.angle - (sentAngle ?: 0.0), color)
                 }
             }
         }
@@ -163,7 +163,11 @@ class TargetLock(
                     closestDistancey = dist
                     largestY = rotatedRecty.size.area().toInt()
                     closestLockY =
-                        CameraLock(center, rotatedRecty.angle, BrushlandRoboticsSensor.Color.YELLOW)
+                        CameraLock(
+                            center,
+                            rotatedRecty.angle - (sentAngle ?: 0.0),
+                            BrushlandRoboticsSensor.Color.YELLOW
+                        )
                 }
             }
         }
@@ -212,6 +216,10 @@ class TargetLock(
                 lastFrame.get()
             )
         }
+    }
+
+    fun sendAngle(angle: Double) {
+        sentAngle = angle
     }
 
     companion object {

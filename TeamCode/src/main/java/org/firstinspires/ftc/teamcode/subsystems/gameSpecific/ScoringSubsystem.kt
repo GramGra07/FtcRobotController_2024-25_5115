@@ -2,10 +2,12 @@ package org.firstinspires.ftc.teamcode.subsystems.gameSpecific
 
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.Servo
+import org.firstinspires.ftc.robotcore.external.Telemetry
+import org.firstinspires.ftc.teamcode.customHardware.servos.AxonServo
 import org.firstinspires.ftc.teamcode.customHardware.servos.SynchronizedServo
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.initServo
-import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.setPose
 import org.firstinspires.ftc.teamcode.utilClass.ServoFunc
+import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.ServoUtil
 
 class ScoringSubsystem(ahwMap: HardwareMap) {
     enum class ClawState {
@@ -29,17 +31,17 @@ class ScoringSubsystem(ahwMap: HardwareMap) {
 
     enum class RotateState {
         LEFT,
-        RIGHT,
+        CENTER,
         IDLE,
     }
 
-    private var rotateServo: Servo
+    private var rotateServo: AxonServo
     private var rotateState: RotateState = RotateState.IDLE
 
     init {
         claw = initServo(ahwMap, "claw")
         pitchServo = SynchronizedServo(ahwMap, "pitchServo")
-        rotateServo = initServo(ahwMap, "rotateServo")
+        rotateServo = AxonServo(ahwMap, "rotateServo", 0.0)
     }
 
     fun update() {
@@ -66,8 +68,13 @@ class ScoringSubsystem(ahwMap: HardwareMap) {
         rotateState = RotateState.LEFT
     }
 
-    fun setRotateRight() {
-        rotateState = RotateState.RIGHT
+    fun setRotateCenter() {
+        rotateState = RotateState.CENTER
+    }
+
+    fun telemetry(telemetry: Telemetry) {
+        rotateServo.telemetry(telemetry)
+
     }
 
     private fun updateServos() {
@@ -101,12 +108,12 @@ class ScoringSubsystem(ahwMap: HardwareMap) {
 
         when (rotateState) {
             RotateState.LEFT -> {
-                rotateServo.setPose(170.0)
+                rotateServo.setPosition(ServoUtil.rotateLeft)
                 rotateState = RotateState.IDLE
             }
 
-            RotateState.RIGHT -> {
-                rotateServo.setPose(0.0)
+            RotateState.CENTER -> {
+                rotateServo.setPosition(ServoUtil.rotateCenter)
                 rotateState = RotateState.IDLE
             }
 
