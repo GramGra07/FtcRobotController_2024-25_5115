@@ -53,8 +53,8 @@ class ArmSubsystem(ahwMap: HardwareMap) {
         extendMotor = initMotor(ahwMap, "extendMotor", DcMotor.RunMode.RUN_USING_ENCODER)
         extendMotor2 = initMotor(ahwMap, "extendMotor2", DcMotor.RunMode.RUN_USING_ENCODER)
 
-        extendEncoder = DualEncoder(ahwMap, "extendMotor", "extendMotor2", "armSubsystem")
-        pitchEncoder = DualEncoder(ahwMap, "pitchMotor", "pitchMotor2", "armSubsystem")
+        extendEncoder = DualEncoder(ahwMap, "extendMotor", "extendMotor2", "Arm Extend")
+        pitchEncoder = DualEncoder(ahwMap, "pitchMotor", "pitchMotor2", "Pitch Extend")
         updatePID()
     }
 
@@ -181,8 +181,8 @@ class ArmSubsystem(ahwMap: HardwareMap) {
 
 
     fun telemetry(telemetry: Telemetry) {
-        telemetry.addData("Intake Subsystem", "")
-        telemetry.addData("Pitch Encoder", pitchEncoder.getAverage())
-        telemetry.addData("Extend Encoder", extendEncoder.getAverage())
+        telemetry.addData("Arm Subsystem", "")
+        pitchEncoder.telemetry(telemetry)
+        extendEncoder.telemetry(telemetry)
     }
 }

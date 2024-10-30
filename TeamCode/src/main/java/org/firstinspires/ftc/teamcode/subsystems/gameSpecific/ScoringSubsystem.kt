@@ -73,8 +73,8 @@ class ScoringSubsystem(ahwMap: HardwareMap) {
     }
 
     fun telemetry(telemetry: Telemetry) {
+        telemetry.addData("Scoring Subsystem", "")
         rotateServo.telemetry(telemetry)
-
     }
 
     private fun updateServos() {
