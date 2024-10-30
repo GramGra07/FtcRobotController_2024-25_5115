@@ -41,7 +41,7 @@ class ScoringSubsystem(ahwMap: HardwareMap) {
     init {
         claw = initServo(ahwMap, "claw")
         pitchServo = SynchronizedServo(ahwMap, "pitchServo")
-        rotateServo = AxonServo(ahwMap, "rotateServo", 0.0)
+        rotateServo = AxonServo(ahwMap, "rotateServo")
     }
 
     fun update() {
