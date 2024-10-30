@@ -202,6 +202,7 @@ open class HardwareConfig(
         brush.telemetry(telemetry)
         beamBreakSensor.telemetry(telemetry)
 
+        moveOnInit(myOpMode, armSubsystem, scoringSubsystem)
         loopTimeController.telemetry(telemetry)
         teleSpace()
         if (VarConfig.multipleDrivers) {
@@ -234,6 +235,20 @@ open class HardwareConfig(
 
     private fun teleSpace() {
         telemetry.addData("---------", "---------")
+    }
+
+    private var hasMovedOnInit = false
+    private fun moveOnInit(
+        myOpMode: LinearOpMode,
+        armSubsystem: ArmSubsystem,
+        scoringSubsystem: ScoringSubsystem
+    ) {
+        if (!hasMovedOnInit) {
+            if (!myOpMode.gamepad1.atRest() || !myOpMode.gamepad2.atRest()) {
+                scoringSubsystem.setup()
+                hasMovedOnInit = true
+            }
+        }
     }
 }
 

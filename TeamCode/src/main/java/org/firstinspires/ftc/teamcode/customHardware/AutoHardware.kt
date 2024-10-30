@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.customHardware
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
-import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.setPatternCo
 import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toPose
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.follower.Follower
 import org.firstinspires.ftc.teamcode.utilClass.storage.GameStorage
@@ -26,6 +25,6 @@ class AutoHardware(
         telemetry.update()
         opmode.waitForStart()
         timer.reset()
-        lights.setPatternCo()
+//        lights.setPatternCo()
     }
 }
