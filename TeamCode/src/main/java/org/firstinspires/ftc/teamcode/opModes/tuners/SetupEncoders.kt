@@ -17,7 +17,7 @@ class SetupEncoders : LinearOpMode() {
             hardwareMap.get(DcMotorEx::class.java, "extendMotor2")
         )
         waitForStart()
-        while (opModeIsActive()) {
+        if (opModeIsActive()) {
             motorEx.forEach {
                 it.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
                 it.mode = DcMotor.RunMode.RUN_USING_ENCODER
