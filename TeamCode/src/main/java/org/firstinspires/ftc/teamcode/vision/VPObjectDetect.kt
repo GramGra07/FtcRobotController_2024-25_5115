@@ -1,14 +1,12 @@
 package org.firstinspires.ftc.teamcode.vision
 
+//import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig.Companion.lights
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import com.qualcomm.hardware.rev.RevBlinkinLedDriver
 import org.firstinspires.ftc.robotcore.external.function.Consumer
 import org.firstinspires.ftc.robotcore.external.function.Continuation
 import org.firstinspires.ftc.robotcore.external.stream.CameraStreamSource
 import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibration
-import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig.Companion.lights
-import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.setPatternCo
 import org.firstinspires.ftc.vision.VisionProcessor
 import org.opencv.android.Utils
 import org.opencv.core.Core
@@ -89,7 +87,7 @@ class VPObjectDetect : VisionProcessor, CameraStreamSource { //var alliance: All
                         Scalar(0.0, 255.0, 0.0)
                     )
 //                    AutoHardware.autonomousRandom = AutoRandom.RIGHT
-                    lights.setPatternCo(RevBlinkinLedDriver.BlinkinPattern.WHITE)
+//                    lights.setPatternCo(RevBlinkinLedDriver.BlinkinPattern.WHITE)
                     current = 1
                 }
             }
@@ -112,7 +110,7 @@ class VPObjectDetect : VisionProcessor, CameraStreamSource { //var alliance: All
                             Scalar(0.0, 255.0, 0.0)
                         )
 //                        AutoHardware.autonomousRandom = AutoRandom.MID
-                        lights.setPatternCo(RevBlinkinLedDriver.BlinkinPattern.GOLD)
+//                        lights.setPatternCo(RevBlinkinLedDriver.BlinkinPattern.GOLD)
                         current = 1
                         //                        shiftOffset = 0;
                     }
@@ -129,7 +127,7 @@ class VPObjectDetect : VisionProcessor, CameraStreamSource { //var alliance: All
                 Scalar(0.0, 255.0, 0.0)
             )
 //            AutoHardware.autonomousRandom = AutoRandom.LEFT
-            lights.setPatternCo(RevBlinkinLedDriver.BlinkinPattern.CONFETTI)
+//            lights.setPatternCo(RevBlinkinLedDriver.BlinkinPattern.CONFETTI)
             //            shiftOffset = -leftShift;
         }
         current = 0
