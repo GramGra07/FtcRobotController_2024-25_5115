@@ -22,7 +22,6 @@ import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.lowVoltage
 import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.telemetry
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.LocalizerSubsystem
-import org.firstinspires.ftc.teamcode.subsystems.ReLocalizationSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ArmSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ScoringSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers
@@ -50,7 +49,7 @@ open class HardwareConfig(
 
     lateinit var armSubsystem: ArmSubsystem
     lateinit var scoringSubsystem: ScoringSubsystem
-    lateinit var reLocalizationSubsystem: ReLocalizationSubsystem
+//    lateinit var reLocalizationSubsystem: ReLocalizationSubsystem
 
     lateinit var brush: BrushlandRoboticsSensor
     lateinit var beamBreakSensor: BeamBreakSensor
@@ -102,7 +101,7 @@ open class HardwareConfig(
         }
 
         vSensor =
-            initVSensor(ahwMap, "Expansion Hub 2")
+            initVSensor(ahwMap, "Expansion Hub 1")
 //        lights =
 //            initLights(ahwMap, "blinkin")
         armSubsystem =
@@ -110,8 +109,8 @@ open class HardwareConfig(
         scoringSubsystem =
             ScoringSubsystem(ahwMap)
 
-        reLocalizationSubsystem =
-            ReLocalizationSubsystem(ahwMap)
+//        reLocalizationSubsystem =
+//            ReLocalizationSubsystem(ahwMap)
 
         telemetry = myOpMode.telemetry
 //            MultipleTelemetry(myOpMode.telemetry, FtcDashboard.getInstance().telemetry)
@@ -163,9 +162,9 @@ open class HardwareConfig(
         armSubsystem.update()
 
 
-        loopTimeController.every(if (VarConfig.loopSaver) 30 else 10) {
-            reLocalizationSubsystem.update(localizerSubsystem, VarConfig.relocalize)
-        }
+//        loopTimeController.every(if (VarConfig.loopSaver) 30 else 10) {
+//            reLocalizationSubsystem.update(localizerSubsystem, VarConfig.relocalize)
+//        }
 
         loopTimeController.every(if (VarConfig.loopSaver) 30 else 10) {
             buildTelemetry() //makes telemetry
@@ -218,8 +217,8 @@ open class HardwareConfig(
         }
         driveSubsystem.telemetry(telemetry, false)
         teleSpace()
-        reLocalizationSubsystem.telemetry(telemetry)
-        teleSpace()
+//        reLocalizationSubsystem.telemetry(telemetry)
+//        teleSpace()
         localizerSubsystem.telemetry(telemetry)
         teleSpace()
         armSubsystem.telemetry(telemetry)

@@ -48,10 +48,10 @@ class ArmSubsystem(ahwMap: HardwareMap) {
 
 
     init {
-        pitchMotor = initMotor(ahwMap, "pitchMotor", DcMotor.RunMode.RUN_USING_ENCODER)
-        pitchMotor2 = initMotor(ahwMap, "pitchMotor2", DcMotor.RunMode.RUN_USING_ENCODER)
-        extendMotor = initMotor(ahwMap, "extendMotor", DcMotor.RunMode.RUN_USING_ENCODER)
-        extendMotor2 = initMotor(ahwMap, "extendMotor2", DcMotor.RunMode.RUN_USING_ENCODER)
+        pitchMotor = initMotor(ahwMap, "pitchMotor", DcMotor.RunMode.RUN_WITHOUT_ENCODER)
+        pitchMotor2 = initMotor(ahwMap, "pitchMotor2", DcMotor.RunMode.RUN_WITHOUT_ENCODER)
+        extendMotor = initMotor(ahwMap, "extendMotor", DcMotor.RunMode.RUN_WITHOUT_ENCODER)
+        extendMotor2 = initMotor(ahwMap, "extendMotor2", DcMotor.RunMode.RUN_WITHOUT_ENCODER)
 
         extendEncoder = DualEncoder(ahwMap, "extendMotor", "extendMotor2", "Arm Extend")
         pitchEncoder = DualEncoder(ahwMap, "pitchMotor", "pitchMotor2", "Pitch Extend")
