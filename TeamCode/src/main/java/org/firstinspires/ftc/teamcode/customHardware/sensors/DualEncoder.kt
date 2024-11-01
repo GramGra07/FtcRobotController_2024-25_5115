@@ -8,7 +8,8 @@ class DualEncoder(
     hw: HardwareMap,
     name1: String,
     name2: String,
-    private val subsystemName: String
+    private val subsystemName: String,
+    val needsReversing: Boolean = false
 ) {
     private val encoder: DcMotorEx
     private val reversedEncoder: DcMotorEx
@@ -33,10 +34,10 @@ class DualEncoder(
     }
 
     private fun DcMotorEx.getPosition(reversed: Boolean = false): Double {
-        return if (reversed) {
-            this.currentPosition.toDouble()
-        } else {
+        return if (reversed && needsReversing) {
             -this.currentPosition.toDouble()
+        } else {
+            this.currentPosition.toDouble()
         }
     }
 }
