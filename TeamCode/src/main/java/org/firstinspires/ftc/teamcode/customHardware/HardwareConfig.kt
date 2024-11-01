@@ -4,7 +4,6 @@ import com.acmerobotics.dashboard.FtcDashboard
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.HardwareMap
-import com.qualcomm.robotcore.hardware.VoltageSensor
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
@@ -16,10 +15,6 @@ import org.firstinspires.ftc.teamcode.customHardware.loopTime.LoopTimeController
 import org.firstinspires.ftc.teamcode.customHardware.loopTime.LoopTimeController.Companion.every
 import org.firstinspires.ftc.teamcode.customHardware.sensors.BeamBreakSensor
 import org.firstinspires.ftc.teamcode.customHardware.sensors.BrushlandRoboticsSensor
-import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.currentVoltage
-import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.initVSensor
-import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.lowVoltage
-import org.firstinspires.ftc.teamcode.extensions.SensorExtensions.telemetry
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.LocalizerSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ArmSubsystem
@@ -67,7 +62,6 @@ open class HardwareConfig(
         //        lateinit var lights: RevBlinkinLedDriver
         var lastTimeOpen = 0.0
 
-        lateinit var vSensor: VoltageSensor
         lateinit var loopTimeController: LoopTimeController
 
         var once = false
@@ -99,9 +93,6 @@ open class HardwareConfig(
         for (hub in allHubs) {
             hub.bulkCachingMode = LynxModule.BulkCachingMode.AUTO
         }
-
-        vSensor =
-            initVSensor(ahwMap, "Expansion Hub 1")
 //        lights =
 //            initLights(ahwMap, "blinkin")
         armSubsystem =
@@ -124,10 +115,7 @@ open class HardwareConfig(
         }
 
         telemetry.addData("Version", CURRENT_VERSION)
-        telemetry.addData("Voltage", "%.2f", vSensor.currentVoltage())
         dt.telemetry(telemetry)
-        if (vSensor.lowVoltage())
-            telemetry.addData("lowBattery", "true")
 
         if (!auto)
             telemetry.update()
@@ -209,10 +197,6 @@ open class HardwareConfig(
                 "Drivers",
                 Drivers.currDriver.name.toString() + " " + Drivers.currOther.name.toString()
             )
-            teleSpace()
-        }
-        if (vSensor.lowVoltage()) {
-            vSensor.telemetry(telemetry)
             teleSpace()
         }
         driveSubsystem.telemetry(telemetry, false)
