@@ -44,12 +44,12 @@ object Operators {
                 scoringSubsystem.setRotateLeft()
             }
 
-            if (myOpMode.gamepad2.right_stick_y < -deadZone) {
+            if (myOpMode.gamepad2.right_stick_y > -deadZone) {
                 armSubsystem.setPowerPitch(
                     myOpMode.gamepad2.right_stick_y.toDouble(),
                     -armSubsystem.maxPitchTicks.toDouble()
                 )
-            } else if (myOpMode.gamepad2.right_stick_y > deadZone) {
+            } else if (myOpMode.gamepad2.right_stick_y < deadZone) {
                 armSubsystem.setPowerPitch(
                     myOpMode.gamepad2.right_stick_y.toDouble(),
                     armSubsystem.maxPitchTicks.toDouble()
@@ -58,12 +58,12 @@ object Operators {
                 armSubsystem.stopPitch()
             }
 //
-            if (myOpMode.gamepad2.left_stick_y > deadZone) {
+            if (myOpMode.gamepad2.left_stick_y < deadZone) {
                 armSubsystem.setPowerExtend(
                     myOpMode.gamepad2.left_stick_y.toDouble(),
                     armSubsystem.maxExtendTicks.toDouble()
                 )
-            } else if (myOpMode.gamepad2.left_stick_y < -deadZone) {
+            } else if (myOpMode.gamepad2.left_stick_y > -deadZone) {
                 armSubsystem.setPowerExtend(
                     myOpMode.gamepad2.left_stick_y.toDouble(),
                     -armSubsystem.maxExtendTicks.toDouble()
@@ -71,7 +71,6 @@ object Operators {
             } else {
                 armSubsystem.stopExtend()
             }
-
 
         }
         if (currOther === otherControls[1]) { //Grady
