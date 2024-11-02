@@ -61,7 +61,8 @@ class TargetLock(
         Core.inRange(ycrcbMat, scalar.low, scalar.high, allianceColor)
         Core.inRange(ycrcbMat, ConfigScalars.yellowLow, ConfigScalars.yellowHigh, yellow)
         Imgproc.Canny(allianceColor, edgesA, 200.0, 255.0)
-        var closestLockA = CameraLock(Point(0.0, 0.0), 0.0, BrushlandRoboticsSensor.Color.NONE)
+        var closestLockA =
+            CameraLock(Point(0.0, 0.0), 0.0, BrushlandRoboticsSensor.Color.NONE, false)
         var closestDistance = Double.POSITIVE_INFINITY
         var largestA = 0
 
@@ -113,13 +114,21 @@ class TargetLock(
                     } else {
                         BrushlandRoboticsSensor.Color.BLUE
                     }
-                    closestLockA = CameraLock(center, rotatedRect.angle - (sentAngle ?: 0.0), color)
+                    val b = (largestA < 10000)
+                    closestLockA =
+                        CameraLock(
+                            center,
+                            rotatedRect.angle - (sentAngle ?: 0.0),
+                            color,
+                            b
+                        )
                 }
             }
         }
 
         Imgproc.Canny(yellow, edgesY, 200.0, 255.0)
-        var closestLockY = CameraLock(Point(0.0, 0.0), 0.0, BrushlandRoboticsSensor.Color.NONE)
+        var closestLockY =
+            CameraLock(Point(0.0, 0.0), 0.0, BrushlandRoboticsSensor.Color.NONE, false)
         var closestDistancey = Double.POSITIVE_INFINITY
         var largestY = 0
 
@@ -162,11 +171,12 @@ class TargetLock(
                 if (dist < closestDistancey && rotatedRecty.size.area() > minArea && rotatedRecty.size.area() > largestY) {
                     closestDistancey = dist
                     largestY = rotatedRecty.size.area().toInt()
+                    val y = (largestY > 10000)
                     closestLockY =
                         CameraLock(
                             center,
                             rotatedRecty.angle - (sentAngle ?: 0.0),
-                            BrushlandRoboticsSensor.Color.YELLOW
+                            BrushlandRoboticsSensor.Color.YELLOW, y
                         )
                 }
             }
@@ -224,7 +234,7 @@ class TargetLock(
 
     companion object {
         var cameraLock: CameraLock =
-            CameraLock(Point(0.0, 0.0), 0.0, BrushlandRoboticsSensor.Color.NONE)
+            CameraLock(Point(0.0, 0.0), 0.0, BrushlandRoboticsSensor.Color.NONE, false)
 
         fun telemetry(telemetry: Telemetry) {
             telemetry.addData("Camera Lock", cameraLock.toString())
