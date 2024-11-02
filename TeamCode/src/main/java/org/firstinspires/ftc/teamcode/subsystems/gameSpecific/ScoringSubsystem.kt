@@ -6,8 +6,11 @@ import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.customHardware.servos.AxonServo
 import org.firstinspires.ftc.teamcode.customHardware.servos.SynchronizedServo
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.initServo
+import org.firstinspires.ftc.teamcode.utilClass.CameraLock
 import org.firstinspires.ftc.teamcode.utilClass.ServoFunc
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.ServoUtil
+import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.VarConfig.autoRotateClaw
+import kotlin.math.abs
 
 class ScoringSubsystem(ahwMap: HardwareMap) {
     enum class ClawState {
@@ -35,8 +38,15 @@ class ScoringSubsystem(ahwMap: HardwareMap) {
         IDLE,
     }
 
+    enum class RotateMode {
+        AUTO,
+        SEMI_AUTO,
+        MANUAL,
+    }
+
     private var rotateServo: AxonServo
     private var rotateState: RotateState = RotateState.IDLE
+    private var rotateMode: RotateMode = RotateMode.AUTO
 
     init {
         claw = initServo(ahwMap, "claw")
@@ -44,8 +54,8 @@ class ScoringSubsystem(ahwMap: HardwareMap) {
         rotateServo = AxonServo(ahwMap, "rotateServo")
     }
 
-    fun update() {
-        updateServos()
+    fun update(lock: CameraLock) {
+        updateServos(lock)
     }
 
     fun openClaw() {
@@ -77,16 +87,18 @@ class ScoringSubsystem(ahwMap: HardwareMap) {
         rotateServo.telemetry(telemetry)
     }
 
-    private fun updateServos() {
+    private fun updateServos(lock: CameraLock) {
         when (clawState) {
             ClawState.OPEN -> {
                 ServoFunc.openClaw(claw)
                 clawState = ClawState.IDLE
+                rotateMode = RotateMode.SEMI_AUTO
             }
 
             ClawState.CLOSE -> {
                 ServoFunc.closeClaw(claw)
                 clawState = ClawState.IDLE
+                rotateMode = RotateMode.MANUAL
             }
 
             ClawState.IDLE -> {}
@@ -94,18 +106,56 @@ class ScoringSubsystem(ahwMap: HardwareMap) {
 
         when (pitchState) {
             PitchState.HIGH -> {
-                pitchServo.setPose(170.0)
+                pitchServo.setPose(50.0)
                 pitchState = PitchState.IDLE
+                rotateMode = RotateMode.MANUAL
             }
 
             PitchState.LOW -> {
                 pitchServo.setPose(0.0)
                 pitchState = PitchState.IDLE
+                rotateMode = RotateMode.SEMI_AUTO
             }
 
             PitchState.IDLE -> {}
         }
+        if (lock.size) {
+            rotateMode = RotateMode.MANUAL
+        }
+        if (autoRotateClaw) {
+            rotateMode = RotateMode.MANUAL
 
+        }
+        when (rotateMode) {
+            RotateMode.AUTO -> {
+                lockRotate(lock)
+            }
+
+            RotateMode.SEMI_AUTO -> {
+                when (rotateState) {
+                    RotateState.LEFT -> {
+                        rotateServo.setPosition(ServoUtil.rotateLeft)
+                    }
+
+                    RotateState.CENTER -> {
+                        rotateServo.setPosition(ServoUtil.rotateCenter)
+                    }
+
+                    RotateState.IDLE -> {
+                        lockRotate(lock)
+                    }
+                }
+            }
+
+            RotateMode.MANUAL -> {
+                rotateManual()
+            }
+        }
+
+
+    }
+
+    private fun rotateManual() {
         when (rotateState) {
             RotateState.LEFT -> {
                 rotateServo.setPosition(ServoUtil.rotateLeft)
@@ -124,5 +174,16 @@ class ScoringSubsystem(ahwMap: HardwareMap) {
     fun setup() {
         pitchServo.setPose(0.0)
         rotateServo.setPosition(ServoUtil.rotateCenter)
+    }
+
+    private fun lockRotate(lock: CameraLock) {
+        val angle = lock.angle
+        var correctedAngle = 0.0
+        correctedAngle = if (angle / abs(angle) == -1.0) {
+            90 + angle
+        } else {
+            angle
+        }
+        rotateServo.setPosition(correctedAngle)
     }
 }

@@ -8,8 +8,6 @@ import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities.initializeProcessor
-import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities.startCameraStream
-import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities.stopCameraStream
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.PROCESSORS
 import org.firstinspires.ftc.teamcode.customHardware.loopTime.LoopTimeController
 import org.firstinspires.ftc.teamcode.customHardware.loopTime.LoopTimeController.Companion.every
@@ -145,7 +143,7 @@ open class HardwareConfig(
 
         localizerSubsystem.update(timer)
 
-        scoringSubsystem.update()
+        scoringSubsystem.update(TargetLock.cameraLock)
 
         armSubsystem.update()
 
@@ -158,11 +156,11 @@ open class HardwareConfig(
             buildTelemetry() //makes telemetry
         }
 
-        if (!VarConfig.loopSaver) {
-            startCameraStream()
-        } else {
-            stopCameraStream()
-        }
+//        if (!VarConfig.loopSaver) {
+//            startCameraStream()
+//        } else {
+//            stopCameraStream()
+//        }
 
         localizerSubsystem.draw(dashboard)
 
