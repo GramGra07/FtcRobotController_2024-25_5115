@@ -8,6 +8,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.customHardware.sensors.DualEncoder
 import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.initMotor
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.PIDVals
+import kotlin.math.sin
 
 class ArmSubsystem(ahwMap: HardwareMap) {
 
@@ -32,6 +33,10 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     private var pMin = -1.0
     private var pitchPIDF: PIDFController = PIDFController(0.0, 0.0, 0.0, 0.0)
 
+    private fun pAngle(ticks: Double): Double {
+        return (ticks / (2048 * 99.8)) * 360
+    }
+
     private var extendMotor: DcMotor
     private var extendMotor2: DcMotor
     private var extendState: ExtendState = ExtendState.IDLE
@@ -39,6 +44,11 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     private var eMax = 1.0
     private var eMin = -1.0
     private var extendPIDF: PIDFController = PIDFController(0.0, 0.0, 0.0, 0.0)
+
+    private val eTicksToInch: Double = (Math.PI * 1.378) / (28.0 * 20.0)
+    private fun eTicksToInch(ticks: Double): Double {
+        return ticks * eTicksToInch
+    }
 
     private var extendEncoder: DualEncoder
     private var pitchEncoder: DualEncoder
@@ -180,10 +190,17 @@ class ArmSubsystem(ahwMap: HardwareMap) {
         pitchState = PitchState.STOPPED
     }
 
+    private fun getTheoreticalHeight(): Double {
+        val length = eTicksToInch(extendEncoder.getAverage())
+        val angle = pAngle(pitchEncoder.getAverage())
+        return (sin(angle) * length) + 2.87
+    }
+
 
     fun telemetry(telemetry: Telemetry) {
         telemetry.addData("Arm Subsystem", "")
         pitchEncoder.telemetry(telemetry)
         extendEncoder.telemetry(telemetry)
+        telemetry.addData("Theoretical Height (in)", getTheoreticalHeight())
     }
 }
