@@ -21,52 +21,68 @@ object Operators {
         val currOther = Drivers.currOther
         if (currOther === otherControls[0]) { //Camden
             if (myOpMode.gamepad2.buttonJustPressed(
-                    GamepadExtensions.PushButtons.RIGHT_BUMPER,
+                    GamepadExtensions.PushButtons.LEFT_BUMPER,
                     2
                 )
             ) {
                 scoringSubsystem.openClaw()
             } else if (myOpMode.gamepad2.buttonJustPressed(
-                    GamepadExtensions.PushButtons.LEFT_BUMPER,
+                    GamepadExtensions.PushButtons.RIGHT_BUMPER,
                     2
                 )
             ) {
                 scoringSubsystem.closeClaw()
             }
 
-            if (myOpMode.gamepad2.buttonJustPressed(GamepadExtensions.PushButtons.DPAD_UP, 2)) {
+            if (myOpMode.gamepad2.buttonJustPressed(GamepadExtensions.PushButtons.TRIANGLE, 2)) {
                 scoringSubsystem.setRotateCenter()
             } else if (myOpMode.gamepad2.buttonJustPressed(
-                    GamepadExtensions.PushButtons.DPAD_LEFT,
+                    GamepadExtensions.PushButtons.SQUARE,
                     2
                 )
             ) {
                 scoringSubsystem.setRotateLeft()
             }
 
-            if (myOpMode.gamepad2.right_stick_y > -deadZone) {
-                armSubsystem.setPowerPitch(
-                    myOpMode.gamepad2.right_stick_y.toDouble(),
-                    -armSubsystem.maxPitchTicks.toDouble()
+            if (myOpMode.gamepad2.buttonJustPressed(GamepadExtensions.PushButtons.DPAD_UP, 2)) {
+                scoringSubsystem.setPitchHigh()
+            } else if (myOpMode.gamepad2.buttonJustPressed(
+                    GamepadExtensions.PushButtons.DPAD_DOWN,
+                    2
                 )
-            } else if (myOpMode.gamepad2.right_stick_y < deadZone) {
+            ) {
+                scoringSubsystem.setPitchLow()
+            } else if (myOpMode.gamepad2.buttonJustPressed(
+                    GamepadExtensions.PushButtons.DPAD_RIGHT,
+                    2
+                )
+            ) {
+                scoringSubsystem.setPitchMed()
+            }
+
+            if (myOpMode.gamepad2.left_stick_y > -deadZone) {
                 armSubsystem.setPowerPitch(
-                    myOpMode.gamepad2.right_stick_y.toDouble(),
+                    myOpMode.gamepad2.left_stick_y.toDouble(),
+                    0.0
+                )
+            } else if (myOpMode.gamepad2.left_stick_y < deadZone) {
+                armSubsystem.setPowerPitch(
+                    myOpMode.gamepad2.left_stick_y.toDouble(),
                     armSubsystem.maxPitchTicks.toDouble()
                 )
             } else {
                 armSubsystem.stopPitch()
             }
 //
-            if (myOpMode.gamepad2.left_stick_y < deadZone) {
+            if (myOpMode.gamepad2.right_stick_y < deadZone) {
                 armSubsystem.setPowerExtend(
-                    myOpMode.gamepad2.left_stick_y.toDouble(),
+                    -myOpMode.gamepad2.right_stick_y.toDouble(),
                     armSubsystem.maxExtendTicks.toDouble()
                 )
-            } else if (myOpMode.gamepad2.left_stick_y > -deadZone) {
+            } else if (myOpMode.gamepad2.right_stick_y > -deadZone) {
                 armSubsystem.setPowerExtend(
-                    myOpMode.gamepad2.left_stick_y.toDouble(),
-                    -armSubsystem.maxExtendTicks.toDouble()
+                    -myOpMode.gamepad2.right_stick_y.toDouble(),
+                    0.0
                 )
             } else {
                 armSubsystem.stopExtend()

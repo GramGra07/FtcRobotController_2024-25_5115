@@ -26,6 +26,7 @@ class ScoringSubsystem(ahwMap: HardwareMap) {
     enum class PitchState {
         HIGH,
         LOW,
+        MED,
         IDLE,
     }
 
@@ -46,7 +47,7 @@ class ScoringSubsystem(ahwMap: HardwareMap) {
 
     private var rotateServo: AxonServo
     private var rotateState: RotateState = RotateState.IDLE
-    private var rotateMode: RotateMode = RotateMode.AUTO
+    private var rotateMode: RotateMode = RotateMode.MANUAL
 
     init {
         claw = initServo(ahwMap, "claw")
@@ -72,6 +73,10 @@ class ScoringSubsystem(ahwMap: HardwareMap) {
 
     fun setPitchLow() {
         pitchState = PitchState.LOW
+    }
+
+    fun setPitchMed() {
+        pitchState = PitchState.MED
     }
 
     fun setRotateLeft() {
@@ -106,15 +111,21 @@ class ScoringSubsystem(ahwMap: HardwareMap) {
 
         when (pitchState) {
             PitchState.HIGH -> {
-                pitchServo.setPose(50.0)
+                pitchServo.setPose(-90.0)
                 pitchState = PitchState.IDLE
                 rotateMode = RotateMode.MANUAL
             }
 
             PitchState.LOW -> {
-                pitchServo.setPose(0.0)
+                pitchServo.setPose(90.0)
                 pitchState = PitchState.IDLE
                 rotateMode = RotateMode.SEMI_AUTO
+            }
+
+            PitchState.MED -> {
+                pitchServo.setPose(90.0)
+                pitchState = PitchState.IDLE
+                rotateMode = RotateMode.MANUAL
             }
 
             PitchState.IDLE -> {}

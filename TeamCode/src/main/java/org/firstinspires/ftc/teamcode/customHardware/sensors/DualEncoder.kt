@@ -23,6 +23,14 @@ class DualEncoder(
         return (encoder.getPosition() + (reversedEncoder.getPosition(true))) / 2.0
     }
 
+    fun getMost(): Double {
+        return if (encoder.getPosition() > reversedEncoder.getPosition(true)) {
+            encoder.getPosition()
+        } else {
+            reversedEncoder.getPosition(true)
+        }
+    }
+
     fun telemetry(telemetry: Telemetry) {
         telemetry.addData("$subsystemName Encoder", "%.1f", encoder.getPosition())
         telemetry.addData(
@@ -30,7 +38,7 @@ class DualEncoder(
             "%.1f",
             reversedEncoder.getPosition(true)
         )
-        telemetry.addData("$subsystemName Average", "%.1f", getAverage())
+        telemetry.addData("$subsystemName Average", "%.1f", getMost())
     }
 
     private fun DcMotorEx.getPosition(reversed: Boolean = false): Double {

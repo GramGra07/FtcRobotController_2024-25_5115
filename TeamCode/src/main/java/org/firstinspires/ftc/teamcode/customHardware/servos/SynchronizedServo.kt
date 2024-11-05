@@ -28,8 +28,8 @@ class SynchronizedServo(var hw: HardwareMap, var name: String, private var axonS
     fun setPose(pose: Double) {
         when (axonServo) {
             true -> {
-                servo1Axon.setPosition(pose)
-                servo2Axon.setPosition(pose)
+                servo1Axon.setPosition(90 + pose)
+                servo2Axon.setPosition(90 - pose)
             }
 
             false -> {

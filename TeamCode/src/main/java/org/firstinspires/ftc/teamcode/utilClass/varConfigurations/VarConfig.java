@@ -6,7 +6,7 @@ import com.acmerobotics.dashboard.config.Config;
 @Config
 public class VarConfig {
     public static boolean loopSaver = false;
-    public static boolean autoRotateClaw = true;
+    public static boolean autoRotateClaw = false;
 
     public static double OTOSxOffset = 0.0;//8.32
 

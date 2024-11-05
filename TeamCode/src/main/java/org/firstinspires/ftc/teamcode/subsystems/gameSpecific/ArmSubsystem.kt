@@ -53,7 +53,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     private var extendEncoder: DualEncoder
     private var pitchEncoder: DualEncoder
 
-    val maxExtendTicks = 100
+    val maxExtendTicks = 994
     val maxPitchTicks = 100
 
 
@@ -73,7 +73,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
         when (extendState) {
             ExtendState.PID -> {
                 ePower =
-                    calculatePID(extendPIDF, extendEncoder.getAverage(), target)
+                    calculatePID(extendPIDF, extendEncoder.getMost(), target)
             }
 
             ExtendState.MANUAL -> {
@@ -96,7 +96,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
         when (pitchState) {
             PitchState.PID -> {
                 pPower =
-                    calculatePID(pitchPIDF, pitchEncoder.getAverage(), target)
+                    calculatePID(pitchPIDF, pitchEncoder.getMost(), target)
             }
 
             PitchState.MANUAL -> {
