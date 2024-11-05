@@ -165,6 +165,7 @@ open class HardwareConfig(
         localizerSubsystem.draw(dashboard)
 
         loopTimeController.update()
+        moveOnInit(myOpMode, armSubsystem, scoringSubsystem)
     }
 
     fun once() {
@@ -184,10 +185,9 @@ open class HardwareConfig(
     }
 
     private fun buildTelemetry() {
-        brush.telemetry(telemetry)
-        beamBreakSensor.telemetry(telemetry)
+//        brush.telemetry(telemetry)
+//        beamBreakSensor.telemetry(telemetry)
 
-        moveOnInit(myOpMode, armSubsystem, scoringSubsystem)
         loopTimeController.telemetry(telemetry)
         teleSpace()
         if (VarConfig.multipleDrivers) {
@@ -201,8 +201,8 @@ open class HardwareConfig(
         teleSpace()
 //        reLocalizationSubsystem.telemetry(telemetry)
 //        teleSpace()
-        localizerSubsystem.telemetry(telemetry)
-        teleSpace()
+//        localizerSubsystem.telemetry(telemetry)
+//        teleSpace()
         armSubsystem.telemetry(telemetry)
         teleSpace()
         scoringSubsystem.telemetry(telemetry)

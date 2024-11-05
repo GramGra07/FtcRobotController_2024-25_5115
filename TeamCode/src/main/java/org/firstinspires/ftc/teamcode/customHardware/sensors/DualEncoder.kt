@@ -38,7 +38,7 @@ class DualEncoder(
             "%.1f",
             reversedEncoder.getPosition(true)
         )
-        telemetry.addData("$subsystemName Average", "%.1f", getMost())
+        telemetry.addData("$subsystemName Average", "%.1f", getAverage())
     }
 
     private fun DcMotorEx.getPosition(reversed: Boolean = false): Double {

@@ -2,10 +2,12 @@ package org.firstinspires.ftc.teamcode.subsystems.gameSpecific
 
 import com.arcrobotics.ftclib.controller.PIDFController
 import com.qualcomm.robotcore.hardware.DcMotor
+import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.customHardware.sensors.DualEncoder
+import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.brake
 import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.initMotor
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.PIDVals
 import kotlin.math.sin
@@ -25,8 +27,8 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     }
 
     var usePIDF = false
-    private var pitchMotor: DcMotor
-    private var pitchMotor2: DcMotor
+    private var pitchMotor: DcMotorEx
+    private var pitchMotor2: DcMotorEx
     private var pitchState: PitchState = PitchState.IDLE
     private var pPower: Double = 0.0
     private var pMax = 1.0
@@ -37,8 +39,8 @@ class ArmSubsystem(ahwMap: HardwareMap) {
         return (ticks / (2048 * 99.8)) * 360
     }
 
-    private var extendMotor: DcMotor
-    private var extendMotor2: DcMotor
+    private var extendMotor: DcMotorEx
+    private var extendMotor2: DcMotorEx
     private var extendState: ExtendState = ExtendState.IDLE
     private var ePower: Double = 0.0
     private var eMax = 1.0
@@ -53,8 +55,8 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     private var extendEncoder: DualEncoder
     private var pitchEncoder: DualEncoder
 
-    val maxExtendTicks = 994
-    val maxPitchTicks = 100
+    val maxExtendTicks = 1200
+    val maxPitchTicks = 1800
 
 
     init {
@@ -62,14 +64,19 @@ class ArmSubsystem(ahwMap: HardwareMap) {
         pitchMotor2 = initMotor(ahwMap, "pitchMotor2", DcMotor.RunMode.RUN_WITHOUT_ENCODER)
         extendMotor = initMotor(ahwMap, "extendMotor", DcMotor.RunMode.RUN_WITHOUT_ENCODER)
         extendMotor2 = initMotor(ahwMap, "extendMotor2", DcMotor.RunMode.RUN_WITHOUT_ENCODER)
+        pitchMotor.brake()
+        pitchMotor2.brake()
+        extendMotor.brake()
+        extendMotor2.brake()
 
-        extendEncoder = DualEncoder(ahwMap, "extendMotor", "extendMotor2", "Arm Extend")
-        pitchEncoder = DualEncoder(ahwMap, "pitchMotor", "pitchMotor2", "Arm Pitch")
+        extendEncoder = DualEncoder(ahwMap, "extendMotor2", "extendMotor", "Arm Extend")
+        pitchEncoder = DualEncoder(ahwMap, "pitchMotor2", "pitchMotor", "Arm Pitch", true)
 
         updatePID()
     }
 
     fun setPowerExtend(power: Double, target: Double) {
+        updatePID()
         when (extendState) {
             ExtendState.PID -> {
                 ePower =
@@ -93,6 +100,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     }
 
     fun setPowerPitch(power: Double, target: Double) {
+        updatePID()
         when (pitchState) {
             PitchState.PID -> {
                 pPower =

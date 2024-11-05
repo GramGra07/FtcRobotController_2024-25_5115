@@ -47,7 +47,7 @@ class ScoringSubsystem(ahwMap: HardwareMap) {
 
     private var rotateServo: AxonServo
     private var rotateState: RotateState = RotateState.IDLE
-    private var rotateMode: RotateMode = RotateMode.MANUAL
+    private var rotateMode: RotateMode = RotateMode.SEMI_AUTO
 
     init {
         claw = initServo(ahwMap, "claw")
@@ -87,6 +87,10 @@ class ScoringSubsystem(ahwMap: HardwareMap) {
         rotateState = RotateState.CENTER
     }
 
+    fun setRotateIdle() {
+        rotateState = RotateState.IDLE
+    }
+
     fun telemetry(telemetry: Telemetry) {
         telemetry.addData("Scoring Subsystem", "")
         rotateServo.telemetry(telemetry)
@@ -104,6 +108,7 @@ class ScoringSubsystem(ahwMap: HardwareMap) {
                 ServoFunc.closeClaw(claw)
                 clawState = ClawState.IDLE
                 rotateMode = RotateMode.MANUAL
+                rotateState = RotateState.IDLE
             }
 
             ClawState.IDLE -> {}
@@ -111,19 +116,19 @@ class ScoringSubsystem(ahwMap: HardwareMap) {
 
         when (pitchState) {
             PitchState.HIGH -> {
-                pitchServo.setPose(-90.0)
+                pitchServo.setPose(-60.0)
                 pitchState = PitchState.IDLE
                 rotateMode = RotateMode.MANUAL
             }
 
             PitchState.LOW -> {
-                pitchServo.setPose(90.0)
+                pitchServo.setPose(80.0)
                 pitchState = PitchState.IDLE
                 rotateMode = RotateMode.SEMI_AUTO
             }
 
             PitchState.MED -> {
-                pitchServo.setPose(90.0)
+                pitchServo.setPose(0.0)
                 pitchState = PitchState.IDLE
                 rotateMode = RotateMode.MANUAL
             }
@@ -133,9 +138,8 @@ class ScoringSubsystem(ahwMap: HardwareMap) {
         if (lock.size) {
             rotateMode = RotateMode.MANUAL
         }
-        if (autoRotateClaw) {
+        if (!autoRotateClaw) {
             rotateMode = RotateMode.MANUAL
-
         }
         when (rotateMode) {
             RotateMode.AUTO -> {
@@ -183,8 +187,9 @@ class ScoringSubsystem(ahwMap: HardwareMap) {
     }
 
     fun setup() {
-        pitchServo.setPose(0.0)
-        rotateServo.setPosition(ServoUtil.rotateCenter)
+        setPitchMed()
+        openClaw()
+        setRotateCenter()
     }
 
     private fun lockRotate(lock: CameraLock) {
@@ -195,6 +200,6 @@ class ScoringSubsystem(ahwMap: HardwareMap) {
         } else {
             angle
         }
-        rotateServo.setPosition(correctedAngle)
+        rotateServo.setPosition(angle)
     }
 }

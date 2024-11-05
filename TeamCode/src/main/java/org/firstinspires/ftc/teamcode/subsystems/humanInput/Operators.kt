@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ScoringSubsystem
 object Operators {
 
     @JvmField
-    var deadZone = 0.15
+    var deadZone = 0.015
 
     fun bindOtherButtons(
         myOpMode: OpMode,
@@ -42,6 +42,8 @@ object Operators {
                 )
             ) {
                 scoringSubsystem.setRotateLeft()
+            } else {
+                scoringSubsystem.setRotateIdle()
             }
 
             if (myOpMode.gamepad2.buttonJustPressed(GamepadExtensions.PushButtons.DPAD_UP, 2)) {
@@ -60,12 +62,12 @@ object Operators {
                 scoringSubsystem.setPitchMed()
             }
 
-            if (myOpMode.gamepad2.left_stick_y > -deadZone) {
+            if (myOpMode.gamepad2.left_stick_y > 0) {
                 armSubsystem.setPowerPitch(
                     myOpMode.gamepad2.left_stick_y.toDouble(),
                     0.0
                 )
-            } else if (myOpMode.gamepad2.left_stick_y < deadZone) {
+            } else if (myOpMode.gamepad2.left_stick_y < 0) {
                 armSubsystem.setPowerPitch(
                     myOpMode.gamepad2.left_stick_y.toDouble(),
                     armSubsystem.maxPitchTicks.toDouble()
@@ -73,16 +75,16 @@ object Operators {
             } else {
                 armSubsystem.stopPitch()
             }
-//
-            if (myOpMode.gamepad2.right_stick_y < deadZone) {
-                armSubsystem.setPowerExtend(
-                    -myOpMode.gamepad2.right_stick_y.toDouble(),
-                    armSubsystem.maxExtendTicks.toDouble()
-                )
-            } else if (myOpMode.gamepad2.right_stick_y > -deadZone) {
+
+            if (myOpMode.gamepad2.right_stick_y > 0) {
                 armSubsystem.setPowerExtend(
                     -myOpMode.gamepad2.right_stick_y.toDouble(),
                     0.0
+                )
+            } else if (myOpMode.gamepad2.right_stick_y < 0) {
+                armSubsystem.setPowerExtend(
+                    -myOpMode.gamepad2.right_stick_y.toDouble(),
+                    armSubsystem.maxExtendTicks.toDouble()
                 )
             } else {
                 armSubsystem.stopExtend()

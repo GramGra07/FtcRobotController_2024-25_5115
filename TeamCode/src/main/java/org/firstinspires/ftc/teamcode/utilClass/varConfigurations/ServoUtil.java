@@ -7,10 +7,10 @@ import com.acmerobotics.dashboard.config.Config;
 public class ServoUtil {
     public static double openClaw = 120;
 
-    public static double closeClaw = 40;
+    public static double closeClaw = 60;
 
-    public static double rotateLeft = -90;
-    public static double rotateCenter = 0;
+    public static double rotateLeft = 0;
+    public static double rotateCenter = 90;
 
     public static double pitchHigh = 0.0;
     public static double pitchLow = 50.0;

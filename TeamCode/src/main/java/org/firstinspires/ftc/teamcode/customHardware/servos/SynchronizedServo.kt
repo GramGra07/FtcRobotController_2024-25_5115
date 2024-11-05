@@ -38,5 +38,4 @@ class SynchronizedServo(var hw: HardwareMap, var name: String, private var axonS
             }
         }
     }
-
 }
