@@ -64,12 +64,12 @@ object Operators {
 
             if (myOpMode.gamepad2.left_stick_y > 0) {
                 armSubsystem.setPowerPitch(
-                    myOpMode.gamepad2.left_stick_y.toDouble(),
+                    -myOpMode.gamepad2.left_stick_y.toDouble(),
                     0.0
                 )
             } else if (myOpMode.gamepad2.left_stick_y < 0) {
                 armSubsystem.setPowerPitch(
-                    myOpMode.gamepad2.left_stick_y.toDouble(),
+                    -myOpMode.gamepad2.left_stick_y.toDouble(),
                     armSubsystem.maxPitchTicks.toDouble()
                 )
             } else {

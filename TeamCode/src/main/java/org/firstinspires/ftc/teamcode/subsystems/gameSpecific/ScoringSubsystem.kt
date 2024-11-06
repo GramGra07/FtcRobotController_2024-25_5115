@@ -102,6 +102,7 @@ class ScoringSubsystem(ahwMap: HardwareMap) {
                 ServoFunc.openClaw(claw)
                 clawState = ClawState.IDLE
                 rotateMode = RotateMode.SEMI_AUTO
+                rotateState = RotateState.IDLE
             }
 
             ClawState.CLOSE -> {
@@ -119,18 +120,21 @@ class ScoringSubsystem(ahwMap: HardwareMap) {
                 pitchServo.setPose(-60.0)
                 pitchState = PitchState.IDLE
                 rotateMode = RotateMode.MANUAL
+                rotateState = RotateState.IDLE
             }
 
             PitchState.LOW -> {
                 pitchServo.setPose(80.0)
                 pitchState = PitchState.IDLE
                 rotateMode = RotateMode.SEMI_AUTO
+                rotateState = RotateState.IDLE
             }
 
             PitchState.MED -> {
                 pitchServo.setPose(0.0)
                 pitchState = PitchState.IDLE
                 rotateMode = RotateMode.MANUAL
+                rotateState = RotateState.IDLE
             }
 
             PitchState.IDLE -> {}
@@ -200,6 +204,6 @@ class ScoringSubsystem(ahwMap: HardwareMap) {
         } else {
             angle
         }
-        rotateServo.setPosition(angle)
+        rotateServo.setPosition(correctedAngle)
     }
 }
