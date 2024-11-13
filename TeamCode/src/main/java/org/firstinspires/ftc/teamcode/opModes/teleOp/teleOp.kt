@@ -4,6 +4,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
+import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.Alliance
 import org.firstinspires.ftc.teamcode.utilClass.storage.GameStorage
 import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles
 
@@ -12,7 +13,7 @@ import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles
 class teleOp : LinearOpMode() {
     //declaring the class
     override fun runOpMode() { //if opmode is started
-        val robot = HardwareConfig(this, false, StartLocation(GameStorage.alliance))
+        val robot = HardwareConfig(this, false, StartLocation(Alliance.RED,))
         waitForStart()
         robot.once() //runs once
         while (opModeIsActive()) { //while the op mode is active
