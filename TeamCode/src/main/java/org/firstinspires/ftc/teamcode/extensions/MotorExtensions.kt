@@ -17,7 +17,7 @@ object MotorExtensions {
         t.brake()
         t.direction = direction
         if (runMode == DcMotor.RunMode.RUN_USING_ENCODER) {
-            t.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+//            t.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
             t.runUsingEncoder()
         } else {
             t.mode = runMode

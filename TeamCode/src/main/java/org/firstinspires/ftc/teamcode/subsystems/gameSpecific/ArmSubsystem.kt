@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.customHardware.sensors.DualEncoder
 import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.brake
 import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.initMotor
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.PIDVals
+import kotlin.math.cos
 import kotlin.math.sin
 
 class ArmSubsystem(ahwMap: HardwareMap) {
@@ -27,7 +28,6 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     }
 
     private var usePIDFp = true
-    private var usePIDFe = false
     private var pitchMotor: DcMotorEx
     private var pitchMotor2: DcMotorEx
     private var pitchState: PitchState = PitchState.IDLE
@@ -37,9 +37,10 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     private var pitchPIDF: PIDFController = PIDFController(0.0, 0.0, 0.0, 0.0)
 
     private fun pAngle(ticks: Double): Double {
-        return (ticks / (2048 * 99.8)) * 360
+        return (ticks * ticksPerDegreeCalc)
     }
 
+    private var usePIDFe = false
     private var extendMotor: DcMotorEx
     private var extendMotor2: DcMotorEx
     private var extendState: ExtendState = ExtendState.IDLE
@@ -56,8 +57,9 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     private var extendEncoder: DualEncoder
     var pitchEncoder: DualEncoder
 
-    val maxExtendTicks = 1200
-    val maxPitchTicks = 1700
+    val maxExtendTicksTOTAL = 1200
+    var maxExtendTicks = maxExtendTicksTOTAL
+    val maxPitchTicks = 1600
 
 
     init {
@@ -81,7 +83,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
         when (extendState) {
             ExtendState.PID -> {
                 ePower =
-                    calculatePID(extendPIDF, extendEncoder.getMost(), target)
+                    calculatePID(extendPIDF, extendEncoder.getAverage(), target)
             }
 
             ExtendState.MANUAL -> {
@@ -134,6 +136,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
 
     fun update() {
         updatePID()
+        calculateExtendMax()
     }
 
     private fun updatePID() {
@@ -191,13 +194,41 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     }
 
     private var ticksPer90 = 1863
-    var ticksPerDegree = ticksPer90 / 90
+    val ticksPerDegree = ticksPer90 / 90
+    private val ticksPerDegreeCalc = 0.04839
 
+    private val ticksPerInchExtend = 163.0
+
+    private val clipAngle = 49
+
+    fun pitchIdle() {
+        pitchState = PitchState.IDLE
+    }
+
+    fun extendIdle() {
+        extendState = ExtendState.IDLE
+    }
+
+    private fun calculateExtendMax(): Double {
+        val angle = pAngle(pitchEncoder.getAverage())
+//        usePIDFe = if (angle > clipAngle) {
+//            false
+//        } else {
+//            true
+//        }
+        val x = 42
+        val cosAngle = cos(Math.toRadians(angle))
+        val returnable = Range.clip((x / cosAngle) - 18, 0.0, 44.0) * ticksPerInchExtend
+        maxExtendTicks = (returnable).toInt()
+        return returnable
+    }
 
     fun telemetry(telemetry: Telemetry) {
         telemetry.addData("Arm Subsystem", "")
         pitchEncoder.telemetry(telemetry)
         extendEncoder.telemetry(telemetry)
-        telemetry.addData("Theoretical Height (in)", getTheoreticalHeight())
+        telemetry.addData("pAngle", pAngle(pitchEncoder.getAverage()))
+        telemetry.addData("extendMax (ticks)", calculateExtendMax())
+//        telemetry.addData("Theoretical Height (in)", getTheoreticalHeight())
     }
 }
