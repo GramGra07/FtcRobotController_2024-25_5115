@@ -26,7 +26,8 @@ class ArmSubsystem(ahwMap: HardwareMap) {
         IDLE,
     }
 
-    var usePIDF = false
+    private var usePIDFp = true
+    private var usePIDFe = false
     private var pitchMotor: DcMotorEx
     private var pitchMotor2: DcMotorEx
     private var pitchState: PitchState = PitchState.IDLE
@@ -53,10 +54,10 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     }
 
     private var extendEncoder: DualEncoder
-    private var pitchEncoder: DualEncoder
+    var pitchEncoder: DualEncoder
 
     val maxExtendTicks = 1200
-    val maxPitchTicks = 1800
+    val maxPitchTicks = 1700
 
 
     init {
@@ -95,8 +96,12 @@ class ArmSubsystem(ahwMap: HardwareMap) {
                 ePower = 0.0
             }
 
-            ExtendState.IDLE -> {}
+            ExtendState.IDLE -> {
+                ePower = 0.0
+            }
         }
+        extendMotor.power = ePower
+        extendMotor2.power = ePower
     }
 
     fun setPowerPitch(power: Double, target: Double) {
@@ -119,48 +124,25 @@ class ArmSubsystem(ahwMap: HardwareMap) {
                 pPower = 0.0
             }
 
-            PitchState.IDLE -> {}
+            PitchState.IDLE -> {
+                pPower = 0.0
+            }
         }
+        pitchMotor.power = pPower
+        pitchMotor2.power = pPower
     }
 
     fun update() {
-        power()
-    }
-
-    private fun power() {
-        when (extendState) {
-            ExtendState.PID,
-            ExtendState.MANUAL -> {
-                extendMotor.power = ePower
-                extendMotor2.power = ePower
-            }
-
-            ExtendState.STOPPED,
-            ExtendState.IDLE -> {
-                extendMotor.power = 0.0
-                extendMotor2.power = 0.0
-            }
-        }
-        when (pitchState) {
-            PitchState.PID,
-            PitchState.MANUAL -> {
-                pitchMotor.power = pPower
-                pitchMotor2.power = pPower
-            }
-
-            PitchState.STOPPED,
-            PitchState.IDLE -> {
-                pitchMotor.power = 0.0
-                pitchMotor2.power = 0.0
-            }
-        }
+        updatePID()
     }
 
     private fun updatePID() {
-        extendState = if (usePIDF) {
-            ExtendState.PID
-        } else {
-            ExtendState.MANUAL
+        if (extendState != ExtendState.STOPPED) {
+            extendState = if (usePIDFe) {
+                ExtendState.PID
+            } else {
+                ExtendState.MANUAL
+            }
         }
         extendPIDF.setPIDF(
             PIDVals.extendPIDFCo.p,
@@ -168,10 +150,12 @@ class ArmSubsystem(ahwMap: HardwareMap) {
             PIDVals.extendPIDFCo.d,
             PIDVals.extendPIDFCo.f
         )
-        pitchState = if (usePIDF) {
-            PitchState.PID
-        } else {
-            PitchState.MANUAL
+        if (pitchState != PitchState.STOPPED) {// not stopped as called by code
+            pitchState = if (usePIDFp) {// using the PIDF
+                PitchState.PID
+            } else {
+                PitchState.MANUAL
+            }
         }
         pitchPIDF.setPIDF(
             PIDVals.pitchPIDFCo.p,
@@ -192,10 +176,12 @@ class ArmSubsystem(ahwMap: HardwareMap) {
 
     fun stopExtend() {
         extendState = ExtendState.STOPPED
+        setPowerExtend(0.0, extendEncoder.getMost())
     }
 
     fun stopPitch() {
         pitchState = PitchState.STOPPED
+        setPowerPitch(0.0, pitchEncoder.getMost())
     }
 
     private fun getTheoreticalHeight(): Double {
@@ -203,6 +189,9 @@ class ArmSubsystem(ahwMap: HardwareMap) {
         val angle = pAngle(pitchEncoder.getAverage())
         return (sin(angle) * length) + 2.87
     }
+
+    private var ticksPer90 = 1863
+    var ticksPerDegree = ticksPer90 / 90
 
 
     fun telemetry(telemetry: Telemetry) {

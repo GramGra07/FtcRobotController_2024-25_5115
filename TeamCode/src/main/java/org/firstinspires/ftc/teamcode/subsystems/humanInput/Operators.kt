@@ -42,6 +42,12 @@ object Operators {
                 )
             ) {
                 scoringSubsystem.setRotateLeft()
+            } else if (myOpMode.gamepad2.buttonJustPressed(
+                    GamepadExtensions.PushButtons.CIRCLE,
+                    2
+                )
+            ) {
+                scoringSubsystem.setRotateAuto()
             } else {
                 scoringSubsystem.setRotateIdle()
             }
@@ -60,6 +66,14 @@ object Operators {
                 )
             ) {
                 scoringSubsystem.setPitchMed()
+            } else if (myOpMode.gamepad2.buttonJustPressed(
+                    GamepadExtensions.PushButtons.DPAD_LEFT,
+                    2
+                )
+            ) {
+                scoringSubsystem.setPitchAuto()
+            } else {
+                scoringSubsystem.setPitchIdle()
             }
 
             if (myOpMode.gamepad2.left_stick_y > 0) {
