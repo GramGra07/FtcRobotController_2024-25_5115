@@ -11,5 +11,22 @@ data class StartLocation(
 ) {
     init {
         PoseStorage.currentPose = startPose
+        GameStorage.alliance = alliance
+    }
+    enum class SPOTS{
+        RL,RR,BL,BR
+    }
+    companion object {
+        var map: HashMap<SPOTS, Pose2d> =
+            hashMapOf(
+                SPOTS.RL to Pose2d(12.0, 60.0, Math.toRadians(0.0)),
+                SPOTS.RR to Pose2d(-12.0, 60.0, Math.toRadians(0.0)),
+                SPOTS.BL to Pose2d(12.0, -60.0, Math.toRadians(180.0)),
+                SPOTS.BR to Pose2d(-12.0, -60.0, Math.toRadians(180.0))
+            )
+
+        public fun Pose2d.Companion.ofContext(spots: SPOTS): Pose2d {
+            return map[spots]!!
+        }
     }
 }
