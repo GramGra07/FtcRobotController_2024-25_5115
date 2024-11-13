@@ -8,11 +8,11 @@ import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities.initializeProcessor
+import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities.startCameraStream
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.PROCESSORS
 import org.firstinspires.ftc.teamcode.customHardware.loopTime.LoopTimeController
 import org.firstinspires.ftc.teamcode.customHardware.loopTime.LoopTimeController.Companion.every
-import org.firstinspires.ftc.teamcode.customHardware.sensors.BeamBreakSensor
-import org.firstinspires.ftc.teamcode.customHardware.sensors.BrushlandRoboticsSensor
+import org.firstinspires.ftc.teamcode.followers.pedroPathing.follower.Follower
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.LocalizerSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ArmSubsystem
@@ -39,13 +39,14 @@ open class HardwareConfig(
 
     lateinit var driveSubsystem: DriveSubsystem
     lateinit var localizerSubsystem: LocalizerSubsystem
+    lateinit var driveFollower: Follower
 
     lateinit var armSubsystem: ArmSubsystem
     lateinit var scoringSubsystem: ScoringSubsystem
 //    lateinit var reLocalizationSubsystem: ReLocalizationSubsystem
 
-    lateinit var brush: BrushlandRoboticsSensor
-    lateinit var beamBreakSensor: BeamBreakSensor
+//    lateinit var brush: BrushlandRoboticsSensor
+//    lateinit var beamBreakSensor: BeamBreakSensor
 
     companion object {
         val dt = CurrentDrivetrain.currentDrivetrain
@@ -55,16 +56,12 @@ open class HardwareConfig(
         val timer: ElapsedTime = ElapsedTime()
 
         const val CAM1 = "Webcam 1"
-        const val CAM2 = "Webcam 2"
-
-        //        lateinit var lights: RevBlinkinLedDriver
-        var lastTimeOpen = 0.0
 
         lateinit var loopTimeController: LoopTimeController
 
         var once = false
 
-        private const val CURRENT_VERSION = "8.1.0"
+        private var hasMovedOnInit = false
 
         var allHubs: List<LynxModule> = ArrayList()
     }
@@ -75,9 +72,8 @@ open class HardwareConfig(
         startLocation: StartLocation
     ) {
 
-        brush = BrushlandRoboticsSensor(ahwMap, "brush")
-        beamBreakSensor = BeamBreakSensor(ahwMap, "beam")
-
+//        brush = BrushlandRoboticsSensor(ahwMap, "brush")
+//        beamBreakSensor = BeamBreakSensor(ahwMap, "beam")
 
         localizerSubsystem =
             LocalizerSubsystem(
@@ -85,6 +81,7 @@ open class HardwareConfig(
                 startLocation.startPose,
                 LocalizerSubsystem.LocalizerType.PEDRO
             )
+
         driveSubsystem = DriveSubsystem(ahwMap, localizerSubsystem, dt)
 
         allHubs = ahwMap.getAll(LynxModule::class.java)
@@ -96,7 +93,7 @@ open class HardwareConfig(
         armSubsystem =
             ArmSubsystem(ahwMap)
         scoringSubsystem =
-            ScoringSubsystem(ahwMap)
+            ScoringSubsystem(ahwMap, armSubsystem)
 
 //        reLocalizationSubsystem =
 //            ReLocalizationSubsystem(ahwMap)
@@ -105,23 +102,17 @@ open class HardwareConfig(
 //            MultipleTelemetry(myOpMode.telemetry, FtcDashboard.getInstance().telemetry)
         dashboard = FtcDashboard.getInstance()
         once = false
-
-        initializeProcessor(startLocation.alliance, PROCESSORS.TARGET_LOCK, ahwMap, CAM1, true)
-
+        dt.telemetry(telemetry)
         if (!auto) {
+            driveFollower = localizerSubsystem.follower
+            initializeProcessor(startLocation.alliance, PROCESSORS.TARGET_LOCK, ahwMap, CAM1, true)
             loopTimeController = LoopTimeController(timer)
+            telemetry.update()
         }
 
-        telemetry.addData("Version", CURRENT_VERSION)
-        dt.telemetry(telemetry)
-
-        if (!auto)
-            telemetry.update()
-
-        localizerSubsystem.draw(dashboard)
+//        localizerSubsystem.draw(dashboard)
     }
 
-    //code to run all drive functions
     fun doBulk() {
         bindDriverButtons(
             myOpMode, driveSubsystem,
@@ -172,6 +163,7 @@ open class HardwareConfig(
         if (!once) {
             telemetry.clearAll()
             timer.reset()
+            startCameraStream()
             myOpMode.gamepad1.setLedColor(229.0, 74.0, 161.0, -1)
             myOpMode.gamepad2.setLedColor(0.0, 0.0, 0.0, -1)
             once = true
@@ -185,9 +177,6 @@ open class HardwareConfig(
     }
 
     private fun buildTelemetry() {
-//        brush.telemetry(telemetry)
-//        beamBreakSensor.telemetry(telemetry)
-
         loopTimeController.telemetry(telemetry)
         teleSpace()
         if (VarConfig.multipleDrivers) {
@@ -210,7 +199,6 @@ open class HardwareConfig(
 
         TargetLock.telemetry(telemetry)
         teleSpace()
-        telemetry.addData("Version", CURRENT_VERSION)
         telemetry.update()
     }
 
@@ -218,17 +206,14 @@ open class HardwareConfig(
         telemetry.addData("---------", "---------")
     }
 
-    private var hasMovedOnInit = false
     private fun moveOnInit(
         myOpMode: LinearOpMode,
         armSubsystem: ArmSubsystem,
         scoringSubsystem: ScoringSubsystem
     ) {
-        if (!hasMovedOnInit) {
-            if (!myOpMode.gamepad1.atRest() || !myOpMode.gamepad2.atRest()) {
-                scoringSubsystem.setup()
-                hasMovedOnInit = true
-            }
+        if ((!myOpMode.gamepad1.atRest() || !myOpMode.gamepad2.atRest()) && !hasMovedOnInit) {
+            scoringSubsystem.setup()
+            hasMovedOnInit = true
         }
     }
 }
