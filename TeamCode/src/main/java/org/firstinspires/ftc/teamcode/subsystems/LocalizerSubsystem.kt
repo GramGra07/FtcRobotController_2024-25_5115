@@ -11,6 +11,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose3D
 import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toPose
 import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toPose2d
 import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toString2
+import org.firstinspires.ftc.teamcode.followers.pedroPathing.follower.Follower
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.PoseUpdater
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.localizers.OTOSLocalizer
 import org.firstinspires.ftc.teamcode.followers.roadRunner.Drawing
@@ -27,14 +28,22 @@ class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose2d, val type: LocalizerT
         ROADRUNNER
     }
 
-    private lateinit var poseUpdater: PoseUpdater
+    lateinit var poseUpdater: PoseUpdater
+    lateinit var follower: Follower
     private lateinit var sparkFunDrive: SparkFunOTOSDrive
+    private val startPose = pose
+
+    fun start():Pose2d{
+        return startPose
+    }
 
     init {
         when (type) {
             LocalizerType.PEDRO -> {
                 poseUpdater = PoseUpdater(ahwMap, OTOSLocalizer(ahwMap, pose.toPose()))
                 poseUpdater.pose = pose.toPose()
+                follower = Follower(ahwMap)
+                follower.setStartingPose(pose.toPose())
             }
 
             LocalizerType.ROADRUNNER -> {
