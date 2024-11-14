@@ -1,14 +1,15 @@
 package org.firstinspires.ftc.teamcode.opModes.auto.demos
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
-import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.follower.Follower
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.BezierPoint
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Point
 import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles
 
 @Autonomous(group = GroupingTitles.demos)
+@Disabled
 class stayDemoPP : LinearOpMode() {
 
     private var follower: Follower? = null

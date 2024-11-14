@@ -4,7 +4,7 @@ class GroupingTitles {
 
     companion object {
         const val TESTING: String = "t"
-        const val tele: String = "a"
+        const val tele: String = "aa"
         const val rr: String = "q"
         const val auto: String = "b"
         const val demos: String = "z"
