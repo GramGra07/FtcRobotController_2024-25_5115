@@ -117,33 +117,35 @@ object Operators {
         moveArm,
         moveScoring,
     }
+
     val driverAidSM = SequentialRunSM.Builder<DriverAidState>()
         .state(DriverAidState.moveClaw)
-        .onEnter(DriverAidState.moveClaw,
-            {
-                //move claw
-            }
-        )
-        .transition(DriverAidState.moveArm, { true })
+        .onEnter(
+            DriverAidState.moveClaw
+        ) {
+            //move claw
+        }
+        .transition(DriverAidState.moveArm) { true }
         .state(DriverAidState.moveArm)
-        .onEnter(DriverAidState.moveArm,
-            {
-                //move arm
-            }
-        )
-        .transition(DriverAidState.moveScoring, { true })
+        .onEnter(
+            DriverAidState.moveArm
+        ) {
+            //move arm
+        }
+        .transition(DriverAidState.moveScoring) { true }
         .state(DriverAidState.moveScoring)
-        .onEnter(DriverAidState.moveScoring,
-            {
-                //move scoring
-            }
-        )
-        .transition(DriverAidState.moveClaw, { true })
+        .onEnter(
+            DriverAidState.moveScoring
+        ) {
+            //move scoring
+        }
+        .transition(DriverAidState.moveClaw) { true }
         .build()
+
     fun driverAid() {
         if (driverAidSM.isStarted) {
             driverAidSM.update()
-        }else {
+        } else {
             driverAidSM.start()
         }
     }
