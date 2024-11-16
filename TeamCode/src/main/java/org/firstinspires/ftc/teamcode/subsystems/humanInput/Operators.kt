@@ -5,6 +5,7 @@ import org.firstinspires.ftc.teamcode.extensions.GamepadExtensions
 import org.firstinspires.ftc.teamcode.extensions.GamepadExtensions.buttonJustPressed
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ArmSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ScoringSubsystem
+import org.gentrifiedApps.statemachineftc.SequentialRunSM
 
 object Operators {
 
@@ -109,15 +110,41 @@ object Operators {
             }
 
         }
-        if (currOther === otherControls[1]) { //Grady
-        }
-        if (currOther === otherControls[2]) { //Michael
-        }
-        if (currOther === otherControls[3]) { //Graden
-        }
-        if (currOther === otherControls[4]) { // Delaney
-        }
-        if (currOther === otherControls[5]) { // Child
+    }
+
+    enum class DriverAidState {
+        moveClaw,
+        moveArm,
+        moveScoring,
+    }
+    val driverAidSM = SequentialRunSM.Builder<DriverAidState>()
+        .state(DriverAidState.moveClaw)
+        .onEnter(DriverAidState.moveClaw,
+            {
+                //move claw
+            }
+        )
+        .transition(DriverAidState.moveArm, { true })
+        .state(DriverAidState.moveArm)
+        .onEnter(DriverAidState.moveArm,
+            {
+                //move arm
+            }
+        )
+        .transition(DriverAidState.moveScoring, { true })
+        .state(DriverAidState.moveScoring)
+        .onEnter(DriverAidState.moveScoring,
+            {
+                //move scoring
+            }
+        )
+        .transition(DriverAidState.moveClaw, { true })
+        .build()
+    fun driverAid() {
+        if (driverAidSM.isStarted) {
+            driverAidSM.update()
+        }else {
+            driverAidSM.start()
         }
     }
 }
