@@ -179,12 +179,12 @@ class ScoringSubsystem(ahwMap: HardwareMap, private val armSubsystem: ArmSubsyst
 
     private fun lockRotate(lock: CameraLock) {
         val angle = lock.angle
-        val correctedAngle = if (angle / abs(angle) == -1.0) {
+        var correctedAngle = if (angle / abs(angle) == -1.0) {
             90 + angle
         } else {
             angle
         }
-        rotateServo.setPosition(correctedAngle)
+        rotateServo.setPosition((correctedAngle / 5) * 5)
     }
 
     private fun autoLevel() {
