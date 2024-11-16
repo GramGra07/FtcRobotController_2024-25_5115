@@ -33,8 +33,8 @@ class SynchronizedServo(var hw: HardwareMap, var name: String, private var axonS
             }
 
             false -> {
-                servo1.setPose(pose)
-                servo2.setPose(pose)
+                servo1.setPose(90 + pose)
+                servo2.setPose(90 - pose)
             }
         }
     }
