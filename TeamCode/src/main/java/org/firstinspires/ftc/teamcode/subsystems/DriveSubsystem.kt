@@ -1,13 +1,10 @@
 package org.firstinspires.ftc.teamcode.subsystems
 
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot.UsbFacingDirection
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.HardwareMap
-import com.qualcomm.robotcore.hardware.IMU
 import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.initMotor
@@ -33,7 +30,6 @@ class DriveSubsystem(
     private var motorBackLeft: DcMotorEx
     private var motorFrontRight: DcMotorEx
     private var motorBackRight: DcMotorEx
-    private var imu: IMU
 
     init {
         motorFrontLeft =
@@ -59,16 +55,6 @@ class DriveSubsystem(
                 "motorBackRight",
                 DcMotor.RunMode.RUN_WITHOUT_ENCODER
             )
-        imu = ahwMap.get(IMU::class.java, "imu")
-        /* The next two lines define Hub orientation.
-         * The Default Orientation (shown) is when a hub is mounted horizontally with the printed logo pointing UP and the USB port pointing FORWARD.
-         *
-         * To Do:  EDIT these two lines to match YOUR mounting configuration.
-         */
-        val logoDirection = RevHubOrientationOnRobot.LogoFacingDirection.RIGHT
-        val usbDirection = UsbFacingDirection.FORWARD
-        val orientationOnRobot = RevHubOrientationOnRobot(logoDirection, usbDirection)
-        imu.initialize(IMU.Parameters(orientationOnRobot))
         motorBackLeft.direction = DcMotorSimple.Direction.REVERSE
         motorFrontLeft.direction = DcMotorSimple.Direction.REVERSE
     }
@@ -94,8 +80,7 @@ class DriveSubsystem(
 //
         if (dt.type == DrivetrainType.MECANUM) {
             if (type == DriveType.FIELD_CENTRIC) {
-                val angle = imu.robotYawPitchRollAngles.yaw
-//                val angle = localizerSubsystem.heading()
+                val angle = localizerSubsystem.heading()
                 val controllerAngle = Math.toDegrees(atan2(leftStickY, leftStickX))
                 val robotDegree = Math.toDegrees(angle)
                 val movementDegree = controllerAngle - robotDegree
