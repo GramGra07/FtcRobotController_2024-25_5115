@@ -27,7 +27,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
         IDLE,
     }
 
-    private var usePIDFp = true
+    private var usePIDFp = false
     private var pitchMotor: DcMotorEx
     private var pitchMotor2: DcMotorEx
     private var pitchState: PitchState = PitchState.IDLE
@@ -102,8 +102,6 @@ class ArmSubsystem(ahwMap: HardwareMap) {
                 ePower = 0.0
             }
         }
-        extendMotor.power = ePower
-        extendMotor2.power = ePower
     }
 
     fun setPowerPitch(power: Double, target: Double) {
@@ -130,13 +128,19 @@ class ArmSubsystem(ahwMap: HardwareMap) {
                 pPower = 0.0
             }
         }
-        pitchMotor.power = pPower
-        pitchMotor2.power = pPower
     }
 
     fun update() {
         updatePID()
+        power()
         calculateExtendMax()
+    }
+
+    fun power() {
+        pitchMotor.power = pPower
+        pitchMotor2.power = pPower
+        extendMotor.power = ePower
+        extendMotor2.power = ePower
     }
 
     private fun updatePID() {
@@ -179,12 +183,12 @@ class ArmSubsystem(ahwMap: HardwareMap) {
 
     fun stopExtend() {
         extendState = ExtendState.STOPPED
-        setPowerExtend(0.0, extendEncoder.getMost())
+        pPower = 0.0
     }
 
     fun stopPitch() {
         pitchState = PitchState.STOPPED
-        setPowerPitch(0.0, pitchEncoder.getMost())
+        ePower = 0.0
     }
 
     private fun getTheoreticalHeight(): Double {
@@ -199,8 +203,6 @@ class ArmSubsystem(ahwMap: HardwareMap) {
 
     private val ticksPerInchExtend = 163.0
 
-    private val clipAngle = 49
-
     fun pitchIdle() {
         pitchState = PitchState.IDLE
     }
@@ -211,11 +213,6 @@ class ArmSubsystem(ahwMap: HardwareMap) {
 
     private fun calculateExtendMax(): Double {
         val angle = pAngle(pitchEncoder.getAverage())
-//        usePIDFe = if (angle > clipAngle) {
-//            false
-//        } else {
-//            true
-//        }
         val x = 42
         val cosAngle = cos(Math.toRadians(angle))
         val returnable = Range.clip((x / cosAngle) - 18, 0.0, 44.0) * ticksPerInchExtend
@@ -229,6 +226,5 @@ class ArmSubsystem(ahwMap: HardwareMap) {
         extendEncoder.telemetry(telemetry)
         telemetry.addData("pAngle", pAngle(pitchEncoder.getAverage()))
         telemetry.addData("extendMax (ticks)", calculateExtendMax())
-//        telemetry.addData("Theoretical Height (in)", getTheoreticalHeight())
     }
 }
