@@ -179,7 +179,7 @@ class ScoringSubsystem(ahwMap: HardwareMap, private val armSubsystem: ArmSubsyst
 
     private fun lockRotate(lock: CameraLock) {
         val angle = lock.angle
-        var correctedAngle = if (angle / abs(angle) == -1.0) {
+        val correctedAngle = if (angle / abs(angle) == -1.0) {
             90 + angle
         } else {
             angle
