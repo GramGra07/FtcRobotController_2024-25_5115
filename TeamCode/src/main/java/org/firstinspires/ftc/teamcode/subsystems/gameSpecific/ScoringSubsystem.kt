@@ -1,16 +1,20 @@
 package org.firstinspires.ftc.teamcode.subsystems.gameSpecific
 
+import com.qualcomm.hardware.limelightvision.Limelight3A
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.Servo
 import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.robotcore.external.Telemetry
+import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.Alliance
 import org.firstinspires.ftc.teamcode.customHardware.servos.AxonServo
 import org.firstinspires.ftc.teamcode.customHardware.servos.SynchronizedServo
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.initServo
 import org.firstinspires.ftc.teamcode.utilClass.CameraLock
 import org.firstinspires.ftc.teamcode.utilClass.ServoFunc
+import org.firstinspires.ftc.teamcode.utilClass.storage.GameStorage
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.ServoUtil
 import kotlin.math.abs
+
 
 class ScoringSubsystem(ahwMap: HardwareMap, private val armSubsystem: ArmSubsystem) {
     enum class ClawState {
@@ -44,14 +48,36 @@ class ScoringSubsystem(ahwMap: HardwareMap, private val armSubsystem: ArmSubsyst
     private var rotateServo: AxonServo
     private var rotateState: RotateState = RotateState.IDLE
 
+    private var limelight3A: Limelight3A
+
     init {
         claw = initServo(ahwMap, "claw")
         pitchServo = SynchronizedServo(ahwMap, "pitchServo", true)
         rotateServo = AxonServo(ahwMap, "rotateServo")
+        limelight3A = ahwMap.get(Limelight3A::class.java, "limelight")
+        limelight3A.start()
+        limelight3A.pipelineSwitch(1)
+        val use_blue = if (GameStorage.alliance == Alliance.BLUE) {
+            1
+        } else {
+            0
+        }
+        limelight3A.updatePythonInputs(use_blue.toDouble(), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
     }
 
-    fun update(lock: CameraLock?) {
-        updateServos(lock)
+    fun getLimeLightResult(): Double {
+        val result = limelight3A.latestResult
+        val pythonOutputs: DoubleArray = result.getPythonOutput()
+        var angle: Double = 0.0
+        if (pythonOutputs.isNotEmpty()) {
+            angle = pythonOutputs[6]
+        }
+        return angle
+    }
+
+    fun update() {
+        getLimeLightResult()
+//        updateServos(lock)
     }
 
     fun setPitchAuto() {
@@ -101,6 +127,7 @@ class ScoringSubsystem(ahwMap: HardwareMap, private val armSubsystem: ArmSubsyst
     fun telemetry(telemetry: Telemetry) {
         telemetry.addData("Scoring Subsystem", "")
         rotateServo.telemetry(telemetry)
+        telemetry.addData("angle", getLimeLightResult())
     }
 
     private fun updateServos(lock: CameraLock?) {
@@ -174,7 +201,7 @@ class ScoringSubsystem(ahwMap: HardwareMap, private val armSubsystem: ArmSubsyst
         setPitchHigh()
         closeClaw()
         setRotateCenter()
-        update(null)
+//        update(null)
     }
 
     private fun lockRotate(lock: CameraLock) {

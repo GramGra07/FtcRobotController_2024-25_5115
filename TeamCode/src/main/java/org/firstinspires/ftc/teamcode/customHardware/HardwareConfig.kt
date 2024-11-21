@@ -7,9 +7,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
-import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities.initializeProcessor
-import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities.startCameraStream
-import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.PROCESSORS
 import org.firstinspires.ftc.teamcode.customHardware.loopTime.LoopTimeController
 import org.firstinspires.ftc.teamcode.customHardware.loopTime.LoopTimeController.Companion.every
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.follower.Follower
@@ -24,7 +21,6 @@ import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers.switchProfil
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Operators.bindOtherButtons
 import org.firstinspires.ftc.teamcode.utilClass.storage.CurrentDrivetrain
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.VarConfig
-import org.firstinspires.ftc.teamcode.vision.TargetLock
 
 open class HardwareConfig(
     private val myOpMode: LinearOpMode,
@@ -105,7 +101,7 @@ open class HardwareConfig(
         dt.telemetry(telemetry)
         if (!auto) {
             driveFollower = localizerSubsystem.follower
-            initializeProcessor(startLocation.alliance, PROCESSORS.TARGET_LOCK, ahwMap, CAM1, true)
+//            initializeProcessor(startLocation.alliance, PROCESSORS.TARGET_LOCK, ahwMap, CAM1, true)
             loopTimeController = LoopTimeController(timer)
             telemetry.update()
         }
@@ -134,10 +130,9 @@ open class HardwareConfig(
 
         localizerSubsystem.update(timer)
 
-        scoringSubsystem.update(TargetLock.cameraLock)
+        scoringSubsystem.update()
 
         armSubsystem.update()
-
 
 //        loopTimeController.every(if (VarConfig.loopSaver) 30 else 10) {
 //            reLocalizationSubsystem.update(localizerSubsystem, VarConfig.relocalize)
@@ -146,13 +141,13 @@ open class HardwareConfig(
         loopTimeController.every(if (VarConfig.loopSaver) 30 else 10) {
             buildTelemetry() //makes telemetry
         }
-
-//        if (!VarConfig.loopSaver) {
-//            startCameraStream()
-//        } else {
-//            stopCameraStream()
-//        }
-
+//
+////        if (!VarConfig.loopSaver) {
+////            startCameraStream()
+////        } else {
+////            stopCameraStream()
+////        }
+//
         localizerSubsystem.draw(dashboard)
 
         loopTimeController.update()
@@ -163,7 +158,7 @@ open class HardwareConfig(
         if (!once) {
             telemetry.clearAll()
             timer.reset()
-            startCameraStream()
+//            startCameraStream()
             myOpMode.gamepad1.setLedColor(229.0, 74.0, 161.0, -1)
             myOpMode.gamepad2.setLedColor(0.0, 0.0, 0.0, -1)
             once = true
@@ -197,7 +192,7 @@ open class HardwareConfig(
         scoringSubsystem.telemetry(telemetry)
         teleSpace()
 
-        TargetLock.telemetry(telemetry)
+//        TargetLock.telemetry(telemetry)
         teleSpace()
         telemetry.update()
     }
