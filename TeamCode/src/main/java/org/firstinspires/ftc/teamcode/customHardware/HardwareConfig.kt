@@ -84,18 +84,17 @@ open class HardwareConfig(
         for (hub in allHubs) {
             hub.bulkCachingMode = LynxModule.BulkCachingMode.AUTO
         }
-//        lights =
-//            initLights(ahwMap, "blinkin")
+
         armSubsystem =
             ArmSubsystem(ahwMap)
         scoringSubsystem =
-            ScoringSubsystem(ahwMap, armSubsystem)
+            ScoringSubsystem(ahwMap, auto, armSubsystem)
 
 //        reLocalizationSubsystem =
 //            ReLocalizationSubsystem(ahwMap)
 
         telemetry = myOpMode.telemetry
-//            MultipleTelemetry(myOpMode.telemetry, FtcDashboard.getInstance().telemetry)
+
         dashboard = FtcDashboard.getInstance()
         once = false
         dt.telemetry(telemetry)
@@ -105,8 +104,6 @@ open class HardwareConfig(
             loopTimeController = LoopTimeController(timer)
             telemetry.update()
         }
-
-//        localizerSubsystem.draw(dashboard)
     }
 
     fun doBulk() {
@@ -185,8 +182,8 @@ open class HardwareConfig(
         teleSpace()
 //        reLocalizationSubsystem.telemetry(telemetry)
 //        teleSpace()
-//        localizerSubsystem.telemetry(telemetry)
-//        teleSpace()
+        localizerSubsystem.telemetry(telemetry)
+        teleSpace()
         armSubsystem.telemetry(telemetry)
         teleSpace()
         scoringSubsystem.telemetry(telemetry)

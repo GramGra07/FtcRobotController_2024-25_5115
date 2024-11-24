@@ -16,7 +16,11 @@ import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.ServoUtil
 import kotlin.math.abs
 
 
-class ScoringSubsystem(ahwMap: HardwareMap, private val armSubsystem: ArmSubsystem) {
+class ScoringSubsystem(
+    ahwMap: HardwareMap,
+    private val auto: Boolean,
+    private val armSubsystem: ArmSubsystem
+) {
     enum class ClawState {
         OPEN,
         CLOSE,
@@ -42,27 +46,28 @@ class ScoringSubsystem(ahwMap: HardwareMap, private val armSubsystem: ArmSubsyst
         LEFT,
         CENTER,
         IDLE,
-        AUTO,
     }
 
     private var rotateServo: AxonServo
     private var rotateState: RotateState = RotateState.IDLE
 
-    private var limelight3A: Limelight3A
+    private lateinit var limelight3A: Limelight3A
 
     init {
         claw = initServo(ahwMap, "claw")
         pitchServo = SynchronizedServo(ahwMap, "pitchServo", true)
         rotateServo = AxonServo(ahwMap, "rotateServo")
-        limelight3A = ahwMap.get(Limelight3A::class.java, "limelight")
-        limelight3A.start()
-        limelight3A.pipelineSwitch(1)
-        val use_blue = if (GameStorage.alliance == Alliance.BLUE) {
-            1
-        } else {
-            0
+        if (auto) {
+            limelight3A = ahwMap.get(Limelight3A::class.java, "limelight")
+            limelight3A.start()
+            limelight3A.pipelineSwitch(1)
+            val use_blue = if (GameStorage.alliance == Alliance.BLUE) {
+                1
+            } else {
+                0
+            }
+            limelight3A.updatePythonInputs(use_blue.toDouble(), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
         }
-        limelight3A.updatePythonInputs(use_blue.toDouble(), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
     }
 
     fun getLimeLightResult(): Double {
@@ -77,15 +82,11 @@ class ScoringSubsystem(ahwMap: HardwareMap, private val armSubsystem: ArmSubsyst
 
     fun update() {
         getLimeLightResult()
-//        updateServos(lock)
+        updateServos()
     }
 
     fun setPitchAuto() {
         pitchState = PitchState.AUTO
-    }
-
-    fun setRotateAuto() {
-        rotateState = RotateState.AUTO
     }
 
     fun openClaw() {
@@ -130,7 +131,7 @@ class ScoringSubsystem(ahwMap: HardwareMap, private val armSubsystem: ArmSubsyst
         telemetry.addData("angle", getLimeLightResult())
     }
 
-    private fun updateServos(lock: CameraLock?) {
+    private fun updateServos() {
         when (clawState) {
             ClawState.OPEN -> {
                 ServoFunc.openClaw(claw)
@@ -190,10 +191,6 @@ class ScoringSubsystem(ahwMap: HardwareMap, private val armSubsystem: ArmSubsyst
 
             RotateState.IDLE -> {
             }
-
-            RotateState.AUTO -> {
-                lockRotate(lock!!)
-            }
         }
     }
 
@@ -201,7 +198,7 @@ class ScoringSubsystem(ahwMap: HardwareMap, private val armSubsystem: ArmSubsyst
         setPitchHigh()
         closeClaw()
         setRotateCenter()
-//        update(null)
+        update()
     }
 
     private fun lockRotate(lock: CameraLock) {
