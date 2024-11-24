@@ -43,12 +43,7 @@ object Operators {
                 )
             ) {
                 scoringSubsystem.setRotateLeft()
-            } else if (myOpMode.gamepad2.buttonJustPressed(
-                    GamepadExtensions.PushButtons.CIRCLE,
-                    2
-                )
-            ) {
-                scoringSubsystem.setRotateAuto()
+            
             } else {
                 scoringSubsystem.setRotateIdle()
             }
