@@ -18,6 +18,7 @@ import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers.bindDriverButtons
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers.currentFieldCentric
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers.switchProfile
+import org.firstinspires.ftc.teamcode.subsystems.humanInput.Operators
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Operators.bindOtherButtons
 import org.firstinspires.ftc.teamcode.utilClass.storage.CurrentDrivetrain
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.VarConfig
@@ -89,6 +90,8 @@ open class HardwareConfig(
             ArmSubsystem(ahwMap)
         scoringSubsystem =
             ScoringSubsystem(ahwMap, auto, armSubsystem)
+
+        Operators.initSM(scoringSubsystem, armSubsystem)
 
 //        reLocalizationSubsystem =
 //            ReLocalizationSubsystem(ahwMap)
