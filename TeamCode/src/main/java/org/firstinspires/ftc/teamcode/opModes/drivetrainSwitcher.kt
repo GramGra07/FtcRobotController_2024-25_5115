@@ -1,13 +1,14 @@
 package org.firstinspires.ftc.teamcode.opModes
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
-import org.firstinspires.ftc.teamcode.utilClass.storage.CurrentDrivetrain
 import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles
 import org.firstinspires.ftc.teamcode.utilClass.drivetrain.Drivetrain.Companion.drivetrains
+import org.firstinspires.ftc.teamcode.utilClass.storage.CurrentDrivetrain
 
 @TeleOp(group = GroupingTitles.TESTING)
-//@Disabled
+@Disabled
 class drivetrainSwitcher : LinearOpMode() {
     override fun runOpMode() {
         var index = drivetrains.indexOfFirst { it.name == CurrentDrivetrain.currentDrivetrain.name }
