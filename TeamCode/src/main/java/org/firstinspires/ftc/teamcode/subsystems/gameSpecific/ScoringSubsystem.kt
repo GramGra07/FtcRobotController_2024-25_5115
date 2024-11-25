@@ -81,7 +81,7 @@ class ScoringSubsystem(
     }
 
     fun update() {
-        getLimeLightResult()
+//        getLimeLightResult()
         updateServos()
     }
 
@@ -128,7 +128,7 @@ class ScoringSubsystem(
     fun telemetry(telemetry: Telemetry) {
         telemetry.addData("Scoring Subsystem", "")
         rotateServo.telemetry(telemetry)
-        telemetry.addData("angle", getLimeLightResult())
+//        telemetry.addData("angle", getLimeLightResult())
     }
 
     private fun updateServos() {
@@ -212,7 +212,8 @@ class ScoringSubsystem(
     }
 
     private fun autoLevel() {
-        val angle = armSubsystem.ticksPerDegree * armSubsystem.pitchEncoder.getAverage()
+        val angle =
+            armSubsystem.ticksPerDegree * armSubsystem.pitchEncoder.currentPosition.toDouble()
         val coAng = Range.clip(angle + 80, -60.0, 80.0)
         pitchServo.setPose(coAng)
     }

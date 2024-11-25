@@ -5,7 +5,7 @@ import org.firstinspires.ftc.teamcode.extensions.GamepadExtensions
 import org.firstinspires.ftc.teamcode.extensions.GamepadExtensions.buttonJustPressed
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ArmSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ScoringSubsystem
-import org.gentrifiedApps.statemachineftc.SequentialRunSM
+import org.gentrifiedApps.statemachineftc.ParallelRunSM
 
 object Operators {
 
@@ -43,9 +43,6 @@ object Operators {
                 )
             ) {
                 scoringSubsystem.setRotateLeft()
-            
-            } else {
-                scoringSubsystem.setRotateIdle()
             }
 
             if (myOpMode.gamepad2.buttonJustPressed(GamepadExtensions.PushButtons.DPAD_UP, 2)) {
@@ -62,14 +59,18 @@ object Operators {
                 )
             ) {
                 scoringSubsystem.setPitchMed()
-            } else if (myOpMode.gamepad2.buttonJustPressed(
-                    GamepadExtensions.PushButtons.DPAD_LEFT,
-                    2
-                )
-            ) {
-                scoringSubsystem.setPitchAuto()
+            }
+
+            if (myOpMode.gamepad2.circle) {
+                if (!driverAidSM.isStarted) {
+                    driverAidSM.start()
+                } else {
+                    driverAidSM.update()
+                }
             } else {
-                scoringSubsystem.setPitchIdle()
+                if (driverAidSM.isStarted) {
+                    driverAidSM.stop()
+                }
             }
 
             if (myOpMode.gamepad2.left_stick_y > 0) {
@@ -111,37 +112,32 @@ object Operators {
         moveClaw,
         moveArm,
         moveScoring,
+        stop
     }
 
-    val driverAidSM = SequentialRunSM.Builder<DriverAidState>()
-        .state(DriverAidState.moveClaw)
-        .onEnter(
-            DriverAidState.moveClaw
-        ) {
-            //move claw
-        }
-        .transition(DriverAidState.moveArm) { true }
-        .state(DriverAidState.moveArm)
-        .onEnter(
-            DriverAidState.moveArm
-        ) {
-            //move arm
-        }
-        .transition(DriverAidState.moveScoring) { true }
-        .state(DriverAidState.moveScoring)
-        .onEnter(
-            DriverAidState.moveScoring
-        ) {
-            //move scoring
-        }
-        .transition(DriverAidState.moveClaw) { true }
-        .build()
-
-    fun driverAid() {
-        if (driverAidSM.isStarted) {
-            driverAidSM.update()
-        } else {
-            driverAidSM.start()
-        }
+    lateinit var driverAidSM: ParallelRunSM<DriverAidState>
+    fun initSM(scoringSubsystem: ScoringSubsystem, armSubsystem: ArmSubsystem) {
+        driverAidSM = ParallelRunSM.Builder<DriverAidState>()
+            .state(DriverAidState.moveClaw)
+            .onEnter(
+                DriverAidState.moveClaw
+            ) {
+                scoringSubsystem.closeClaw()
+            }
+            .state(DriverAidState.moveArm)
+            .onEnter(
+                DriverAidState.moveArm
+            ) {
+                armSubsystem.autoExtend(0.0)
+            }
+            .state(DriverAidState.moveScoring)
+            .onEnter(
+                DriverAidState.moveScoring
+            ) {
+                scoringSubsystem.setPitchHigh()
+            }
+            .stopRunning(DriverAidState.stop,
+                { armSubsystem.extendMotor.currentPosition.toDouble() < 100 })
+            .build(false, 0)
     }
 }
