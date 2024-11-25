@@ -41,7 +41,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     }
 
     private var usePIDFe = false
-    private var extendMotor: DcMotorEx
+    var extendMotor: DcMotorEx
     private var extendMotor2: DcMotorEx
     private var extendState: ExtendState = ExtendState.IDLE
     private var ePower: Double = 0.0
@@ -55,7 +55,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     }
 
     private var extendEncoder: DualEncoder
-    var pitchEncoder: DualEncoder
+    var pitchEncoder: DcMotorEx
 
     val maxExtendTicksTOTAL = 1200
     var maxExtendTicks = maxExtendTicksTOTAL
@@ -73,7 +73,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
         extendMotor2.brake()
 
         extendEncoder = DualEncoder(ahwMap, "extendMotor2", "extendMotor", "Arm Extend")
-        pitchEncoder = DualEncoder(ahwMap, "pitchMotor2", "pitchMotor", "Arm Pitch", true)
+        pitchEncoder = pitchMotor
 
         updatePID()
     }
@@ -109,7 +109,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
         when (pitchState) {
             PitchState.PID -> {
                 pPower =
-                    calculatePID(pitchPIDF, pitchEncoder.getMost(), target)
+                    calculatePID(pitchPIDF, pitchEncoder.currentPosition.toDouble(), target)
             }
 
             PitchState.MANUAL -> {
@@ -193,7 +193,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
 
     private fun getTheoreticalHeight(): Double {
         val length = eTicksToInch(extendEncoder.getAverage())
-        val angle = pAngle(pitchEncoder.getAverage())
+        val angle = pAngle(pitchEncoder.currentPosition.toDouble())
         return (sin(angle) * length) + 2.87
     }
 
@@ -212,7 +212,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     }
 
     private fun calculateExtendMax(): Double {
-        val angle = pAngle(pitchEncoder.getAverage())
+        val angle = pAngle(pitchEncoder.currentPosition.toDouble())
         val x = 42
         val cosAngle = cos(Math.toRadians(angle))
         val returnable = Range.clip((x / cosAngle) - 18, 0.0, 44.0) * ticksPerInchExtend
@@ -224,7 +224,19 @@ class ArmSubsystem(ahwMap: HardwareMap) {
         telemetry.addData("Arm Subsystem", "")
         pitchEncoder.telemetry(telemetry)
         extendEncoder.telemetry(telemetry)
-        telemetry.addData("pAngle", pAngle(pitchEncoder.getAverage()))
+        telemetry.addData("pAngle", pAngle(pitchEncoder.currentPosition.toDouble()))
         telemetry.addData("extendMax (ticks)", calculateExtendMax())
+    }
+
+    fun DcMotorEx.telemetry(telemetry: Telemetry) {
+        telemetry.addData("Motor", this.deviceName)
+        telemetry.addData("Position", this.currentPosition)
+    }
+
+    fun autoExtend(target: Double) {
+        extendState = ExtendState.PID
+        ePower = calculatePID(extendPIDF, extendEncoder.getAverage(), target)
+        extendMotor.power = ePower
+        extendMotor2.power = ePower
     }
 }
