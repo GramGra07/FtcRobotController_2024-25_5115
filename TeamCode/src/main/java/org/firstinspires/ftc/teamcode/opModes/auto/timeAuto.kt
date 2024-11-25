@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles
 
 @Autonomous(group = GroupingTitles.tele) //@Disabled//disabling the opmode
 //@Disabled
-class smallAuto : LinearOpMode() {
+class timeAuto : LinearOpMode() {
 
 
     //declaring the class
