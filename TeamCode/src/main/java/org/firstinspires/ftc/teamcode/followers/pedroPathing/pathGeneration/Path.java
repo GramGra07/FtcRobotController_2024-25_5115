@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration;
 
-
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.Pose;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants;
 
@@ -17,7 +16,7 @@ import java.util.ArrayList;
  * @version 1.0, 3/10/2024
  */
 public class Path {
-    private final BezierCurve curve;
+    private BezierCurve curve;
 
     private double startHeading;
     private double endHeading;
@@ -295,7 +294,8 @@ public class Path {
      * @return returns if at end.
      */
     public boolean isAtParametricEnd() {
-        return closestPointTValue >= pathEndTValueConstraint;
+        if (closestPointTValue >= pathEndTValueConstraint) return true;
+        return false;
     }
 
     /**
@@ -304,7 +304,8 @@ public class Path {
      * @return returns if at start.
      */
     public boolean isAtParametricStart() {
-        return closestPointTValue <= 1 - pathEndTValueConstraint;
+        if (closestPointTValue <= 1 - pathEndTValueConstraint) return true;
+        return false;
     }
 
     /**
@@ -353,15 +354,6 @@ public class Path {
     }
 
     /**
-     * This gets the deceleration multiplier.
-     *
-     * @return This returns the deceleration multiplier.
-     */
-    public double getZeroPowerAccelerationMultiplier() {
-        return zeroPowerAccelerationMultiplier;
-    }
-
-    /**
      * This sets the path's deceleration factor in terms of the natural deceleration of the robot
      * when power is cut from the drivetrain.
      *
@@ -372,30 +364,12 @@ public class Path {
     }
 
     /**
-     * This gets the velocity stop criteria.
-     *
-     * @return This returns the velocity stop criteria.
-     */
-    public double getPathEndVelocityConstraint() {
-        return pathEndVelocityConstraint;
-    }
-
-    /**
      * This sets the velocity stop criteria. When velocity is below this amount, then this is met.
      *
      * @param set This sets the velocity end constraint.
      */
     public void setPathEndVelocityConstraint(double set) {
         pathEndVelocityConstraint = set;
-    }
-
-    /**
-     * This gets the translational stop criteria.
-     *
-     * @return This returns the translational stop criteria.
-     */
-    public double getPathEndTranslationalConstraint() {
-        return pathEndTranslationalConstraint;
     }
 
     /**
@@ -409,15 +383,6 @@ public class Path {
     }
 
     /**
-     * This gets the heading stop criteria.
-     *
-     * @return This returns the heading stop criteria.
-     */
-    public double getPathEndHeadingConstraint() {
-        return pathEndHeadingConstraint;
-    }
-
-    /**
      * This sets the heading stop criteria. When the heading error is less than this amount, then
      * the heading end criteria is met.
      *
@@ -425,15 +390,6 @@ public class Path {
      */
     public void setPathEndHeadingConstraint(double set) {
         pathEndHeadingConstraint = set;
-    }
-
-    /**
-     * This gets the parametric end criteria.
-     *
-     * @return This returns the parametric end criteria.
-     */
-    public double getPathEndTValueConstraint() {
-        return pathEndTValueConstraint;
     }
 
     /**
@@ -447,15 +403,6 @@ public class Path {
     }
 
     /**
-     * This gets the Path end correction time.
-     *
-     * @return This returns the Path end correction time.
-     */
-    public double getPathEndTimeoutConstraint() {
-        return pathEndTimeoutConstraint;
-    }
-
-    /**
      * This sets the Path end timeout. If the Path is at its end parametrically, then the Follower
      * has this many milliseconds to correct before the Path gets ended anyways.
      *
@@ -463,6 +410,60 @@ public class Path {
      */
     public void setPathEndTimeoutConstraint(double set) {
         pathEndTimeoutConstraint = set;
+    }
+
+    /**
+     * This gets the deceleration multiplier.
+     *
+     * @return This returns the deceleration multiplier.
+     */
+    public double getZeroPowerAccelerationMultiplier() {
+        return zeroPowerAccelerationMultiplier;
+    }
+
+    /**
+     * This gets the velocity stop criteria.
+     *
+     * @return This returns the velocity stop criteria.
+     */
+    public double getPathEndVelocityConstraint() {
+        return pathEndVelocityConstraint;
+    }
+
+    /**
+     * This gets the translational stop criteria.
+     *
+     * @return This returns the translational stop criteria.
+     */
+    public double getPathEndTranslationalConstraint() {
+        return pathEndTranslationalConstraint;
+    }
+
+    /**
+     * This gets the heading stop criteria.
+     *
+     * @return This returns the heading stop criteria.
+     */
+    public double getPathEndHeadingConstraint() {
+        return pathEndHeadingConstraint;
+    }
+
+    /**
+     * This gets the parametric end criteria.
+     *
+     * @return This returns the parametric end criteria.
+     */
+    public double getPathEndTValueConstraint() {
+        return pathEndTValueConstraint;
+    }
+
+    /**
+     * This gets the Path end correction time.
+     *
+     * @return This returns the Path end correction time.
+     */
+    public double getPathEndTimeoutConstraint() {
+        return pathEndTimeoutConstraint;
     }
 
     /**

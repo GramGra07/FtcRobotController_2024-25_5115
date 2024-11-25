@@ -9,7 +9,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
  * @version 1.0, 7/17/2024
  */
 public class KalmanFilter {
-    private final KalmanFilterParameters parameters;
+    private KalmanFilterParameters parameters;
     private double state;
     private double variance;
     private double kalmanGain;

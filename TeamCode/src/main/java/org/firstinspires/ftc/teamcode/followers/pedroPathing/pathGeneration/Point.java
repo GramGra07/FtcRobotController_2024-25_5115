@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration;
 
+import androidx.annotation.NonNull;
+
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.Pose;
 
 /**
@@ -14,9 +16,6 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.Pose;
  */
 public class Point {
 
-    // these are used for ease of changing/setting identification
-    public static final int POLAR = 0;
-    public static final int CARTESIAN = 1;
     // IMPORTANT NOTE: theta is defined in radians.
     // These are the values of the coordinate defined by this Point, in both polar and
     // Cartesian systems.
@@ -24,6 +23,10 @@ public class Point {
     private double theta;
     private double x;
     private double y;
+
+    // these are used for ease of changing/setting identification
+    public static final int POLAR = 0;
+    public static final int CARTESIAN = 1;
 
 
     /**
@@ -53,38 +56,13 @@ public class Point {
     }
 
     /**
-     * This takes in an r and theta value and converts them to Cartesian coordinates.
+     * This creates a new Point from a X and Y value.
      *
-     * @param r     this is the r value of the Point being converted.
-     * @param theta this is the theta value of the Point being converted.
-     * @return this returns the x and y values, in that order, in an Array of doubles.
+     * @param setX the X value.
+     * @param setY the Y value.
      */
-    public static double[] polarToCartesian(double r, double theta) {
-        return new double[]{r * Math.cos(theta), r * Math.sin(theta)};
-    }
-
-    /**
-     * This takes in an x and y value and converts them to polar coordinates.
-     *
-     * @param x this is the x value of the Point being converted.
-     * @param y this is the y value of the Point being converted.
-     * @return this returns the r and theta values, in that order, in an Array of doubles.
-     */
-    public static double[] cartesianToPolar(double x, double y) {
-        if (x == 0) {
-            if (y > 0) {
-                return new double[]{Math.abs(y), Math.PI / 2};
-            } else {
-                return new double[]{Math.abs(y), (3 * Math.PI) / 2};
-            }
-        }
-        double r = Math.sqrt(x * x + y * y);
-        if (x < 0) return new double[]{r, Math.PI + Math.atan(y / x)};
-        if (y > 0) {
-            return new double[]{r, Math.atan(y / x)};
-        } else {
-            return new double[]{r, (2 * Math.PI) + Math.atan(y / x)};
-        }
+    public Point(double setX, double setY) {
+        setCoordinates(setX, setY, CARTESIAN);
     }
 
     /**
@@ -137,6 +115,41 @@ public class Point {
     }
 
     /**
+     * This takes in an r and theta value and converts them to Cartesian coordinates.
+     *
+     * @param r     this is the r value of the Point being converted.
+     * @param theta this is the theta value of the Point being converted.
+     * @return this returns the x and y values, in that order, in an Array of doubles.
+     */
+    public static double[] polarToCartesian(double r, double theta) {
+        return new double[]{r * Math.cos(theta), r * Math.sin(theta)};
+    }
+
+    /**
+     * This takes in an x and y value and converts them to polar coordinates.
+     *
+     * @param x this is the x value of the Point being converted.
+     * @param y this is the y value of the Point being converted.
+     * @return this returns the r and theta values, in that order, in an Array of doubles.
+     */
+    public static double[] cartesianToPolar(double x, double y) {
+        if (x == 0) {
+            if (y > 0) {
+                return new double[]{Math.abs(y), Math.PI / 2};
+            } else {
+                return new double[]{Math.abs(y), (3 * Math.PI) / 2};
+            }
+        }
+        double r = Math.sqrt(x * x + y * y);
+        if (x < 0) return new double[]{r, Math.PI + Math.atan(y / x)};
+        if (y > 0) {
+            return new double[]{r, Math.atan(y / x)};
+        } else {
+            return new double[]{r, (2 * Math.PI) + Math.atan(y / x)};
+        }
+    }
+
+    /**
      * Returns the r value of this Point. This is a polar coordinate value.
      *
      * @return returns the r value.
@@ -180,5 +193,11 @@ public class Point {
      */
     public Point copy() {
         return new Point(getX(), getY(), CARTESIAN);
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "(" + getX() + ", " + getY() + ")";
     }
 }

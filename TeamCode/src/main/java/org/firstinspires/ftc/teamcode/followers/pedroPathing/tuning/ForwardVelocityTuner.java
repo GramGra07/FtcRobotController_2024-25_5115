@@ -9,7 +9,6 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
@@ -42,17 +41,20 @@ import java.util.List;
  */
 @Config
 @Autonomous(name = "Forward Velocity Tuner", group = "Autonomous Pathing Tuning")
-@Disabled
 public class ForwardVelocityTuner extends OpMode {
-    public static double DISTANCE = 40;
-    public static double RECORD_NUMBER = 10;
-    private final ArrayList<Double> velocities = new ArrayList<>();
+    private ArrayList<Double> velocities = new ArrayList<>();
+
     private DcMotorEx leftFront;
     private DcMotorEx leftRear;
     private DcMotorEx rightFront;
     private DcMotorEx rightRear;
     private List<DcMotorEx> motors;
+
     private PoseUpdater poseUpdater;
+
+    public static double DISTANCE = 40;
+    public static double RECORD_NUMBER = 10;
+
     private Telemetry telemetryA;
 
     private boolean end;
@@ -120,6 +122,10 @@ public class ForwardVelocityTuner extends OpMode {
     @Override
     public void loop() {
         if (gamepad1.cross || gamepad1.a) {
+            for (DcMotorEx motor : motors) {
+                motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+                motor.setPower(0);
+            }
             requestOpModeStop();
         }
 
@@ -141,7 +147,7 @@ public class ForwardVelocityTuner extends OpMode {
             for (Double velocity : velocities) {
                 average += velocity;
             }
-            average /= velocities.size();
+            average /= (double) velocities.size();
 
             telemetryA.addData("forward velocity:", average);
             telemetryA.update();

@@ -15,13 +15,13 @@ import java.util.ArrayList;
  */
 public class BezierLine extends BezierCurve {
 
-    private final Point startPoint;
-    private final Point endPoint;
+    private Point startPoint;
+    private Point endPoint;
 
-    private final Vector endTangent;
+    private Vector endTangent;
 
-    private final double UNIT_TO_TIME;
-    private final double length;
+    private double UNIT_TO_TIME;
+    private double length;
 
     /**
      * This creates a new BezierLine with specified start and end Points.

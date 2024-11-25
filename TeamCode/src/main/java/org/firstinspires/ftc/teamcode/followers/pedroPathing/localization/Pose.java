@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.followers.pedroPathing.localization;
 
+import androidx.annotation.NonNull;
 
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.MathFunctions;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Vector;
@@ -49,30 +50,12 @@ public class Pose {
     }
 
     /**
-     * This returns the x value.
-     *
-     * @return returns the x value
-     */
-    public double getX() {
-        return x;
-    }
-
-    /**
      * This sets the x value.
      *
      * @param set the x value
      */
     public void setX(double set) {
         x = set;
-    }
-
-    /**
-     * This returns the y value.
-     *
-     * @return returns the y value
-     */
-    public double getY() {
-        return y;
     }
 
     /**
@@ -85,21 +68,39 @@ public class Pose {
     }
 
     /**
-     * This returns the heading value.
-     *
-     * @return returns the heading value
-     */
-    public double getHeading() {
-        return heading;
-    }
-
-    /**
      * This sets the heading value.
      *
      * @param set the heading value
      */
     public void setHeading(double set) {
         heading = MathFunctions.normalizeAngle(set);
+    }
+
+    /**
+     * This returns the x value.
+     *
+     * @return returns the x value
+     */
+    public double getX() {
+        return x;
+    }
+
+    /**
+     * This returns the y value.
+     *
+     * @return returns the y value
+     */
+    public double getY() {
+        return y;
+    }
+
+    /**
+     * This returns the heading value.
+     *
+     * @return returns the heading value
+     */
+    public double getHeading() {
+        return heading;
     }
 
     /**
@@ -208,5 +209,11 @@ public class Pose {
      */
     public Pose copy() {
         return new Pose(getX(), getY(), getHeading());
+    }
+
+    @NonNull
+    @Override
+    public String toString() {
+        return "(" + getX() + ", " + getY() + ", " + Math.toDegrees(getHeading()) + ")";
     }
 }

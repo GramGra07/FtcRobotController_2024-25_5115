@@ -33,7 +33,7 @@ class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose2d, val type: LocalizerT
     private lateinit var sparkFunDrive: SparkFunOTOSDrive
     private val startPose = pose
 
-    fun start():Pose2d{
+    fun start(): Pose2d {
         return startPose
     }
 

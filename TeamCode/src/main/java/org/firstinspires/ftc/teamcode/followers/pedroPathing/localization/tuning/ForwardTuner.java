@@ -4,7 +4,6 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -27,12 +26,13 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.Drawing;
  */
 @Config
 @Autonomous(name = "Forward Localizer Tuner", group = "Autonomous Pathing Tuning")
-@Disabled
 public class ForwardTuner extends OpMode {
-    public static double DISTANCE = 30;
     private PoseUpdater poseUpdater;
     private DashboardPoseTracker dashboardPoseTracker;
+
     private Telemetry telemetryA;
+
+    public static double DISTANCE = 30;
 
     /**
      * This initializes the PoseUpdater as well as the FTC Dashboard telemetry.

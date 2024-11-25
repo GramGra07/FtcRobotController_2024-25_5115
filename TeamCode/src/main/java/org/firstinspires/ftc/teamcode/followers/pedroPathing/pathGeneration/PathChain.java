@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * This is the PathChain class. This class handles chaining together multiple Paths into a larger
@@ -28,7 +27,9 @@ public class PathChain {
      * @param paths the specified Paths.
      */
     public PathChain(Path... paths) {
-        Collections.addAll(pathChain, paths);
+        for (Path path : paths) {
+            pathChain.add(path);
+        }
     }
 
     /**
@@ -63,21 +64,14 @@ public class PathChain {
     }
 
     /**
-     * This returns the PathCallbacks of this PathChain in an ArrayList.
-     *
-     * @return returns the PathCallbacks.
-     */
-    public ArrayList<PathCallback> getCallbacks() {
-        return callbacks;
-    }
-
-    /**
      * This sets the PathCallbacks of the PathChain with some specified PathCallbacks.
      *
      * @param callbacks the specified PathCallbacks.
      */
     public void setCallbacks(PathCallback... callbacks) {
-        Collections.addAll(this.callbacks, callbacks);
+        for (PathCallback callback : callbacks) {
+            this.callbacks.add(callback);
+        }
     }
 
     /**
@@ -87,5 +81,14 @@ public class PathChain {
      */
     public void setCallbacks(ArrayList<PathCallback> callbacks) {
         this.callbacks = callbacks;
+    }
+
+    /**
+     * This returns the PathCallbacks of this PathChain in an ArrayList.
+     *
+     * @return returns the PathCallbacks.
+     */
+    public ArrayList<PathCallback> getCallbacks() {
+        return callbacks;
     }
 }

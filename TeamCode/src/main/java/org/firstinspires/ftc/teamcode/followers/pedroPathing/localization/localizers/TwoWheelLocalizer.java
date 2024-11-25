@@ -26,41 +26,41 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.NanoTimer;
  * <p>
  * forward on robot is the x positive direction
  * <p>
+ * forward (x positive)
+ * △
+ * |
+ * |
  * /--------------\
+ * |              |
+ * |              |
+ * |           || |
+ * left (y positive) <--- |           || |
  * |     ____     |
  * |     ----     |
- * | ||        || |
- * | ||        || |  ----> left (y positive)
- * |              |
- * |              |
  * \--------------/
- * |
- * |
- * V
- * forward (x positive)
  *
  * @author Anyi Lin - 10158 Scott's Bots
  * @version 1.0, 4/2/2024
  */
 @Config
 public class TwoWheelLocalizer extends Localizer { // todo: make two wheel odo work
-    public static double FORWARD_TICKS_TO_INCHES = 8192 * 1.37795 * 2 * Math.PI * 0.5008239963;
-    public static double STRAFE_TICKS_TO_INCHES = 8192 * 1.37795 * 2 * Math.PI * 0.5018874659;
-    private final HardwareMap hardwareMap;
-    private final IMU imu;
-    private final NanoTimer timer;
-    private final Encoder forwardEncoder;
-    private final Encoder strafeEncoder;
-    private final Pose forwardEncoderPose;
-    private final Pose strafeEncoderPose;
+    private HardwareMap hardwareMap;
+    private IMU imu;
     private Pose startPose;
     private Pose displacementPose;
     private Pose currentVelocity;
     private Matrix prevRotationMatrix;
+    private NanoTimer timer;
     private long deltaTimeNano;
+    private Encoder forwardEncoder;
+    private Encoder strafeEncoder;
+    private Pose forwardEncoderPose;
+    private Pose strafeEncoderPose;
     private double previousIMUOrientation;
     private double deltaRadians;
     private double totalHeading;
+    public static double FORWARD_TICKS_TO_INCHES = 8192 * 1.37795 * 2 * Math.PI * 0.5008239963;
+    public static double STRAFE_TICKS_TO_INCHES = 8192 * 1.37795 * 2 * Math.PI * 0.5018874659;
 
     /**
      * This creates a new TwoWheelLocalizer from a HardwareMap, with a starting Pose at (0,0)
@@ -119,18 +119,6 @@ public class TwoWheelLocalizer extends Localizer { // todo: make two wheel odo w
     }
 
     /**
-     * This sets the current pose estimate. Changing this should just change the robot's current
-     * pose estimate, not anything to do with the start pose.
-     *
-     * @param setPose the new current pose estimate
-     */
-    @Override
-    public void setPose(Pose setPose) {
-        displacementPose = MathFunctions.subtractPoses(setPose, startPose);
-        resetEncoders();
-    }
-
-    /**
      * This returns the current velocity estimate.
      *
      * @return returns the current velocity estimate as a Pose
@@ -176,6 +164,18 @@ public class TwoWheelLocalizer extends Localizer { // todo: make two wheel odo w
     }
 
     /**
+     * This sets the current pose estimate. Changing this should just change the robot's current
+     * pose estimate, not anything to do with the start pose.
+     *
+     * @param setPose the new current pose estimate
+     */
+    @Override
+    public void setPose(Pose setPose) {
+        displacementPose = MathFunctions.subtractPoses(setPose, startPose);
+        resetEncoders();
+    }
+
+    /**
      * This updates the elapsed time timer that keeps track of time between updates, as well as the
      * change position of the Encoders and the IMU readings. Then, the robot's global change in
      * position is calculated using the pose exponential method.
@@ -208,7 +208,7 @@ public class TwoWheelLocalizer extends Localizer { // todo: make two wheel odo w
         globalDeltas = Matrix.multiply(Matrix.multiply(prevRotationMatrix, transformation), robotDeltas);
 
         displacementPose.add(new Pose(globalDeltas.get(0, 0), globalDeltas.get(1, 0), globalDeltas.get(2, 0)));
-        currentVelocity = new Pose(globalDeltas.get(0, 0) / (deltaTimeNano * Math.pow(10.0, 9)), globalDeltas.get(1, 0) / (deltaTimeNano * Math.pow(10.0, 9)), globalDeltas.get(2, 0) / (deltaTimeNano * Math.pow(10.0, 9)));
+        currentVelocity = new Pose(globalDeltas.get(0, 0) / (deltaTimeNano / Math.pow(10.0, 9)), globalDeltas.get(1, 0) / (deltaTimeNano / Math.pow(10.0, 9)), globalDeltas.get(2, 0) / (deltaTimeNano / Math.pow(10.0, 9)));
 
         totalHeading += globalDeltas.get(2, 0);
     }
@@ -295,5 +295,15 @@ public class TwoWheelLocalizer extends Localizer { // todo: make two wheel odo w
      */
     public void resetIMU() {
         imu.resetYaw();
+    }
+
+    /**
+     * This is returns the IMU.
+     *
+     * @return returns the IMU
+     */
+    @Override
+    public IMU getIMU() {
+        return imu;
     }
 }

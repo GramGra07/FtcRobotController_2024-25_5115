@@ -66,23 +66,6 @@ public class Matrix {
     }
 
     /**
-     * This multiplies a Matrix to another Matrix. This will not change any data in the two input
-     * Matrices.
-     *
-     * @param one the first Matrix to multiply.
-     * @param two the second Matrix to multiply
-     * @return returns if the operation was successful
-     */
-    public static Matrix multiply(Matrix one, Matrix two) {
-        Matrix returnMatrix = new Matrix(one);
-        if (returnMatrix.multiply(two)) {
-            return returnMatrix;
-        } else {
-            return new Matrix();
-        }
-    }
-
-    /**
      * This returns a deep copy of the 2D Array that this Matrix is based on.
      *
      * @return returns the 2D Array of doubles this Matrix is built on
@@ -269,5 +252,22 @@ public class Matrix {
             return true;
         }
         return false;
+    }
+
+    /**
+     * This multiplies a Matrix to another Matrix. This will not change any data in the two input
+     * Matrices.
+     *
+     * @param one the first Matrix to multiply.
+     * @param two the second Matrix to multiply
+     * @return returns if the operation was successful
+     */
+    public static Matrix multiply(Matrix one, Matrix two) {
+        Matrix returnMatrix = new Matrix(one);
+        if (returnMatrix.multiply(two)) {
+            return returnMatrix;
+        } else {
+            return new Matrix();
+        }
     }
 }

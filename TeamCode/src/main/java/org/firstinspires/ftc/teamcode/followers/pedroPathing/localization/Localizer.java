@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.followers.pedroPathing.localization;
 
+import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Vector;
 
@@ -19,14 +20,6 @@ public abstract class Localizer {
      * @return returns the pose as a Pose object.
      */
     public abstract Pose getPose();
-
-    /**
-     * This sets the current pose estimate of the Localizer. Changing this should just change the
-     * robot's current pose estimate, not anything to do with the start pose.
-     *
-     * @param setPose the new current pose estimate
-     */
-    public abstract void setPose(Pose setPose);
 
     /**
      * This returns the current velocity estimate from the Localizer.
@@ -49,6 +42,14 @@ public abstract class Localizer {
      * @param setStart the new start pose
      */
     public abstract void setStartPose(Pose setStart);
+
+    /**
+     * This sets the current pose estimate of the Localizer. Changing this should just change the
+     * robot's current pose estimate, not anything to do with the start pose.
+     *
+     * @param setPose the new current pose estimate
+     */
+    public abstract void setPose(Pose setPose);
 
     /**
      * This calls an update to the Localizer, updating the current pose estimate and current velocity
@@ -92,4 +93,13 @@ public abstract class Localizer {
      * This resets the IMU of the localizer, if applicable.
      */
     public abstract void resetIMU();
+
+    /**
+     * This is overridden to return the IMU, if there is one.
+     *
+     * @return returns the IMU if it exists
+     */
+    public IMU getIMU() {
+        return null;
+    }
 }

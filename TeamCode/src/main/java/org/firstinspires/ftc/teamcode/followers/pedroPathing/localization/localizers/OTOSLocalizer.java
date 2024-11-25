@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.localizers;
 
-import com.acmerobotics.roadrunner.ftc.SparkFunOTOSCorrected;
 import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -10,8 +9,8 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.Locali
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.Pose;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.MathFunctions;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Vector;
-import org.firstinspires.ftc.teamcode.utilClass.storage.CurrentDrivetrain;
 import org.firstinspires.ftc.teamcode.utilClass.drivetrain.Drivetrain;
+import org.firstinspires.ftc.teamcode.utilClass.storage.CurrentDrivetrain;
 
 /**
  * This is the OTOSLocalizer class. This class extends the Localizer superclass and is a
@@ -24,28 +23,31 @@ import org.firstinspires.ftc.teamcode.utilClass.drivetrain.Drivetrain;
  * <p>
  * forward on robot is the x positive direction
  * <p>
+ * forward (x positive)
+ * △
+ * |
+ * |
  * /--------------\
+ * |              |
+ * |              |
+ * | ||        || |
+ * left (y positive) <--- | ||        || |
  * |     ____     |
  * |     ----     |
- * | ||        || |
- * | ||        || |  ----> left (y positive)
- * |              |
- * |              |
  * \--------------/
- * |
- * |
- * V
- * forward (x positive)
  *
  * @author Anyi Lin - 10158 Scott's Bots
  * @version 1.0, 7/20/2024
  */
 public class OTOSLocalizer extends Localizer {
-
-    private final HardwareMap hardwareMap;
-    private final SparkFunOTOS otos;
-    private final Drivetrain dt = CurrentDrivetrain.Companion.getCurrentDrivetrain();
+    private HardwareMap hardwareMap;
     private Pose startPose;
+    private final Drivetrain dt = CurrentDrivetrain.Companion.getCurrentDrivetrain();
+
+    private SparkFunOTOS otos;
+    private SparkFunOTOS.Pose2D otosPose;
+    private SparkFunOTOS.Pose2D otosVel;
+    private SparkFunOTOS.Pose2D otosAcc;
     private double previousHeading;
     private double totalHeading;
 
@@ -94,6 +96,9 @@ public class OTOSLocalizer extends Localizer {
         otos.resetTracking();
 
         setStartPose(setStartPose);
+        otosPose = new SparkFunOTOS.Pose2D();
+        otosVel = new SparkFunOTOS.Pose2D();
+        otosAcc = new SparkFunOTOS.Pose2D();
         totalHeading = 0;
         previousHeading = startPose.getHeading();
 
@@ -107,21 +112,10 @@ public class OTOSLocalizer extends Localizer {
      */
     @Override
     public Pose getPose() {
-        SparkFunOTOS.Pose2D pose = otos.getPosition();
-        return MathFunctions.addPoses(startPose, new Pose(pose.x, pose.y, pose.h));
-    }
+        SparkFunOTOS.Pose2D rawPose = otos.getPosition();
+        Pose pose = new Pose(rawPose.x, rawPose.y, rawPose.h);
 
-    /**
-     * This sets the current pose estimate. Changing this should just change the robot's current
-     * pose estimate, not anything to do with the start pose.
-     *
-     * @param setPose the new current pose estimate
-     */
-    @Override
-    public void setPose(Pose setPose) {
-        resetOTOS();
-        Pose setOTOSPose = MathFunctions.subtractPoses(setPose, startPose);
-        otos.setPosition(new SparkFunOTOS.Pose2D(setOTOSPose.getX(), setOTOSPose.getY(), setOTOSPose.getHeading()));
+        return MathFunctions.addPoses(startPose, MathFunctions.rotatePose(pose, startPose.getHeading(), false));
     }
 
     /**
@@ -131,8 +125,7 @@ public class OTOSLocalizer extends Localizer {
      */
     @Override
     public Pose getVelocity() {
-        SparkFunOTOS.Pose2D OTOSVelocity = otos.getVelocity();
-        return new Pose(OTOSVelocity.x, OTOSVelocity.y, OTOSVelocity.h);
+        return new Pose(otosVel.x, otosVel.y, otosVel.h);
     }
 
     /**
@@ -157,12 +150,26 @@ public class OTOSLocalizer extends Localizer {
     }
 
     /**
+     * This sets the current pose estimate. Changing this should just change the robot's current
+     * pose estimate, not anything to do with the start pose.
+     *
+     * @param setPose the new current pose estimate
+     */
+    @Override
+    public void setPose(Pose setPose) {
+        resetOTOS();
+        Pose setOTOSPose = MathFunctions.subtractPoses(setPose, startPose);
+        otos.setPosition(new SparkFunOTOS.Pose2D(setOTOSPose.getX(), setOTOSPose.getY(), setOTOSPose.getHeading()));
+    }
+
+    /**
      * This updates the total heading of the robot. The OTOS handles all other updates itself.
      */
     @Override
     public void update() {
-        totalHeading += MathFunctions.getSmallestAngleDifference(otos.getPosition().h, previousHeading);
-        previousHeading = otos.getPosition().h;
+        otos.getPosVelAcc(otosPose, otosVel, otosAcc);
+        totalHeading += MathFunctions.getSmallestAngleDifference(otosPose.h, previousHeading);
+        previousHeading = otosPose.h;
     }
 
     /**

@@ -12,7 +12,6 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Path
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Point;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Vector;
 
-
 /**
  * This is the Drawing class. It handles the drawing of stuff on FTC Dashboard, like the robot.
  *
@@ -21,6 +20,8 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Vect
  * @version 1.0, 4/22/2024
  */
 public class Drawing {
+    public static final double ROBOT_RADIUS = 9;
+
     private static TelemetryPacket packet;
 
     /**
@@ -37,6 +38,7 @@ public class Drawing {
         }
         drawPoseHistory(follower.getDashboardPoseTracker(), "#4CAF50");
         drawRobot(follower.getPose(), "#4CAF50");
+
         sendPacket();
     }
 
@@ -116,8 +118,6 @@ public class Drawing {
      * @param t the Point to draw at
      */
     public static void drawRobotOnCanvas(Canvas c, Point t) {
-        final double ROBOT_RADIUS = 9;
-
         c.setStrokeWidth(1);
         c.strokeCircle(t.getX(), t.getY(), ROBOT_RADIUS);
 
@@ -135,8 +135,6 @@ public class Drawing {
      * @param t the Pose to draw at
      */
     public static void drawRobotOnCanvas(Canvas c, Pose t) {
-        final double ROBOT_RADIUS = 9;
-
         c.strokeCircle(t.getX(), t.getY(), ROBOT_RADIUS);
         Vector v = t.getHeadingVector();
         v.setMagnitude(v.getMagnitude() * ROBOT_RADIUS);

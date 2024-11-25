@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration;
 
-
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.Pose;
 
 /**
@@ -174,6 +173,22 @@ public class MathFunctions {
     }
 
     /**
+     * This rotates the given pose by the given theta,
+     *
+     * @param pose          the Pose to rotate.
+     * @param theta         the angle to rotate by.
+     * @param rotateHeading whether to adjust the Pose heading too.
+     * @return the rotated Pose.
+     */
+    public static Pose rotatePose(Pose pose, double theta, boolean rotateHeading) {
+        double x = pose.getX() * Math.cos(theta) - pose.getY() * Math.sin(theta);
+        double y = pose.getX() * Math.sin(theta) + pose.getY() * Math.cos(theta);
+        double heading = rotateHeading ? normalizeAngle(pose.getHeading() + theta) : pose.getHeading();
+
+        return new Pose(x, y, heading);
+    }
+
+    /**
      * This multiplies a Point by a scalar and returns the result as a Point
      *
      * @param point  the Point being multiplied.
@@ -287,7 +302,7 @@ public class MathFunctions {
      * specified accuracy amount.
      *
      * @param one      first number specified.
-     * @param two      second number specified.
+     * @param two      Second number specified.
      * @param accuracy the level of accuracy specified.
      * @return returns if the two numbers are within the specified accuracy of each other.
      */

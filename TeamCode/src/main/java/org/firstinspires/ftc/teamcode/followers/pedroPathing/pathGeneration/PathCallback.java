@@ -13,11 +13,13 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.SingleRunActio
  */
 public class PathCallback extends SingleRunAction {
 
+    private double startCondition;
+
+    private int type;
+    private int index;
+
     public static final int TIME = 0;
     public static final int PARAMETRIC = 1;
-    private final int index;
-    private double startCondition;
-    private int type;
 
     /**
      * This creates a new PathCallback with a specified start condition (either time or parametric),

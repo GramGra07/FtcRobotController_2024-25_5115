@@ -12,11 +12,12 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
  * @version 1.0, 4/2/2024
  */
 public class Encoder {
-    public final static double FORWARD = 1, REVERSE = -1;
-    private final DcMotorEx motor;
+    private DcMotorEx motor;
     private double previousPosition;
     private double currentPosition;
     private double multiplier;
+
+    public final static double FORWARD = 1, REVERSE = -1;
 
     /**
      * This creates a new Encoder from a DcMotorEx.

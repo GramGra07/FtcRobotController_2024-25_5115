@@ -19,9 +19,12 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Vect
  * @version 1.0, 3/4/2024
  */
 public class PoseUpdater {
-    private final HardwareMap hardwareMap;
-    private final Localizer localizer;
+    private HardwareMap hardwareMap;
+
     private IMU imu;
+
+    private Localizer localizer;
+
     private Pose startingPose = new Pose(0, 0, 0);
 
     private Pose currentPose = startingPose;
@@ -55,6 +58,7 @@ public class PoseUpdater {
         }
 
         this.localizer = localizer;
+        imu = localizer.getIMU();
     }
 
     /**
@@ -110,30 +114,12 @@ public class PoseUpdater {
     }
 
     /**
-     * This returns the x offset.
-     *
-     * @return returns the x offset.
-     */
-    public double getXOffset() {
-        return xOffset;
-    }
-
-    /**
      * This sets the offset for only the x position.
      *
      * @param offset This sets the offset.
      */
     public void setXOffset(double offset) {
         xOffset = offset;
-    }
-
-    /**
-     * This returns the y offset.
-     *
-     * @return returns the y offset.
-     */
-    public double getYOffset() {
-        return yOffset;
     }
 
     /**
@@ -146,21 +132,39 @@ public class PoseUpdater {
     }
 
     /**
-     * This returns the heading offset.
-     *
-     * @return returns the heading offset.
-     */
-    public double getHeadingOffset() {
-        return headingOffset;
-    }
-
-    /**
      * This sets the offset for only the heading.
      *
      * @param offset This sets the offset.
      */
     public void setHeadingOffset(double offset) {
         headingOffset = offset;
+    }
+
+    /**
+     * This returns the x offset.
+     *
+     * @return returns the x offset.
+     */
+    public double getXOffset() {
+        return xOffset;
+    }
+
+    /**
+     * This returns the y offset.
+     *
+     * @return returns the y offset.
+     */
+    public double getYOffset() {
+        return yOffset;
+    }
+
+    /**
+     * This returns the heading offset.
+     *
+     * @return returns the heading offset.
+     */
+    public double getHeadingOffset() {
+        return headingOffset;
     }
 
     /**
@@ -201,16 +205,6 @@ public class PoseUpdater {
     }
 
     /**
-     * This sets the current pose without using resettable offsets.
-     *
-     * @param set the pose to set the current pose to.
-     */
-    public void setPose(Pose set) {
-        resetOffset();
-        localizer.setPose(set);
-    }
-
-    /**
      * This returns the current raw pose, without any offsets applied. If this is called multiple times in
      * a single update, the current pose is cached so that subsequent calls don't have to repeat
      * localizer calls or calculations.
@@ -224,6 +218,16 @@ public class PoseUpdater {
         } else {
             return currentPose;
         }
+    }
+
+    /**
+     * This sets the current pose without using resettable offsets.
+     *
+     * @param set the pose to set the current pose to.
+     */
+    public void setPose(Pose set) {
+        resetOffset();
+        localizer.setPose(set);
     }
 
     /**
@@ -255,9 +259,10 @@ public class PoseUpdater {
      */
     public Vector getVelocity() {
         if (currentVelocity == null) {
-            currentVelocity = new Vector();
-            currentVelocity.setOrthogonalComponents(getPose().getX() - previousPose.getX(), getPose().getY() - previousPose.getY());
-            currentVelocity.setMagnitude(MathFunctions.distance(getPose(), previousPose) / ((currentPoseTime - previousPoseTime) / Math.pow(10.0, 9)));
+//            currentVelocity = new Vector();
+//            currentVelocity.setOrthogonalComponents(getPose().getX() - previousPose.getX(), getPose().getY() - previousPose.getY());
+//            currentVelocity.setMagnitude(MathFunctions.distance(getPose(), previousPose) / ((currentPoseTime - previousPoseTime) / Math.pow(10.0, 9)));
+            currentVelocity = localizer.getVelocityVector();
             return MathFunctions.copyVector(currentVelocity);
         } else {
             return MathFunctions.copyVector(currentVelocity);
@@ -294,7 +299,9 @@ public class PoseUpdater {
      * This resets the heading of the robot to the IMU's heading, using Road Runner's pose reset.
      */
     public void resetHeadingToIMU() {
-        localizer.setPose(new Pose(getPose().getX(), getPose().getY(), getNormalizedIMUHeading() + startingPose.getHeading()));
+        if (imu != null) {
+            localizer.setPose(new Pose(getPose().getX(), getPose().getY(), getNormalizedIMUHeading() + startingPose.getHeading()));
+        }
     }
 
     /**
@@ -303,7 +310,9 @@ public class PoseUpdater {
      * method.
      */
     public void resetHeadingToIMUWithOffsets() {
-        setCurrentPoseWithOffset(new Pose(getPose().getX(), getPose().getY(), getNormalizedIMUHeading() + startingPose.getHeading()));
+        if (imu != null) {
+            setCurrentPoseWithOffset(new Pose(getPose().getX(), getPose().getY(), getNormalizedIMUHeading() + startingPose.getHeading()));
+        }
     }
 
     /**
@@ -312,7 +321,10 @@ public class PoseUpdater {
      * @return returns the normalized IMU heading.
      */
     public double getNormalizedIMUHeading() {
-        return MathFunctions.normalizeAngle(-imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
+        if (imu != null) {
+            return MathFunctions.normalizeAngle(-imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
+        }
+        return 0;
     }
 
     /**

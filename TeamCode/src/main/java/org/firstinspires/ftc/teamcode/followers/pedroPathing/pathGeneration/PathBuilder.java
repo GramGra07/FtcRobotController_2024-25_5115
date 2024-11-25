@@ -14,9 +14,9 @@ import java.util.ArrayList;
  * @version 1.0, 3/11/2024
  */
 public class PathBuilder {
-    private final ArrayList<Path> paths = new ArrayList<>();
+    private ArrayList<Path> paths = new ArrayList<>();
 
-    private final ArrayList<PathCallback> callbacks = new ArrayList<>();
+    private ArrayList<PathCallback> callbacks = new ArrayList<>();
 
     /**
      * This is an empty constructor for the PathBuilder class so it can get started.
@@ -49,6 +49,37 @@ public class PathBuilder {
     public PathBuilder addPath(BezierCurve curve) {
         this.paths.add(new Path(curve));
         return this;
+    }
+
+    /**
+     * This adds a default Path defined by a specified BezierCurve to the PathBuilder.
+     *
+     * @param controlPoints This is the specified control points that define the BezierCurve.
+     * @return This returns itself with the updated data.
+     */
+    public PathBuilder addBezierCurve(Point... controlPoints) {
+        return addPath(new BezierCurve(controlPoints));
+    }
+
+    /**
+     * This adds a default Path defined by a specified BezierCurve to the PathBuilder.
+     *
+     * @param controlPoints This is the specified control points that define the BezierCurve.
+     * @return This returns itself with the updated data.
+     */
+    public PathBuilder addBezierCurve(ArrayList<Point> controlPoints) {
+        return addPath(new BezierCurve(controlPoints));
+    }
+
+    /**
+     * This adds a default Path defined by a specified BezierLine to the PathBuilder.
+     *
+     * @param startPoint start point of the line.
+     * @param endPoint   end point of the line.
+     * @return This returns itself with the updated data.
+     */
+    public PathBuilder addBezierLine(Point startPoint, Point endPoint) {
+        return addPath(new BezierLine(startPoint, endPoint));
     }
 
     /**
