@@ -18,10 +18,6 @@ class preloadAuto : LinearOpMode() {
             true,
             StartLocation(Alliance.RED, Point(0.0, 0.0), 0.0)
         )
-        robot.scoringSubsystem.setup()
         waitForStart()
-        if (opModeIsActive()) {
-            robot.scoringSubsystem.setup()
-        }
     }
 }

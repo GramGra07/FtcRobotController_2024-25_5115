@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.customHardware.loopTime.LoopTimeController
 import org.firstinspires.ftc.teamcode.customHardware.loopTime.LoopTimeController.Companion.every
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.follower.Follower
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
+import org.firstinspires.ftc.teamcode.subsystems.DriverAid
 import org.firstinspires.ftc.teamcode.subsystems.LocalizerSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ArmSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ScoringSubsystem
@@ -18,7 +19,6 @@ import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers.bindDriverButtons
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers.currentFieldCentric
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers.switchProfile
-import org.firstinspires.ftc.teamcode.subsystems.humanInput.Operators
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Operators.bindOtherButtons
 import org.firstinspires.ftc.teamcode.utilClass.storage.CurrentDrivetrain
 import org.firstinspires.ftc.teamcode.utilClass.storage.PoseStorage
@@ -89,7 +89,9 @@ open class HardwareConfig(
         scoringSubsystem =
             ScoringSubsystem(ahwMap, auto, armSubsystem)
 
-        Operators.initSM(scoringSubsystem, armSubsystem)
+        DriverAid.initAllSM(scoringSubsystem, armSubsystem)
+
+        SMs(localizerSubsystem.follower)
 
 //        reLocalizationSubsystem =
 //            ReLocalizationSubsystem(ahwMap)
@@ -101,7 +103,6 @@ open class HardwareConfig(
         dt.telemetry(telemetry)
         if (!auto) {
             driveFollower = localizerSubsystem.follower
-//            initializeProcessor(startLocation.alliance, PROCESSORS.TARGET_LOCK, ahwMap, CAM1, true)
             loopTimeController = LoopTimeController(timer)
             telemetry.update()
         }

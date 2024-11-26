@@ -3,9 +3,9 @@ package org.firstinspires.ftc.teamcode.subsystems.humanInput
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import org.firstinspires.ftc.teamcode.extensions.GamepadExtensions
 import org.firstinspires.ftc.teamcode.extensions.GamepadExtensions.buttonJustPressed
+import org.firstinspires.ftc.teamcode.subsystems.DriverAid.collapseSM
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ArmSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ScoringSubsystem
-import org.gentrifiedApps.statemachineftc.ParallelRunSM
 
 object Operators {
 
@@ -61,17 +61,7 @@ object Operators {
                 scoringSubsystem.setPitchMed()
             }
 
-            if (myOpMode.gamepad2.circle) {
-                if (!driverAidSM.isStarted) {
-                    driverAidSM.start()
-                } else {
-                    driverAidSM.update()
-                }
-            } else {
-                if (driverAidSM.isStarted) {
-                    driverAidSM.stop()
-                }
-            }
+
 
             if (myOpMode.gamepad2.left_stick_y > 0) {
                 armSubsystem.pitchIdle()
@@ -101,43 +91,19 @@ object Operators {
                     -myOpMode.gamepad2.right_stick_y.toDouble(),
                     armSubsystem.maxExtendTicks.toDouble()
                 )
+            } else if (myOpMode.gamepad2.circle) {
+                if (!collapseSM.isRunning) {
+                    collapseSM.start()
+                } else {
+                    collapseSM.update()
+                }
             } else {
+                if (collapseSM.isRunning) {
+                    collapseSM.stop()
+                }
                 armSubsystem.stopExtend()
             }
 
         }
-    }
-
-    enum class DriverAidState {
-        moveClaw,
-        moveArm,
-        moveScoring,
-        stop
-    }
-
-    lateinit var driverAidSM: ParallelRunSM<DriverAidState>
-    fun initSM(scoringSubsystem: ScoringSubsystem, armSubsystem: ArmSubsystem) {
-        driverAidSM = ParallelRunSM.Builder<DriverAidState>()
-            .state(DriverAidState.moveClaw)
-            .onEnter(
-                DriverAidState.moveClaw
-            ) {
-                scoringSubsystem.closeClaw()
-            }
-            .state(DriverAidState.moveArm)
-            .onEnter(
-                DriverAidState.moveArm
-            ) {
-                armSubsystem.autoExtend(0.0)
-            }
-            .state(DriverAidState.moveScoring)
-            .onEnter(
-                DriverAidState.moveScoring
-            ) {
-                scoringSubsystem.setPitchHigh()
-            }
-            .stopRunning(DriverAidState.stop,
-                { armSubsystem.extendMotor.currentPosition.toDouble() < 100 })
-            .build(false, 0)
     }
 }

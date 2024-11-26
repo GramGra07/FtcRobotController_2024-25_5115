@@ -67,6 +67,7 @@ class ScoringSubsystem(
                 0
             }
             limelight3A.updatePythonInputs(use_blue.toDouble(), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+            setup()
         }
     }
 

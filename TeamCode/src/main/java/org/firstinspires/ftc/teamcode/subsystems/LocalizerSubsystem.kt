@@ -34,10 +34,6 @@ class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose, val type: LocalizerTyp
     private lateinit var sparkFunDrive: SparkFunOTOSDrive
     private val startPose = pose
 
-    fun start(): Pose {
-        return startPose
-    }
-
     init {
         when (type) {
             LocalizerType.PEDRO -> {

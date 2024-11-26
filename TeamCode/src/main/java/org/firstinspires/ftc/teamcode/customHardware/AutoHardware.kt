@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.customHardware
 
-import com.acmerobotics.roadrunner.Pose2d
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.teamcode.customHardware.Actions.pathBuilder
@@ -37,6 +36,7 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.follower.Follower
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.BezierCurve
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.PathBuilder
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Point
+import org.firstinspires.ftc.teamcode.subsystems.DriverAid
 import org.firstinspires.ftc.teamcode.utilClass.storage.PoseStorage
 import org.gentrifiedApps.statemachineftc.StateMachine
 
@@ -326,14 +326,27 @@ class Followers {
 
 class SMs(follower: Follower) {
     enum class states {
-        NEUTRAL_SAMPLE_B,
+        driveToSpecimenB,
+        placeSpecimenB,
+        stop,
     }
 
-    val sm1 = StateMachine.Builder<states>()
-        .onEnter(states.NEUTRAL_SAMPLE_B) {
-            Followers().placeSpecimenB(follower)
-        }
+    init {
+        val sm1 = StateMachine.Builder<states>()
+            .state(states.driveToSpecimenB)
+            .onEnter(states.driveToSpecimenB) {
+                Followers().placeSpecimenB(follower)
+            }.whileState(states.driveToSpecimenB, { follower.atParametricEnd() }) {
+                follower.update()
+            }.transition(states.placeSpecimenB, { follower.atParametricEnd() }, 0.0)
+            .state(states.placeSpecimenB)
+            .onEnter(states.placeSpecimenB) {
+                DriverAid.collapseSM.start()
+            }.whileState(states.placeSpecimenB, { !DriverAid.collapseSM.isRunning }) {
+                DriverAid.collapseSM.update()
+            }.transition(states.placeSpecimenB, { !DriverAid.collapseSM.isRunning }, 0.0)
+            .stopRunning(states.stop)
+            .build()
+    }
 
 }
-
-fun Pose2d.toPoint2() = Point(this.position.x, this.position.y)
