@@ -1,13 +1,10 @@
 package org.firstinspires.ftc.teamcode.ggutil
 
 import org.firstinspires.ftc.robotcore.external.Telemetry
-import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toPoint
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.LocalizerSubsystem
 import org.firstinspires.ftc.teamcode.utilClass.objects.Point
 import org.firstinspires.ftc.teamcode.utilClass.objects.VectorField
-import org.firstinspires.ftc.teamcode.utilClass.objects.VectorField.Companion.getCorrectionByAvoidancePUSH
-import org.firstinspires.ftc.teamcode.utilClass.objects.VectorField.Companion.getCorrectionByAvoidanceSTOP
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.VarConfig
 
 //@Config
@@ -55,26 +52,26 @@ class AvoidanceSubsystem {
         type: AvoidanceTypes,
     ) {
         updateVars(type)
-        when (type) {
-            AvoidanceTypes.PUSH -> {
-                powers = getCorrectionByAvoidancePUSH(
-                    fields,
-                    localizerSubsystem.pose().toPoint(),
-                )
-            }
-
-            AvoidanceTypes.STOP -> {
-                powers = getCorrectionByAvoidanceSTOP(
-                    fields,
-                    localizerSubsystem.pose(),
-                    driveSubsystem.leftStickY,
-                    driveSubsystem.leftStickX,
-                    driveSubsystem.rightStickX
-                )
-            }
-
-            AvoidanceTypes.OFF -> {}
-        }
+//        when (type) {
+//            AvoidanceTypes.PUSH -> {
+//                powers = getCorrectionByAvoidancePUSH(
+//                    fields,
+//                    localizerSubsystem.pose().toPoint(),
+//                )
+//            }
+//
+//            AvoidanceTypes.STOP -> {
+//                powers = getCorrectionByAvoidanceSTOP(
+//                    fields,
+//                    localizerSubsystem.pose(),
+//                    driveSubsystem.leftStickY,
+//                    driveSubsystem.leftStickX,
+//                    driveSubsystem.rightStickX
+//                )
+//            }
+//
+//            AvoidanceTypes.OFF -> {}
+//        }
     }
 
     fun telemetry(telemetry: Telemetry) {

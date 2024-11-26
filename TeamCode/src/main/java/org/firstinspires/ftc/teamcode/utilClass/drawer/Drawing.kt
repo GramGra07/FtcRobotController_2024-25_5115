@@ -34,13 +34,13 @@ class Drawing {
         val half2 = roboRad / 2
         val cos2 = cos(h2)
         val sin2 = sin(h2)
-        val p1s2 = Pose2D(l.position.x + (sin2 * half2), l.position.y + (cos2 * half2), 0.0)
-        val newS2 = Pose2D(l.position.x + (sin2 * roboRad), l.position.y + (cos2 * roboRad), 0.0)
+        val p1s2 = Pose2D(l.x + (sin2 * half2), l.y + (cos2 * half2), 0.0)
+        val newS2 = Pose2D(l.x + (sin2 * roboRad), l.y + (cos2 * roboRad), 0.0)
 
         fieldOverlay
             .setStroke(color)
             .setFill(color)
-            .strokeCircle(l.position.x, l.position.y, roboRad)
+            .strokeCircle(l.x, l.y, roboRad)
             .strokeLine(p1s2.x, p1s2.y, newS2.x, newS2.y)
     }
 

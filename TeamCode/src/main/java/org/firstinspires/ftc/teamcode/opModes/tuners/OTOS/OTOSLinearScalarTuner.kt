@@ -7,7 +7,6 @@ import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
 import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles
 import org.firstinspires.ftc.teamcode.utilClass.storage.GameStorage
-import org.firstinspires.ftc.teamcode.utilClass.storage.PoseStorage
 
 @TeleOp(group = GroupingTitles.TESTING)
 @Disabled//disabling the opmode
@@ -20,7 +19,7 @@ class OTOSLinearScalarTuner : LinearOpMode() {
         val robot = HardwareConfig(
             this,
             false,
-            StartLocation(GameStorage.alliance, PoseStorage.currentPose)
+            StartLocation(GameStorage.alliance)
         )
         telemetry.addData(
             "Move the robot forward 30 inches",

@@ -46,11 +46,27 @@ object PoseExtensions {
         }"
     }
 
+    fun Pose.toString2(): String {
+        return "x: ${this.x.roundToInt()}, y: ${this.y.roundToInt()}, h: ${
+            Math.toDegrees(
+                this.heading.toDouble()
+            ).roundToInt()
+        }"
+    }
+
     fun SparkFunOTOS.Pose2D.toPoint(): Point {
         return Point(this.x, this.y)
     }
 
     fun org.opencv.core.Point.toString(): String {
         return "x: ${this.x}, y: ${this.y}"
+    }
+
+    fun org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Point.toPose2d(heading: Double): Pose2d {
+        return Pose2d(this.x, this.y, heading)
+    }
+
+    fun org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Point.toPose(heading: Double): Pose {
+        return Pose(this.x, this.y, heading)
     }
 }

@@ -12,6 +12,7 @@ import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toPose
 import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toPose2d
 import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toString2
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.follower.Follower
+import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.Pose
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.PoseUpdater
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.localizers.OTOSLocalizer
 import org.firstinspires.ftc.teamcode.followers.roadRunner.Drawing
@@ -22,7 +23,7 @@ import kotlin.math.sqrt
 
 
 //@Config
-class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose2d, val type: LocalizerType) {
+class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose, val type: LocalizerType) {
     enum class LocalizerType {
         PEDRO,
         ROADRUNNER
@@ -33,22 +34,22 @@ class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose2d, val type: LocalizerT
     private lateinit var sparkFunDrive: SparkFunOTOSDrive
     private val startPose = pose
 
-    fun start(): Pose2d {
+    fun start(): Pose {
         return startPose
     }
 
     init {
         when (type) {
             LocalizerType.PEDRO -> {
-                poseUpdater = PoseUpdater(ahwMap, OTOSLocalizer(ahwMap, pose.toPose()))
-                poseUpdater.pose = pose.toPose()
+                poseUpdater = PoseUpdater(ahwMap, OTOSLocalizer(ahwMap, pose))
+                poseUpdater.pose = pose
                 follower = Follower(ahwMap)
-                follower.setStartingPose(pose.toPose())
+                follower.setStartingPose(pose)
             }
 
             LocalizerType.ROADRUNNER -> {
-                sparkFunDrive = SparkFunOTOSDrive(ahwMap, pose)
-                sparkFunDrive.pose = pose
+                sparkFunDrive = SparkFunOTOSDrive(ahwMap, pose.toPose2d())
+                sparkFunDrive.pose = pose.toPose2d()
             }
         }
 
@@ -88,7 +89,11 @@ class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose2d, val type: LocalizerT
         }
 
         if (timer != null) {
-            updateDistTraveled(PoseStorage.currentPose, this.pose(), timer.seconds())
+            updateDistTraveled(
+                PoseStorage.currentPose.toPose2d(),
+                this.pose().toPose2d(),
+                timer.seconds()
+            )
         }
         PoseStorage.currentPose = this.pose()
     }
@@ -100,7 +105,7 @@ class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose2d, val type: LocalizerT
             }
 
             LocalizerType.ROADRUNNER -> {
-                PoseStorage.currentPose = pose
+                PoseStorage.currentPose = pose.toPose()
                 sparkFunDrive.pose = pose
             }
         }
@@ -134,14 +139,14 @@ class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose2d, val type: LocalizerT
         }
     }
 
-    fun pose(): Pose2d {
+    fun pose(): Pose {
         return when (type) {
             LocalizerType.PEDRO -> {
-                poseUpdater.pose.toPose2d()
+                poseUpdater.pose
             }
 
             LocalizerType.ROADRUNNER -> {
-                sparkFunDrive.pose
+                sparkFunDrive.pose.toPose()
             }
         }
     }
@@ -174,7 +179,7 @@ class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose2d, val type: LocalizerT
         dashboard.clearTelemetry()
         packet.field()
         packet.fieldOverlay().setStroke("#3F51B5")
-        Drawing.drawRobot(packet.fieldOverlay(), pose())
+        Drawing.drawRobot(packet.fieldOverlay(), pose().toPose2d())
         dashboard.sendTelemetryPacket(packet)
     }
 
