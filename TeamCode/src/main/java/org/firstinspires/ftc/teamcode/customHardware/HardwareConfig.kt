@@ -21,6 +21,7 @@ import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers.switchProfil
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Operators
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Operators.bindOtherButtons
 import org.firstinspires.ftc.teamcode.utilClass.storage.CurrentDrivetrain
+import org.firstinspires.ftc.teamcode.utilClass.storage.PoseStorage
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.VarConfig
 
 open class HardwareConfig(
@@ -68,14 +69,11 @@ open class HardwareConfig(
         auto: Boolean,
         startLocation: StartLocation
     ) {
-
-//        brush = BrushlandRoboticsSensor(ahwMap, "brush")
-//        beamBreakSensor = BeamBreakSensor(ahwMap, "beam")
-
+        startLocation.build()
         localizerSubsystem =
             LocalizerSubsystem(
                 ahwMap,
-                startLocation.startPose,
+                PoseStorage.currentPose,
                 LocalizerSubsystem.LocalizerType.PEDRO
             )
 

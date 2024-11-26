@@ -43,7 +43,7 @@ class AutoHardware(
     opmode: LinearOpMode,
     startLocation: StartLocation,
     ahwMap: HardwareMap = opmode.hardwareMap,
-) : HardwareConfig(opmode, true, startLocation) {
+) : HardwareConfig(opmode, true, startLocation, ahwMap) {
 
 
     init {
