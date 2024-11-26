@@ -1,11 +1,9 @@
 package org.firstinspires.ftc.teamcode.opModes.auto
 
-import com.acmerobotics.roadrunner.Pose2d
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
-import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation.Companion.ofContext
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.Alliance
 import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles
 
@@ -19,7 +17,7 @@ class timeAuto : LinearOpMode() {
         val robot = HardwareConfig(
             this,
             true,
-            StartLocation(Alliance.RED, Pose2d.ofContext(StartLocation.SPOTS.RL))
+            StartLocation(Alliance.RED)
         )
         robot.scoringSubsystem.setup()
         //0.5 power

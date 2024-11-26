@@ -1,12 +1,11 @@
 package org.firstinspires.ftc.teamcode.opModes.auto
 
-import com.acmerobotics.roadrunner.Pose2d
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
-import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation.Companion.ofContext
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.Alliance
+import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Point
 import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles
 
 @Autonomous(group = GroupingTitles.tele) //@Disabled//disabling the opmode
@@ -17,7 +16,7 @@ class preloadAuto : LinearOpMode() {
         val robot = HardwareConfig(
             this,
             true,
-            StartLocation(Alliance.RED, Pose2d.ofContext(StartLocation.SPOTS.RL))
+            StartLocation(Alliance.RED, Point(0.0, 0.0), 0.0)
         )
         robot.scoringSubsystem.setup()
         waitForStart()

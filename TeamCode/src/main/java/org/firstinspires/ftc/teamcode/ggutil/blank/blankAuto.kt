@@ -1,6 +1,5 @@
 package org.firstinspires.ftc.teamcode.ggutil.blank
 
-import com.acmerobotics.roadrunner.Pose2d
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous
 import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
@@ -19,7 +18,7 @@ class blankAuto : LinearOpMode() {
         robot =
             AutoHardware(
                 this,
-                StartLocation(Alliance.RED, Pose2d(0.0, 0.0, -Math.PI / 2))
+                StartLocation(Alliance.RED)
             )
         if (opModeIsActive()) {
             PoseStorage.currentPose = robot.localizerSubsystem.pose()
