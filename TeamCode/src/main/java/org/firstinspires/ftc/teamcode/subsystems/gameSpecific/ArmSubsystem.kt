@@ -20,6 +20,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
         MANUAL,
         STOPPED,
         IDLE,
+        AUTO
     }
 
     enum class PitchState {
@@ -101,6 +102,9 @@ class ArmSubsystem(ahwMap: HardwareMap) {
             ExtendState.IDLE -> {
                 ePower = 0.0
             }
+
+            ExtendState.AUTO -> {
+            }
         }
     }
 
@@ -139,8 +143,10 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     fun power() {
         pitchMotor.power = pPower
         pitchMotor2.power = pPower
-        extendMotor.power = ePower
-        extendMotor2.power = ePower
+        if (extendState != ExtendState.AUTO) {
+            extendMotor.power = ePower
+            extendMotor2.power = ePower
+        }
     }
 
     private fun updatePID() {
@@ -234,7 +240,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     }
 
     fun autoExtend(target: Double) {
-        extendState = ExtendState.PID
+        extendState = ExtendState.AUTO
         ePower = calculatePID(extendPIDF, extendEncoder.getAverage(), target)
         extendMotor.power = ePower
         extendMotor2.power = ePower

@@ -39,8 +39,9 @@ object DriverAid {
                 scoringSubsystem.setPitchHigh()
                 scoringSubsystem.update()
             }
-            .stopRunning(CollapseSMState.stop,
-                { armSubsystem.extendMotor.currentPosition.toDouble() < 100 })
+            .stopRunning(
+                CollapseSMState.stop
+            ) { armSubsystem.extendMotor.currentPosition.toDouble() < 100 }
             .build(false, 0)
     }
 }
