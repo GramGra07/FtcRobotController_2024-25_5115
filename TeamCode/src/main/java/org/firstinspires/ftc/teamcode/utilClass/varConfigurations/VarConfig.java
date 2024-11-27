@@ -10,7 +10,7 @@ public class VarConfig {
 
     public static double OTOSxOffset = 0.0;//8.32
 
-    public static double OTOSyOffset = 0.0;//-0.7689
+    public static double OTOSyOffset = 1.4;//-0.7689
 
     public static double OTOShOffset = 0.0;//0.744 //-1.55
 

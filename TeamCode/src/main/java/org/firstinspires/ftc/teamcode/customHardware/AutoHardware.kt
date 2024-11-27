@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.customHardware
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.HardwareMap
-import org.firstinspires.ftc.teamcode.customHardware.Actions.pathBuilder
 import org.firstinspires.ftc.teamcode.customHardware.Points.blueBasket
 import org.firstinspires.ftc.teamcode.customHardware.Points.blueBasketAngle
 import org.firstinspires.ftc.teamcode.customHardware.Points.blueEndAngle
@@ -25,18 +24,12 @@ import org.firstinspires.ftc.teamcode.customHardware.Points.redSample
 import org.firstinspires.ftc.teamcode.customHardware.Points.redSampleAngle
 import org.firstinspires.ftc.teamcode.customHardware.Points.redSpecimen
 import org.firstinspires.ftc.teamcode.customHardware.Points.redSpecimenAngle
-import org.firstinspires.ftc.teamcode.customHardware.Traj.goToBasketBCurve
-import org.firstinspires.ftc.teamcode.customHardware.Traj.goToBasketRCurve
-import org.firstinspires.ftc.teamcode.customHardware.Traj.goToHumanBCurve
-import org.firstinspires.ftc.teamcode.customHardware.Traj.goToHumanRCurve
-import org.firstinspires.ftc.teamcode.customHardware.Traj.goToSpecimenBCurve
-import org.firstinspires.ftc.teamcode.customHardware.Traj.goToSpecimenRCurve
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.follower.Follower
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.BezierCurve
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.PathBuilder
+import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.PathChain
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Point
-import org.firstinspires.ftc.teamcode.subsystems.DriverAid
 import org.firstinspires.ftc.teamcode.utilClass.storage.PoseStorage
 import org.gentrifiedApps.statemachineftc.StateMachine
 
@@ -95,148 +88,224 @@ object Points {
 }
 
 object Traj {
-    val goToSpecimenBCurve =
-        BezierCurve(
+
+    fun goToSpecimenBCurve(): BezierCurve {
+        return BezierCurve(
             PoseStorage.currentPoint,
             Point(24.0, 72.0),
             blueSpecimen
         )
-    val goToSpecimenRCurve =
-        BezierCurve(
+    }
+
+    fun goToSpecimenRCurve(): BezierCurve {
+        return BezierCurve(
             PoseStorage.currentPoint,
             Point(126.0, 72.0),
             redSpecimen
         )
-    val goToBasketBCurve =
-        BezierCurve(
+    }
+
+    fun goToBasketBCurve(): BezierCurve {
+        return BezierCurve(
             PoseStorage.currentPoint,
             Point(36.0, 120.0),
             blueBasket
         )
-    val goToBasketRCurve =
-        BezierCurve(
+    }
+
+    fun goToBasketRCurve(): BezierCurve {
+        return BezierCurve(
             PoseStorage.currentPoint,
             Point(108.0, 24.0),
             redBasket
         )
-    val goToNeutralSampleBCurve =
-        BezierCurve(
+    }
+
+    fun goToNeutralSampleBCurve(): BezierCurve {
+        return BezierCurve(
             PoseStorage.currentPoint,
             Point(30.0, 120.0),
             blueNeutralSample
         )
-    val goToNeutralSampleRCurve =
-        BezierCurve(
+    }
+
+    fun goToNeutralSampleRCurve(): BezierCurve {
+        return BezierCurve(
             PoseStorage.currentPoint,
             Point(114.0, 24.0),
             redNeutralSample
         )
-    val goToSampleBCurve =
-        BezierCurve(
+    }
+
+    fun goToSampleBCurve(offsetY: Double): BezierCurve {
+        return BezierCurve(
             PoseStorage.currentPoint,
             Point(64.0, 22.0),
-            blueSample
+            Point(blueSample.x, blueSample.y + offsetY)
         )
-    val goToSampleRCurve =
-        BezierCurve(
+    }
+
+    fun goToSampleRCurve(offsetY: Double): BezierCurve {
+        return BezierCurve(
             PoseStorage.currentPoint,
             Point(84.0, 132.0),
-            redSample
+            Point(redSample.x, redSample.y + offsetY)
         )
-    val goToEndBlCurve =
-        BezierCurve(
+    }
+
+    fun goToEndBlCurve(): BezierCurve {
+        return BezierCurve(
             PoseStorage.currentPoint,
             Point(26.0, 120.0),
             Point(64.0, 114.0),
             blueEndLeft
         )
-    val goToEndBrCurve =
-        BezierCurve(
+    }
+
+    fun goToEndBrCurve(): BezierCurve {
+        return BezierCurve(
             PoseStorage.currentPoint,
             Point(26.0, 120.0),
             Point(64.0, 114.0),
             blueEndRight
         )
-    val goToEndRlCurve =
-        BezierCurve(
+    }
+
+    fun goToEndRlCurve(): BezierCurve {
+        return BezierCurve(
             PoseStorage.currentPoint,
             Point(118.0, 24.0),
             Point(80.0, 30.0),
             redEndLeft
         )
-    val goToEndRrCurve =
-        BezierCurve(
+    }
+
+    fun goToEndRrCurve(): BezierCurve {
+        return BezierCurve(
             PoseStorage.currentPoint,
             Point(118.0, 24.0),
             Point(80.0, 30.0),
             redEndRight
         )
-    val goToHumanBCurve =
-        BezierCurve(
+    }
+
+    fun goToHumanBCurve(): BezierCurve {
+        return BezierCurve(
             PoseStorage.currentPoint,
             Point(34.0, 34.0),
             blueHuman
         )
-    val goToHumanRCurve =
-        BezierCurve(
+    }
+
+    fun goToHumanRCurve(): BezierCurve {
+        return BezierCurve(
             PoseStorage.currentPoint,
             Point(108.0, 108.0),
             redHuman
         )
+    }
 }
 
 object Actions {
     val pathBuilder = PathBuilder()
-    val placeSpecimenBPath = pathBuilder.addPath(
-        goToSpecimenBCurve,
-    ).setLinearHeadingInterpolation(PoseStorage.currentHeading, blueSpecimenAngle)
-        .build()
-    val placeSpecimenRPath = pathBuilder.addPath(
-        goToSpecimenRCurve,
-    ).setLinearHeadingInterpolation(PoseStorage.currentHeading, redSpecimenAngle)
-        .build()
-    val placeBasketBPath = pathBuilder.addPath(
-        goToBasketBCurve,
-    ).setLinearHeadingInterpolation(PoseStorage.currentHeading, blueBasketAngle)
-        .build()
-    val placeBasketRPath = pathBuilder.addPath(
-        goToBasketRCurve,
-    ).setLinearHeadingInterpolation(PoseStorage.currentHeading, redBasketAngle)
-        .build()
-    val getSpecimenRPath = pathBuilder.addPath(
-        goToHumanRCurve,
-    ).setLinearHeadingInterpolation(PoseStorage.currentHeading, redSpecimenAngle)
-        .build()
-    val getSpecimenBPath = pathBuilder.addPath(
-        goToHumanBCurve,
-    ).setLinearHeadingInterpolation(PoseStorage.currentHeading, blueSpecimenAngle)
-        .build()
 
-    val getSampleRPath = pathBuilder.addPath(
-        Traj.goToSampleRCurve
-    ).setLinearHeadingInterpolation(PoseStorage.currentHeading, redSampleAngle)
-        .build()
-    val getSampleBPath = pathBuilder.addPath(
-        Traj.goToSampleBCurve
-    ).setLinearHeadingInterpolation(PoseStorage.currentHeading, blueSampleAngle)
-        .build()
+    fun placeSpecimenBPath(): PathChain {
+        return pathBuilder.addPath(
+            Traj.goToSpecimenBCurve()
+        ).setLinearHeadingInterpolation(PoseStorage.currentHeading, blueSpecimenAngle)
+            .build()
+    }
 
-    val goToEndBlPath = pathBuilder.addPath(
-        Traj.goToEndBlCurve
-    ).setLinearHeadingInterpolation(PoseStorage.currentHeading, blueEndAngle)
-        .build()
-    val goToEndBrPath = pathBuilder.addPath(
-        Traj.goToEndBrCurve
-    ).setLinearHeadingInterpolation(PoseStorage.currentHeading, blueEndAngle)
-        .build()
-    val goToEndRlPath = pathBuilder.addPath(
-        Traj.goToEndRlCurve
-    ).setLinearHeadingInterpolation(PoseStorage.currentHeading, redEndAngle)
-        .build()
-    val goToEndRrPath = pathBuilder.addPath(
-        Traj.goToEndRrCurve
-    ).setLinearHeadingInterpolation(PoseStorage.currentHeading, redEndAngle)
-        .build()
+    fun placeSpecimenRPath(): PathChain {
+        return pathBuilder.addPath(
+            Traj.goToSpecimenRCurve()
+        ).setLinearHeadingInterpolation(PoseStorage.currentHeading, redSpecimenAngle)
+            .build()
+    }
+
+    fun placeBasketBPath(): PathChain {
+        return pathBuilder.addPath(
+            Traj.goToBasketBCurve()
+        ).setLinearHeadingInterpolation(PoseStorage.currentHeading, blueBasketAngle)
+            .build()
+    }
+
+    fun placeBasketRPath(): PathChain {
+        return pathBuilder.addPath(
+            Traj.goToBasketRCurve()
+        ).setLinearHeadingInterpolation(PoseStorage.currentHeading, redBasketAngle)
+            .build()
+    }
+
+    fun getSpecimenRPath(): PathChain {
+        return pathBuilder.addPath(
+            Traj.goToHumanRCurve()
+        ).setLinearHeadingInterpolation(PoseStorage.currentHeading, redSpecimenAngle)
+            .build()
+    }
+
+    fun getSpecimenBPath(): PathChain {
+        return pathBuilder.addPath(
+            Traj.goToHumanBCurve()
+        ).setLinearHeadingInterpolation(PoseStorage.currentHeading, blueSpecimenAngle)
+            .build()
+    }
+
+    fun getSampleRPath(offsetY: Double): PathChain {
+        return pathBuilder.addPath(
+            Traj.goToSampleRCurve(offsetY)
+        ).setLinearHeadingInterpolation(PoseStorage.currentHeading, redSampleAngle)
+            .build()
+    }
+
+    fun getSampleBPath(offsetY: Double): PathChain {
+        return pathBuilder.addPath(
+            Traj.goToSampleBCurve(offsetY)
+        ).setLinearHeadingInterpolation(PoseStorage.currentHeading, blueSampleAngle)
+            .build()
+    }
+
+    fun goToEndBlPath(): PathChain {
+        return pathBuilder.addPath(
+            Traj.goToEndBlCurve()
+        ).setLinearHeadingInterpolation(PoseStorage.currentHeading, blueEndAngle)
+            .build()
+    }
+
+    fun goToEndBrPath(): PathChain {
+        return pathBuilder.addPath(
+            Traj.goToEndBrCurve()
+        ).setLinearHeadingInterpolation(PoseStorage.currentHeading, blueEndAngle)
+            .build()
+    }
+
+    fun goToEndRlPath(): PathChain {
+        return pathBuilder.addPath(
+            Traj.goToEndRlCurve()
+        ).setLinearHeadingInterpolation(PoseStorage.currentHeading, redEndAngle)
+            .build()
+    }
+
+    fun goToEndRrPath(): PathChain {
+        return pathBuilder.addPath(
+            Traj.goToEndRrCurve()
+        ).setLinearHeadingInterpolation(PoseStorage.currentHeading, redEndAngle)
+            .build()
+    }
+
+    fun goToNeutralSampleB(angle: Double): PathChain {
+        return pathBuilder.addPath(
+            Traj.goToNeutralSampleBCurve()
+        ).setLinearHeadingInterpolation(PoseStorage.currentHeading, angle)
+            .build()
+    }
+
+    fun goToNeutralSampleR(angle: Double): PathChain {
+        return pathBuilder.addPath(
+            Traj.goToNeutralSampleRCurve()
+        ).setLinearHeadingInterpolation(PoseStorage.currentHeading, angle)
+            .build()
+    }
 }
 
 class Followers {
@@ -245,107 +314,222 @@ class Followers {
     }
 
     fun placeSpecimenBPathFollower(follower: Follower) {
-        follower.followPath(Actions.placeSpecimenBPath)
+        follower.followPath(Actions.placeSpecimenBPath())
         refreshPose(follower)
     }
 
     fun placeSpecimenRPathFollower(follower: Follower) {
-        follower.followPath(Actions.placeSpecimenRPath)
+        follower.followPath(Actions.placeSpecimenRPath())
         refreshPose(follower)
     }
 
     fun goToBasketBPathFollower(follower: Follower) {
-        follower.followPath(Actions.placeBasketBPath)
+        follower.followPath(Actions.placeBasketBPath())
         refreshPose(follower)
     }
 
     fun goToBasketRPathFollower(follower: Follower) {
-        follower.followPath(Actions.placeBasketRPath)
+        follower.followPath(Actions.placeBasketRPath())
         refreshPose(follower)
     }
 
-    fun goToSampleBPathFollower(follower: Follower) {
-        follower.followPath(Actions.getSampleBPath)
+    fun goToSampleBPathFollower(follower: Follower, offsetY: Double) {
+        follower.followPath(Actions.getSampleBPath(offsetY))
         refreshPose(follower)
     }
 
-    fun goToSampleRPathFollower(follower: Follower) {
-        follower.followPath(Actions.getSampleRPath)
+    fun goToSampleRPathFollower(follower: Follower, offsetY: Double) {
+        follower.followPath(Actions.getSampleRPath(offsetY))
         refreshPose(follower)
     }
 
     fun goToEndBlPathFollower(follower: Follower) {
-        follower.followPath(Actions.goToEndBlPath)
+        follower.followPath(Actions.goToEndBlPath())
         refreshPose(follower)
     }
 
     fun goToEndBrPathFollower(follower: Follower) {
-        follower.followPath(Actions.goToEndBrPath)
+        follower.followPath(Actions.goToEndBrPath())
         refreshPose(follower)
     }
 
     fun goToEndRlPathFollower(follower: Follower) {
-        follower.followPath(Actions.goToEndRlPath)
+        follower.followPath(Actions.goToEndRlPath())
         refreshPose(follower)
     }
 
     fun goToEndRrPathFollower(follower: Follower) {
-        follower.followPath(Actions.goToEndRrPath)
+        follower.followPath(Actions.goToEndRrPath())
         refreshPose(follower)
     }
 
     fun goToHumanBPathFollower(follower: Follower) {
-        follower.followPath(Actions.getSpecimenBPath)
+        follower.followPath(Actions.getSpecimenBPath())
         refreshPose(follower)
     }
 
     fun goToHumanRPathFollower(follower: Follower) {
-        follower.followPath(Actions.getSpecimenRPath)
+        follower.followPath(Actions.getSpecimenRPath())
         refreshPose(follower)
     }
 
     fun goToNeutralSampleBPathFollower(follower: Follower, angle: Double) {
-        val path = pathBuilder.addPath(
-            Traj.goToNeutralSampleBCurve
-        ).setLinearHeadingInterpolation(PoseStorage.currentPose.heading.toDouble(), angle)
-            .build()
-        follower.followPath(path)
+        follower.followPath(Actions.goToNeutralSampleB(angle))
         refreshPose(follower)
     }
 
     fun goToNeutralSampleRPathFollower(follower: Follower, angle: Double) {
-        val path = pathBuilder.addPath(
-            Traj.goToNeutralSampleRCurve
-        ).setLinearHeadingInterpolation(PoseStorage.currentPose.heading.toDouble(), angle)
-            .build()
-        follower.followPath(path)
+        follower.followPath(Actions.goToNeutralSampleR(angle))
         refreshPose(follower)
     }
 }
 
 
 class SMs(follower: Follower) {
-    enum class states {
-        driveToSpecimenB,
-        placeSpecimenB,
+    enum class statesRR {
+        driveToSpecimenR,
+        placeSpecimenR,
+        goToSampleR,
+        goToSampleR2,
+        goToSampleR3,
+        goToHumanR,
+        goToSpecimenR,
+        placeSpecimenR1,
+        goToHumanR2,
+        goToSpecimenR2,
+        placeSpecimenR2,
+        goToHumanR3,
+        goToSpecimenR3,
+        placeSpecimenR3,
+        goToEndR,
         stop,
     }
 
     init {
-        val sm1 = StateMachine.Builder<states>()
-            .state(states.driveToSpecimenB)
-            .onEnter(states.driveToSpecimenB) {
+        val rr = StateMachine.Builder<statesRR>()
+            .state(statesRR.driveToSpecimenR)
+            .onEnter(statesRR.driveToSpecimenR) {
                 Followers().placeSpecimenBPathFollower(follower)
-            }.whileState(states.driveToSpecimenB, { follower.atParametricEnd() }) {
+            }
+            .whileState(statesRR.driveToSpecimenR, { follower.atParametricEnd() }) {
                 follower.update()
-            }.transition(states.placeSpecimenB, { follower.atParametricEnd() }, 0.0)
-            .state(states.placeSpecimenB)
-            .onEnter(states.placeSpecimenB) {
-                DriverAid.collapseSM.start()
-            }.whileState(states.placeSpecimenB, { !DriverAid.collapseSM.isRunning }) {
-                DriverAid.collapseSM.update()
-            }.transition(states.placeSpecimenB, { !DriverAid.collapseSM.isRunning }, 0.0)
-            .stopRunning(states.stop)
+            }
+            .transition(statesRR.driveToSpecimenR, { follower.atParametricEnd() }, 0.0)
+//            .state(statesRR.placeSpecimenR)
+//            .onEnter(statesRR.placeSpecimenR) {
+//                DriverAid.collapseSM.start()
+//            }
+//            .whileState(statesRR.placeSpecimenR, { !DriverAid.collapseSM.isRunning }) {
+//                DriverAid.collapseSM.update()
+//            }
+//            .transition(statesRR.placeSpecimenR, { !DriverAid.collapseSM.isRunning }, 0.0)
+            .state(statesRR.goToSampleR)
+            .onEnter(statesRR.goToSampleR) {
+                Followers().goToSampleRPathFollower(follower, 0.0)
+            }
+            .whileState(statesRR.goToSampleR, { follower.atParametricEnd() }) {
+                follower.update()
+            }
+            .transition(statesRR.goToSampleR, { follower.atParametricEnd() }, 0.0)
+            .state(statesRR.goToSampleR2)
+            .onEnter(statesRR.goToSampleR2) {
+                Followers().goToSampleRPathFollower(follower, 6.0)
+            }
+            .whileState(statesRR.goToSampleR2, { follower.atParametricEnd() }) {
+                follower.update()
+            }
+            .transition(statesRR.goToSampleR2, { follower.atParametricEnd() }, 0.0)
+            .state(statesRR.goToSampleR3)
+            .onEnter(statesRR.goToSampleR3) {
+                Followers().goToSampleRPathFollower(follower, -6.0)
+            }
+            .whileState(statesRR.goToSampleR3, { follower.atParametricEnd() }) {
+                follower.update()
+            }
+            .transition(statesRR.goToSampleR3, { follower.atParametricEnd() }, 0.0)
+            .state(statesRR.goToHumanR)
+            .onEnter(statesRR.goToHumanR) {
+                Followers().goToHumanRPathFollower(follower)
+            }
+            .whileState(statesRR.goToHumanR, { follower.atParametricEnd() }) {
+                follower.update()
+            }
+            .transition(statesRR.goToHumanR, { follower.atParametricEnd() }, 0.0)
+            .state(statesRR.goToSpecimenR)
+            .onEnter(statesRR.goToSpecimenR) {
+                Followers().placeSpecimenRPathFollower(follower)
+            }
+            .whileState(statesRR.goToSpecimenR, { follower.atParametricEnd() }) {
+                follower.update()
+            }
+            .transition(statesRR.goToSpecimenR, { follower.atParametricEnd() }, 0.0)
+//            .state(statesRR.placeSpecimenR1)
+//            .onEnter(statesRR.placeSpecimenR1) {
+//                DriverAid.collapseSM.start()
+//            }
+//            .whileState(statesRR.placeSpecimenR1, { !DriverAid.collapseSM.isRunning }) {
+//                DriverAid.collapseSM.update()
+//            }
+//            .transition(statesRR.placeSpecimenR1, { !DriverAid.collapseSM.isRunning }, 0.0)
+            .state(statesRR.goToHumanR2)
+            .onEnter(statesRR.goToHumanR2) {
+                Followers().goToHumanRPathFollower(follower)
+            }
+            .whileState(statesRR.goToHumanR2, { follower.atParametricEnd() }) {
+                follower.update()
+            }
+            .transition(statesRR.goToHumanR2, { follower.atParametricEnd() }, 0.0)
+            .state(statesRR.goToSpecimenR2)
+            .onEnter(statesRR.goToSpecimenR2) {
+                Followers().placeSpecimenRPathFollower(follower)
+            }
+            .whileState(statesRR.goToSpecimenR2, { follower.atParametricEnd() }) {
+                follower.update()
+            }
+            .transition(statesRR.goToSpecimenR2, { follower.atParametricEnd() }, 0.0)
+//            .state(statesRR.placeSpecimenR2)
+//            .onEnter(statesRR.placeSpecimenR2) {
+//                DriverAid.collapseSM.start()
+//            }
+//            .whileState(statesRR.placeSpecimenR2, { !DriverAid.collapseSM.isRunning }) {
+//                DriverAid.collapseSM.update()
+//            }
+//            .transition(statesRR.placeSpecimen2R, { !DriverAid.collapseSM.isRunning }, 0.0)
+            .state(statesRR.goToHumanR3)
+            .onEnter(statesRR.goToHumanR3) {
+                Followers().goToHumanRPathFollower(follower)
+            }
+            .whileState(statesRR.goToHumanR3, { follower.atParametricEnd() }) {
+                follower.update()
+            }
+            .transition(statesRR.goToHumanR3, { follower.atParametricEnd() }, 0.0)
+            .state(statesRR.goToSpecimenR3)
+            .onEnter(statesRR.goToSpecimenR3) {
+                Followers().placeSpecimenRPathFollower(follower)
+            }
+            .whileState(statesRR.goToSpecimenR3, { follower.atParametricEnd() }) {
+                follower.update()
+            }
+            .transition(statesRR.goToSpecimenR3, { follower.atParametricEnd() }, 0.0)
+//            .state(statesRR.placeSpecimenR3)
+//            .onEnter(statesRR.placeSpecimenR3) {
+//                DriverAid.collapseSM.start()
+//            }
+//            .whileState(statesRR.placeSpecimenR3, { !DriverAid.collapseSM.isRunning }) {
+//                DriverAid.collapseSM.update()
+//            }
+//            .transition(statesRR.placeSpecimenR3, { !DriverAid.collapseSM.isRunning }, 0.0)
+            .state(statesRR.goToEndR)
+            .onEnter(statesRR.goToEndR) {
+                Followers().goToEndRrPathFollower(follower)
+            }
+            .whileState(statesRR.goToEndR, { follower.atParametricEnd() }) {
+                follower.update()
+            }
+            .onExit(statesRR.goToEndR) {
+            }
+            .transition(statesRR.goToEndR, { follower.atParametricEnd() }, 0.0)
+            .stopRunning(statesRR.stop)
             .build()
     }
 
