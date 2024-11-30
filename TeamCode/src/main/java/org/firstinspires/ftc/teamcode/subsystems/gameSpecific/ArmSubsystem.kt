@@ -36,6 +36,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     private var pMax = 1.0
     private var pMin = -1.0
     private var pitchPIDF: PIDFController = PIDFController(0.0, 0.0, 0.0, 0.0)
+    private var pitchTarget = 0
 
     private fun pAngle(ticks: Double): Double {
         return (ticks * ticksPerDegreeCalc)
@@ -68,8 +69,8 @@ class ArmSubsystem(ahwMap: HardwareMap) {
         pitchMotor2 = initMotor(ahwMap, "pitchMotor2", DcMotor.RunMode.RUN_WITHOUT_ENCODER)
         extendMotor = initMotor(ahwMap, "extendMotor", DcMotor.RunMode.RUN_WITHOUT_ENCODER)
         extendMotor2 = initMotor(ahwMap, "extendMotor2", DcMotor.RunMode.RUN_WITHOUT_ENCODER)
-        pitchMotor.brake()
-        pitchMotor2.brake()
+        //pitchMotor.brake()
+        //pitchMotor2.brake()
         extendMotor.brake()
         extendMotor2.brake()
 
@@ -108,7 +109,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
         }
     }
 
-    fun setPowerPitch(power: Double, target: Double) {
+    fun setPowerPitch(power: Double = 0, target: Double) {
         updatePID()
         when (pitchState) {
             PitchState.PID -> {
@@ -133,9 +134,13 @@ class ArmSubsystem(ahwMap: HardwareMap) {
             }
         }
     }
+    
+    fun setPitchTarget(target:Double){
+        pitchTarget = target
+        }
 
     fun update() {
-        updatePID()
+        setPowerPitch(null,pitchTarget)
         power()
         calculateExtendMax()
     }

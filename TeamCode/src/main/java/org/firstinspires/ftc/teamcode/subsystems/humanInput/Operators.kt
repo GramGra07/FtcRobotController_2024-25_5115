@@ -64,19 +64,9 @@ object Operators {
 
 
             if (myOpMode.gamepad2.left_stick_y > 0) {
-                armSubsystem.pitchIdle()
-                armSubsystem.setPowerPitch(
-                    -myOpMode.gamepad2.left_stick_y.toDouble(),
-                    0.0
-                )
-            } else if (myOpMode.gamepad2.left_stick_y < 0) {
-                armSubsystem.pitchIdle()
-                armSubsystem.setPowerPitch(
-                    -myOpMode.gamepad2.left_stick_y.toDouble(),
-                    armSubsystem.maxPitchTicks.toDouble()
-                )
-            } else {
-                armSubsystem.stopPitch()
+                armSubsystem.setPitchTarget(0)
+            } else if (myOpMode.gamepad2.right_trigger < 0) {
+                armSubsystem.setPitchTarget(maxTicks)
             }
 
             if (myOpMode.gamepad2.right_stick_y > 0) {
