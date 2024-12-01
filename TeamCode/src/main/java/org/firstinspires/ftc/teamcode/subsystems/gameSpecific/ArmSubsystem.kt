@@ -50,6 +50,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     private var eMax = 1.0
     private var eMin = -1.0
     private var extendPIDF: PIDFController = PIDFController(0.0, 0.0, 0.0, 0.0)
+    private var extendTarget = 0
 
     private val eTicksToInch: Double = (Math.PI * 1.378) / (28.0 * 20.0)
     private fun eTicksToInch(ticks: Double): Double {
@@ -65,6 +66,16 @@ class ArmSubsystem(ahwMap: HardwareMap) {
 
 
     init {
+        pitchState = if (usePIDFp) {
+            PitchState.PID
+        } else {
+            PitchState.MANUAL
+        }
+        extendState = if (usePIDFe) {
+            ExtendState.PID
+        } else {
+            ExtendState.MANUAL
+        }
         pitchMotor = initMotor(ahwMap, "pitchMotor", DcMotor.RunMode.RUN_WITHOUT_ENCODER)
         pitchMotor2 = initMotor(ahwMap, "pitchMotor2", DcMotor.RunMode.RUN_WITHOUT_ENCODER)
         extendMotor = initMotor(ahwMap, "extendMotor", DcMotor.RunMode.RUN_WITHOUT_ENCODER)
@@ -80,101 +91,91 @@ class ArmSubsystem(ahwMap: HardwareMap) {
         updatePID()
     }
 
-    fun setPowerExtend(power: Double, target: Double) {
+    fun setPowerExtend(target: Double, power: Double = 0.0) {
         updatePID()
-        when (extendState) {
-            ExtendState.PID -> {
-                ePower =
-                    calculatePID(extendPIDF, extendEncoder.getAverage(), target)
-            }
-
-            ExtendState.MANUAL -> {
-                ePower = Range.clip(
-                    power,
-                    eMin,
-                    eMax
-                )
-            }
-
-            ExtendState.STOPPED -> {
-                ePower = 0.0
-            }
-
-            ExtendState.IDLE -> {
-                ePower = 0.0
-            }
-
-            ExtendState.AUTO -> {
-            }
-        }
+        ePower =
+            calculatePID(extendPIDF, extendEncoder.getAverage(), target)
+//        when (extendState) {
+//            ExtendState.PID -> {
+//                ePower =
+//                    calculatePID(extendPIDF, extendEncoder.getAverage(), target)
+//            }
+//
+//            ExtendState.MANUAL -> {
+//                ePower = Range.clip(
+//                    power,
+//                    eMin,
+//                    eMax
+//                )
+//            }
+//
+//            ExtendState.STOPPED -> {
+//                ePower = 0.0
+//            }
+//
+//            ExtendState.IDLE -> {
+//                ePower = 0.0
+//            }
+//
+//            ExtendState.AUTO -> {
+//            }
+//        }
     }
 
-    fun setPowerPitch(power: Double = 0, target: Double) {
+    fun setPowerPitch(target: Double, overridePower: Double? = 0.0) {
         updatePID()
-        when (pitchState) {
-            PitchState.PID -> {
-                pPower =
-                    calculatePID(pitchPIDF, pitchEncoder.currentPosition.toDouble(), target)
-            }
-
-            PitchState.MANUAL -> {
-                pPower = Range.clip(
-                    power,
-                    pMin,
-                    pMax
-                )
-            }
-
-            PitchState.STOPPED -> {
-                pPower = 0.0
-            }
-
-            PitchState.IDLE -> {
-                pPower = 0.0
-            }
-        }
+        pPower =
+            calculatePID(pitchPIDF, pitchEncoder.currentPosition.toDouble(), target)
+//        when (pitchState) {
+//            PitchState.PID -> {
+//                pPower =
+//                    calculatePID(pitchPIDF, pitchEncoder.currentPosition.toDouble(), target)
+//            }
+//
+//            PitchState.MANUAL -> {
+//                pPower = Range.clip(
+//                    overridePower ?: 0.0,
+//                    pMin,
+//                    pMax
+//                )
+//            }
+//
+//            PitchState.STOPPED ,
+//            PitchState.IDLE -> {
+//                pPower = 0.0
+//            }
+//        }
     }
-    
-    fun setPitchTarget(target:Double){
-        pitchTarget = target
-        }
+
+    fun setPitchTarget(target: Double) {
+        pitchTarget = target.toInt()
+    }
+
+    fun setExtendTarget(target: Double) {
+        extendTarget = target.toInt()
+    }
 
     fun update() {
-        setPowerPitch(null,pitchTarget)
-        power()
         calculateExtendMax()
+        setPowerExtend(extendTarget.toDouble())
+        setPowerPitch(pitchTarget.toDouble())
+        power()
     }
 
     fun power() {
         pitchMotor.power = pPower
         pitchMotor2.power = pPower
-        if (extendState != ExtendState.AUTO) {
-            extendMotor.power = ePower
-            extendMotor2.power = ePower
-        }
+        extendMotor.power = ePower
+        extendMotor2.power = ePower
     }
 
     private fun updatePID() {
-        if (extendState != ExtendState.STOPPED) {
-            extendState = if (usePIDFe) {
-                ExtendState.PID
-            } else {
-                ExtendState.MANUAL
-            }
-        }
         extendPIDF.setPIDF(
             PIDVals.extendPIDFCo.p,
             PIDVals.extendPIDFCo.i,
             PIDVals.extendPIDFCo.d,
             PIDVals.extendPIDFCo.f
         )
-        if (pitchState != PitchState.STOPPED) {// not stopped as called by code
-            pitchState = if (usePIDFp) {// using the PIDF
-                PitchState.PID
-            } else {
-                PitchState.MANUAL
-            }
-        }
         pitchPIDF.setPIDF(
             PIDVals.pitchPIDFCo.p,
             PIDVals.pitchPIDFCo.i,
@@ -197,11 +198,6 @@ class ArmSubsystem(ahwMap: HardwareMap) {
         pPower = 0.0
     }
 
-    fun stopPitch() {
-        pitchState = PitchState.STOPPED
-        ePower = 0.0
-    }
-
     private fun getTheoreticalHeight(): Double {
         val length = eTicksToInch(extendEncoder.getAverage())
         val angle = pAngle(pitchEncoder.currentPosition.toDouble())
@@ -213,10 +209,6 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     private val ticksPerDegreeCalc = 0.04839
 
     private val ticksPerInchExtend = 163.0
-
-    fun pitchIdle() {
-        pitchState = PitchState.IDLE
-    }
 
     fun extendIdle() {
         extendState = ExtendState.IDLE

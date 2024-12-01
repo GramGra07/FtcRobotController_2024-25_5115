@@ -30,7 +30,7 @@ object DriverAid {
             .onEnter(
                 CollapseSMState.moveArm
             ) {
-                armSubsystem.autoExtend(0.0)
+                armSubsystem.setExtendTarget(0.0)
             }
             .state(CollapseSMState.moveScoring)
             .onEnter(
