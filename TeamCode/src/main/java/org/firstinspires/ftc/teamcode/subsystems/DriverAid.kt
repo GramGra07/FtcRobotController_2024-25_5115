@@ -33,11 +33,12 @@ class DriverAid(
         extend_pivot,
         hook1st,
         lift1st,
+        pivotBack,
         sit1st,
-        pivot2nd,
         extend2nd,
         hook2nd,
         lift2nd,
+        pivot2nd,
         sit2nd,
         collapse,
         stop
@@ -69,19 +70,19 @@ class DriverAid(
         .transition(AutoLift.lift1st) {
             armSubsystem.isExtendAtTarget()
         }
+        .state(AutoLift.pivotBack)
+        .onEnter(AutoLift.pivotBack) {
+            armSubsystem.setPitchTargetDegrees(0.0)
+        }
+        .transition(AutoLift.pivotBack) {
+            armSubsystem.isPitchAtTarget()
+        }
         .state(AutoLift.sit1st)
         .onEnter(AutoLift.sit1st) {
             armSubsystem.setExtendTarget(10.0)
         }
         .transition(AutoLift.sit1st) {
             armSubsystem.isExtendAtTarget()
-        }
-        .state(AutoLift.pivot2nd)
-        .onEnter(AutoLift.pivot2nd) {
-            armSubsystem.setPitchTargetDegrees(30.0)
-        }
-        .transition(AutoLift.pivot2nd) {
-            armSubsystem.isPitchAtTarget()
         }
         .state(AutoLift.extend2nd)
         .onEnter(AutoLift.extend2nd) {
@@ -103,6 +104,13 @@ class DriverAid(
         }
         .transition(AutoLift.lift2nd) {
             armSubsystem.isExtendAtTarget()
+        }
+        .state(AutoLift.pivot2nd)
+        .onEnter(AutoLift.pivot2nd) {
+            armSubsystem.setPitchTargetDegrees(0.0)
+        }
+        .transition(AutoLift.pivot2nd) {
+            armSubsystem.isPitchAtTarget()
         }
         .state(AutoLift.sit2nd)
         .onEnter(AutoLift.sit2nd) {

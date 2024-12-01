@@ -68,22 +68,24 @@ object Operators {
             if (autoLift) {
                 da.lift()
             } else {
-
-                if (myOpMode.gamepad2.left_stick_y > 0) {
-                    armSubsystem.setPitchTarget(0.0)
-                } else if (myOpMode.gamepad2.left_stick_y < 0) {
-                    armSubsystem.setPitchTarget(armSubsystem.maxPitchTicks.toDouble())
+                if (!armSubsystem.usePIDFp) {
+                    armSubsystem.setPowerPitch(0.0, myOpMode.gamepad2.left_stick_y.toDouble())
+                } else {
+                    if (myOpMode.gamepad2.left_stick_y > 0) {
+                        armSubsystem.setPitchTarget(0.0)
+                    } else if (myOpMode.gamepad2.left_stick_y < 0) {
+                        armSubsystem.setPitchTarget(armSubsystem.maxPitchTicks.toDouble())
+                    }
                 }
 
-//            if (myOpMode.gamepad2.right_stick_y > 0) {
-//                armSubsystem.setExtendTarget(0.0)
-//            } else if (myOpMode.gamepad2.right_stick_y < 0) {
-//                armSubsystem.setExtendTarget(armSubsystem.maxExtendTicks.toDouble())
-//            } else
-                if (myOpMode.gamepad2.circle) {
-                    da.collapse()
+                if (!armSubsystem.usePIDFe) {
+                    armSubsystem.setPowerExtend(0.0, myOpMode.gamepad2.right_stick_y.toDouble())
                 } else {
-                    armSubsystem.setExtendTarget(myOpMode.gamepad2.right_trigger.toDouble() * armSubsystem.maxExtendTicks)
+                    if (myOpMode.gamepad2.circle) {
+                        da.collapse()
+                    } else {
+                        armSubsystem.setExtendTarget(myOpMode.gamepad2.right_trigger.toDouble() * armSubsystem.maxExtendTicks)
+                    }
                 }
             }
 

@@ -27,7 +27,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
         IDLE,
     }
 
-    private var usePIDFp = false
+    var usePIDFp = false
     private var pitchMotor: DcMotorEx
     private var pitchMotor2: DcMotorEx
     private var pitchState: PitchState = PitchState.IDLE
@@ -37,12 +37,15 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     private var pitchPIDF: PIDFController = PIDFController(0.0, 0.0, 0.0, 0.0)
     private var pitchTarget = 0
 
+    private var ticksPer90 = 1863
+    val ticksPerDegree = 90 / ticksPer90
+
     private fun pAngle(ticks: Double): Double {
         return (ticks * ticksPerDegree)
     }
 
-    private var usePIDFe = false
-    var extendMotor: DcMotorEx
+    var usePIDFe = false
+    private var extendMotor: DcMotorEx
     private var extendMotor2: DcMotorEx
     private var extendState: ExtendState = ExtendState.IDLE
     private var ePower: Double = 0.0
@@ -54,7 +57,10 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     private var extendEncoder: DualEncoder
     var pitchEncoder: DcMotorEx
 
-    private val maxExtendTicksTOTAL = 1200
+    private val extendGR = 8.3521
+    private val ticksPerInchExtend = (28 * extendGR) / (1.37795 * Math.PI)
+    private val maxExtendIn = 33.0
+    private val maxExtendTicksTOTAL = maxExtendIn * ticksPerInchExtend
     var maxExtendTicks = maxExtendTicksTOTAL
     val maxPitchTicks = 1600
 
@@ -81,60 +87,30 @@ class ArmSubsystem(ahwMap: HardwareMap) {
         updatePID()
     }
 
-    private fun setPowerExtend(target: Double, power: Double = 0.0) {
+    fun setPowerExtend(target: Double, power: Double = 0.0) {
         updatePID()
-        ePower =
+        ePower = if (usePIDFe) {
             calculatePID(extendPIDF, extendEncoder.getAverage(), target)
-//        when (extendState) {
-//            ExtendState.PID -> {
-//                ePower =
-//                    calculatePID(extendPIDF, extendEncoder.getAverage(), target)
-//            }
-//
-//            ExtendState.MANUAL -> {
-//                ePower = Range.clip(
-//                    power,
-//                    eMin,
-//                    eMax
-//                )
-//            }
-//
-//            ExtendState.STOPPED -> {
-//                ePower = 0.0
-//            }
-//
-//            ExtendState.IDLE -> {
-//                ePower = 0.0
-//            }
-//
-//            ExtendState.AUTO -> {
-//            }
-//        }
+        } else {
+            Range.clip(
+                power,
+                eMin,
+                eMax
+            )
+        }
     }
 
-    private fun setPowerPitch(target: Double, overridePower: Double? = 0.0) {
+    fun setPowerPitch(target: Double, overridePower: Double? = 0.0) {
         updatePID()
-        pPower =
-            calculatePID(pitchPIDF, pitchEncoder.currentPosition.toDouble(), target)
-//        when (pitchState) {
-//            PitchState.PID -> {
-//                pPower =
-//                    calculatePID(pitchPIDF, pitchEncoder.currentPosition.toDouble(), target)
-//            }
-//
-//            PitchState.MANUAL -> {
-//                pPower = Range.clip(
-//                    overridePower ?: 0.0,
-//                    pMin,
-//                    pMax
-//                )
-//            }
-//
-//            PitchState.STOPPED ,
-//            PitchState.IDLE -> {
-//                pPower = 0.0
-//            }
-//        }
+        pPower = if (usePIDFp) {
+            calculatePID(pitchPIDF, pitchEncoder.currentPosition.toDouble(), target ?: 0.0)
+        } else {
+            Range.clip(
+                overridePower ?: 0.0,
+                pMin,
+                pMax
+            )
+        }
     }
 
     fun setPitchTarget(target: Double) {
@@ -151,8 +127,12 @@ class ArmSubsystem(ahwMap: HardwareMap) {
 
     fun update() {
         calculateExtendMax()
-        setPowerExtend(extendTarget.toDouble())
-        setPowerPitch(pitchTarget.toDouble())
+        if (usePIDFp) {
+            setPowerPitch(pitchTarget.toDouble())
+        }
+        if (usePIDFe) {
+            setPowerExtend(extendTarget.toDouble())
+        }
         power()
     }
 
@@ -187,17 +167,12 @@ class ArmSubsystem(ahwMap: HardwareMap) {
         )
     }
 
-    private var ticksPer90 = 1863
-    val ticksPerDegree = 90 / ticksPer90
-
-    private val ticksPerInchExtend = 163.0
-
     private fun calculateExtendMax(): Double {
         val angle = pAngle(pitchEncoder.currentPosition.toDouble())
         val x = 42
         val cosAngle = cos(Math.toRadians(angle))
-        val returnable = Range.clip((x / cosAngle) - 18, 0.0, 44.0) * ticksPerInchExtend
-        maxExtendTicks = (returnable).toInt()
+        val returnable = Range.clip((x / cosAngle) - 18, 0.0, maxExtendIn) * ticksPerInchExtend
+        maxExtendTicks = returnable
         return returnable
     }
 
