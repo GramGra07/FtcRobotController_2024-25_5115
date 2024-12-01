@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.customHardware.sensors.DualEncoder
 import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.initMotor
+import org.firstinspires.ftc.teamcode.utilClass.MathFunctions
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.PIDVals
 import kotlin.math.cos
 
@@ -37,7 +38,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     private var pitchTarget = 0
 
     private fun pAngle(ticks: Double): Double {
-        return (ticks * ticksPerDegreeCalc)
+        return (ticks * ticksPerDegree)
     }
 
     private var usePIDFe = false
@@ -140,6 +141,10 @@ class ArmSubsystem(ahwMap: HardwareMap) {
         pitchTarget = target.toInt()
     }
 
+    fun setPitchTargetDegrees(degrees: Double) {
+        pitchTarget = (degrees * ticksPerDegree).toInt()
+    }
+
     fun setExtendTarget(target: Double) {
         extendTarget = target.toInt()
     }
@@ -183,8 +188,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     }
 
     private var ticksPer90 = 1863
-    private val ticksPerDegree = 90 / ticksPer90
-    private val ticksPerDegreeCalc = 0.04839
+    val ticksPerDegree = 90 / ticksPer90
 
     private val ticksPerInchExtend = 163.0
 
@@ -208,5 +212,21 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     fun DcMotorEx.telemetry(telemetry: Telemetry) {
         telemetry.addData("Motor", this.deviceName)
         telemetry.addData("Position", this.currentPosition)
+    }
+
+    fun isPitchAtTarget(tolerance: Double = 100.0): Boolean {
+        return MathFunctions.inTolerance(
+            pitchEncoder.currentPosition.toDouble(),
+            pitchTarget.toDouble(),
+            tolerance
+        )
+    }
+
+    fun isExtendAtTarget(tolerance: Double = 100.0): Boolean {
+        return MathFunctions.inTolerance(
+            extendEncoder.getAverage(),
+            extendTarget.toDouble(),
+            tolerance
+        )
     }
 }

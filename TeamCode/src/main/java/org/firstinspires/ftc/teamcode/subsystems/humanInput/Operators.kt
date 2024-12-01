@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystems.humanInput
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
 import org.firstinspires.ftc.teamcode.extensions.GamepadExtensions
 import org.firstinspires.ftc.teamcode.extensions.GamepadExtensions.buttonJustPressed
-import org.firstinspires.ftc.teamcode.subsystems.DriverAid.collapseSM
+import org.firstinspires.ftc.teamcode.subsystems.DriverAid
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ArmSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ScoringSubsystem
 
@@ -15,7 +15,8 @@ object Operators {
     fun bindOtherButtons(
         myOpMode: OpMode,
         scoringSubsystem: ScoringSubsystem,
-        armSubsystem: ArmSubsystem
+        armSubsystem: ArmSubsystem,
+        da: DriverAid
     ) {
         // "Camden", "Grady", "Michael","Graden", "Delaney", "Child"
         val otherControls = Drivers.others
@@ -65,24 +66,20 @@ object Operators {
 
             if (myOpMode.gamepad2.left_stick_y > 0) {
                 armSubsystem.setPitchTarget(0.0)
-            } else if (myOpMode.gamepad2.right_trigger < 0) {
+            } else if (myOpMode.gamepad2.left_stick_y < 0) {
                 armSubsystem.setPitchTarget(armSubsystem.maxPitchTicks.toDouble())
             }
 
-            if (myOpMode.gamepad2.right_stick_y > 0) {
-                armSubsystem.setExtendTarget(0.0)
-            } else if (myOpMode.gamepad2.right_stick_y < 0) {
-                armSubsystem.setExtendTarget(armSubsystem.maxExtendTicks.toDouble())
-            } else if (myOpMode.gamepad2.circle) {
-                if (!collapseSM.isRunning) {
-                    collapseSM.start()
-                } else {
-                    collapseSM.update()
-                }
+
+//            if (myOpMode.gamepad2.right_stick_y > 0) {
+//                armSubsystem.setExtendTarget(0.0)
+//            } else if (myOpMode.gamepad2.right_stick_y < 0) {
+//                armSubsystem.setExtendTarget(armSubsystem.maxExtendTicks.toDouble())
+//            } else
+            if (myOpMode.gamepad2.circle) {
+                da.collapse()
             } else {
-                if (collapseSM.isRunning) {
-                    collapseSM.stop()
-                }
+                armSubsystem.setExtendTarget(myOpMode.gamepad2.right_trigger.toDouble() * armSubsystem.maxExtendTicks)
             }
 
         }

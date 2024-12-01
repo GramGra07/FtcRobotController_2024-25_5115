@@ -41,6 +41,7 @@ open class HardwareConfig(
 
     lateinit var armSubsystem: ArmSubsystem
     lateinit var scoringSubsystem: ScoringSubsystem
+    lateinit var driverAid: DriverAid
 //    lateinit var reLocalizationSubsystem: ReLocalizationSubsystem
 
 //    lateinit var brush: BrushlandRoboticsSensor
@@ -89,10 +90,7 @@ open class HardwareConfig(
         scoringSubsystem =
             ScoringSubsystem(ahwMap, auto, armSubsystem)
 
-        DriverAid.initAllSM(scoringSubsystem, armSubsystem)
-
-        SMs(localizerSubsystem.follower)
-
+        driverAid = DriverAid(scoringSubsystem, armSubsystem, localizerSubsystem)
 //        reLocalizationSubsystem =
 //            ReLocalizationSubsystem(ahwMap)
 
@@ -101,6 +99,7 @@ open class HardwareConfig(
         dashboard = FtcDashboard.getInstance()
         once = false
         dt.telemetry(telemetry)
+        localizerSubsystem.draw(dashboard)
         if (!auto) {
             driveFollower = localizerSubsystem.follower
             loopTimeController = LoopTimeController(timer)
@@ -116,7 +115,8 @@ open class HardwareConfig(
         bindOtherButtons(
             myOpMode,
             scoringSubsystem,
-            armSubsystem
+            armSubsystem,
+            driverAid
         )
         if (VarConfig.multipleDrivers) {
             switchProfile(myOpMode)

@@ -2,46 +2,123 @@ package org.firstinspires.ftc.teamcode.subsystems
 
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ArmSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ScoringSubsystem
-import org.gentrifiedApps.statemachineftc.ParallelRunSM
+import org.gentrifiedApps.statemachineftc.SequentialRunSM
 
-object DriverAid {
-    fun initAllSM(scoringSubsystem: ScoringSubsystem, armSubsystem: ArmSubsystem) {
-        initCollapseSM(scoringSubsystem, armSubsystem)
+class DriverAid(
+    private val scoringSubsystem: ScoringSubsystem,
+    private val armSubsystem: ArmSubsystem,
+    private val localizerSubsystem: LocalizerSubsystem,
+) {
+    fun collapse() {
+        scoringSubsystem.closeClaw()
+        scoringSubsystem.setPitchHigh()
+        scoringSubsystem.update()
+        armSubsystem.setExtendTarget(0.0)
     }
 
-    enum class CollapseSMState {
-        moveClaw,
-        moveArm,
-        moveScoring,
+
+    fun lift() {
+        if (!liftSequence.isRunning) {
+            liftSequence.start()
+        } else {
+            liftSequence.update()
+        }
+    }
+
+    fun getRobotAngle(): Double {
+        return localizerSubsystem.poseUpdater.imuData.pitch
+    }
+
+    enum class AutoLift {
+        extend_pivot,
+        hook1st,
+        lift1st,
+        sit1st,
+        pivot2nd,
+        extend2nd,
+        hook2nd,
+        lift2nd,
+        sit2nd,
+        collapse,
         stop
     }
 
-    lateinit var collapseSM: ParallelRunSM<CollapseSMState>
-    private fun initCollapseSM(scoringSubsystem: ScoringSubsystem, armSubsystem: ArmSubsystem) {
-        collapseSM = ParallelRunSM.Builder<CollapseSMState>()
-            .state(CollapseSMState.moveClaw)
-            .onEnter(
-                CollapseSMState.moveClaw
-            ) {
-                scoringSubsystem.closeClaw()
-                scoringSubsystem.update()
-            }
-            .state(CollapseSMState.moveArm)
-            .onEnter(
-                CollapseSMState.moveArm
-            ) {
-                armSubsystem.setExtendTarget(0.0)
-            }
-            .state(CollapseSMState.moveScoring)
-            .onEnter(
-                CollapseSMState.moveScoring
-            ) {
-                scoringSubsystem.setPitchHigh()
-                scoringSubsystem.update()
-            }
-            .stopRunning(
-                CollapseSMState.stop
-            ) { armSubsystem.extendMotor.currentPosition.toDouble() < 100 }
-            .build(false, 0)
-    }
+    val liftSequence = SequentialRunSM.Builder<AutoLift>()
+        .state(AutoLift.extend_pivot)
+        .onEnter(AutoLift.extend_pivot) {
+            scoringSubsystem.setPitchLow()
+            scoringSubsystem.closeClaw()
+            scoringSubsystem.update()
+            armSubsystem.setPitchTargetDegrees(30.0)
+            armSubsystem.setExtendTarget(30.0)
+        }
+        .transition(AutoLift.extend_pivot) {
+            armSubsystem.isPitchAtTarget() && armSubsystem.isExtendAtTarget()
+        }
+        .state(AutoLift.hook1st)
+        .onEnter(AutoLift.hook1st) {
+            armSubsystem.setPitchTargetDegrees(40.0)
+        }
+        .transition(AutoLift.hook1st) {
+            armSubsystem.isPitchAtTarget()
+        }
+        .state(AutoLift.lift1st)
+        .onEnter(AutoLift.lift1st) {
+            armSubsystem.setExtendTarget(0.0)
+        }
+        .transition(AutoLift.lift1st) {
+            armSubsystem.isExtendAtTarget()
+        }
+        .state(AutoLift.sit1st)
+        .onEnter(AutoLift.sit1st) {
+            armSubsystem.setExtendTarget(10.0)
+        }
+        .transition(AutoLift.sit1st) {
+            armSubsystem.isExtendAtTarget()
+        }
+        .state(AutoLift.pivot2nd)
+        .onEnter(AutoLift.pivot2nd) {
+            armSubsystem.setPitchTargetDegrees(30.0)
+        }
+        .transition(AutoLift.pivot2nd) {
+            armSubsystem.isPitchAtTarget()
+        }
+        .state(AutoLift.extend2nd)
+        .onEnter(AutoLift.extend2nd) {
+            armSubsystem.setExtendTarget(30.0)
+        }
+        .transition(AutoLift.extend2nd) {
+            armSubsystem.isExtendAtTarget()
+        }
+        .state(AutoLift.hook2nd)
+        .onEnter(AutoLift.hook2nd) {
+            armSubsystem.setPitchTargetDegrees(40.0)
+        }
+        .transition(AutoLift.hook2nd) {
+            armSubsystem.isPitchAtTarget()
+        }
+        .state(AutoLift.lift2nd)
+        .onEnter(AutoLift.lift2nd) {
+            armSubsystem.setExtendTarget(0.0)
+        }
+        .transition(AutoLift.lift2nd) {
+            armSubsystem.isExtendAtTarget()
+        }
+        .state(AutoLift.sit2nd)
+        .onEnter(AutoLift.sit2nd) {
+            armSubsystem.setExtendTarget(10.0)
+        }
+        .transition(AutoLift.sit2nd) {
+            armSubsystem.isExtendAtTarget()
+        }
+        .state(AutoLift.collapse)
+        .onEnter(AutoLift.collapse) {
+            collapse()
+        }
+        .transition(AutoLift.collapse) {
+            armSubsystem.isExtendAtTarget()
+        }
+        .stopRunning(AutoLift.stop)
+        .build()
+
 }
