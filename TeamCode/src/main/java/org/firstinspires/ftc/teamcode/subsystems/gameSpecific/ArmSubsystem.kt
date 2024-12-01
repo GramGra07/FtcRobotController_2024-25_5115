@@ -7,11 +7,9 @@ import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.customHardware.sensors.DualEncoder
-import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.brake
 import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.initMotor
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.PIDVals
 import kotlin.math.cos
-import kotlin.math.sin
 
 class ArmSubsystem(ahwMap: HardwareMap) {
 
@@ -52,15 +50,10 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     private var extendPIDF: PIDFController = PIDFController(0.0, 0.0, 0.0, 0.0)
     private var extendTarget = 0
 
-    private val eTicksToInch: Double = (Math.PI * 1.378) / (28.0 * 20.0)
-    private fun eTicksToInch(ticks: Double): Double {
-        return ticks * eTicksToInch
-    }
-
     private var extendEncoder: DualEncoder
     var pitchEncoder: DcMotorEx
 
-    val maxExtendTicksTOTAL = 1200
+    private val maxExtendTicksTOTAL = 1200
     var maxExtendTicks = maxExtendTicksTOTAL
     val maxPitchTicks = 1600
 
@@ -80,10 +73,6 @@ class ArmSubsystem(ahwMap: HardwareMap) {
         pitchMotor2 = initMotor(ahwMap, "pitchMotor2", DcMotor.RunMode.RUN_WITHOUT_ENCODER)
         extendMotor = initMotor(ahwMap, "extendMotor", DcMotor.RunMode.RUN_WITHOUT_ENCODER)
         extendMotor2 = initMotor(ahwMap, "extendMotor2", DcMotor.RunMode.RUN_WITHOUT_ENCODER)
-        //pitchMotor.brake()
-        //pitchMotor2.brake()
-        extendMotor.brake()
-        extendMotor2.brake()
 
         extendEncoder = DualEncoder(ahwMap, "extendMotor2", "extendMotor", "Arm Extend")
         pitchEncoder = pitchMotor
@@ -91,7 +80,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
         updatePID()
     }
 
-    fun setPowerExtend(target: Double, power: Double = 0.0) {
+    private fun setPowerExtend(target: Double, power: Double = 0.0) {
         updatePID()
         ePower =
             calculatePID(extendPIDF, extendEncoder.getAverage(), target)
@@ -122,7 +111,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
 //        }
     }
 
-    fun setPowerPitch(target: Double, overridePower: Double? = 0.0) {
+    private fun setPowerPitch(target: Double, overridePower: Double? = 0.0) {
         updatePID()
         pPower =
             calculatePID(pitchPIDF, pitchEncoder.currentPosition.toDouble(), target)
@@ -193,26 +182,11 @@ class ArmSubsystem(ahwMap: HardwareMap) {
         )
     }
 
-    fun stopExtend() {
-        extendState = ExtendState.STOPPED
-        pPower = 0.0
-    }
-
-    private fun getTheoreticalHeight(): Double {
-        val length = eTicksToInch(extendEncoder.getAverage())
-        val angle = pAngle(pitchEncoder.currentPosition.toDouble())
-        return (sin(angle) * length) + 2.87
-    }
-
     private var ticksPer90 = 1863
-    val ticksPerDegree = ticksPer90 / 90
+    private val ticksPerDegree = 90 / ticksPer90
     private val ticksPerDegreeCalc = 0.04839
 
     private val ticksPerInchExtend = 163.0
-
-    fun extendIdle() {
-        extendState = ExtendState.IDLE
-    }
 
     private fun calculateExtendMax(): Double {
         val angle = pAngle(pitchEncoder.currentPosition.toDouble())
@@ -234,12 +208,5 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     fun DcMotorEx.telemetry(telemetry: Telemetry) {
         telemetry.addData("Motor", this.deviceName)
         telemetry.addData("Position", this.currentPosition)
-    }
-
-    fun autoExtend(target: Double) {
-        extendState = ExtendState.AUTO
-        ePower = calculatePID(extendPIDF, extendEncoder.getAverage(), target)
-        extendMotor.power = ePower
-        extendMotor2.power = ePower
     }
 }
