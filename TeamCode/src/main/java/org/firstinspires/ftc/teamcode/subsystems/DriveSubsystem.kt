@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.initMotor
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers
+import org.firstinspires.ftc.teamcode.utilClass.MathFunctions
 import org.firstinspires.ftc.teamcode.utilClass.drivetrain.Drivetrain
 import org.firstinspires.ftc.teamcode.utilClass.drivetrain.DrivetrainType
 import org.firstinspires.ftc.teamcode.utilClass.objects.DriveType
@@ -80,7 +81,7 @@ class DriveSubsystem(
 //
         if (dt.type == DrivetrainType.MECANUM) {
             if (type == DriveType.FIELD_CENTRIC) {
-                val angle = localizerSubsystem.heading()
+                val angle = MathFunctions.normDelta((localizerSubsystem.heading() + 90))
                 val controllerAngle = Math.toDegrees(atan2(leftStickY, leftStickX))
                 val robotDegree = Math.toDegrees(angle)
                 val movementDegree = controllerAngle - robotDegree
