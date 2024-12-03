@@ -68,9 +68,9 @@ class DriveSubsystem(
     var slowModeIsOn = false
     private var reverse = false
     private var isAutoInTeleop = false
-    var leftStickX = 0.0
-    var leftStickY = 0.0
-    var rightStickX = 0.0
+    private var leftStickX = 0.0
+    private var leftStickY = 0.0
+    private var rightStickX = 0.0
     fun driveByGamepads(type: DriveType, myOpMode: OpMode) {
         // Retrieve gamepad values
         leftStickX = -myOpMode.gamepad1.left_stick_x.toDouble()

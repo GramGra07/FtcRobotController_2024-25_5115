@@ -46,10 +46,7 @@ class MathFunctions {
 
     companion object {
         fun normDelta(delta: Double): Double {
-            var result = delta
-            while (result >= 180.0) result -= 360.0
-            while (result < -180.0) result += 360.0
-            return result
+            return (delta % 360 + 360) % 360
         }
 
         fun inRange(value: Double, min: Double, max: Double): Boolean {
