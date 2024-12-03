@@ -14,7 +14,7 @@ object Drivers {
 
     private var drivers = mutableListOf(
         Driver(AllDrivers.Camden, AvoidanceSubsystem.AvoidanceTypes.OFF, DriveType.ROBOT_CENTRIC),
-        Driver(AllDrivers.Grady, AvoidanceSubsystem.AvoidanceTypes.OFF, DriveType.ROBOT_CENTRIC),
+        Driver(AllDrivers.Grady, AvoidanceSubsystem.AvoidanceTypes.OFF, DriveType.FIELD_CENTRIC),
         Driver(AllDrivers.Michael, AvoidanceSubsystem.AvoidanceTypes.OFF, DriveType.ROBOT_CENTRIC),
         Driver(AllDrivers.Graden, AvoidanceSubsystem.AvoidanceTypes.OFF, DriveType.ROBOT_CENTRIC),
         Driver(AllDrivers.Delaney, AvoidanceSubsystem.AvoidanceTypes.OFF, DriveType.ROBOT_CENTRIC),
