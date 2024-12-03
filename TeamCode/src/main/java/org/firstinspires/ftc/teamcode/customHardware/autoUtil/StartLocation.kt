@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.utilClass.storage.PoseStorage
 
 data class StartLocation(
     var alliance: Alliance = GameStorage.alliance,
-    var startPose: Point = Point(24.0, 0.0),
+    var startPose: Point = Point(0.0, 0.0),
     var startHeading: Double = 0.0
 ) {
     init {
