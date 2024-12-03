@@ -188,11 +188,10 @@ open class HardwareConfig(
         teleSpace()
         armSubsystem.telemetry(telemetry)
         teleSpace()
-        scoringSubsystem.telemetry(telemetry)
-        teleSpace()
-
+//        scoringSubsystem.telemetry(telemetry)
+//        teleSpace()
 //        TargetLock.telemetry(telemetry)
-        teleSpace()
+//        teleSpace()
         telemetry.update()
     }
 
