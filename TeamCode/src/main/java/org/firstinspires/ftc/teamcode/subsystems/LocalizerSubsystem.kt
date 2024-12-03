@@ -126,7 +126,7 @@ class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose, val type: LocalizerTyp
     fun heading(): Double {
         return when (type) {
             LocalizerType.PEDRO -> {
-                poseUpdater.pose.heading
+                -poseUpdater.pose.heading
             }
 
             LocalizerType.ROADRUNNER -> {
@@ -174,7 +174,7 @@ class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose, val type: LocalizerTyp
     fun draw(dashboard: FtcDashboard, packet: TelemetryPacket = TelemetryPacket()) {
         dashboard.clearTelemetry()
         packet.field()
-        packet.fieldOverlay().setStroke("#3F51B5")
+        packet.fieldOverlay().setStroke("#e54aa1")
         Drawing.drawRobot(packet.fieldOverlay(), pose().toPose2d())
         dashboard.sendTelemetryPacket(packet)
     }
