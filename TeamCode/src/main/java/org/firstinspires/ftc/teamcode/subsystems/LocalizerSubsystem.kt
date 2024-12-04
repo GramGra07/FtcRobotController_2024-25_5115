@@ -23,7 +23,7 @@ import kotlin.math.sqrt
 
 
 //@Config
-class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose, val type: LocalizerType) {
+class LocalizerSubsystem(ahwMap: HardwareMap, val pose: Pose, val type: LocalizerType) {
     enum class LocalizerType {
         PEDRO,
         ROADRUNNER
@@ -32,7 +32,6 @@ class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose, val type: LocalizerTyp
     lateinit var poseUpdater: PoseUpdater
     lateinit var follower: Follower
     private lateinit var sparkFunDrive: SparkFunOTOSDrive
-    private val startPose = pose
 
     init {
         when (type) {
@@ -126,7 +125,7 @@ class LocalizerSubsystem(ahwMap: HardwareMap, pose: Pose, val type: LocalizerTyp
     fun heading(): Double {
         return when (type) {
             LocalizerType.PEDRO -> {
-                -poseUpdater.pose.heading
+                poseUpdater.pose.heading
             }
 
             LocalizerType.ROADRUNNER -> {

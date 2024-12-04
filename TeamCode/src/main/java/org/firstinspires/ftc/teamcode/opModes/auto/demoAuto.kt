@@ -14,7 +14,7 @@ class demoAuto : LinearOpMode() {
         robot.autoSetup()
         waitForStart()
         if (opModeIsActive()) {
-            robot.rr.start()
+            robot.specimenAuto.start()
         }
     }
 }

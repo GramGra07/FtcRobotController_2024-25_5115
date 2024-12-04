@@ -114,7 +114,7 @@ public class OTOSLocalizer extends Localizer {
     @Override
     public Pose getPose() {
         SparkFunOTOS.Pose2D rawPose = otos.getPosition();
-        Pose pose = new Pose(rawPose.x, rawPose.y, rawPose.h);
+        Pose pose = new Pose(rawPose.x, -rawPose.y, -rawPose.h);
 
         return MathFunctions.addPoses(startPose, MathFunctions.rotatePose(pose, startPose.getHeading(), false));
     }

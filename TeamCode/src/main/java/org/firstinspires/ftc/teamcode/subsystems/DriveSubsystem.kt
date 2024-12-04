@@ -42,7 +42,7 @@ class DriveSubsystem(
         motorBackLeft = initMotor(
             ahwMap,
             "motorBackLeft",
-            DcMotor.RunMode.RUN_WITHOUT_ENCODER,
+            DcMotor.RunMode.RUN_WITHOUT_ENCODER, DcMotorSimple.Direction.REVERSE
         )
         motorFrontRight =
             initMotor(
@@ -56,8 +56,6 @@ class DriveSubsystem(
                 "motorBackRight",
                 DcMotor.RunMode.RUN_WITHOUT_ENCODER
             )
-        motorBackLeft.direction = DcMotorSimple.Direction.REVERSE
-        motorFrontLeft.direction = DcMotorSimple.Direction.REVERSE
     }
 
     private var frontRightPower: Double = 0.0
@@ -81,7 +79,7 @@ class DriveSubsystem(
 //
         if (dt.type == DrivetrainType.MECANUM) {
             if (type == DriveType.FIELD_CENTRIC) {
-                val angle = MathFunctions.normDelta((localizerSubsystem.heading() + 90))
+                val angle = MathFunctions.normDelta((localizerSubsystem.heading() - 90))
                 val controllerAngle = Math.toDegrees(atan2(leftStickY, leftStickX))
                 val robotDegree = Math.toDegrees(angle)
                 val movementDegree = controllerAngle - robotDegree

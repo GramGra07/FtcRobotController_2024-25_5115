@@ -374,7 +374,7 @@ class AutoHardware(
         stop,
     }
 
-    var rr: StateMachine<statesRR> = StateMachine.Builder<statesRR>()
+    var specimenAuto: StateMachine<statesRR> = StateMachine.Builder<statesRR>()
         .state(statesRR.driveToSpecimenR)
         .onEnter(statesRR.driveToSpecimenR) {
             placeSpecimenBPathFollower(follower)
