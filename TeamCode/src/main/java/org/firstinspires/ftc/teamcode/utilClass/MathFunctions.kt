@@ -46,7 +46,7 @@ class MathFunctions {
 
     companion object {
         fun normDelta(delta: Double): Double {
-            return (delta % 360 + 360) % 360
+            return (delta % 180 + 180) % 180
         }
 
         fun inRange(value: Double, min: Double, max: Double): Boolean {

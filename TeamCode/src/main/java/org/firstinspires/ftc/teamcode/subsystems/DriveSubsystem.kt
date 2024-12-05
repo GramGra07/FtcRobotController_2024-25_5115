@@ -9,7 +9,6 @@ import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.initMotor
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers
-import org.firstinspires.ftc.teamcode.utilClass.MathFunctions
 import org.firstinspires.ftc.teamcode.utilClass.drivetrain.Drivetrain
 import org.firstinspires.ftc.teamcode.utilClass.drivetrain.DrivetrainType
 import org.firstinspires.ftc.teamcode.utilClass.objects.DriveType
@@ -76,10 +75,11 @@ class DriveSubsystem(
         rightStickX = myOpMode.gamepad1.right_stick_x.toDouble()
 
         val slowPower = if (slowModeIsOn) VarConfig.slowMult else 1.0
-//
+
         if (dt.type == DrivetrainType.MECANUM) {
             if (type == DriveType.FIELD_CENTRIC) {
-                val angle = MathFunctions.normDelta((localizerSubsystem.heading() - 90))
+                leftStickY *= -1
+                val angle = localizerSubsystem.heading() - 360
                 val controllerAngle = Math.toDegrees(atan2(leftStickY, leftStickX))
                 val robotDegree = Math.toDegrees(angle)
                 val movementDegree = controllerAngle - robotDegree
@@ -87,7 +87,7 @@ class DriveSubsystem(
 
                 // Compute x and y controls
                 val yControl = cos(Math.toRadians(movementDegree)) * gamepadHypot
-                val xControl = -(sin(Math.toRadians(movementDegree)) * gamepadHypot)
+                val xControl = (sin(Math.toRadians(movementDegree)) * gamepadHypot)
 
                 // Compute powers
                 val turn = rightStickX
