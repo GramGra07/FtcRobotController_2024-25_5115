@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.Allianc
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Point
 import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles
 
-@Autonomous(group = GroupingTitles.tele) //@Disabled//disabling the opmode
+@Autonomous(group = GroupingTitles.auto) //@Disabled//disabling the opmode
 //@Disabled
 class preloadAuto : LinearOpMode() {
     //declaring the class

@@ -4,9 +4,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.Servo
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.setPose
+import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles
 
 
-@TeleOp
+@TeleOp(group = GroupingTitles.TESTING)
 class SetupServo : LinearOpMode() {
     private lateinit var servo: Servo
     override fun runOpMode() {

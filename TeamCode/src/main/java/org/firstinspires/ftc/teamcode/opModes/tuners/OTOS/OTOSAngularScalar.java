@@ -6,8 +6,9 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.followers.roadRunner.SparkFunOTOSDrive;
+import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles;
 
-@TeleOp
+@TeleOp(group = GroupingTitles.TESTING)
 public class OTOSAngularScalar extends LinearOpMode {
 
     @Override

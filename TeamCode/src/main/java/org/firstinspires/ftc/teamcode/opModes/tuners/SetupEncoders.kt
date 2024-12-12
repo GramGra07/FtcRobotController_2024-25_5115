@@ -4,9 +4,10 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
+import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles
 
 
-@TeleOp
+@TeleOp(group = GroupingTitles.TESTING)
 class SetupEncoders : LinearOpMode() {
     lateinit var motorEx: List<DcMotorEx>
     override fun runOpMode() {
