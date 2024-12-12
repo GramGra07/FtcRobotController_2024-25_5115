@@ -11,6 +11,8 @@ import org.firstinspires.ftc.teamcode.customHardware.sensors.DualEncoder
 import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.initMotor
 import org.firstinspires.ftc.teamcode.utilClass.MathFunctions
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.PIDVals
+import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.PIDVals.pitchFCollapse
+import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.PIDVals.pitchFExtend
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.PIDVals.pitchTarget
 import kotlin.math.cos
 
@@ -162,11 +164,14 @@ class ArmSubsystem(ahwMap: HardwareMap) {
             PIDVals.extendPIDFCo.d,
             PIDVals.extendPIDFCo.f
         )
+        val fTick = (pitchFExtend - pitchFCollapse) / extendEncoder.getAverage()
+//        val pitchF = (fTick * extendEncoder.getAverage())+ pitchFCollapse
+        val pitchF = PIDVals.pitchPIDFCo.f
         pitchPIDF.setPIDF(
             PIDVals.pitchPIDFCo.p,
             PIDVals.pitchPIDFCo.i,
             PIDVals.pitchPIDFCo.d,
-            PIDVals.pitchPIDFCo.f
+            pitchF
         )
     }
 
