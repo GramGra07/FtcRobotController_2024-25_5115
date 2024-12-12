@@ -11,8 +11,7 @@ class SetupEncoders : LinearOpMode() {
     lateinit var motorEx: List<DcMotorEx>
     override fun runOpMode() {
         motorEx = listOf(
-            hardwareMap.get(DcMotorEx::class.java, "pitchMotor"),
-            hardwareMap.get(DcMotorEx::class.java, "pitchMotor2"),
+            hardwareMap.get(DcMotorEx::class.java, "motorFrontLeft"),
             hardwareMap.get(DcMotorEx::class.java, "extendMotor"),
             hardwareMap.get(DcMotorEx::class.java, "extendMotor2")
         )

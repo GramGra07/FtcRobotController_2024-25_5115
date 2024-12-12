@@ -131,7 +131,10 @@ open class HardwareConfig(
 
         scoringSubsystem.update()
 
-        armSubsystem.update()
+        armSubsystem.update(
+            myOpMode.gamepad2.right_stick_y.toDouble(),
+            myOpMode.gamepad2.left_stick_y.toDouble()
+        )
 
 //        loopTimeController.every(if (VarConfig.loopSaver) 30 else 10) {
 //            reLocalizationSubsystem.update(localizerSubsystem, VarConfig.relocalize)

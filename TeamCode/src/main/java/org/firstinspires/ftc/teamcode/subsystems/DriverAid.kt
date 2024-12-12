@@ -14,11 +14,12 @@ class DriverAid(
         scoringSubsystem.setPitchHigh()
         scoringSubsystem.update()
         armSubsystem.setExtendTarget(0.0)
+        armSubsystem.setPitchTarget(armSubsystem.pitchBottom)
     }
 
 
     fun lift() {
-        if (!liftSequence.isRunning) {
+        if (!liftSequence.isStarted) {
             liftSequence.start()
         } else {
             liftSequence.update()
@@ -72,7 +73,7 @@ class DriverAid(
         }
         .state(AutoLift.pivotBack)
         .onEnter(AutoLift.pivotBack) {
-            armSubsystem.setPitchTargetDegrees(0.0)
+            armSubsystem.setPitchTargetDegrees(10.0)
         }
         .transition(AutoLift.pivotBack) {
             armSubsystem.isPitchAtTarget()
@@ -107,7 +108,7 @@ class DriverAid(
         }
         .state(AutoLift.pivot2nd)
         .onEnter(AutoLift.pivot2nd) {
-            armSubsystem.setPitchTargetDegrees(0.0)
+            armSubsystem.setPitchTargetDegrees(10.0)
         }
         .transition(AutoLift.pivot2nd) {
             armSubsystem.isPitchAtTarget()

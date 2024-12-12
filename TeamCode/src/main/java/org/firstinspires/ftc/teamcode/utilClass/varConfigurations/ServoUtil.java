@@ -5,10 +5,14 @@ import com.acmerobotics.dashboard.config.Config;
 
 @Config
 public class ServoUtil {
-    public static double openClaw = 90;
+    public static double openClaw = 180;
 
-    public static double closeClaw = 45;
+    public static double closeClaw = 82;
 
     public static double rotateLeft = 0;
-    public static double rotateCenter = 90;
+    public static double rotateCenter = 93;
+
+    public static double pivotHigh = 78;
+    public static double pivotLow = -90.0;
+    public static double pivotMid = 0.0;
 }

@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystems.gameSpecific
 import com.arcrobotics.ftclib.controller.PIDFController
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
+import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.robotcore.external.Telemetry
@@ -10,6 +11,7 @@ import org.firstinspires.ftc.teamcode.customHardware.sensors.DualEncoder
 import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.initMotor
 import org.firstinspires.ftc.teamcode.utilClass.MathFunctions
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.PIDVals
+import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.PIDVals.pitchTarget
 import kotlin.math.cos
 
 class ArmSubsystem(ahwMap: HardwareMap) {
@@ -27,18 +29,21 @@ class ArmSubsystem(ahwMap: HardwareMap) {
         IDLE,
     }
 
-    var usePIDFp = false
+    var usePIDFp = true
     private var pitchMotor: DcMotorEx
     private var pitchMotor2: DcMotorEx
     private var pitchState: PitchState = PitchState.IDLE
     private var pPower: Double = 0.0
-    private var pMax = 1.0
+    private var pMax = 0.8
     private var pMin = -1.0
     private var pitchPIDF: PIDFController = PIDFController(0.0, 0.0, 0.0, 0.0)
-    private var pitchTarget = 0
+    val pitchBottom = 100.0
 
-    private var ticksPer90 = 1863
-    val ticksPerDegree = 90 / ticksPer90
+    private var ticksPer90 = 2048.0
+
+    val ticksPerDegree: Double = 90.0 / ticksPer90
+    val ticksPerDegreeFunc: Double = ticksPer90 / 90.0
+    val maxPitchTicks = 2600
 
     private fun pAngle(ticks: Double): Double {
         return (ticks * ticksPerDegree)
@@ -62,7 +67,6 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     private val maxExtendIn = 33.0
     private val maxExtendTicksTOTAL = maxExtendIn * ticksPerInchExtend
     var maxExtendTicks = maxExtendTicksTOTAL
-    val maxPitchTicks = 1600
 
 
     init {
@@ -84,16 +88,19 @@ class ArmSubsystem(ahwMap: HardwareMap) {
         extendEncoder = DualEncoder(ahwMap, "extendMotor2", "extendMotor", "Arm Extend")
         pitchEncoder = initMotor(ahwMap, "motorFrontLeft", DcMotor.RunMode.RUN_WITHOUT_ENCODER)
 
+        pitchMotor.direction = DcMotorSimple.Direction.REVERSE
+        pitchMotor2.direction = DcMotorSimple.Direction.REVERSE
+
         updatePID()
     }
 
-    fun setPowerExtend(target: Double, power: Double = 0.0) {
+    fun setPowerExtend(target: Double, power: Double? = 0.0) {
         updatePID()
         ePower = if (usePIDFe) {
             calculatePID(extendPIDF, extendEncoder.getAverage(), target)
         } else {
             Range.clip(
-                power,
+                power ?: 0.0,
                 eMin,
                 eMax
             )
@@ -103,7 +110,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     fun setPowerPitch(target: Double, overridePower: Double? = 0.0) {
         updatePID()
         pPower = if (usePIDFp) {
-            calculatePID(pitchPIDF, pitchEncoder.currentPosition.toDouble(), target ?: 0.0)
+            calculatePID(pitchPIDF, pitchEncoder.currentPosition.toDouble(), target)
         } else {
             Range.clip(
                 overridePower ?: 0.0,
@@ -111,27 +118,32 @@ class ArmSubsystem(ahwMap: HardwareMap) {
                 pMax
             )
         }
+        pPower = Range.clip(pPower, pMin, pMax)
     }
 
     fun setPitchTarget(target: Double) {
-        pitchTarget = target.toInt()
+        pitchTarget = target
     }
 
     fun setPitchTargetDegrees(degrees: Double) {
-        pitchTarget = (degrees * ticksPerDegree).toInt()
+        pitchTarget = (degrees * ticksPerDegreeFunc)
     }
 
     fun setExtendTarget(target: Double) {
         extendTarget = target.toInt()
     }
 
-    fun update() {
+    fun update(pitchPower: Double? = 0.0, extendPower: Double? = 0.0) {
         calculateExtendMax()
         if (usePIDFp) {
-            setPowerPitch(pitchTarget.toDouble())
+            setPowerPitch(pitchTarget)
+        } else {
+            setPowerPitch(0.0, pitchPower)
         }
         if (usePIDFe) {
             setPowerExtend(extendTarget.toDouble())
+        } else {
+            setPowerExtend(0.0, extendPower)
         }
         power()
     }

@@ -55,6 +55,10 @@ class DriveSubsystem(
                 "motorBackRight",
                 DcMotor.RunMode.RUN_WITHOUT_ENCODER
             )
+        motorFrontLeft.direction = DcMotorSimple.Direction.REVERSE
+        motorFrontRight.direction = DcMotorSimple.Direction.FORWARD
+        motorBackLeft.direction = DcMotorSimple.Direction.REVERSE
+        motorBackRight.direction = DcMotorSimple.Direction.FORWARD
     }
 
     private var frontRightPower: Double = 0.0

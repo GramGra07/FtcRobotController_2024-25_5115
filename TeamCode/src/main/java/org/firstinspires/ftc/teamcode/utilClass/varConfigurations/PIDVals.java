@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 
 @Config
 public class PIDVals {
-    public static PIDFCoefficients extendPIDFCo = new PIDFCoefficients(0.0001, 0.0, 0.0, 0.0);
-    public static PIDFCoefficients pitchPIDFCo = new PIDFCoefficients(0.0004, 0.0, 0.0, 0.00005);
+    public static PIDFCoefficients extendPIDFCo = new PIDFCoefficients(0.001, 0.0, 0.0, 0.0);
+    public static PIDFCoefficients pitchPIDFCo = new PIDFCoefficients(0.002, 0.0, 0.0, 0.00015);
+    public static double pitchTarget = 0.0;
 }
