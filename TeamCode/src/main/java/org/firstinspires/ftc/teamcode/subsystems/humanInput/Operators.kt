@@ -84,7 +84,7 @@ object Operators {
                     if (myOpMode.gamepad2.circle) {
                         da.collapse()
                     } else {
-                        armSubsystem.setExtendTarget((1 - myOpMode.gamepad2.right_trigger.toDouble()) * armSubsystem.maxExtendTicks)
+                        armSubsystem.setExtendTarget((0 - myOpMode.gamepad2.right_trigger.toDouble()) * armSubsystem.maxExtendTicks)
                     }
                 }
             }
