@@ -9,7 +9,5 @@ public class PIDVals {
     public static PIDFCoefficients pitchPIDFCo = new PIDFCoefficients(0.002, 0.0, 0.0, 0.00015);
 
     public static double pitchFCollapse = 0.00015;
-    public static double pitchFExtend = 0.00015;
-
-    public static double pitchTarget = 0.0;
+    public static double pitchFExtend = 0.00095;
 }

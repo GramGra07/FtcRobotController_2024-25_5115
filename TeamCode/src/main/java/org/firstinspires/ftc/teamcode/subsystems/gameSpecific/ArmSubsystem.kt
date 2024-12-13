@@ -13,7 +13,6 @@ import org.firstinspires.ftc.teamcode.utilClass.MathFunctions
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.PIDVals
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.PIDVals.pitchFCollapse
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.PIDVals.pitchFExtend
-import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.PIDVals.pitchTarget
 import kotlin.math.cos
 
 class ArmSubsystem(ahwMap: HardwareMap) {
@@ -40,6 +39,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     private var pMin = -1.0
     private var pitchPIDF: PIDFController = PIDFController(0.0, 0.0, 0.0, 0.0)
     val pitchBottom = 100.0
+    var pitchT: Double = 0.0
 
     private var ticksPer90 = 2048.0
 
@@ -97,7 +97,6 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     }
 
     fun setPowerExtend(target: Double, power: Double? = 0.0) {
-        updatePID()
         ePower = if (usePIDFe) {
             calculatePID(extendPIDF, extendEncoder.getAverage(), target)
         } else {
@@ -110,7 +109,6 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     }
 
     fun setPowerPitch(target: Double, overridePower: Double? = 0.0) {
-        updatePID()
         pPower = if (usePIDFp) {
             calculatePID(pitchPIDF, pitchEncoder.currentPosition.toDouble(), target)
         } else {
@@ -124,11 +122,11 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     }
 
     fun setPitchTarget(target: Double) {
-        pitchTarget = target
+        pitchT = target
     }
 
     fun setPitchTargetDegrees(degrees: Double) {
-        pitchTarget = (degrees * ticksPerDegreeFunc)
+        pitchT = (degrees * ticksPerDegreeFunc)
     }
 
     fun setExtendTarget(target: Double) {
@@ -136,9 +134,10 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     }
 
     fun update(pitchPower: Double? = 0.0, extendPower: Double? = 0.0) {
+        updatePID()
         calculateExtendMax()
         if (usePIDFp) {
-            setPowerPitch(pitchTarget)
+            setPowerPitch(pitchT)
         } else {
             setPowerPitch(0.0, pitchPower)
         }
@@ -165,8 +164,8 @@ class ArmSubsystem(ahwMap: HardwareMap) {
             PIDVals.extendPIDFCo.f
         )
         val fTick = (pitchFExtend - pitchFCollapse) / extendEncoder.getAverage()
-//        val pitchF = (fTick * extendEncoder.getAverage())+ pitchFCollapse
-        val pitchF = PIDVals.pitchPIDFCo.f
+        val pitchF = (fTick * extendEncoder.getAverage()) + pitchFCollapse
+//        val pitchF = PIDVals.pitchPIDFCo.f
         pitchPIDF.setPIDF(
             PIDVals.pitchPIDFCo.p,
             PIDVals.pitchPIDFCo.i,
@@ -209,7 +208,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     fun isPitchAtTarget(tolerance: Double = 100.0): Boolean {
         return MathFunctions.inTolerance(
             pitchEncoder.currentPosition.toDouble(),
-            pitchTarget.toDouble(),
+            pitchT.toDouble(),
             tolerance
         )
     }

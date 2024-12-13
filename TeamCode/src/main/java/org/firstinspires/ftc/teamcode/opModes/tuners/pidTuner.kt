@@ -18,6 +18,8 @@ class pidTuner : LinearOpMode() {
         while (opModeIsActive()) { //while the op mode is active
             robot.armSubsystem.setPitchTarget(400.0)
             robot.armSubsystem.update()
+            robot.armSubsystem.telemetry(telemetry)
+            telemetry.update()
         }
     }
 }
