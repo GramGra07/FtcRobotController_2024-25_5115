@@ -14,39 +14,23 @@ import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toString2
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.follower.Follower
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.Pose
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.PoseUpdater
-import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.localizers.OTOSLocalizer
-import org.firstinspires.ftc.teamcode.followers.roadRunner.Drawing
-import org.firstinspires.ftc.teamcode.followers.roadRunner.SparkFunOTOSDrive
+import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.localizers.ThreeWheelLocalizer
+import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.Drawing
 import org.firstinspires.ftc.teamcode.utilClass.storage.DistanceStorage
 import org.firstinspires.ftc.teamcode.utilClass.storage.PoseStorage
 import kotlin.math.sqrt
 
 
 //@Config
-class LocalizerSubsystem(ahwMap: HardwareMap, val pose: Pose, val type: LocalizerType) {
-    enum class LocalizerType {
-        PEDRO,
-        ROADRUNNER
-    }
-
+class LocalizerSubsystem(ahwMap: HardwareMap, val pose: Pose) {
     lateinit var poseUpdater: PoseUpdater
     lateinit var follower: Follower
-    private lateinit var sparkFunDrive: SparkFunOTOSDrive
 
     init {
-        when (type) {
-            LocalizerType.PEDRO -> {
-                poseUpdater = PoseUpdater(ahwMap, OTOSLocalizer(ahwMap, pose))
-                poseUpdater.pose = pose
-                follower = Follower(ahwMap)
-                follower.setStartingPose(pose)
-            }
-
-            LocalizerType.ROADRUNNER -> {
-                sparkFunDrive = SparkFunOTOSDrive(ahwMap, pose.toPose2d())
-                sparkFunDrive.pose = pose.toPose2d()
-            }
-        }
+        poseUpdater = PoseUpdater(ahwMap, ThreeWheelLocalizer(ahwMap, pose))
+        poseUpdater.pose = pose
+        follower = Follower(ahwMap)
+        follower.setStartingPose(pose)
 
         reset()
     }
@@ -73,15 +57,7 @@ class LocalizerSubsystem(ahwMap: HardwareMap, val pose: Pose, val type: Localize
     fun update(
         timer: ElapsedTime?,
     ) {
-        when (type) {
-            LocalizerType.PEDRO -> {
-                poseUpdater.update()
-            }
-
-            LocalizerType.ROADRUNNER -> {
-                sparkFunDrive.updatePoseEstimate()
-            }
-        }
+        poseUpdater.update()
 
         if (timer != null) {
             updateDistTraveled(
@@ -94,87 +70,41 @@ class LocalizerSubsystem(ahwMap: HardwareMap, val pose: Pose, val type: Localize
     }
 
     fun setPose(pose: Pose2d) {
-        when (type) {
-            LocalizerType.PEDRO -> {
-                poseUpdater.pose = pose.toPose()
-            }
-
-            LocalizerType.ROADRUNNER -> {
-                PoseStorage.currentPose = pose.toPose()
-                sparkFunDrive.pose = pose
-            }
-        }
+        poseUpdater.pose = pose.toPose()
     }
 
     fun telemetry(telemetry: Telemetry) {
         telemetry.addData("LOCALIZATION", "")
-        when (type) {
-            LocalizerType.PEDRO -> {
-                telemetry.addData("Using", "PP OTOS")
-            }
-
-            LocalizerType.ROADRUNNER -> {
-                telemetry.addData("Using", "RR OTOS")
-            }
-        }
+        telemetry.addData("Using", "PP Three")
         telemetry.addData("Pose: ", this.pose().toString2())
         telemetry.addData("totalDistance (in)", "%.1f", DistanceStorage.totalDist)
         telemetry.addData("Current Speed (mph)", "%.1f", currentSpeed)
     }
 
     fun heading(): Double {
-        return when (type) {
-            LocalizerType.PEDRO -> {
-                poseUpdater.pose.heading
-            }
-
-            LocalizerType.ROADRUNNER -> {
-                sparkFunDrive.pose.heading.toDouble()
-            }
-        }
+        return poseUpdater.pose.heading
     }
 
     fun pose(): Pose {
-        return when (type) {
-            LocalizerType.PEDRO -> {
-                poseUpdater.pose
-            }
-
-            LocalizerType.ROADRUNNER -> {
-                sparkFunDrive.pose.toPose()
-            }
-        }
+        return poseUpdater.pose
     }
 
     fun x(): Double {
-        return when (type) {
-            LocalizerType.PEDRO -> {
-                poseUpdater.pose.x
-            }
-
-            LocalizerType.ROADRUNNER -> {
-                sparkFunDrive.pose.position.x
-            }
-        }
+        return poseUpdater.pose.x
     }
 
     fun y(): Double {
-        return when (type) {
-            LocalizerType.PEDRO -> {
-                poseUpdater.pose.y
-            }
-
-            LocalizerType.ROADRUNNER -> {
-                sparkFunDrive.pose.position.y
-            }
-        }
+        return poseUpdater.pose.y
     }
 
     fun draw(dashboard: FtcDashboard, packet: TelemetryPacket = TelemetryPacket()) {
         dashboard.clearTelemetry()
         packet.field()
         packet.fieldOverlay().setStroke("#e54aa1")
-        Drawing.drawRobot(packet.fieldOverlay(), pose().toPose2d())
+        Drawing.drawRobot(
+            pose,
+            "#e54aa1",
+        )
         dashboard.sendTelemetryPacket(packet)
     }
 
