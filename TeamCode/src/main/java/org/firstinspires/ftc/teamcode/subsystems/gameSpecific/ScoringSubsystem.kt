@@ -137,15 +137,11 @@ class ScoringSubsystem(
             ClawState.OPEN -> {
                 ServoFunc.openClaw(claw)
                 clawState = ClawState.IDLE
-                rotateState = RotateState.IDLE
-                pitchState = PitchState.IDLE
             }
 
             ClawState.CLOSE -> {
                 ServoFunc.closeClaw(claw)
                 clawState = ClawState.IDLE
-                rotateState = RotateState.IDLE
-                pitchState = PitchState.IDLE
             }
 
             ClawState.IDLE -> {}
@@ -154,19 +150,16 @@ class ScoringSubsystem(
         when (pitchState) {
             PitchState.HIGH -> {
                 pitchServo.setPose(pivotHigh)
-                rotateState = RotateState.IDLE
                 pitchState = PitchState.IDLE
             }
 
             PitchState.LOW -> {
                 pitchServo.setPose(pivotLow)
-                rotateState = RotateState.IDLE
                 pitchState = PitchState.IDLE
             }
 
             PitchState.MED -> {
                 pitchServo.setPose(pivotMid)
-                rotateState = RotateState.IDLE
                 pitchState = PitchState.IDLE
             }
 

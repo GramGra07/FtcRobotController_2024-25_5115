@@ -9,8 +9,8 @@ public class ServoUtil {
 
     public static double closeClaw = 75;
 
-    public static double rotateLeft = 0;
-    public static double rotateCenter = 60;
+    public static double rotateLeft = 120;
+    public static double rotateCenter = 180;
 
     public static double pivotHigh = 78;
     public static double pivotLow = -90.0;
