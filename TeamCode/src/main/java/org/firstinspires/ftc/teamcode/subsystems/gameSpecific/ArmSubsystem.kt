@@ -38,7 +38,6 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     private var pMax = 0.8
     private var pMin = -1.0
     private var pitchPIDF: PIDFController = PIDFController(0.0, 0.0, 0.0, 0.0)
-    val pitchBottom = 100.0
     var pitchT: Double = 0.0
 
     private var ticksPer90 = 2048.0
@@ -51,7 +50,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
         return (ticks * ticksPerDegree)
     }
 
-    var usePIDFe = false
+    var usePIDFe = true
     private var extendMotor: DcMotorEx
     private var extendMotor2: DcMotorEx
     private var extendState: ExtendState = ExtendState.IDLE
@@ -64,10 +63,9 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     private var extendEncoder: DualEncoder
     var pitchEncoder: DcMotorEx
 
-    private val extendGR = 8.3521
-    private val ticksPerInchExtend = (28 * extendGR) / (1.37795 * Math.PI)
-    private val maxExtendIn = 33.0
-    private val maxExtendTicksTOTAL = maxExtendIn * ticksPerInchExtend
+    private val maxExtendIn = 32.5
+    private val maxExtendTicksTOTAL = 1750
+    private val ticksPerInchExtend = maxExtendTicksTOTAL / maxExtendIn
     var maxExtendTicks = maxExtendTicksTOTAL
 
 
@@ -88,7 +86,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
         extendMotor2 = initMotor(ahwMap, "extendMotor2", DcMotor.RunMode.RUN_WITHOUT_ENCODER)
 
         extendEncoder = DualEncoder(ahwMap, "extendMotor2", "extendMotor", "Arm Extend")
-        pitchEncoder = initMotor(ahwMap, "motorFrontLeft", DcMotor.RunMode.RUN_WITHOUT_ENCODER)
+        pitchEncoder = initMotor(ahwMap, "motorFrontRight", DcMotor.RunMode.RUN_WITHOUT_ENCODER)
 
         pitchMotor.direction = DcMotorSimple.Direction.REVERSE
         pitchMotor2.direction = DcMotorSimple.Direction.REVERSE
@@ -133,6 +131,10 @@ class ArmSubsystem(ahwMap: HardwareMap) {
         extendTarget = target.toInt()
     }
 
+    fun setExtendTargetIn(inches: Double) {
+        extendTarget = (inches * ticksPerInchExtend).toInt()
+    }
+
     fun update(pitchPower: Double? = 0.0, extendPower: Double? = 0.0) {
         updatePID()
         calculateExtendMax()
@@ -163,7 +165,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
             PIDVals.extendPIDFCo.d,
             PIDVals.extendPIDFCo.f
         )
-        val fTick = (pitchFExtend - pitchFCollapse) / extendEncoder.getAverage()
+        val fTick = (pitchFExtend - pitchFCollapse) / maxExtendTicksTOTAL
         val pitchF = (fTick * extendEncoder.getAverage()) + pitchFCollapse
 //        val pitchF = PIDVals.pitchPIDFCo.f
         pitchPIDF.setPIDF(
@@ -188,7 +190,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
         val x = 42
         val cosAngle = cos(Math.toRadians(angle))
         val returnable = Range.clip((x / cosAngle) - 18, 0.0, maxExtendIn) * ticksPerInchExtend
-        maxExtendTicks = returnable
+        maxExtendTicks = returnable.toInt()
         return returnable
     }
 

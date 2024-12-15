@@ -17,6 +17,7 @@ class pidTuner : LinearOpMode() {
         robot.once() //runs once
         while (opModeIsActive()) { //while the op mode is active
             robot.armSubsystem.setPitchTarget(400.0)
+            robot.armSubsystem.setExtendTarget(700.0)
             robot.armSubsystem.update()
             robot.armSubsystem.telemetry(telemetry)
             telemetry.update()
