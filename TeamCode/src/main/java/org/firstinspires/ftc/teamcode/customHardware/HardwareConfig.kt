@@ -20,7 +20,6 @@ import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers.bindDriverBu
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers.currentFieldCentric
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers.switchProfile
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Operators.bindOtherButtons
-import org.firstinspires.ftc.teamcode.utilClass.storage.CurrentDrivetrain
 import org.firstinspires.ftc.teamcode.utilClass.storage.PoseStorage
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.VarConfig
 
@@ -48,8 +47,6 @@ open class HardwareConfig(
 //    lateinit var beamBreakSensor: BeamBreakSensor
 
     companion object {
-        val dt = CurrentDrivetrain.currentDrivetrain
-
         lateinit var telemetry: Telemetry
         lateinit var dashboard: FtcDashboard
         val timer: ElapsedTime = ElapsedTime()
@@ -74,11 +71,10 @@ open class HardwareConfig(
         localizerSubsystem =
             LocalizerSubsystem(
                 ahwMap,
-                PoseStorage.currentPose,
-                LocalizerSubsystem.LocalizerType.PEDRO
+                PoseStorage.currentPose
             )
 
-        driveSubsystem = DriveSubsystem(ahwMap, localizerSubsystem, dt)
+        driveSubsystem = DriveSubsystem(ahwMap, localizerSubsystem)
 
         allHubs = ahwMap.getAll(LynxModule::class.java)
         for (hub in allHubs) {
@@ -98,7 +94,7 @@ open class HardwareConfig(
 
         dashboard = FtcDashboard.getInstance()
         once = false
-        dt.telemetry(telemetry)
+
         localizerSubsystem.draw(dashboard)
         if (!auto) {
             driveFollower = localizerSubsystem.follower
