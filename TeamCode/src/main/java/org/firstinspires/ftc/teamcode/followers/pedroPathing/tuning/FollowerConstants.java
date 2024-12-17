@@ -36,7 +36,7 @@ public class FollowerConstants {
     public static Vector frontLeftVector = MathFunctions.normalizeVector(new Vector(convertToPolar[0], convertToPolar[1]));
     // Translational PIDF coefficients (don't use integral)
     public static CustomPIDFCoefficients translationalPIDFCoefficients = new CustomPIDFCoefficients(
-            0.3,
+            0.56,
             0.0,
             0.01,
             0.0

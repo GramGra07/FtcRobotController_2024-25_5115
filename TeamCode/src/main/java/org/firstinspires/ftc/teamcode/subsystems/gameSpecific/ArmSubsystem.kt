@@ -50,7 +50,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
         return (ticks * ticksPerDegree)
     }
 
-    var usePIDFe = false
+    var usePIDFe = true
     private var extendMotor: DcMotorEx
     private var extendMotor2: DcMotorEx
     private var extendState: ExtendState = ExtendState.IDLE
@@ -64,7 +64,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     var pitchEncoder: DcMotorEx
 
     private val maxExtendIn = 32.5
-    private val maxExtendTicksTOTAL = 1750
+    private val maxExtendTicksTOTAL = 2000
     private val ticksPerInchExtend = maxExtendTicksTOTAL / maxExtendIn
     var maxExtendTicks = maxExtendTicksTOTAL
 

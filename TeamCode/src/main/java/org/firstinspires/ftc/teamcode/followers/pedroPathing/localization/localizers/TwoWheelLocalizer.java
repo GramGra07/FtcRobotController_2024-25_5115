@@ -1,10 +1,9 @@
 package org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.localizers;
 
 import com.acmerobotics.dashboard.config.Config;
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.Encoder;
@@ -45,7 +44,8 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.NanoTimer;
 @Config
 public class TwoWheelLocalizer extends Localizer {
     private HardwareMap hardwareMap;
-    private IMU imu;
+    //    private IMU imu;
+    private SparkFunOTOS spark;
     private Pose startPose;
     private Pose displacementPose;
     private Pose currentVelocity;
@@ -59,8 +59,8 @@ public class TwoWheelLocalizer extends Localizer {
     private double previousIMUOrientation;
     private double deltaRadians;
     private double totalHeading;
-    public static double FORWARD_TICKS_TO_INCHES = 8192 * 1.37795 * 2 * Math.PI * 0.5008239963;
-    public static double STRAFE_TICKS_TO_INCHES = 8192 * 1.37795 * 2 * Math.PI * 0.5018874659;
+    public static double FORWARD_TICKS_TO_INCHES = 0.003;
+    public static double STRAFE_TICKS_TO_INCHES = 0.0042;
 
     /**
      * This creates a new TwoWheelLocalizer from a HardwareMap, with a starting Pose at (0,0)
@@ -81,22 +81,26 @@ public class TwoWheelLocalizer extends Localizer {
      */
     public TwoWheelLocalizer(HardwareMap map, Pose setStartPose) {
         // TODO: replace these with your encoder positions
-        forwardEncoderPose = new Pose(4.613, -3.16, 0);
-        strafeEncoderPose = new Pose(0, -1.44, Math.toRadians(90));
+        forwardEncoderPose = new Pose(4, -3.16, 0);
+        strafeEncoderPose = new Pose(-1.57, -1.44, Math.toRadians(90));
 
         hardwareMap = map;
 
-        imu = hardwareMap.get(IMU.class, "imu");
+        spark = hardwareMap.get(SparkFunOTOS.class, "spark");
+        spark.setAngularUnit(AngleUnit.RADIANS);
+        spark.resetTracking();
+        spark.calibrateImu();
+        spark.setOffset(new SparkFunOTOS.Pose2D(4, 7, 0));
         // TODO: replace this with your IMU's orientation
-        imu.initialize(new IMU.Parameters(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.UP, RevHubOrientationOnRobot.UsbFacingDirection.LEFT)));
+//        imu.initialize(new IMU.Parameters(new RevHubOrientationOnRobot(RevHubOrientationOnRobot.LogoFacingDirection.LEFT, RevHubOrientationOnRobot.UsbFacingDirection.BACKWARD)));
 
         // TODO: replace these with your encoder ports
         forwardEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "motorFrontLeft"));
         strafeEncoder = new Encoder(hardwareMap.get(DcMotorEx.class, "motorBackLeft"));
 
         // TODO: reverse any encoders necessary
-        forwardEncoder.setDirection(Encoder.REVERSE);
-        strafeEncoder.setDirection(Encoder.FORWARD);
+        forwardEncoder.setDirection(Encoder.FORWARD);
+        strafeEncoder.setDirection(Encoder.REVERSE);
 
         setStartPose(setStartPose);
         timer = new NanoTimer();
@@ -104,7 +108,8 @@ public class TwoWheelLocalizer extends Localizer {
         displacementPose = new Pose();
         currentVelocity = new Pose();
 
-        previousIMUOrientation = MathFunctions.normalizeAngle(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
+//        previousIMUOrientation = MathFunctions.normalizeAngle(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
+        previousIMUOrientation = MathFunctions.normalizeAngle(spark.getPosition().h);
         deltaRadians = 0;
     }
 
@@ -220,7 +225,8 @@ public class TwoWheelLocalizer extends Localizer {
         forwardEncoder.update();
         strafeEncoder.update();
 
-        double currentIMUOrientation = MathFunctions.normalizeAngle(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
+//        double currentIMUOrientation = MathFunctions.normalizeAngle(imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS));
+        double currentIMUOrientation = MathFunctions.normalizeAngle(spark.getPosition().h);
         deltaRadians = MathFunctions.getTurnDirection(previousIMUOrientation, currentIMUOrientation) * MathFunctions.getSmallestAngleDifference(currentIMUOrientation, previousIMUOrientation);
         previousIMUOrientation = currentIMUOrientation;
     }
@@ -294,7 +300,8 @@ public class TwoWheelLocalizer extends Localizer {
      * This resets the IMU.
      */
     public void resetIMU() {
-        imu.resetYaw();
+//        imu.resetYaw();
+        spark.resetTracking();
     }
 
     /**
@@ -302,8 +309,8 @@ public class TwoWheelLocalizer extends Localizer {
      *
      * @return returns the IMU
      */
-    @Override
-    public IMU getIMU() {
-        return imu;
-    }
+//    @Override
+//    public IMU getIMU() {
+////        return SparkFunOTOS.;
+//    }
 }

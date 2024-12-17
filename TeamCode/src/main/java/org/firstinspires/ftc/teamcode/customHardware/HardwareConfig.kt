@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.customHardware
 import com.acmerobotics.dashboard.FtcDashboard
 import com.qualcomm.hardware.lynx.LynxModule
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
-import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.Telemetry
@@ -59,9 +58,6 @@ open class HardwareConfig(
         var once = false
 
         private var hasMovedOnInit = false
-        lateinit var strafe: DcMotorEx
-        lateinit var left: DcMotorEx
-        lateinit var right: DcMotorEx
 
         var allHubs: List<LynxModule> = ArrayList()
     }
@@ -98,11 +94,6 @@ open class HardwareConfig(
 
         dashboard = FtcDashboard.getInstance()
         once = false
-        strafe = ahwMap.get(DcMotorEx::class.java, "motorBackLeft")
-        left = ahwMap.get(DcMotorEx::class.java, "motorFrontLeft")
-        right = ahwMap.get(DcMotorEx::class.java, "motorBackRight")
-        telemetry.addData(strafe.currentPosition.toString(), left.currentPosition.toString())
-        telemetry.addData(right.currentPosition.toString(), "")
         localizerSubsystem.draw(dashboard)
         if (!auto) {
             driveFollower = localizerSubsystem.follower
@@ -112,9 +103,6 @@ open class HardwareConfig(
     }
 
     fun doBulk() {
-
-        telemetry.addData(strafe.currentPosition.toString(), left.currentPosition.toString())
-        telemetry.addData(right.currentPosition.toString(), "")
         bindDriverButtons(
             myOpMode, driveSubsystem,
 //            liftSubsystem,

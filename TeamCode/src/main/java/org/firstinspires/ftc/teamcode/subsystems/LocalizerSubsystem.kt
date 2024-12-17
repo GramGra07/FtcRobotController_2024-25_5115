@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toString2
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.follower.Follower
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.Pose
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.PoseUpdater
-import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.localizers.ThreeWheelLocalizer
+import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.localizers.TwoWheelLocalizer
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.Drawing
 import org.firstinspires.ftc.teamcode.utilClass.storage.DistanceStorage
 import org.firstinspires.ftc.teamcode.utilClass.storage.PoseStorage
@@ -27,7 +27,7 @@ class LocalizerSubsystem(ahwMap: HardwareMap, val pose: Pose) {
     lateinit var follower: Follower
 
     init {
-        poseUpdater = PoseUpdater(ahwMap, ThreeWheelLocalizer(ahwMap, pose))
+        poseUpdater = PoseUpdater(ahwMap, TwoWheelLocalizer(ahwMap, pose))
         poseUpdater.pose = pose
         follower = Follower(ahwMap)
         follower.setStartingPose(pose)

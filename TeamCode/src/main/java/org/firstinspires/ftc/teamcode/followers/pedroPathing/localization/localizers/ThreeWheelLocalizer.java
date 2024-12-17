@@ -81,7 +81,7 @@ public class ThreeWheelLocalizer extends Localizer {
         // TODO: replace these with your encoder positions
         leftEncoderPose = new Pose(4.613, -3.16, 0);
         rightEncoderPose = new Pose(-4.613, -3.16, 0);
-        strafeEncoderPose = new Pose(0, -1.44, Math.toRadians(90));
+        strafeEncoderPose = new Pose(-1.57, -1.44, Math.toRadians(90));
 
         hardwareMap = map;
 
@@ -93,7 +93,7 @@ public class ThreeWheelLocalizer extends Localizer {
         // TODO: reverse any encoders necessary
         leftEncoder.setDirection(Encoder.REVERSE);
         rightEncoder.setDirection(Encoder.REVERSE);
-        strafeEncoder.setDirection(Encoder.FORWARD);
+        strafeEncoder.setDirection(Encoder.REVERSE);
 
         setStartPose(setStartPose);
         timer = new NanoTimer();
