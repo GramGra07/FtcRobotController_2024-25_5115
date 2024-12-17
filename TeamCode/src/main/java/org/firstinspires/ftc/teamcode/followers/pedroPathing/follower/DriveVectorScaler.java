@@ -15,6 +15,7 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Vect
 public class DriveVectorScaler {
     // This is ordered left front, left back, right front, right back. These are also normalized.
     private Vector[] mecanumVectors;
+    private double maxPowerScaling = 1;
 
     /**
      * This creates a new DriveVectorScaler, which takes in various movement vectors and outputs
@@ -148,5 +149,23 @@ public class DriveVectorScaler {
         double b = staticVector.getXComponent() * variableVector.getXComponent() + staticVector.getYComponent() * variableVector.getYComponent();
         double c = Math.pow(staticVector.getXComponent(), 2) + Math.pow(staticVector.getYComponent(), 2) - 1.0;
         return (-b + Math.sqrt(Math.pow(b, 2) - a * c)) / (a);
+    }
+
+    /**
+     * Sets the maximum power that can be used by the drive vector scaler. Clamped between 0 and 1.
+     *
+     * @param maxPowerScaling setting the max power scaling
+     */
+    public void setMaxPowerScaling(double maxPowerScaling) {
+        this.maxPowerScaling = MathFunctions.clamp(maxPowerScaling, 0, 1);
+    }
+
+    /**
+     * Gets the maximum power that can be used by the drive vector scaler. Ranges between 0 and 1.
+     *
+     * @return returns the max power scaling
+     */
+    public double getMaxPowerScaling() {
+        return maxPowerScaling;
     }
 }

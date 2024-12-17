@@ -50,7 +50,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
         return (ticks * ticksPerDegree)
     }
 
-    var usePIDFe = true
+    var usePIDFe = false
     private var extendMotor: DcMotorEx
     private var extendMotor2: DcMotorEx
     private var extendState: ExtendState = ExtendState.IDLE
