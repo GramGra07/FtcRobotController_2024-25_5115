@@ -16,7 +16,7 @@ public class PathCallback extends SingleRunAction {
     private double startCondition;
 
     private int type;
-    private int index;
+    private final int index;
 
     public static final int TIME = 0;
     public static final int PARAMETRIC = 1;

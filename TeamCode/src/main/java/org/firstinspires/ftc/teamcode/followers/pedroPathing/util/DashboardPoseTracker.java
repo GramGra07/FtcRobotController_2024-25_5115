@@ -11,9 +11,9 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.PoseUp
  * @version 1.0, 5/13/2024
  */
 public class DashboardPoseTracker {
-    private double[] xPositions;
-    private double[] yPositions;
-    private PoseUpdater poseUpdater;
+    private final double[] xPositions;
+    private final double[] yPositions;
+    private final PoseUpdater poseUpdater;
     private long lastUpdateTime;
     private final int TRACKING_LENGTH = 1500;
     private final long UPDATE_TIME = 50;

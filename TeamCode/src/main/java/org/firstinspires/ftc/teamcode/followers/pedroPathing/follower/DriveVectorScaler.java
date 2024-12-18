@@ -14,7 +14,7 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Vect
  */
 public class DriveVectorScaler {
     // This is ordered left front, left back, right front, right back. These are also normalized.
-    private Vector[] mecanumVectors;
+    private final Vector[] mecanumVectors;
     private double maxPowerScaling = 1;
 
     /**

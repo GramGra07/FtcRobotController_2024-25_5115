@@ -12,7 +12,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
  * @version 1.0, 4/2/2024
  */
 public class Encoder {
-    private DcMotorEx motor;
+    private final DcMotorEx motor;
     private double previousPosition;
     private double currentPosition;
     private double multiplier;
