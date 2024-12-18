@@ -78,8 +78,8 @@ class DriveSubsystem(
         val slowPower = if (slowModeIsOn) VarConfig.slowMult else 1.0
 
         if (type == DriveType.FIELD_CENTRIC) {
-            leftStickY *= -1
-            val angle = localizerSubsystem.heading() - 360
+            leftStickY *= -1.0
+            val angle = localizerSubsystem.heading() - 180
             val controllerAngle = Math.toDegrees(atan2(leftStickY, leftStickX))
             val robotDegree = Math.toDegrees(angle)
             val movementDegree = controllerAngle - robotDegree

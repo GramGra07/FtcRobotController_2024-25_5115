@@ -12,15 +12,23 @@ class LoopTimeController(
     var loops: Int = 0
     private var lps = 0.0
     private var currentTime: Double = 0.0
+    private var currentTimems: Double = 0.0
     private val correctedLPS: Double = 5.0
     private var lastSecond: Double = 0.0
     private var lastSecondLPast: Double = 0.0
     private var lastSecondL: Double = 0.0
     private var lastSecondT: Double = 0.0
 
-    private var comparison:Double = 70.0
-    private var comparisonDate:String = "10/16/2024"
 
+    private var startTime: Double
+    private var lastTime: Double
+    private var deltaTime: Double = 0.0
+
+    init {
+        timer.reset()
+        this.startTime = timer.milliseconds()
+        this.lastTime = startTime
+    }
 
     private fun doCalculations() {
         lps = loops / (currentTime - correctedLPS)
@@ -36,6 +44,7 @@ class LoopTimeController(
     }
 
     fun update() {
+        currentTimems = timer.milliseconds()
         currentTime = timer.seconds()
         doCalculations()
         periodics?.forEach { obj ->
@@ -47,6 +56,8 @@ class LoopTimeController(
         spacedBooleanObjects?.forEach { obj ->
             obj!!.update(currentTime)
         }
+        deltaTime = currentTimems - lastTime
+        lastTime = currentTimems
     }
 
     fun telemetry(telemetry: Telemetry) {
@@ -54,7 +65,9 @@ class LoopTimeController(
         telemetry.addData("Timer", "%.1f", currentTime)
         telemetry.addData("Loops", loops)
         telemetry.addData("Current LPS", "%.1f", lps)
-        telemetry.addData(comparisonDate, "%.1f", comparison-lps)
+        telemetry.addData("Time Elapsed", "%.1f", deltaTime)
+        telemetry.addData("Avg Time Elapsed", "%.1f", (currentTimems - startTime) / loops)
+//        telemetry.addData(comparisonDate, "%.1f", comparison-lps)
 //        telemetry.addData("lastsecondloops",lastSecondL)
 //        telemetry.addData("pastlastsecondloops",lastSecondLPast)
 //        telemetry.addData("lastsecondt",lastSecondT)

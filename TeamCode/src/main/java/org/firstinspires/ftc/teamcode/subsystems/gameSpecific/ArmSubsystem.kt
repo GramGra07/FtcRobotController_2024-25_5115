@@ -35,7 +35,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     private var pitchMotor2: DcMotorEx
     private var pitchState: PitchState = PitchState.IDLE
     private var pPower: Double = 0.0
-    private var pMax = 0.8
+    var pMax = 0.8
     private var pMin = -1.0
     private var pitchPIDF: PIDFController = PIDFController(0.0, 0.0, 0.0, 0.0)
     var pitchT: Double = 0.0
@@ -96,7 +96,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
 
     fun setPowerExtend(target: Double, power: Double? = 0.0) {
         ePower = if (usePIDFe) {
-            calculatePID(extendPIDF, extendEncoder.getAverage(), target)
+            calculatePID(extendPIDF, extendEncoder.getMost(), target)
         } else {
             Range.clip(
                 power ?: 0.0,
@@ -149,6 +149,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
             setPowerExtend(0.0, extendPower)
         }
         power()
+        pMax = 0.8
     }
 
     fun power() {
@@ -166,7 +167,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
             PIDVals.extendPIDFCo.f
         )
         val fTick = (pitchFExtend - pitchFCollapse) / maxExtendTicksTOTAL
-        val pitchF = (fTick * extendEncoder.getAverage()) + pitchFCollapse
+        val pitchF = (fTick * extendEncoder.getMost()) + pitchFCollapse
 //        val pitchF = PIDVals.pitchPIDFCo.f
         pitchPIDF.setPIDF(
             PIDVals.pitchPIDFCo.p,
@@ -217,9 +218,28 @@ class ArmSubsystem(ahwMap: HardwareMap) {
 
     fun isExtendAtTarget(tolerance: Double = 100.0): Boolean {
         return MathFunctions.inTolerance(
-            extendEncoder.getAverage(),
+            extendEncoder.getMost(),
             extendTarget.toDouble(),
             tolerance
         )
+    }
+
+    fun setPE(p: Double, e: Double, pitchFirst: Boolean? = null) {
+        if (pitchFirst == null) {
+            setPitchTarget(p)
+            setExtendTarget(e)
+        } else {
+            if (pitchFirst == false) {
+                setExtendTarget(e)
+                if (isExtendAtTarget()) {
+                    setPitchTarget(p)
+                }
+            } else {
+                setPitchTarget(p)
+                if (isPitchAtTarget()) {
+                    setExtendTarget(e)
+                }
+            }
+        }
     }
 }

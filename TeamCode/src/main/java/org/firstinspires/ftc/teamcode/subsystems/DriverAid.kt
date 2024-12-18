@@ -10,48 +10,119 @@ class DriverAid(
     private val localizerSubsystem: LocalizerSubsystem,
 ) {
     var usingDA = false
-    fun collapse(scoringSubsystem: ScoringSubsystem) {
+
+    enum class DAState {
+        IDLE,
+        COLLAPSE,
+        HIGH_SPECIMEN,
+        HIGH_BASKET,
+        PICKUP,
+        HUMAN
+    }
+
+    var daState = DAState.IDLE
+
+    fun collapse() {
+        daState = DAState.COLLAPSE
+    }
+
+    fun highSpecimen() {
+        daState = DAState.HIGH_SPECIMEN
+    }
+
+    fun highBasket() {
+        daState = DAState.HIGH_BASKET
+    }
+
+    fun pickup() {
+        daState = DAState.PICKUP
+    }
+
+    fun human() {
+        daState = DAState.HUMAN
+    }
+
+    fun update() {
+//        if (usingDA) {
+        when (daState) {
+            DAState.COLLAPSE -> {
+                collapseSequence(scoringSubsystem)
+            }
+
+            DAState.HIGH_SPECIMEN -> {
+                highSpecimenSequence(scoringSubsystem)
+            }
+
+            DAState.HIGH_BASKET -> {
+                highBasketSequence(scoringSubsystem)
+            }
+
+            DAState.PICKUP -> {
+                pickupSequence(scoringSubsystem)
+            }
+
+            DAState.HUMAN -> {
+                humanSequence(scoringSubsystem)
+            }
+
+            DAState.IDLE -> {
+
+            }
+        }
+//        }
+    }
+
+    private fun collapseSequence(scoringSubsystem: ScoringSubsystem) {
         usingDA = true
         scoringSubsystem.closeClaw()
         scoringSubsystem.setPitchHigh()
-        armSubsystem.setExtendTarget(0.0)
-        if (armSubsystem.isExtendAtTarget(100.0)) {
-            armSubsystem.setPitchTarget(0.0)
+        armSubsystem.setPE(0.0, 0.0, false)
+        end()
+    }
+
+    private fun highSpecimenSequence(scoringSubsystem: ScoringSubsystem) {
+        usingDA = true
+        armSubsystem.setPE(1200.0, 815.0)
+        scoringSubsystem.setPitchLow()
+        scoringSubsystem.setRotateCenter()
+        end()
+    }
+
+    private fun highBasketSequence(scoringSubsystem: ScoringSubsystem) {
+        usingDA = true
+        scoringSubsystem.setPitchMed()
+        scoringSubsystem.setRotateCenter()
+        armSubsystem.pMax = 0.5
+        armSubsystem.setPE(2200.0, 1900.0, true)
+        end()
+    }
+
+    private fun pickupSequence(scoringSubsystem: ScoringSubsystem) {
+        usingDA = true
+        scoringSubsystem.setPitchMed()
+        armSubsystem.setPE(0.0, 750.0, false)
+        if (armSubsystem.isExtendAtTarget(100.0) && armSubsystem.isPitchAtTarget(100.0)) {
+            scoringSubsystem.setRotateCenter()
+            scoringSubsystem.setPitchLow()
+            scoringSubsystem.openClaw()
         }
+        end()
     }
 
-    fun highSpecimen(scoringSubsystem: ScoringSubsystem) {
-        usingDA = true
-        armSubsystem.setPitchTarget(1400.0)
-        armSubsystem.setExtendTarget(815.0)
-        scoringSubsystem.setPitchLow()
-        scoringSubsystem.setRotateCenter()
-    }
-
-    fun highBasket(scoringSubsystem: ScoringSubsystem) {
-        usingDA = true
-        scoringSubsystem.setPitchMed()
-        scoringSubsystem.setRotateCenter()
-        armSubsystem.setPitchTarget(2265.0)
-        armSubsystem.setExtendTarget(1700.0)
-    }
-
-    fun pickup(scoringSubsystem: ScoringSubsystem) {
-        usingDA = true
-        scoringSubsystem.setPitchLow()
-        scoringSubsystem.setRotateCenter()
-        scoringSubsystem.openClaw()
-        armSubsystem.setPitchTarget(0.0)
-        armSubsystem.setExtendTarget(800.0)
-    }
-
-    fun human(scoringSubsystem: ScoringSubsystem) {
+    private fun humanSequence(scoringSubsystem: ScoringSubsystem) {
         usingDA = true
         scoringSubsystem.setPitchMed()
         scoringSubsystem.setRotateCenter()
         scoringSubsystem.openClaw()
-        armSubsystem.setPitchTarget(600.0)
-        armSubsystem.setExtendTarget(0.0)
+        armSubsystem.setPE(600.0, 0.0)
+        end()
+    }
+
+    private fun end(
+    ) {
+        if (armSubsystem.isExtendAtTarget(100.0) && armSubsystem.isPitchAtTarget(100.0)) {
+            daState = DAState.IDLE
+        }
     }
 
 
@@ -161,7 +232,7 @@ class DriverAid(
             }
             .state(AutoLift.collapse)
             .onEnter(AutoLift.collapse) {
-                collapse(scoringSubsystem)
+                collapseSequence(scoringSubsystem)
             }
             .transition(AutoLift.collapse) {
                 armSubsystem.isExtendAtTarget()

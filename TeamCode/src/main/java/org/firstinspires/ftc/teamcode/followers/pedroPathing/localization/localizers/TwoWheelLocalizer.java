@@ -62,6 +62,11 @@ public class TwoWheelLocalizer extends Localizer {
     public static double FORWARD_TICKS_TO_INCHES = 0.003;
     public static double STRAFE_TICKS_TO_INCHES = 0.0042;
 
+    public static double forwardEncX = 4;
+    public static double forwardEncY = -3.16;
+    public static double strafeEncX = -1.57;
+    public static double strafeEncY = -1.44;
+
     /**
      * This creates a new TwoWheelLocalizer from a HardwareMap, with a starting Pose at (0,0)
      * facing 0 heading.
@@ -81,8 +86,8 @@ public class TwoWheelLocalizer extends Localizer {
      */
     public TwoWheelLocalizer(HardwareMap map, Pose setStartPose) {
         // TODO: replace these with your encoder positions
-        forwardEncoderPose = new Pose(4, -3.16, 0);
-        strafeEncoderPose = new Pose(-1.57, -1.44, Math.toRadians(90));
+        forwardEncoderPose = new Pose(forwardEncX, forwardEncY, 0);
+        strafeEncoderPose = new Pose(strafeEncX, strafeEncY, Math.toRadians(90));
 
         hardwareMap = map;
 

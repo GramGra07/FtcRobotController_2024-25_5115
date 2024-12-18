@@ -15,10 +15,8 @@ import org.firstinspires.ftc.teamcode.subsystems.DriverAid
 import org.firstinspires.ftc.teamcode.subsystems.LocalizerSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ArmSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ScoringSubsystem
-import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers.bindDriverButtons
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers.currentFieldCentric
-import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers.switchProfile
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Operators.bindOtherButtons
 import org.firstinspires.ftc.teamcode.utilClass.storage.PoseStorage
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.VarConfig
@@ -113,9 +111,7 @@ open class HardwareConfig(
             armSubsystem,
             driverAid
         )
-        if (VarConfig.multipleDrivers) {
-            switchProfile(myOpMode)
-        }
+
         driveSubsystem.driveByGamepads(
             currentFieldCentric,
             myOpMode,
@@ -127,9 +123,11 @@ open class HardwareConfig(
         scoringSubsystem.update()
 
         armSubsystem.update(
-            myOpMode.gamepad2.right_stick_y.toDouble(),
-            myOpMode.gamepad2.left_stick_y.toDouble()
+            -myOpMode.gamepad2.right_stick_y.toDouble(),
+            -myOpMode.gamepad2.left_stick_y.toDouble()
         )
+
+        driverAid.update()
 
 //        loopTimeController.every(if (VarConfig.loopSaver) 30 else 10) {
 //            reLocalizationSubsystem.update(localizerSubsystem, VarConfig.relocalize)
@@ -171,13 +169,6 @@ open class HardwareConfig(
     private fun buildTelemetry() {
         loopTimeController.telemetry(telemetry)
         teleSpace()
-        if (VarConfig.multipleDrivers) {
-            telemetry.addData(
-                "Drivers",
-                Drivers.currDriver.name.toString() + " " + Drivers.currOther.name.toString()
-            )
-            teleSpace()
-        }
         driveSubsystem.telemetry(telemetry, false)
         teleSpace()
 //        reLocalizationSubsystem.telemetry(telemetry)
