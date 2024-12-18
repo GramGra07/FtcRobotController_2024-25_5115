@@ -89,6 +89,9 @@ object Operators {
 //                armSubsystem.setPitchTarget(600.0)
 //            }
 //        }
+        if (myOpMode.gamepad2.options) {
+            da.daState = DriverAid.DAState.IDLE
+        }
         if (myOpMode.gamepad2.right_stick_button) {
             armSubsystem.setPE(VarConfig.pitch, VarConfig.extend)
         }
