@@ -22,13 +22,14 @@ class AutoHardware(
         telemetry.addData("Status", "Initialized")
         telemetry.addData("Alliance", startLocation.alliance)
         telemetry.update()
+        startLocation.build()
         opmode.waitForStart()
         timer.reset()
     }
 
     fun updateAll() {
         follower.update()
-        driverAid.update()
+//        driverAid.update()
         armSubsystem.update()
         scoringSubsystem.update()
     }
@@ -47,7 +48,7 @@ class AutoHardware(
     val redStartRight = Point(redX, 36.0)
     val redStartAngle = Math.toRadians(180.0)
 
-    val blueEndLeft = Point(62.0, 96.0)
+    val blueEndLeft = Point(96.0, 62.0)
     val blueEndRight = Point(62.0, 108.0)
     val blueEndAngle = Math.toRadians(90.0)
     val redEndLeft = Point(62.0, 48.0)
@@ -288,78 +289,77 @@ class AutoHardware(
             .build()
     }
 
-    private fun refreshPose(follower: Follower) {
+    private fun refreshPose() {
         PoseStorage.currentPose = follower.pose
     }
 
-    fun placeSpecimenBPathFollower(follower: Follower) {
+    fun placeSpecimenBPathFollower() {
         follower.followPath(placeSpecimenBPath())
-        refreshPose(follower)
+        refreshPose()
     }
 
-    fun placeSpecimenRPathFollower(follower: Follower) {
+    fun placeSpecimenRPathFollower() {
         follower.followPath(placeSpecimenRPath())
-        refreshPose(follower)
     }
 
-    fun goToBasketBPathFollower(follower: Follower) {
+    fun goToBasketBPathFollower() {
         follower.followPath(placeBasketBPath())
-        refreshPose(follower)
+        refreshPose()
     }
 
-    fun goToBasketRPathFollower(follower: Follower) {
+    fun goToBasketRPathFollower() {
         follower.followPath(placeBasketRPath())
-        refreshPose(follower)
+        refreshPose()
     }
 
-    fun goToSampleBPathFollower(follower: Follower, offsetY: Double) {
+    fun goToSampleBPathFollower(offsetY: Double) {
         follower.followPath(getSampleBPath(offsetY))
-        refreshPose(follower)
+        refreshPose()
     }
 
-    fun goToSampleRPathFollower(follower: Follower, offsetY: Double) {
+    fun goToSampleRPathFollower(offsetY: Double) {
         follower.followPath(getSampleRPath(offsetY))
-        refreshPose(follower)
+        refreshPose()
     }
 
-    fun goToEndBlPathFollower(follower: Follower) {
+    fun goToEndBlPathFollower() {
         follower.followPath(goToEndBlPath())
-        refreshPose(follower)
+        refreshPose()
     }
 
-    fun goToEndBrPathFollower(follower: Follower) {
+    fun goToEndBrPathFollower() {
         follower.followPath(goToEndBrPath())
-        refreshPose(follower)
+        refreshPose()
     }
 
-    fun goToEndRlPathFollower(follower: Follower) {
+    fun goToEndRlPathFollower() {
         follower.followPath(goToEndRlPath())
-        refreshPose(follower)
+        refreshPose()
     }
 
-    fun goToEndRrPathFollower(follower: Follower) {
+    fun goToEndRrPathFollower() {
         follower.followPath(goToEndRrPath())
-        refreshPose(follower)
+        refreshPose()
     }
 
-    fun goToHumanBPathFollower(follower: Follower) {
+    fun goToHumanBPathFollower() {
         follower.followPath(getSpecimenBPath())
-        refreshPose(follower)
+        refreshPose()
     }
 
-    fun goToHumanRPathFollower(follower: Follower) {
+    fun goToHumanRPathFollower() {
         follower.followPath(getSpecimenRPath())
-        refreshPose(follower)
+        refreshPose()
     }
 
-    fun goToNeutralSampleBPathFollower(follower: Follower, angle: Double) {
+    fun goToNeutralSampleBPathFollower(angle: Double) {
         follower.followPath(goToNeutralSampleB(angle))
-        refreshPose(follower)
+        refreshPose()
     }
 
-    fun goToNeutralSampleRPathFollower(follower: Follower, angle: Double) {
+    fun goToNeutralSampleRPathFollower(angle: Double) {
         follower.followPath(goToNeutralSampleR(angle))
-        refreshPose(follower)
+        refreshPose()
     }
 
     enum class statesRR {
@@ -384,11 +384,15 @@ class AutoHardware(
     val specimenAutoR: StateMachine<statesRR> = StateMachine.Builder<statesRR>()
         .state(statesRR.driveToSpecimenR)
         .onEnter(statesRR.driveToSpecimenR) {
-            placeSpecimenRPathFollower(follower)
-            driverAid.highSpecimen()
+//            driverAid.highSpecimen()
+            placeSpecimenRPathFollower()
         }
         .whileState(statesRR.driveToSpecimenR, { follower.atParametricEnd() }) {
             updateAll()
+            telemetry.addData("x", follower.getPose().getX());
+            telemetry.addData("y", follower.getPose().getY());
+            telemetry.addData("heading", follower.getPose().getHeading());
+            telemetry.update();
         }
         .transition(statesRR.driveToSpecimenR, { follower.atParametricEnd() }, 0.0)
         .stopRunning(statesRR.stop)
@@ -397,7 +401,7 @@ class AutoHardware(
     var specimenAutoB: StateMachine<statesRR> = StateMachine.Builder<statesRR>()
         .state(statesRR.driveToSpecimenR)
         .onEnter(statesRR.driveToSpecimenR) {
-            placeSpecimenBPathFollower(follower)
+            placeSpecimenBPathFollower()
         }
         .whileState(statesRR.driveToSpecimenR, { follower.atParametricEnd() }) {
             follower.update()
@@ -413,7 +417,7 @@ class AutoHardware(
 //            .transition(statesRR.placeSpecimenR, { !DriverAid.collapseSM.isRunning }, 0.0)
         .state(statesRR.goToSampleR)
         .onEnter(statesRR.goToSampleR) {
-            goToSampleRPathFollower(follower, 0.0)
+            goToSampleRPathFollower(0.0)
         }
         .whileState(statesRR.goToSampleR, { follower.atParametricEnd() }) {
             follower.update()
@@ -421,7 +425,7 @@ class AutoHardware(
         .transition(statesRR.goToSampleR, { follower.atParametricEnd() }, 0.0)
         .state(statesRR.goToSampleR2)
         .onEnter(statesRR.goToSampleR2) {
-            goToSampleRPathFollower(follower, 6.0)
+            goToSampleRPathFollower(6.0)
         }
         .whileState(statesRR.goToSampleR2, { follower.atParametricEnd() }) {
             follower.update()
@@ -429,7 +433,7 @@ class AutoHardware(
         .transition(statesRR.goToSampleR2, { follower.atParametricEnd() }, 0.0)
         .state(statesRR.goToSampleR3)
         .onEnter(statesRR.goToSampleR3) {
-            goToSampleRPathFollower(follower, -6.0)
+            goToSampleRPathFollower(-6.0)
         }
         .whileState(statesRR.goToSampleR3, { follower.atParametricEnd() }) {
             follower.update()
@@ -437,7 +441,7 @@ class AutoHardware(
         .transition(statesRR.goToSampleR3, { follower.atParametricEnd() }, 0.0)
         .state(statesRR.goToHumanR)
         .onEnter(statesRR.goToHumanR) {
-            goToHumanRPathFollower(follower)
+            goToHumanRPathFollower()
         }
         .whileState(statesRR.goToHumanR, { follower.atParametricEnd() }) {
             follower.update()
@@ -445,7 +449,7 @@ class AutoHardware(
         .transition(statesRR.goToHumanR, { follower.atParametricEnd() }, 0.0)
         .state(statesRR.goToSpecimenR)
         .onEnter(statesRR.goToSpecimenR) {
-            placeSpecimenRPathFollower(follower)
+            placeSpecimenRPathFollower()
         }
         .whileState(statesRR.goToSpecimenR, { follower.atParametricEnd() }) {
             follower.update()
@@ -461,7 +465,7 @@ class AutoHardware(
 //            .transition(statesRR.placeSpecimenR1, { !DriverAid.collapseSM.isRunning }, 0.0)
         .state(statesRR.goToHumanR2)
         .onEnter(statesRR.goToHumanR2) {
-            goToHumanRPathFollower(follower)
+            goToHumanRPathFollower()
         }
         .whileState(statesRR.goToHumanR2, { follower.atParametricEnd() }) {
             follower.update()
@@ -469,7 +473,7 @@ class AutoHardware(
         .transition(statesRR.goToHumanR2, { follower.atParametricEnd() }, 0.0)
         .state(statesRR.goToSpecimenR2)
         .onEnter(statesRR.goToSpecimenR2) {
-            placeSpecimenRPathFollower(follower)
+            placeSpecimenRPathFollower()
         }
         .whileState(statesRR.goToSpecimenR2, { follower.atParametricEnd() }) {
             follower.update()
@@ -485,7 +489,7 @@ class AutoHardware(
 //            .transition(statesRR.placeSpecimen2R, { !DriverAid.collapseSM.isRunning }, 0.0)
         .state(statesRR.goToHumanR3)
         .onEnter(statesRR.goToHumanR3) {
-            goToHumanRPathFollower(follower)
+            goToHumanRPathFollower()
         }
         .whileState(statesRR.goToHumanR3, { follower.atParametricEnd() }) {
             follower.update()
@@ -493,7 +497,7 @@ class AutoHardware(
         .transition(statesRR.goToHumanR3, { follower.atParametricEnd() }, 0.0)
         .state(statesRR.goToSpecimenR3)
         .onEnter(statesRR.goToSpecimenR3) {
-            placeSpecimenRPathFollower(follower)
+            placeSpecimenRPathFollower()
         }
         .whileState(statesRR.goToSpecimenR3, { follower.atParametricEnd() }) {
             follower.update()
@@ -509,7 +513,7 @@ class AutoHardware(
 //            .transition(statesRR.placeSpecimenR3, { !DriverAid.collapseSM.isRunning }, 0.0)
         .state(statesRR.goToEndR)
         .onEnter(statesRR.goToEndR) {
-            goToEndRrPathFollower(follower)
+            goToEndRrPathFollower()
         }
         .whileState(statesRR.goToEndR, { follower.atParametricEnd() }) {
             follower.update()

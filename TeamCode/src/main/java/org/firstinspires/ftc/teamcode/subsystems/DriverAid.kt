@@ -82,7 +82,7 @@ class DriverAid(
 
     private fun highSpecimenSequence(scoringSubsystem: ScoringSubsystem) {
         usingDA = true
-        armSubsystem.setPE(1200.0, 815.0)
+        armSubsystem.setPE(1200.0, 1153.0)
         scoringSubsystem.setPitchLow()
         scoringSubsystem.setRotateCenter()
         end()
@@ -93,14 +93,14 @@ class DriverAid(
         scoringSubsystem.setPitchMed()
         scoringSubsystem.setRotateCenter()
         armSubsystem.pMax = 0.5
-        armSubsystem.setPE(2200.0, 1900.0, true)
+        armSubsystem.setPE(2200.0, 2250.0, true)
         end()
     }
 
     private fun pickupSequence(scoringSubsystem: ScoringSubsystem) {
         usingDA = true
         scoringSubsystem.setPitchMed()
-        armSubsystem.setPE(0.0, 750.0, false)
+        armSubsystem.setPE(100.0, 750.0, false)
         if (armSubsystem.isExtendAtTarget(100.0) && armSubsystem.isPitchAtTarget(100.0)) {
             scoringSubsystem.setRotateCenter()
             scoringSubsystem.setPitchLow()
@@ -114,7 +114,7 @@ class DriverAid(
         scoringSubsystem.setPitchMed()
         scoringSubsystem.setRotateCenter()
         scoringSubsystem.openClaw()
-        armSubsystem.setPE(600.0, 0.0)
+        armSubsystem.setPE(250.0, 200.0)
         end()
     }
 

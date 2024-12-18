@@ -14,14 +14,22 @@ class demoAuto : LinearOpMode() {
     override fun runOpMode() { //if opmode is started
         val robot = AutoHardware(
             this,
-            StartLocation(Alliance.RED, Point(144.0 - (17 / 2), 72 - 8.0), Math.toRadians(180.0))
+            StartLocation(
+                Alliance.RED,
+                Point(144 - 9.0, 72 + 8.0),
+                Math.toRadians(180.0)
+            )
         )
         robot.autoSetup()
         robot.once()
         waitForStart()
-        robot.specimenAutoR.start()
-        while (robot.specimenAutoR.mainLoop(this)) {
-            robot.specimenAutoR.update()
+        robot.localizerSubsystem.follower.followPath(robot.getSpecimenRPath())
+
+//        robot.specimenAutoR.start()
+        while (opModeIsActive()) {
+//            robot.specimenAutoR.update()
+            robot.localizerSubsystem.follower.update()
+
             PoseStorage.currentPose = robot.localizerSubsystem.pose
         }
     }

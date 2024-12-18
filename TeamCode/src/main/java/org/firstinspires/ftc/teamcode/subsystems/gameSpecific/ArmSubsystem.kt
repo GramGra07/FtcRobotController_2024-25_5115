@@ -64,7 +64,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     var pitchEncoder: DcMotorEx
 
     private val maxExtendIn = 32.5
-    private val maxExtendTicksTOTAL = 2000
+    private val maxExtendTicksTOTAL = 2200
     private val ticksPerInchExtend = maxExtendTicksTOTAL / maxExtendIn
     var maxExtendTicks = maxExtendTicksTOTAL
 
