@@ -26,6 +26,13 @@ class AutoHardware(
         timer.reset()
     }
 
+    fun updateAll() {
+        follower.update()
+        driverAid.update()
+        armSubsystem.update()
+        scoringSubsystem.update()
+    }
+
     fun autoSetup() {
         this.scoringSubsystem.setup()
     }
@@ -374,7 +381,20 @@ class AutoHardware(
         stop,
     }
 
-    var specimenAuto: StateMachine<statesRR> = StateMachine.Builder<statesRR>()
+    val specimenAutoR: StateMachine<statesRR> = StateMachine.Builder<statesRR>()
+        .state(statesRR.driveToSpecimenR)
+        .onEnter(statesRR.driveToSpecimenR) {
+            placeSpecimenRPathFollower(follower)
+            driverAid.highSpecimen()
+        }
+        .whileState(statesRR.driveToSpecimenR, { follower.atParametricEnd() }) {
+            updateAll()
+        }
+        .transition(statesRR.driveToSpecimenR, { follower.atParametricEnd() }, 0.0)
+        .stopRunning(statesRR.stop)
+        .build()
+
+    var specimenAutoB: StateMachine<statesRR> = StateMachine.Builder<statesRR>()
         .state(statesRR.driveToSpecimenR)
         .onEnter(statesRR.driveToSpecimenR) {
             placeSpecimenBPathFollower(follower)
