@@ -36,7 +36,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     private var pitchState: PitchState = PitchState.IDLE
     private var pPower: Double = 0.0
     var pMax = 0.8
-    private var pMin = -1.0
+    private var pMin = -0.7
     private var pitchPIDF: PIDFController = PIDFController(0.0, 0.0, 0.0, 0.0)
     var pitchT: Double = 0.0
 
@@ -85,11 +85,13 @@ class ArmSubsystem(ahwMap: HardwareMap) {
         extendMotor = initMotor(ahwMap, "extendMotor", DcMotor.RunMode.RUN_WITHOUT_ENCODER)
         extendMotor2 = initMotor(ahwMap, "extendMotor2", DcMotor.RunMode.RUN_WITHOUT_ENCODER)
 
-        extendEncoder = DualEncoder(ahwMap, "extendMotor2", "extendMotor", "Arm Extend")
+        extendEncoder = DualEncoder(ahwMap, "extendMotor2", "extendMotor", "Arm Extend", false)
         pitchEncoder = initMotor(ahwMap, "motorFrontRight", DcMotor.RunMode.RUN_WITHOUT_ENCODER)
 
         pitchMotor.direction = DcMotorSimple.Direction.REVERSE
         pitchMotor2.direction = DcMotorSimple.Direction.REVERSE
+        extendMotor.direction = DcMotorSimple.Direction.REVERSE
+        extendMotor2.direction = DcMotorSimple.Direction.REVERSE
 
         updatePID()
     }
@@ -220,6 +222,18 @@ class ArmSubsystem(ahwMap: HardwareMap) {
         return MathFunctions.inTolerance(
             extendEncoder.getMost(),
             extendTarget.toDouble(),
+            tolerance
+        )
+    }
+
+    fun bothAtTarget(tolerance: Double = 100.0): Boolean {
+        return MathFunctions.inTolerance(
+            extendEncoder.getMost(),
+            extendTarget.toDouble(),
+            tolerance
+        ) && MathFunctions.inTolerance(
+            pitchEncoder.currentPosition.toDouble(),
+            pitchT.toDouble(),
             tolerance
         )
     }

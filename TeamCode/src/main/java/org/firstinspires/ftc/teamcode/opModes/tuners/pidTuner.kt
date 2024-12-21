@@ -15,9 +15,9 @@ class pidTuner : LinearOpMode() {
         val robot = HardwareConfig(this, false, StartLocation(Alliance.RED))
         waitForStart()
         robot.once() //runs once
+        robot.armSubsystem.setPitchTarget(400.0)
+        robot.armSubsystem.setExtendTarget(700.0)
         while (opModeIsActive()) { //while the op mode is active
-            robot.armSubsystem.setPitchTarget(400.0)
-            robot.armSubsystem.setExtendTarget(700.0)
             robot.armSubsystem.update()
             robot.armSubsystem.telemetry(telemetry)
             telemetry.update()

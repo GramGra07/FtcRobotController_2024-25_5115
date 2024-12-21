@@ -89,6 +89,9 @@ object Operators {
 //                armSubsystem.setPitchTarget(600.0)
 //            }
 //        }
+        if (myOpMode.gamepad2.left_trigger > 0.0) {
+            da.lift()
+        }
         if (myOpMode.gamepad2.options) {
             da.daState = DriverAid.DAState.IDLE
         }

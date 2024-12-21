@@ -5,7 +5,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.follower.Follower
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.BezierCurve
-import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.PathBuilder
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.PathChain
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Point
 import org.firstinspires.ftc.teamcode.utilClass.storage.PoseStorage
@@ -16,9 +15,11 @@ class AutoHardware(
     startLocation: StartLocation,
     ahwMap: HardwareMap = opmode.hardwareMap,
 ) : HardwareConfig(opmode, true, startLocation, ahwMap) {
-    val follower: Follower = this.localizerSubsystem.follower
+    lateinit var follower: Follower
 
     init {
+        super.initRobot(ahwMap, true, startLocation)
+        follower = super.localizerSubsystem.follower
         telemetry.addData("Status", "Initialized")
         telemetry.addData("Alliance", startLocation.alliance)
         telemetry.update()
@@ -29,7 +30,7 @@ class AutoHardware(
 
     fun updateAll() {
         follower.update()
-//        driverAid.update()
+        driverAid.update()
         armSubsystem.update()
         scoringSubsystem.update()
     }
@@ -42,34 +43,34 @@ class AutoHardware(
     val blueX = 6.0
     val blueStartLeft = Point(blueX, 108.0)
     val blueStartRight = Point(blueX, 60.0)
-    val blueStartAngle = Math.toRadians(0.0)
+    val blueStartAngle = Math.toRadians(180.0)
     val redX = 136.0
     val redStartLeft = Point(redX, 88.0)
     val redStartRight = Point(redX, 36.0)
-    val redStartAngle = Math.toRadians(180.0)
+    val redStartAngle = Math.toRadians(0.0)
 
     val blueEndLeft = Point(96.0, 62.0)
     val blueEndRight = Point(62.0, 108.0)
-    val blueEndAngle = Math.toRadians(90.0)
+    val blueEndAngle = Math.toRadians(-90.0)
     val redEndLeft = Point(62.0, 48.0)
     val redEndRight = Point(82.0, 48.0)
-    val redEndAngle = Math.toRadians(-90.0)
+    val redEndAngle = Math.toRadians(90.0)
     val blueHuman = Point(12.0, 24.0)
-    val blueHumanAngle = Math.toRadians(180.0)
+    val blueHumanAngle = Math.toRadians(0.0)
     val redHuman = Point(130.0, 120.0)
-    val redHumanAngle = Math.toRadians(0.0)
+    val redHumanAngle = Math.toRadians(180.0)
     val blueBasket = Point(22.0, 122.0)
-    val blueBasketAngle = Math.toRadians(135.0)
+    val blueBasketAngle = Math.toRadians(45.0)
     val redBasket = Point(122.0, 22.0)
-    val redBasketAngle = Math.toRadians(-45.0)
+    val redBasketAngle = Math.toRadians(135.0)
     val blueSpecimen = Point(36.0, 72.0)
-    val blueSpecimenAngle = Math.toRadians(0.0)
+    val blueSpecimenAngle = Math.toRadians(180.0)
     val redSpecimen = Point(108.0, 72.0)
-    val redSpecimenAngle = Math.toRadians(180.0)
+    val redSpecimenAngle = Math.toRadians(0.0)
     val blueSample = Point(60.0, 12.0)
-    val blueSampleAngle = Math.toRadians(90.0)
+    val blueSampleAngle = Math.toRadians(-90.0)
     val redSample = Point(84.0, 132.0)
-    val redSampleAngle = Math.toRadians(90.0)
+    val redSampleAngle = Math.toRadians(-90.0)
     val blueNeutralSample = Point(26.0, 132.0)
     val redNeutralSample = Point(118.0, 12.0)
 
@@ -189,7 +190,7 @@ class AutoHardware(
         )
     }
 
-    val pathBuilder = PathBuilder()
+    val pathBuilder = this.localizerSubsystem.follower.pathBuilder()
 
     fun placeSpecimenBPath(): PathChain {
         return pathBuilder.addPath(
@@ -201,7 +202,7 @@ class AutoHardware(
     fun placeSpecimenRPath(): PathChain {
         return pathBuilder.addPath(
             goToSpecimenRCurve()
-        ).setLinearHeadingInterpolation(PoseStorage.currentHeading, redSpecimenAngle)
+        ).setConstantHeadingInterpolation(redSpecimenAngle)
             .build()
     }
 
@@ -384,7 +385,7 @@ class AutoHardware(
     val specimenAutoR: StateMachine<statesRR> = StateMachine.Builder<statesRR>()
         .state(statesRR.driveToSpecimenR)
         .onEnter(statesRR.driveToSpecimenR) {
-//            driverAid.highSpecimen()
+            driverAid.highSpecimen()
             placeSpecimenRPathFollower()
         }
         .whileState(statesRR.driveToSpecimenR, { follower.atParametricEnd() }) {
@@ -394,134 +395,24 @@ class AutoHardware(
             telemetry.addData("heading", follower.getPose().getHeading());
             telemetry.update();
         }
-        .transition(statesRR.driveToSpecimenR, { follower.atParametricEnd() }, 0.0)
+        .transition(statesRR.driveToSpecimenR, { follower.atParametricEnd() }, 0.5)
+        .state(statesRR.placeSpecimenR)
+        .onEnter(statesRR.placeSpecimenR) {
+            driverAid.collapse()
+            driverAid.update()
+        }
+        .whileState(statesRR.placeSpecimenR, {
+            armSubsystem.bothAtTarget(30.0)
+        }) {
+            updateAll()
+        }
+        .transition(
+            statesRR.placeSpecimenR,
+            {
+                (true)
+            },
+            0.0
+        )
         .stopRunning(statesRR.stop)
         .build()
-
-    var specimenAutoB: StateMachine<statesRR> = StateMachine.Builder<statesRR>()
-        .state(statesRR.driveToSpecimenR)
-        .onEnter(statesRR.driveToSpecimenR) {
-            placeSpecimenBPathFollower()
-        }
-        .whileState(statesRR.driveToSpecimenR, { follower.atParametricEnd() }) {
-            follower.update()
-        }
-        .transition(statesRR.driveToSpecimenR, { follower.atParametricEnd() }, 0.0)
-//            .state(statesRR.placeSpecimenR)
-//            .onEnter(statesRR.placeSpecimenR) {
-//                DriverAid.collapseSM.start()
-//            }
-//            .whileState(statesRR.placeSpecimenR, { !DriverAid.collapseSM.isRunning }) {
-//                DriverAid.collapseSM.update()
-//            }
-//            .transition(statesRR.placeSpecimenR, { !DriverAid.collapseSM.isRunning }, 0.0)
-        .state(statesRR.goToSampleR)
-        .onEnter(statesRR.goToSampleR) {
-            goToSampleRPathFollower(0.0)
-        }
-        .whileState(statesRR.goToSampleR, { follower.atParametricEnd() }) {
-            follower.update()
-        }
-        .transition(statesRR.goToSampleR, { follower.atParametricEnd() }, 0.0)
-        .state(statesRR.goToSampleR2)
-        .onEnter(statesRR.goToSampleR2) {
-            goToSampleRPathFollower(6.0)
-        }
-        .whileState(statesRR.goToSampleR2, { follower.atParametricEnd() }) {
-            follower.update()
-        }
-        .transition(statesRR.goToSampleR2, { follower.atParametricEnd() }, 0.0)
-        .state(statesRR.goToSampleR3)
-        .onEnter(statesRR.goToSampleR3) {
-            goToSampleRPathFollower(-6.0)
-        }
-        .whileState(statesRR.goToSampleR3, { follower.atParametricEnd() }) {
-            follower.update()
-        }
-        .transition(statesRR.goToSampleR3, { follower.atParametricEnd() }, 0.0)
-        .state(statesRR.goToHumanR)
-        .onEnter(statesRR.goToHumanR) {
-            goToHumanRPathFollower()
-        }
-        .whileState(statesRR.goToHumanR, { follower.atParametricEnd() }) {
-            follower.update()
-        }
-        .transition(statesRR.goToHumanR, { follower.atParametricEnd() }, 0.0)
-        .state(statesRR.goToSpecimenR)
-        .onEnter(statesRR.goToSpecimenR) {
-            placeSpecimenRPathFollower()
-        }
-        .whileState(statesRR.goToSpecimenR, { follower.atParametricEnd() }) {
-            follower.update()
-        }
-        .transition(statesRR.goToSpecimenR, { follower.atParametricEnd() }, 0.0)
-//            .state(statesRR.placeSpecimenR1)
-//            .onEnter(statesRR.placeSpecimenR1) {
-//                DriverAid.collapseSM.start()
-//            }
-//            .whileState(statesRR.placeSpecimenR1, { !DriverAid.collapseSM.isRunning }) {
-//                DriverAid.collapseSM.update()
-//            }
-//            .transition(statesRR.placeSpecimenR1, { !DriverAid.collapseSM.isRunning }, 0.0)
-        .state(statesRR.goToHumanR2)
-        .onEnter(statesRR.goToHumanR2) {
-            goToHumanRPathFollower()
-        }
-        .whileState(statesRR.goToHumanR2, { follower.atParametricEnd() }) {
-            follower.update()
-        }
-        .transition(statesRR.goToHumanR2, { follower.atParametricEnd() }, 0.0)
-        .state(statesRR.goToSpecimenR2)
-        .onEnter(statesRR.goToSpecimenR2) {
-            placeSpecimenRPathFollower()
-        }
-        .whileState(statesRR.goToSpecimenR2, { follower.atParametricEnd() }) {
-            follower.update()
-        }
-        .transition(statesRR.goToSpecimenR2, { follower.atParametricEnd() }, 0.0)
-//            .state(statesRR.placeSpecimenR2)
-//            .onEnter(statesRR.placeSpecimenR2) {
-//                DriverAid.collapseSM.start()
-//            }
-//            .whileState(statesRR.placeSpecimenR2, { !DriverAid.collapseSM.isRunning }) {
-//                DriverAid.collapseSM.update()
-//            }
-//            .transition(statesRR.placeSpecimen2R, { !DriverAid.collapseSM.isRunning }, 0.0)
-        .state(statesRR.goToHumanR3)
-        .onEnter(statesRR.goToHumanR3) {
-            goToHumanRPathFollower()
-        }
-        .whileState(statesRR.goToHumanR3, { follower.atParametricEnd() }) {
-            follower.update()
-        }
-        .transition(statesRR.goToHumanR3, { follower.atParametricEnd() }, 0.0)
-        .state(statesRR.goToSpecimenR3)
-        .onEnter(statesRR.goToSpecimenR3) {
-            placeSpecimenRPathFollower()
-        }
-        .whileState(statesRR.goToSpecimenR3, { follower.atParametricEnd() }) {
-            follower.update()
-        }
-        .transition(statesRR.goToSpecimenR3, { follower.atParametricEnd() }, 0.0)
-//            .state(statesRR.placeSpecimenR3)
-//            .onEnter(statesRR.placeSpecimenR3) {
-//                DriverAid.collapseSM.start()
-//            }
-//            .whileState(statesRR.placeSpecimenR3, { !DriverAid.collapseSM.isRunning }) {
-//                DriverAid.collapseSM.update()
-//            }
-//            .transition(statesRR.placeSpecimenR3, { !DriverAid.collapseSM.isRunning }, 0.0)
-        .state(statesRR.goToEndR)
-        .onEnter(statesRR.goToEndR) {
-            goToEndRrPathFollower()
-        }
-        .whileState(statesRR.goToEndR, { follower.atParametricEnd() }) {
-            follower.update()
-        }
-        .onExit(statesRR.goToEndR) {
-        }
-        .transition(statesRR.goToEndR, { follower.atParametricEnd() }, 0.0)
-        .stopRunning(statesRR.stop)
-        .build()
-
 }

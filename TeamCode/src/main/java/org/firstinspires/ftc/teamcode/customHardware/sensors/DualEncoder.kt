@@ -20,14 +20,14 @@ class DualEncoder(
     }
 
     fun getAverage(): Double {
-        return (encoder.getPosition() + (reversedEncoder.getPosition(true))) / 2.0
+        return (encoder.getPosition() + (reversedEncoder.getPosition(needsReversing))) / 2.0
     }
 
     fun getMost(): Double {
-        return if (encoder.getPosition() > reversedEncoder.getPosition(true)) {
+        return if (encoder.getPosition() > reversedEncoder.getPosition(needsReversing)) {
             encoder.getPosition()
         } else {
-            reversedEncoder.getPosition(true)
+            reversedEncoder.getPosition(needsReversing)
         }
     }
 
@@ -36,7 +36,7 @@ class DualEncoder(
         telemetry.addData(
             "$subsystemName Reversed encoder",
             "%.1f",
-            reversedEncoder.getPosition(true)
+            reversedEncoder.getPosition(needsReversing)
         )
         telemetry.addData("$subsystemName Most", "%.1f", getMost())
     }

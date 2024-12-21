@@ -93,7 +93,7 @@ class DriverAid(
         scoringSubsystem.setPitchMed()
         scoringSubsystem.setRotateCenter()
         armSubsystem.pMax = 0.5
-        armSubsystem.setPE(2200.0, 2250.0, true)
+        armSubsystem.setPE(2000.0, 2250.0, true)
         end()
     }
 
@@ -125,6 +125,19 @@ class DriverAid(
         }
     }
 
+    private var liftState = false
+    fun easyLiftL1() {
+        usingDA = true
+        if (!liftState) {
+            scoringSubsystem.setPitchLow()
+            scoringSubsystem.closeClaw()
+            armSubsystem.setPE(2000.0, 1300.0)
+        }
+        if (armSubsystem.isExtendAtTarget(100.0) && armSubsystem.isPitchAtTarget(200.0)) {
+            liftState = true
+            armSubsystem.setPE(100.0, 500.0)
+        }
+    }
 
     fun lift() {
         usingDA = true
@@ -160,82 +173,24 @@ class DriverAid(
             .onEnter(AutoLift.extend_pivot) {
                 scoringSubsystem.setPitchLow()
                 scoringSubsystem.closeClaw()
-                scoringSubsystem.update()
-                armSubsystem.setPitchTargetDegrees(30.0)
-                armSubsystem.setExtendTarget(30.0)
+                armSubsystem.setPE(2000.0, 1300.0)
             }
             .transition(AutoLift.extend_pivot) {
                 armSubsystem.isPitchAtTarget() && armSubsystem.isExtendAtTarget()
             }
             .state(AutoLift.hook1st)
             .onEnter(AutoLift.hook1st) {
-                armSubsystem.setPitchTargetDegrees(40.0)
+                armSubsystem.setPE(100.0, 500.0)
             }
             .transition(AutoLift.hook1st) {
-                armSubsystem.isPitchAtTarget()
+                armSubsystem.isPitchAtTarget() && armSubsystem.isExtendAtTarget()
             }
             .state(AutoLift.lift1st)
             .onEnter(AutoLift.lift1st) {
-                armSubsystem.setExtendTarget(0.0)
+                armSubsystem.setPE(100.0, 1300.0)
             }
             .transition(AutoLift.lift1st) {
-                armSubsystem.isExtendAtTarget()
-            }
-            .state(AutoLift.pivotBack)
-            .onEnter(AutoLift.pivotBack) {
-                armSubsystem.setPitchTargetDegrees(10.0)
-            }
-            .transition(AutoLift.pivotBack) {
-                armSubsystem.isPitchAtTarget()
-            }
-            .state(AutoLift.sit1st)
-            .onEnter(AutoLift.sit1st) {
-                armSubsystem.setExtendTarget(10.0)
-            }
-            .transition(AutoLift.sit1st) {
-                armSubsystem.isExtendAtTarget()
-            }
-            .state(AutoLift.extend2nd)
-            .onEnter(AutoLift.extend2nd) {
-                armSubsystem.setExtendTarget(30.0)
-            }
-            .transition(AutoLift.extend2nd) {
-                armSubsystem.isExtendAtTarget()
-            }
-            .state(AutoLift.hook2nd)
-            .onEnter(AutoLift.hook2nd) {
-                armSubsystem.setPitchTargetDegrees(40.0)
-            }
-            .transition(AutoLift.hook2nd) {
-                armSubsystem.isPitchAtTarget()
-            }
-            .state(AutoLift.lift2nd)
-            .onEnter(AutoLift.lift2nd) {
-                armSubsystem.setExtendTarget(0.0)
-            }
-            .transition(AutoLift.lift2nd) {
-                armSubsystem.isExtendAtTarget()
-            }
-            .state(AutoLift.pivot2nd)
-            .onEnter(AutoLift.pivot2nd) {
-                armSubsystem.setPitchTargetDegrees(10.0)
-            }
-            .transition(AutoLift.pivot2nd) {
-                armSubsystem.isPitchAtTarget()
-            }
-            .state(AutoLift.sit2nd)
-            .onEnter(AutoLift.sit2nd) {
-                armSubsystem.setExtendTarget(10.0)
-            }
-            .transition(AutoLift.sit2nd) {
-                armSubsystem.isExtendAtTarget()
-            }
-            .state(AutoLift.collapse)
-            .onEnter(AutoLift.collapse) {
-                collapseSequence(scoringSubsystem)
-            }
-            .transition(AutoLift.collapse) {
-                armSubsystem.isExtendAtTarget()
+                armSubsystem.isPitchAtTarget() && armSubsystem.isExtendAtTarget()
             }
             .stopRunning(AutoLift.stop)
     private val liftSequence: SequentialRunSM<AutoLift> = liftSequenceBuilder.build()

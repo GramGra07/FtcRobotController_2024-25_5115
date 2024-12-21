@@ -30,15 +30,15 @@ public class FollowerConstants {
 
     // This section is for setting the actual drive vector for the front left wheel, if the robot
     // is facing a heading of 0 radians with the wheel centered at (0,0)
-    private static final double xMovement = 66.46;
+    private static final double xMovement = 62.384;
     private static final double yMovement = 67.8;
     private static final double[] convertToPolar = Point.cartesianToPolar(xMovement, -yMovement);
     public static Vector frontLeftVector = MathFunctions.normalizeVector(new Vector(convertToPolar[0], convertToPolar[1]));
     // Translational PIDF coefficients (don't use integral)
     public static CustomPIDFCoefficients translationalPIDFCoefficients = new CustomPIDFCoefficients(
-            0.4,
+            0.5,
             0.0,
-            0.03,
+            0.0008,
             0.0
     );
     // Translational Integral
@@ -52,18 +52,18 @@ public class FollowerConstants {
     public static double translationalPIDFFeedForward = 0.015;
     // Heading error PIDF coefficients
     public static CustomPIDFCoefficients headingPIDFCoefficients = new CustomPIDFCoefficients(
-            2.0,
+            2.2,
             0.0,
-            0.03,
+            0.005,
             0.0
     );
     // Feed forward constant added on to the heading PIDF
     public static double headingPIDFFeedForward = 0.01;
     // Drive PIDF coefficients
     public static CustomFilteredPIDFCoefficients drivePIDFCoefficients = new CustomFilteredPIDFCoefficients(
-            0.007,
+            0.001,
             0.0,
-            0.0005,
+            0.000005,
             0.0, 0.0
     );
     // Feed forward constant added on to the drive PIDF
