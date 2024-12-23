@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.tunin
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
-import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -25,7 +24,7 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.Drawing;
  * @version 1.0, 5/6/2024
  */
 @Config
-@Autonomous(name = "Turn Localizer Tuner", group = "Autonomous Pathing Tuning")
+//@Autonomous(name = "Turn Localizer Tuner", group = "Pathing Tuning")
 public class TurnTuner extends OpMode {
     private PoseUpdater poseUpdater;
     private DashboardPoseTracker dashboardPoseTracker;

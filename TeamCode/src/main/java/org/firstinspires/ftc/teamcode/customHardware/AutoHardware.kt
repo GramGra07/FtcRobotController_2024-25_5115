@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.customHardware
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.HardwareMap
+import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.follower.Follower
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.BezierCurve
@@ -9,6 +10,7 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Path
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Point
 import org.firstinspires.ftc.teamcode.utilClass.storage.PoseStorage
 import org.gentrifiedApps.statemachineftc.StateMachine
+
 
 class AutoHardware(
     opmode: LinearOpMode,
@@ -37,6 +39,17 @@ class AutoHardware(
 
     fun autoSetup() {
         this.scoringSubsystem.setup()
+    }
+
+    fun pause(time: Double, runWhilePaused: () -> Unit) {
+        val myTimer = ElapsedTime()
+        myTimer.reset()
+        while (myTimer.seconds() < time) {
+            telemetry.addData("Elapsed Time", myTimer.seconds())
+            telemetry.update()
+            runWhilePaused()
+            follower.holdPoint(follower.pose)
+        }
     }
 
 
@@ -364,55 +377,457 @@ class AutoHardware(
     }
 
     enum class statesRR {
-        driveToSpecimenR,
-        placeSpecimenR,
-        goToSampleR,
-        goToSampleR2,
-        goToSampleR3,
-        goToHumanR,
-        goToSpecimenR,
-        placeSpecimenR1,
-        goToHumanR2,
-        goToSpecimenR2,
-        placeSpecimenR2,
-        goToHumanR3,
-        goToSpecimenR3,
-        placeSpecimenR3,
-        goToEndR,
-        stop,
+        DRIVE_TO_SPECIMEN_R,
+        PLACE_SPECIMEN_R,
+        GO_TO_SAMPLE_R,
+        GO_TO_SAMPLE_R2,
+        GO_TO_SAMPLE_R3,
+        GO_TO_HUMAN_R,
+        GO_TO_SPECIMEN_R,
+        PLACE_SPECIMEN_R1,
+        GO_TO_HUMAN_R2,
+        GO_TO_SPECIMEN_R2,
+        PLACE_SPECIMEN_R2,
+        GO_TO_HUMAN_R3,
+        GO_TO_SPECIMEN_R3,
+        PLACE_SPECIMEN_R3,
+        GO_TO_END_R,
+        STOP,
     }
 
-    val specimenAutoR: StateMachine<statesRR> = StateMachine.Builder<statesRR>()
-        .state(statesRR.driveToSpecimenR)
-        .onEnter(statesRR.driveToSpecimenR) {
+    val smallSpecimenAutoR: StateMachine<statesRR> = StateMachine.Builder<statesRR>()
+        .state(statesRR.DRIVE_TO_SPECIMEN_R)
+        .onEnter(statesRR.DRIVE_TO_SPECIMEN_R) {
             driverAid.highSpecimen()
             placeSpecimenRPathFollower()
         }
-        .whileState(statesRR.driveToSpecimenR, { follower.atParametricEnd() }) {
+        .whileState(statesRR.DRIVE_TO_SPECIMEN_R, { follower.atParametricEnd() }) {
             updateAll()
-            telemetry.addData("x", follower.getPose().getX());
-            telemetry.addData("y", follower.getPose().getY());
-            telemetry.addData("heading", follower.getPose().getHeading());
+            telemetry.addData("x", follower.pose.x);
+            telemetry.addData("y", follower.pose.y);
+            telemetry.addData("heading", follower.pose.heading);
             telemetry.update();
         }
-        .transition(statesRR.driveToSpecimenR, { follower.atParametricEnd() }, 0.5)
-        .state(statesRR.placeSpecimenR)
-        .onEnter(statesRR.placeSpecimenR) {
-            driverAid.collapse()
-            driverAid.update()
+        .transition(statesRR.DRIVE_TO_SPECIMEN_R, { follower.atParametricEnd() }, 0.5)
+        .state(statesRR.PLACE_SPECIMEN_R)
+        .onEnter(statesRR.PLACE_SPECIMEN_R) {
+            armSubsystem.setExtendTarget(900.0)
         }
-        .whileState(statesRR.placeSpecimenR, {
-            armSubsystem.bothAtTarget(30.0)
+        .whileState(statesRR.PLACE_SPECIMEN_R, {
+            armSubsystem.isExtendAtTarget(30.0)
         }) {
             updateAll()
         }
         .transition(
-            statesRR.placeSpecimenR,
+            statesRR.PLACE_SPECIMEN_R,
             {
                 (true)
             },
             0.0
         )
-        .stopRunning(statesRR.stop)
+        .stopRunning(statesRR.STOP)
+        .build()
+
+    val fullSpecimenAutoR: StateMachine<statesRR> = StateMachine.Builder<statesRR>()
+        .state(statesRR.DRIVE_TO_SPECIMEN_R)
+        .onEnter(statesRR.DRIVE_TO_SPECIMEN_R) {
+            driverAid.highSpecimen()
+            placeSpecimenRPathFollower()
+        }
+        .whileState(statesRR.DRIVE_TO_SPECIMEN_R, { follower.atParametricEnd() }) {
+            updateAll()
+            telemetry.addData("x", follower.pose.x);
+            telemetry.addData("y", follower.pose.y);
+            telemetry.addData("heading", follower.pose.heading);
+            telemetry.update();
+        }
+        .transition(statesRR.DRIVE_TO_SPECIMEN_R, { follower.atParametricEnd() }, 0.5)
+        .state(statesRR.PLACE_SPECIMEN_R)
+        .onEnter(statesRR.PLACE_SPECIMEN_R) {
+            armSubsystem.setExtendTarget(900.0)
+        }
+        .whileState(statesRR.PLACE_SPECIMEN_R, {
+            armSubsystem.isExtendAtTarget(30.0)
+        }) {
+            updateAll()
+        }
+        .transition(
+            statesRR.PLACE_SPECIMEN_R,
+            {
+                (true)
+            },
+            0.0
+        )
+        .state(statesRR.GO_TO_SAMPLE_R)
+        .onEnter(statesRR.GO_TO_SAMPLE_R) {
+            goToSampleRCurve(0.0)
+        }
+        .whileState(statesRR.GO_TO_SAMPLE_R, { follower.atParametricEnd() }) {
+            updateAll()
+        }
+        .transition(statesRR.GO_TO_SAMPLE_R, { follower.atParametricEnd() }, 0.5)
+        .state(statesRR.GO_TO_SAMPLE_R2)
+        .onEnter(statesRR.GO_TO_SAMPLE_R2) {
+            goToSampleRCurve(0.0)
+        }
+        .whileState(statesRR.GO_TO_SAMPLE_R2, { follower.atParametricEnd() }) {
+            updateAll()
+        }
+        .transition(statesRR.GO_TO_SAMPLE_R2, { follower.atParametricEnd() }, 0.5)
+
+        .state(statesRR.GO_TO_SAMPLE_R3)
+        .onEnter(statesRR.GO_TO_SAMPLE_R3) {
+            goToSampleRCurve(0.0)
+        }
+        .whileState(statesRR.GO_TO_SAMPLE_R3, { follower.atParametricEnd() }) {
+            updateAll()
+        }
+        .transition(statesRR.GO_TO_SAMPLE_R3, { follower.atParametricEnd() }, 0.5)
+        .state(statesRR.GO_TO_HUMAN_R)
+        .onEnter(statesRR.GO_TO_HUMAN_R) {
+            driverAid.human()
+            driverAid.update()
+            goToHumanRPathFollower()
+        }
+        .whileState(statesRR.GO_TO_HUMAN_R, { follower.atParametricEnd() }) {
+            updateAll()
+        }
+        .transition(statesRR.GO_TO_HUMAN_R, { follower.atParametricEnd() }, 0.5)
+        .state(statesRR.GO_TO_SPECIMEN_R)
+        .onEnter(statesRR.GO_TO_SPECIMEN_R) {
+            goToSpecimenRCurve()
+            driverAid.highSpecimen()
+            driverAid.update()
+        }
+        .whileState(statesRR.GO_TO_SPECIMEN_R, { follower.atParametricEnd() }) {
+            updateAll()
+        }
+        .transition(statesRR.GO_TO_SPECIMEN_R, { follower.atParametricEnd() }, 0.5)
+        .state(statesRR.PLACE_SPECIMEN_R1)
+        .onEnter(statesRR.PLACE_SPECIMEN_R1) {
+            armSubsystem.setExtendTarget(900.0)
+        }
+        .whileState(statesRR.PLACE_SPECIMEN_R1, {
+            armSubsystem.isExtendAtTarget(30.0)
+        }) {
+            updateAll()
+        }
+        .transition(
+            statesRR.PLACE_SPECIMEN_R1,
+            {
+                (true)
+            },
+            0.0
+        )
+        .state(statesRR.GO_TO_HUMAN_R2)
+        .onEnter(statesRR.GO_TO_HUMAN_R2) {
+            driverAid.human()
+            driverAid.update()
+            goToHumanRPathFollower()
+        }
+        .whileState(statesRR.GO_TO_HUMAN_R2, { follower.atParametricEnd() }) {
+            updateAll()
+        }
+        .transition(statesRR.GO_TO_HUMAN_R2, { follower.atParametricEnd() }, 0.5)
+        .state(statesRR.GO_TO_SPECIMEN_R2)
+        .onEnter(statesRR.GO_TO_SPECIMEN_R2) {
+            goToSpecimenRCurve()
+            driverAid.highSpecimen()
+            driverAid.update()
+        }
+        .whileState(statesRR.GO_TO_SPECIMEN_R2, { follower.atParametricEnd() }) {
+            updateAll()
+        }
+        .transition(statesRR.GO_TO_SPECIMEN_R2, { follower.atParametricEnd() }, 0.5)
+        .state(statesRR.PLACE_SPECIMEN_R2)
+        .onEnter(statesRR.PLACE_SPECIMEN_R2) {
+            armSubsystem.setExtendTarget(900.0)
+        }
+        .whileState(statesRR.PLACE_SPECIMEN_R2, {
+            armSubsystem.isExtendAtTarget(30.0)
+        }) {
+            updateAll()
+        }
+        .transition(
+            statesRR.PLACE_SPECIMEN_R2,
+            {
+                (true)
+            },
+            0.0
+        )
+        .state(statesRR.GO_TO_HUMAN_R3)
+        .onEnter(statesRR.GO_TO_HUMAN_R3) {
+            driverAid.human()
+            driverAid.update()
+            goToHumanRPathFollower()
+        }
+        .whileState(statesRR.GO_TO_HUMAN_R3, { follower.atParametricEnd() }) {
+            updateAll()
+        }
+        .transition(statesRR.GO_TO_HUMAN_R3, { follower.atParametricEnd() }, 0.5)
+        .state(statesRR.GO_TO_SPECIMEN_R3)
+        .onEnter(statesRR.GO_TO_SPECIMEN_R3) {
+            goToSpecimenRCurve()
+            driverAid.highSpecimen()
+            driverAid.update()
+        }
+        .whileState(statesRR.GO_TO_SPECIMEN_R3, { follower.atParametricEnd() }) {
+            updateAll()
+        }
+        .transition(statesRR.GO_TO_SPECIMEN_R3, { follower.atParametricEnd() }, 0.5)
+        .state(statesRR.PLACE_SPECIMEN_R3)
+        .onEnter(statesRR.PLACE_SPECIMEN_R3) {
+            armSubsystem.setExtendTarget(900.0)
+        }
+        .whileState(statesRR.PLACE_SPECIMEN_R3, {
+            armSubsystem.isExtendAtTarget(30.0)
+        }) {
+            updateAll()
+        }
+        .transition(
+            statesRR.PLACE_SPECIMEN_R3,
+            {
+                (true)
+            },
+            0.0
+        )
+        .state(statesRR.GO_TO_END_R)
+        .onEnter(statesRR.GO_TO_END_R) {
+            driverAid.collapse()
+            driverAid.update()
+            goToEndRlPathFollower()
+        }
+        .whileState(statesRR.GO_TO_END_R, { follower.atParametricEnd() }) {
+            updateAll()
+        }
+        .transition(statesRR.GO_TO_END_R, { follower.atParametricEnd() }, 0.5)
+        .stopRunning(statesRR.STOP)
+        .build()
+
+    enum class statesRB {
+        DRIVE_TO_SPECIMEN_B,
+        PLACE_SPECIMEN_B,
+        GO_TO_SAMPLE_B,
+        GO_TO_SAMPLE_B2,
+        GO_TO_SAMPLE_B3,
+        GO_TO_HUMAN_B,
+        GO_TO_SPECIMEN_B,
+        PLACE_SPECIMEN_B1,
+        GO_TO_HUMAN_B2,
+        GO_TO_SPECIMEN_B2,
+        PLACE_SPECIMEN_B2,
+        GO_TO_HUMAN_B3,
+        GO_TO_SPECIMEN_B3,
+        PLACE_SPECIMEN_B3,
+        GO_TO_END_B,
+        STOP,
+    }
+
+    val smallSpecimenAutoB: StateMachine<statesRB> = StateMachine.Builder<statesRB>()
+        .state(statesRB.DRIVE_TO_SPECIMEN_B)
+        .onEnter(statesRB.DRIVE_TO_SPECIMEN_B) {
+            driverAid.highSpecimen()
+            placeSpecimenBPathFollower()
+        }
+        .whileState(statesRB.DRIVE_TO_SPECIMEN_B, { follower.atParametricEnd() }) {
+            updateAll()
+            telemetry.addData("x", follower.pose.x);
+            telemetry.addData("y", follower.pose.y);
+            telemetry.addData("heading", follower.pose.heading);
+            telemetry.update();
+        }
+        .transition(statesRB.DRIVE_TO_SPECIMEN_B, { follower.atParametricEnd() }, 0.5)
+        .state(statesRB.PLACE_SPECIMEN_B)
+        .onEnter(statesRB.PLACE_SPECIMEN_B) {
+            armSubsystem.setExtendTarget(900.0)
+        }
+        .whileState(statesRB.PLACE_SPECIMEN_B, {
+            armSubsystem.isExtendAtTarget(30.0)
+        }) {
+            updateAll()
+        }
+        .transition(
+            statesRB.PLACE_SPECIMEN_B,
+            {
+                (true)
+            },
+            0.0
+        )
+        .stopRunning(statesRB.STOP)
+        .build()
+
+    val fullSpecimenAutoB: StateMachine<statesRB> = StateMachine.Builder<statesRB>()
+        .state(statesRB.DRIVE_TO_SPECIMEN_B)
+        .onEnter(statesRB.DRIVE_TO_SPECIMEN_B) {
+            driverAid.highSpecimen()
+            placeSpecimenBPathFollower()
+        }
+        .whileState(statesRB.DRIVE_TO_SPECIMEN_B, { follower.atParametricEnd() }) {
+            updateAll()
+            telemetry.addData("x", follower.pose.x);
+            telemetry.addData("y", follower.pose.y);
+            telemetry.addData("heading", follower.pose.heading);
+            telemetry.update();
+        }
+        .transition(statesRB.DRIVE_TO_SPECIMEN_B, { follower.atParametricEnd() }, 0.5)
+        .state(statesRB.PLACE_SPECIMEN_B)
+        .onEnter(statesRB.PLACE_SPECIMEN_B) {
+            armSubsystem.setExtendTarget(900.0)
+        }
+        .whileState(statesRB.PLACE_SPECIMEN_B, {
+            armSubsystem.isExtendAtTarget(30.0)
+        }) {
+            updateAll()
+        }
+        .transition(
+            statesRB.PLACE_SPECIMEN_B,
+            {
+                (true)
+            },
+            0.0
+        )
+        .state(statesRB.GO_TO_SAMPLE_B)
+        .onEnter(statesRB.GO_TO_SAMPLE_B) {
+            goToSampleBPathFollower(0.0)
+        }
+        .whileState(statesRB.GO_TO_SAMPLE_B, { follower.atParametricEnd() }) {
+            updateAll()
+        }
+        .transition(statesRB.GO_TO_SAMPLE_B, { follower.atParametricEnd() }, 0.5)
+        .state(statesRB.GO_TO_SAMPLE_B2)
+        .onEnter(statesRB.GO_TO_SAMPLE_B2) {
+            goToSampleBPathFollower(0.0)
+        }
+        .whileState(statesRB.GO_TO_SAMPLE_B2, { follower.atParametricEnd() }) {
+            updateAll()
+        }
+        .transition(statesRB.GO_TO_SAMPLE_B2, { follower.atParametricEnd() }, 0.5)
+        .state(statesRB.GO_TO_SAMPLE_B3)
+        .onEnter(statesRB.GO_TO_SAMPLE_B3) {
+            goToSampleBPathFollower(0.0)
+        }
+        .whileState(statesRB.GO_TO_SAMPLE_B3, { follower.atParametricEnd() }) {
+            updateAll()
+        }
+        .transition(statesRB.GO_TO_SAMPLE_B3, { follower.atParametricEnd() }, 0.5)
+        .state(statesRB.GO_TO_HUMAN_B)
+        .onEnter(statesRB.GO_TO_HUMAN_B) {
+            driverAid.human()
+            driverAid.update()
+            goToHumanBPathFollower()
+        }
+        .whileState(statesRB.GO_TO_HUMAN_B, { follower.atParametricEnd() }) {
+            updateAll()
+        }
+        .transition(statesRB.GO_TO_HUMAN_B, { follower.atParametricEnd() }, 0.5)
+        .state(statesRB.GO_TO_SPECIMEN_B)
+        .onEnter(statesRB.GO_TO_SPECIMEN_B) {
+            goToSpecimenBCurve()
+            driverAid.highSpecimen()
+            driverAid.update()
+        }
+        .whileState(statesRB.GO_TO_SPECIMEN_B, { follower.atParametricEnd() }) {
+            updateAll()
+        }
+        .transition(statesRB.GO_TO_SPECIMEN_B, { follower.atParametricEnd() }, 0.5)
+        .state(statesRB.PLACE_SPECIMEN_B1)
+        .onEnter(statesRB.PLACE_SPECIMEN_B1) {
+            armSubsystem.setExtendTarget(900.0)
+        }
+        .whileState(statesRB.PLACE_SPECIMEN_B1, {
+            armSubsystem.isExtendAtTarget(30.0)
+        }) {
+            updateAll()
+        }
+        .transition(
+            statesRB.PLACE_SPECIMEN_B1,
+            {
+                (true)
+            },
+            0.0
+        )
+        .state(statesRB.GO_TO_HUMAN_B2)
+        .onEnter(statesRB.GO_TO_HUMAN_B2) {
+            driverAid.human()
+            driverAid.update()
+            goToHumanBPathFollower()
+        }
+        .whileState(statesRB.GO_TO_HUMAN_B2, { follower.atParametricEnd() }) {
+            updateAll()
+        }
+        .transition(statesRB.GO_TO_HUMAN_B2, { follower.atParametricEnd() }, 0.5)
+        .state(statesRB.GO_TO_SPECIMEN_B2)
+        .onEnter(statesRB.GO_TO_SPECIMEN_B2) {
+            goToSpecimenBCurve()
+            driverAid.highSpecimen()
+            driverAid.update()
+        }
+        .whileState(statesRB.GO_TO_SPECIMEN_B2, { follower.atParametricEnd() }) {
+            updateAll()
+        }
+        .transition(statesRB.GO_TO_SPECIMEN_B2, { follower.atParametricEnd() }, 0.5)
+        .state(statesRB.PLACE_SPECIMEN_B2)
+        .onEnter(statesRB.PLACE_SPECIMEN_B2) {
+            armSubsystem.setExtendTarget(900.0)
+        }
+        .whileState(statesRB.PLACE_SPECIMEN_B2, {
+            armSubsystem.isExtendAtTarget(30.0)
+        }) {
+            updateAll()
+        }
+        .transition(
+            statesRB.PLACE_SPECIMEN_B2,
+            {
+                (true)
+            },
+            0.0
+        )
+        .state(statesRB.GO_TO_HUMAN_B3)
+        .onEnter(statesRB.GO_TO_HUMAN_B3) {
+            driverAid.human()
+            driverAid.update()
+            goToHumanBPathFollower()
+        }
+        .whileState(statesRB.GO_TO_HUMAN_B3, { follower.atParametricEnd() }) {
+            updateAll()
+        }
+        .transition(statesRB.GO_TO_HUMAN_B3, { follower.atParametricEnd() }, 0.5)
+        .state(statesRB.GO_TO_SPECIMEN_B3)
+        .onEnter(statesRB.GO_TO_SPECIMEN_B3) {
+            goToSpecimenBCurve()
+            driverAid.highSpecimen()
+            driverAid.update()
+        }
+        .whileState(statesRB.GO_TO_SPECIMEN_B3, { follower.atParametricEnd() }) {
+            updateAll()
+        }
+        .transition(statesRB.GO_TO_SPECIMEN_B3, { follower.atParametricEnd() }, 0.5)
+        .state(statesRB.PLACE_SPECIMEN_B3)
+        .onEnter(statesRB.PLACE_SPECIMEN_B3) {
+            armSubsystem.setExtendTarget(900.0)
+        }
+        .whileState(statesRB.PLACE_SPECIMEN_B3, {
+            armSubsystem.isExtendAtTarget(30.0)
+        }) {
+            updateAll()
+        }
+        .transition(
+            statesRB.PLACE_SPECIMEN_B3,
+            {
+                (true)
+            },
+            0.0
+        )
+        .state(statesRB.GO_TO_END_B)
+        .onEnter(statesRB.GO_TO_END_B) {
+            driverAid.collapse()
+            driverAid.update()
+            goToEndBlPathFollower()
+        }
+        .whileState(statesRB.GO_TO_END_B, { follower.atParametricEnd() }) {
+            updateAll()
+        }
+        .transition(statesRB.GO_TO_END_B, { follower.atParametricEnd() }, 0.5)
+        .stopRunning(statesRB.STOP)
         .build()
 }

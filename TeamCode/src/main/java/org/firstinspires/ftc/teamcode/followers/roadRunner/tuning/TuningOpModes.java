@@ -19,7 +19,6 @@ import com.acmerobotics.roadrunner.ftc.MecanumMotorDirectionDebugger;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
-import com.qualcomm.robotcore.eventloop.opmode.OpModeRegistrar;
 
 import org.firstinspires.ftc.robotcore.internal.opmode.OpModeMeta;
 import org.firstinspires.ftc.teamcode.followers.roadRunner.MecanumDrive;
@@ -49,7 +48,7 @@ public final class TuningOpModes {
                 .build();
     }
 
-    @OpModeRegistrar
+    //    @OpModeRegistrar
     public static void register(OpModeManager manager) {
         if (DISABLED) return;
 
