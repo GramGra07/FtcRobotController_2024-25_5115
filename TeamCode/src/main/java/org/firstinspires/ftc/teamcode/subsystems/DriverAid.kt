@@ -196,7 +196,7 @@ class DriverAid(
     }
 
 
-    private val liftSequence: SequentialRunSM<AutoLift> =
+    val liftSequence: SequentialRunSM<AutoLift> =
         SequentialRunSM.Builder<AutoLift>()
             .state(AutoLift.extend_pivot)
             .onEnter(AutoLift.extend_pivot) {
