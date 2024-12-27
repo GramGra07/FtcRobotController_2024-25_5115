@@ -9,29 +9,26 @@ import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D
 import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toPose
-import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toPose2d
 import org.firstinspires.ftc.teamcode.extensions.PoseExtensions.toString2
-import org.firstinspires.ftc.teamcode.followers.pedroPathing.follower.Follower
-import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.Pose
-import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.PoseUpdater
-import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.localizers.TwoWheelLocalizer
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.Drawing
+import org.firstinspires.ftc.teamcode.followers.roadRunner.MecanumDrive
 import org.firstinspires.ftc.teamcode.utilClass.storage.DistanceStorage
 import org.firstinspires.ftc.teamcode.utilClass.storage.PoseStorage
 import kotlin.math.sqrt
 
 
 //@Config
-class LocalizerSubsystem(ahwMap: HardwareMap, val pose: Pose) {
-    lateinit var poseUpdater: PoseUpdater
-    lateinit var follower: Follower
+class LocalizerSubsystem(ahwMap: HardwareMap, val pose: Pose2d) {
+    //    lateinit var poseUpdater: PoseUpdater
+//    lateinit var follower: Follower
+    lateinit var drive: MecanumDrive
 
     init {
-        poseUpdater = PoseUpdater(ahwMap, TwoWheelLocalizer(ahwMap, pose))
-        poseUpdater.pose = pose
-        follower = Follower(ahwMap)
-        follower.setStartingPose(pose)
-
+//        poseUpdater = PoseUpdater(ahwMap, TwoWheelLocalizer(ahwMap, pose))
+//        poseUpdater.pose = pose
+//        follower = Follower(ahwMap)
+//        follower.setStartingPose(pose)
+        drive = MecanumDrive(ahwMap, pose)
         reset()
     }
 
@@ -57,12 +54,12 @@ class LocalizerSubsystem(ahwMap: HardwareMap, val pose: Pose) {
     fun update(
         timer: ElapsedTime?,
     ) {
-        poseUpdater.update()
+        drive.updatePoseEstimate()
 
         if (timer != null) {
             updateDistTraveled(
-                PoseStorage.currentPose.toPose2d(),
-                this.pose().toPose2d(),
+                PoseStorage.currentPose,
+                this.pose(),
                 timer.seconds()
             )
         }
@@ -70,7 +67,8 @@ class LocalizerSubsystem(ahwMap: HardwareMap, val pose: Pose) {
     }
 
     fun setPose(pose: Pose2d) {
-        poseUpdater.pose = pose.toPose()
+//        poseUpdater.pose = pose.toPose()
+        drive.pose = pose
     }
 
     fun telemetry(telemetry: Telemetry) {
@@ -82,19 +80,23 @@ class LocalizerSubsystem(ahwMap: HardwareMap, val pose: Pose) {
     }
 
     fun heading(): Double {
-        return poseUpdater.pose.heading
+//        return poseUpdater.pose.heading
+        return pose.heading.toDouble()
     }
 
-    fun pose(): Pose {
-        return poseUpdater.pose
+    fun pose(): Pose2d {
+//        return poseUpdater.pose
+        return pose
     }
 
     fun x(): Double {
-        return poseUpdater.pose.x
+//        return poseUpdater.pose.x
+        return pose.position.x
     }
 
     fun y(): Double {
-        return poseUpdater.pose.y
+//        return poseUpdater.pose.y
+        return pose.position.y
     }
 
     fun draw(dashboard: FtcDashboard, packet: TelemetryPacket = TelemetryPacket()) {
@@ -102,7 +104,7 @@ class LocalizerSubsystem(ahwMap: HardwareMap, val pose: Pose) {
         packet.field()
         packet.fieldOverlay().setStroke("#e54aa1")
         Drawing.drawRobot(
-            pose,
+            pose.toPose(),
             "#e54aa1",
         )
         dashboard.sendTelemetryPacket(packet)

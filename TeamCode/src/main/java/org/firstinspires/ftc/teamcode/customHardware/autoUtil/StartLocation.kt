@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.customHardware.autoUtil
 
+import com.acmerobotics.roadrunner.Pose2d
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.Alliance
-import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.Pose
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Point
 import org.firstinspires.ftc.teamcode.utilClass.storage.GameStorage
 import org.firstinspires.ftc.teamcode.utilClass.storage.PoseStorage
@@ -12,12 +12,12 @@ data class StartLocation(
     var startHeading: Double = 0.0
 ) {
     init {
-        PoseStorage.currentPose = Pose(startPose.x, startPose.y, startHeading)
+        PoseStorage.currentPose = Pose2d(startPose.x, startPose.y, startHeading)
         GameStorage.alliance = alliance
     }
 
     fun build() {
-        PoseStorage.currentPose = Pose(startPose.x, startPose.y, startHeading)
+        PoseStorage.currentPose = Pose2d(startPose.x, startPose.y, startHeading)
         GameStorage.alliance = alliance
     }
 }

@@ -4,7 +4,6 @@ package org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants;
 
 import java.util.ArrayList;
-import java.util.Collections;
 
 /**
  * This is the BezierCurve class. This class handles the creation of Bezier curves, which are used
@@ -20,7 +19,7 @@ import java.util.Collections;
  */
 public class BezierCurve {
     // This contains the coefficients for the curve points
-    private final ArrayList<BezierCurveCoefficients> pointCoefficients = new ArrayList<>();
+    private ArrayList<BezierCurveCoefficients> pointCoefficients = new ArrayList<>();
 
     // This contains the control points for the Bezier curve
     private ArrayList<Point> controlPoints = new ArrayList<>();
@@ -71,7 +70,9 @@ public class BezierCurve {
      * @param controlPoints This is the specified control points that define the BezierCurve.
      */
     public BezierCurve(Point... controlPoints) {
-        Collections.addAll(this.controlPoints, controlPoints);
+        for (Point controlPoint : controlPoints) {
+            this.controlPoints.add(controlPoint);
+        }
         if (this.controlPoints.size() < 3) {
             try {
                 throw new Exception("Too few control points");
@@ -219,6 +220,7 @@ public class BezierCurve {
 
         // calculates the y coordinate of the point requested
         for (int i = 0; i < controlPoints.size() - 1; i++) {
+            ;
             yCoordinate += pointCoefficients.get(i).getDerivativeValue(t) * (MathFunctions.subtractPoints(controlPoints.get(i + 1), controlPoints.get(i)).getY());
         }
 

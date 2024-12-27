@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.Pose;
 
+
 /**
  * This is the Point class. This class handles storing information about the location of points in
  * 2D space in both Cartesian, or rectangular, and polar coordinates. Additionally, this contains

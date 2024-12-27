@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -25,7 +26,7 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Poin
  * @version 1.0, 3/12/2024
  */
 @Config
-//@Autonomous(name = "Straight Back And Forth", group = "Pathing Tuning")
+@Autonomous(name = "Straight Back And Forth", group = "Pathing Tuning")
 public class StraightBackAndForth extends OpMode {
     private Telemetry telemetryA;
 

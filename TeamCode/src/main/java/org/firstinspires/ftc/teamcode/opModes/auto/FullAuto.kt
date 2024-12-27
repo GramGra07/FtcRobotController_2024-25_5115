@@ -5,7 +5,6 @@ import org.firstinspires.ftc.teamcode.customHardware.AutoHardware
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.Alliance
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Point
-import org.gentrifiedApps.statemachineftc.StateMachine
 
 //@Autonomous(group = GroupingTitles.auto) //@Disabled//disabling the opmode
 class FullAuto(val alliance: Alliance) : LinearOpMode() {
@@ -18,17 +17,17 @@ class FullAuto(val alliance: Alliance) : LinearOpMode() {
                 if (alliance == Alliance.RED) Math.toRadians(0.0) else Math.toRadians(180.0)
             )
         )
-        var auto: StateMachine<out Enum<*>> = robot.fullSpecimenAutoR
-        if (alliance == Alliance.BLUE) {
-            auto = robot.fullSpecimenAutoB
-        }
+//        var auto: StateMachine<out Enum<*>> = robot.fullSpecimenAutoR
+//        if (alliance == Alliance.BLUE) {
+//            auto = robot.fullSpecimenAutoB
+//        }
         robot.autoSetup()
         robot.once()
         waitForStart()
 
-        auto.start()
-        while (auto.mainLoop(this)) {
-            auto.update()
-        }
+//        auto.start()
+//        while (auto.mainLoop(this)) {
+//            auto.update()
+//        }
     }
 }

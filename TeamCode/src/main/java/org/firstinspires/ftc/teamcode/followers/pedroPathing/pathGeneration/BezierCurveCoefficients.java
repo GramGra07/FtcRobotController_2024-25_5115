@@ -11,12 +11,12 @@ package org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration;
  * @version 1.0, 3/8/2024
  */
 public class BezierCurveCoefficients {
-    private final double coefficient;
-    private final double derivativeCoefficient;
-    private final double secondDerivativeCoefficient;
+    private double coefficient;
+    private double derivativeCoefficient;
+    private double secondDerivativeCoefficient;
 
-    private final int n;
-    private final int i;
+    private int n;
+    private int i;
 
     /**
      * This creates the coefficients within the summation equations for calculating positions,

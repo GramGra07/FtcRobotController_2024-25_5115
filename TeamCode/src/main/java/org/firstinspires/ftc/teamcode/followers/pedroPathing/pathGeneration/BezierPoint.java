@@ -15,12 +15,12 @@ import java.util.ArrayList;
  */
 public class BezierPoint extends BezierCurve {
 
-    private final Point point;
+    private Point point;
 
-    private final Vector endTangent = new Vector();
+    private Vector endTangent = new Vector();
 
     private double UNIT_TO_TIME;
-    private final double length;
+    private double length;
 
     /**
      * This creates a new BezierPoint with a specified Point.

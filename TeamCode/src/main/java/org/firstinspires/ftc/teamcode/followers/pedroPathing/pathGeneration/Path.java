@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration;
 
+
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.localization.Pose;
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.tuning.FollowerConstants;
 
@@ -16,7 +17,7 @@ import java.util.ArrayList;
  * @version 1.0, 3/10/2024
  */
 public class Path {
-    private final BezierCurve curve;
+    private BezierCurve curve;
 
     private double startHeading;
     private double endHeading;
@@ -294,7 +295,8 @@ public class Path {
      * @return returns if at end.
      */
     public boolean isAtParametricEnd() {
-        return closestPointTValue >= pathEndTValueConstraint;
+        if (closestPointTValue >= pathEndTValueConstraint) return true;
+        return false;
     }
 
     /**
@@ -303,7 +305,8 @@ public class Path {
      * @return returns if at start.
      */
     public boolean isAtParametricStart() {
-        return closestPointTValue <= 1 - pathEndTValueConstraint;
+        if (closestPointTValue <= 1 - pathEndTValueConstraint) return true;
+        return false;
     }
 
     /**
