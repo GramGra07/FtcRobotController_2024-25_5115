@@ -1,12 +1,13 @@
 package org.firstinspires.ftc.teamcode.customHardware
 
+import com.acmerobotics.roadrunner.ParallelAction
 import com.acmerobotics.roadrunner.Pose2d
+import com.acmerobotics.roadrunner.SequentialAction
 import com.acmerobotics.roadrunner.Vector2d
 import com.acmerobotics.roadrunner.ftc.runBlocking
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
-import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.PathChain
 import org.firstinspires.ftc.teamcode.followers.roadRunner.MecanumDrive
 
 
@@ -32,8 +33,6 @@ class AutoHardware(
     }
 
     fun updateAll() {
-
-
         driverAid.update()
         armSubsystem.update()
         scoringSubsystem.update()
@@ -64,19 +63,6 @@ class AutoHardware(
         val redNeutralSample = Pose2d(118.0 - 72, 12.0 - 72, Math.toRadians(0.0))
     }
 
-
-    // for specimen auto
-    lateinit var scorePreload: PathChain
-    lateinit var move1: PathChain
-    lateinit var move2: PathChain
-    lateinit var move3: PathChain
-    lateinit var pickup1: PathChain
-    lateinit var score1: PathChain
-    lateinit var pickup2: PathChain
-    lateinit var score2: PathChain
-    lateinit var pickup3: PathChain
-    lateinit var score3: PathChain
-    lateinit var end: PathChain
 
     fun buildPaths() {
 //        scorePreload = follower.pathBuilder()
@@ -318,42 +304,55 @@ class AutoHardware(
     }
 
     fun smallSpecimenAuto() {
-        scoringSubsystem.setPitchLow()
-        scoringSubsystem.setRotateCenter()
         runBlocking(
-            drive.actionBuilder(redStartRight)
-                .splineTo(Vector2d(126.0 - 72, 72.0 - 72), redStartRight.heading.toDouble())
-                .splineTo(
-                    Vector2d(redSpecimen.position.x, redSpecimen.position.y),
-                    redSpecimen.heading.toDouble()
+            SequentialAction(
+                scoringSubsystem.servoAction(
+                    listOf(
+                        Runnable { scoringSubsystem.setPitchHigh() },
+                        Runnable { scoringSubsystem.setRotateCenter() }
+                    )
+                ),
+                ParallelAction(
+                    drive.actionBuilder(redStartRight)
+                        .splineTo(Vector2d(126.0 - 72, 72.0 - 72), redStartRight.heading.toDouble())
+                        .splineTo(
+                            Vector2d(redSpecimen.position.x, redSpecimen.position.y),
+                            redSpecimen.heading.toDouble()
+                        )
+                        .build(),
+                    armSubsystem.setPEAction(1479.1, 1100.0)
                 )
-                .build()
+            )
         )
-        armSubsystem.setExtendTarget(1100.0)
-        armSubsystem.setPitchTargetDegrees(65.0)
-        //wait
-
         armSubsystem.eMax = 0.5
-        armSubsystem.setExtendTarget(600.0)
-        //wait
+        runBlocking(
+            SequentialAction(
+                armSubsystem.setPEAction(1479.1, 600.0),
+                scoringSubsystem.servoAction(
+                    listOf(
+                        Runnable { scoringSubsystem.openClaw() },
+                        Runnable { scoringSubsystem.setRotateCenter() }
+                    )
+                )
+            )
+        )
         armSubsystem.eMax = 1.0
-        scoringSubsystem.openClaw()
-        scoringSubsystem.update()
+        runBlocking(
+            ParallelAction(
 //        runBlocking(
 //            drive.actionBuilder(redSpecimen)
 //                .splineTo(Vector2d(84.0, 132.0), redSpecimen.heading.toDouble())
 //                .splineTo(Vector2d(redSample.position.x, redSample.position.y), redSample.heading.toDouble())
 //                .build()
 //        )
-        // go to end
-        driverAid.human()
-        runBlocking(
-            drive.actionBuilder(redSpecimen)
-                .splineTo(
-                    Vector2d(redHuman.position.x, redHuman.position.y),
-                    redSpecimen.heading.toDouble()
-                )
-                .build()
+                drive.actionBuilder(redSpecimen)
+                    .splineTo(
+                        Vector2d(redHuman.position.x, redHuman.position.y),
+                        redSpecimen.heading.toDouble()
+                    )
+                    .build(),
+                driverAid.daAction(listOf(Runnable { driverAid.human() }))
+            )
         )
 
     }

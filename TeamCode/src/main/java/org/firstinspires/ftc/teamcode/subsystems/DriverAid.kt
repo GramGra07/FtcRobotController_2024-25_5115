@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems
 
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket
+import com.acmerobotics.roadrunner.Action
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ArmSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ScoringSubsystem
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.DAVars
@@ -8,7 +10,7 @@ import org.gentrifiedApps.statemachineftc.SequentialRunSM
 
 class DriverAid(
     private val scoringSubsystem: ScoringSubsystem,
-    private val armSubsystem: ArmSubsystem,
+    val armSubsystem: ArmSubsystem,
     private val localizerSubsystem: LocalizerSubsystem,
 ) {
     var usingDA = false
@@ -151,6 +153,26 @@ class DriverAid(
         if (armSubsystem.isExtendAtTarget(100.0) && armSubsystem.isPitchAtTarget(100.0)) {
             daState = DAState.IDLE
         }
+    }
+
+    class DAActions(
+        funcs: List<Runnable>,
+        val armSubsystem: ArmSubsystem,
+        val scoringSubsystem: ScoringSubsystem,
+        val driverAid: DriverAid
+    ) : Action {
+        private val funcs = funcs
+        override fun run(packet: TelemetryPacket): Boolean {
+            funcs.forEach(Runnable::run)
+            armSubsystem.update()
+            scoringSubsystem.update()
+            driverAid.update()
+            return !armSubsystem.bothAtTarget()
+        }
+    }
+
+    fun daAction(funcs: List<Runnable>): Action {
+        return DAActions(funcs, armSubsystem, scoringSubsystem, this)
     }
 
     private var liftState = false

@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems.gameSpecific
 
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket
+import com.acmerobotics.roadrunner.Action
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.Servo
 import com.qualcomm.robotcore.util.Range
@@ -210,5 +212,18 @@ class ScoringSubsystem(
             armSubsystem.ticksPerDegree * armSubsystem.pitchEncoder.currentPosition.toDouble()
         val coAng = Range.clip(angle + 80, -60.0, 80.0)
         pitchServo.setPose(coAng)
+    }
+
+    class ServoActions(private val funcs: List<Runnable>, val scoringSubsystem: ScoringSubsystem) :
+        Action {
+        override fun run(p: TelemetryPacket): Boolean {
+            funcs.forEach(Runnable::run)
+            scoringSubsystem.update()
+            return false
+        }
+    }
+
+    fun servoAction(funcs: List<Runnable>): Action {
+        return ServoActions(funcs, this)
     }
 }

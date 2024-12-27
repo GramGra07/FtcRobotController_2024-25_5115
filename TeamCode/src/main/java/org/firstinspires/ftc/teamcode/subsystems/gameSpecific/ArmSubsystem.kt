@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems.gameSpecific
 
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket
+import com.acmerobotics.roadrunner.Action
 import com.arcrobotics.ftclib.controller.PIDFController
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
@@ -257,5 +259,17 @@ class ArmSubsystem(ahwMap: HardwareMap) {
                 }
             }
         }
+    }
+
+    class PEAction(val armSubsystem: ArmSubsystem, val p: Double, val e: Double) : Action {
+        override fun run(packet: TelemetryPacket): Boolean {
+            armSubsystem.setPE(p, e)
+            armSubsystem.update()
+            return !armSubsystem.bothAtTarget()
+        }
+    }
+
+    fun setPEAction(p: Double, e: Double): Action {
+        return PEAction(this, p, e)
     }
 }
