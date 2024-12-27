@@ -9,7 +9,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
 import org.firstinspires.ftc.teamcode.customHardware.loopTime.LoopTimeController
 import org.firstinspires.ftc.teamcode.customHardware.loopTime.LoopTimeController.Companion.every
-import org.firstinspires.ftc.teamcode.followers.pedroPathing.follower.Follower
+import org.firstinspires.ftc.teamcode.followers.roadRunner.MecanumDrive
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.DriverAid
 import org.firstinspires.ftc.teamcode.subsystems.LocalizerSubsystem
@@ -34,7 +34,7 @@ open class HardwareConfig(
 
     lateinit var driveSubsystem: DriveSubsystem
     lateinit var localizerSubsystem: LocalizerSubsystem
-    lateinit var driveFollower: Follower
+    lateinit var mecanumDrive: MecanumDrive
 
     lateinit var armSubsystem: ArmSubsystem
     lateinit var scoringSubsystem: ScoringSubsystem
@@ -94,7 +94,7 @@ open class HardwareConfig(
         once = false
         localizerSubsystem.draw(dashboard)
         if (!auto) {
-            driveFollower = localizerSubsystem.follower
+            mecanumDrive = localizerSubsystem.drive
             loopTimeController = LoopTimeController(timer)
             telemetry.update()
         }
