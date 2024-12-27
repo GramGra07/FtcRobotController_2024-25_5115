@@ -8,7 +8,7 @@ public class DAVars {
     public static double collapseE = 0;
     public static double collapseP = basePosition;
     public static double hSpecimenE = 1400;
-    public static double hSpecimenP = 1200;
+    public static double hSpecimenP = 1400;
     public static double hBasketE = 2250;
     public static double hBasketP = 2000;
     public static double pickUpE = 1100;

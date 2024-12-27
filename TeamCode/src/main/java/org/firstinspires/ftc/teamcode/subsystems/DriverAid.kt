@@ -169,10 +169,10 @@ class DriverAid(
 
     fun lift() {
         usingDA = true
-        if (!liftSequence.isStarted) {
-            liftSequence.start()
+        if (!firstLevelLift.isStarted) {
+            firstLevelLift.start()
         } else {
-            liftSequence.update()
+            firstLevelLift.update()
         }
     }
 
@@ -196,6 +196,33 @@ class DriverAid(
     }
 
 
+    val firstLevelLift: SequentialRunSM<AutoLift> =
+        SequentialRunSM.Builder<AutoLift>()
+            .state(AutoLift.extend_pivot)
+            .onEnter(AutoLift.extend_pivot) {
+                scoringSubsystem.setPitchLow()
+                scoringSubsystem.closeClaw()
+                armSubsystem.setPE(LiftVars.step1P, LiftVars.step1E)
+            }
+            .transition(AutoLift.extend_pivot) {
+                armSubsystem.isPitchAtTarget(150.0) && armSubsystem.isExtendAtTarget()
+            }
+            .state(AutoLift.hook1st)
+            .onEnter(AutoLift.hook1st) {
+                armSubsystem.setPE(LiftVars.step2P, LiftVars.step2E)
+            }
+            .transition(AutoLift.hook1st) {
+                armSubsystem.isPitchAtTarget() && armSubsystem.isExtendAtTarget()
+            }
+            .state(AutoLift.hook2nd)
+            .onEnter(AutoLift.hook2nd) {
+                armSubsystem.setPE(100.0, LiftVars.step2E, false)
+            }
+            .transition(AutoLift.hook2nd) {
+                armSubsystem.isPitchAtTarget() && armSubsystem.isExtendAtTarget()
+            }
+            .stopRunning(AutoLift.stop)
+            .build()
     val liftSequence: SequentialRunSM<AutoLift> =
         SequentialRunSM.Builder<AutoLift>()
             .state(AutoLift.extend_pivot)
@@ -205,7 +232,7 @@ class DriverAid(
                 armSubsystem.setPE(LiftVars.step1P, LiftVars.step1E)
             }
             .transition(AutoLift.extend_pivot) {
-                armSubsystem.isPitchAtTarget() && armSubsystem.isExtendAtTarget()
+                armSubsystem.isPitchAtTarget(150.0) && armSubsystem.isExtendAtTarget()
             }
             .state(AutoLift.hook1st)
             .onEnter(AutoLift.hook1st) {
@@ -214,9 +241,16 @@ class DriverAid(
             .transition(AutoLift.hook1st) {
                 armSubsystem.isPitchAtTarget() && armSubsystem.isExtendAtTarget()
             }
+            .state(AutoLift.hook2nd)
+            .onEnter(AutoLift.hook2nd) {
+                armSubsystem.setPE(100.0, LiftVars.step2E, false)
+            }
+            .transition(AutoLift.hook2nd) {
+                armSubsystem.isPitchAtTarget() && armSubsystem.isExtendAtTarget()
+            }
             .state(AutoLift.lift1st)
             .onEnter(AutoLift.lift1st) {
-                armSubsystem.setPE(100.0, 1300.0)
+                armSubsystem.setPE(LiftVars.step3P, LiftVars.step3E)
             }
             .transition(AutoLift.lift1st) {
                 armSubsystem.isPitchAtTarget() && armSubsystem.isExtendAtTarget()

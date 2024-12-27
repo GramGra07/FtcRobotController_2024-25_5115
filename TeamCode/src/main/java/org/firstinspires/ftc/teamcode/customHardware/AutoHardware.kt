@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.util.ElapsedTime
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.follower.Follower
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.BezierCurve
+import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.BezierLine
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.PathChain
 import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Point
 import org.firstinspires.ftc.teamcode.utilClass.storage.PoseStorage
@@ -22,6 +23,7 @@ class AutoHardware(
     init {
         super.initRobot(ahwMap, true, startLocation)
         follower = super.localizerSubsystem.follower
+        buildPaths()
         telemetry.addData("Status", "Initialized")
         telemetry.addData("Alliance", startLocation.alliance)
         telemetry.update()
@@ -71,14 +73,14 @@ class AutoHardware(
     val blueHuman = Point(12.0, 24.0)
     val blueHumanAngle = Math.toRadians(0.0)
     val redHuman = Point(130.0, 120.0)
-    val redHumanAngle = Math.toRadians(180.0)
+    val redHumanAngle = Math.toRadians(0.0)
     val blueBasket = Point(22.0, 122.0)
     val blueBasketAngle = Math.toRadians(45.0)
     val redBasket = Point(122.0, 22.0)
     val redBasketAngle = Math.toRadians(135.0)
     val blueSpecimen = Point(36.0, 72.0)
     val blueSpecimenAngle = Math.toRadians(180.0)
-    val redSpecimen = Point(108.0, 72.0)
+    val redSpecimen = Point(102.5, 72.0)
     val redSpecimenAngle = Math.toRadians(0.0)
     val blueSample = Point(60.0, 12.0)
     val blueSampleAngle = Math.toRadians(-90.0)
@@ -87,19 +89,144 @@ class AutoHardware(
     val blueNeutralSample = Point(26.0, 132.0)
     val redNeutralSample = Point(118.0, 12.0)
 
+    // for specimen auto
+    lateinit var scorePreload: PathChain
+    lateinit var move1: PathChain
+    lateinit var move2: PathChain
+    lateinit var move3: PathChain
+    lateinit var pickup1: PathChain
+    lateinit var score1: PathChain
+    lateinit var pickup2: PathChain
+    lateinit var score2: PathChain
+    lateinit var pickup3: PathChain
+    lateinit var score3: PathChain
+    lateinit var end: PathChain
+
+    fun buildPaths() {
+        scorePreload = follower.pathBuilder()
+            .addPath(
+                BezierCurve(
+                    PoseStorage.currentPoint,
+                    Point(126.0, 72.0),
+                    redSpecimen
+                )
+            )
+            .setLinearHeadingInterpolation(redStartAngle, redSpecimenAngle)
+            .build()
+
+        move1 = follower.pathBuilder()
+            .addPath(
+                BezierCurve(
+                    redSpecimen,
+                    Point(84.0, 132.0),
+                    redSample
+                )
+            )
+            .setLinearHeadingInterpolation(redSpecimenAngle, redSampleAngle)
+            .addPath(BezierLine(redSample, redHuman))
+            .setConstantHeadingInterpolation(redSampleAngle)
+            .build()
+        move2 = follower.pathBuilder()
+            .addPath(
+                BezierCurve(
+                    redHuman,
+                    Point(84.0, 132.0),
+                    redSample
+                )
+            )
+            .setLinearHeadingInterpolation(redSampleAngle, redHumanAngle)
+            .addPath(BezierLine(redSample, redSpecimen))
+            .setConstantHeadingInterpolation(redSampleAngle)
+            .build()
+        move3 = follower.pathBuilder()
+            .addPath(
+                BezierCurve(
+                    redSpecimen,
+                    Point(84.0, 132.0),
+                    redSample
+                )
+            )
+            .setLinearHeadingInterpolation(redSpecimenAngle, redSampleAngle)
+            .addPath(BezierLine(redSample, redHuman))
+            .setConstantHeadingInterpolation(redSampleAngle)
+            .build()
+        pickup1 = follower.pathBuilder()
+            .addPath(
+                BezierCurve(
+                    redHuman,
+                    redHuman
+                )
+            )
+            .setConstantHeadingInterpolation(redHumanAngle)
+            .build()
+        score1 = follower.pathBuilder()
+            .addPath(
+                BezierCurve(
+                    redHuman,
+                    Point(126.0, 72.0),
+                    redSpecimen
+                )
+            )
+            .setLinearHeadingInterpolation(redHumanAngle, redSpecimenAngle)
+            .build()
+        pickup2 = follower.pathBuilder()
+            .addPath(
+                BezierCurve(
+                    redSpecimen,
+                    Point(126.0, 72.0),
+                    redHuman
+                )
+            )
+            .setLinearHeadingInterpolation(redSpecimenAngle, redHumanAngle)
+            .build()
+        score2 = follower.pathBuilder()
+            .addPath(
+                BezierCurve(
+                    redHuman,
+                    Point(126.0, 72.0),
+                    redSpecimen
+                )
+            )
+            .setLinearHeadingInterpolation(redHumanAngle, redSpecimenAngle)
+            .build()
+        pickup3 = follower.pathBuilder()
+            .addPath(
+                BezierCurve(
+                    redSpecimen,
+                    Point(126.0, 72.0),
+                    redHuman
+                )
+            )
+            .setLinearHeadingInterpolation(redSpecimenAngle, redHumanAngle)
+            .build()
+        score3 = follower.pathBuilder()
+            .addPath(
+                BezierCurve(
+                    redHuman,
+                    Point(126.0, 72.0),
+                    redSpecimen
+                )
+            )
+            .setLinearHeadingInterpolation(redHumanAngle, redSpecimenAngle)
+            .build()
+        end = follower.pathBuilder()
+            .addPath(
+                BezierCurve(
+                    redSpecimen,
+                    Point(118.0, 24.0),
+                    Point(80.0, 30.0),
+                    redEndRight
+                )
+            )
+            .setLinearHeadingInterpolation(redSpecimenAngle, redEndAngle)
+            .build()
+    }
+
     fun goToSpecimenBCurve(): BezierCurve {
         return BezierCurve(
             PoseStorage.currentPoint,
             Point(24.0, 72.0),
             blueSpecimen
-        )
-    }
-
-    fun goToSpecimenRCurve(): BezierCurve {
-        return BezierCurve(
-            PoseStorage.currentPoint,
-            Point(126.0, 72.0),
-            redSpecimen
         )
     }
 
@@ -178,15 +305,6 @@ class AutoHardware(
         )
     }
 
-    fun goToEndRrCurve(): BezierCurve {
-        return BezierCurve(
-            PoseStorage.currentPoint,
-            Point(118.0, 24.0),
-            Point(80.0, 30.0),
-            redEndRight
-        )
-    }
-
     fun goToHumanBCurve(): BezierCurve {
         return BezierCurve(
             PoseStorage.currentPoint,
@@ -195,185 +313,8 @@ class AutoHardware(
         )
     }
 
-    fun goToHumanRCurve(): BezierCurve {
-        return BezierCurve(
-            PoseStorage.currentPoint,
-            Point(108.0, 108.0),
-            redHuman
-        )
-    }
-
-    val pathBuilder = this.localizerSubsystem.follower.pathBuilder()
-
-    fun placeSpecimenBPath(): PathChain {
-        return pathBuilder.addPath(
-            goToSpecimenBCurve()
-        ).setLinearHeadingInterpolation(PoseStorage.currentHeading, blueSpecimenAngle)
-            .build()
-    }
-
-    fun placeSpecimenRPath(): PathChain {
-        return pathBuilder.addPath(
-            goToSpecimenRCurve()
-        ).setConstantHeadingInterpolation(redSpecimenAngle)
-            .build()
-    }
-
-    fun placeBasketBPath(): PathChain {
-        return pathBuilder.addPath(
-            goToBasketBCurve()
-        ).setLinearHeadingInterpolation(PoseStorage.currentHeading, blueBasketAngle)
-            .build()
-    }
-
-    fun placeBasketRPath(): PathChain {
-        return pathBuilder.addPath(
-            goToBasketRCurve()
-        ).setLinearHeadingInterpolation(PoseStorage.currentHeading, redBasketAngle)
-            .build()
-    }
-
-    fun getSpecimenRPath(): PathChain {
-        return pathBuilder.addPath(
-            goToHumanRCurve()
-        ).setLinearHeadingInterpolation(PoseStorage.currentHeading, redHumanAngle)
-            .build()
-    }
-
-    fun getSpecimenBPath(): PathChain {
-        return pathBuilder.addPath(
-            goToHumanBCurve()
-        ).setLinearHeadingInterpolation(PoseStorage.currentHeading, blueHumanAngle)
-            .build()
-    }
-
-    fun getSampleRPath(offsetY: Double): PathChain {
-        return pathBuilder.addPath(
-            goToSampleRCurve(offsetY)
-        ).setLinearHeadingInterpolation(PoseStorage.currentHeading, redSampleAngle)
-            .build()
-    }
-
-    fun getSampleBPath(offsetY: Double): PathChain {
-        return pathBuilder.addPath(
-            goToSampleBCurve(offsetY)
-        ).setLinearHeadingInterpolation(PoseStorage.currentHeading, blueSampleAngle)
-            .build()
-    }
-
-    fun goToEndBlPath(): PathChain {
-        return pathBuilder.addPath(
-            goToEndBlCurve()
-        ).setLinearHeadingInterpolation(PoseStorage.currentHeading, blueEndAngle)
-            .build()
-    }
-
-    fun goToEndBrPath(): PathChain {
-        return pathBuilder.addPath(
-            goToEndBrCurve()
-        ).setLinearHeadingInterpolation(PoseStorage.currentHeading, blueEndAngle)
-            .build()
-    }
-
-    fun goToEndRlPath(): PathChain {
-        return pathBuilder.addPath(
-            goToEndRlCurve()
-        ).setLinearHeadingInterpolation(PoseStorage.currentHeading, redEndAngle)
-            .build()
-    }
-
-    fun goToEndRrPath(): PathChain {
-        return pathBuilder.addPath(
-            goToEndRrCurve()
-        ).setLinearHeadingInterpolation(PoseStorage.currentHeading, redEndAngle)
-            .build()
-    }
-
-    fun goToNeutralSampleB(angle: Double): PathChain {
-        return pathBuilder.addPath(
-            goToNeutralSampleBCurve()
-        ).setLinearHeadingInterpolation(PoseStorage.currentHeading, angle)
-            .build()
-    }
-
-    fun goToNeutralSampleR(angle: Double): PathChain {
-        return pathBuilder.addPath(
-            goToNeutralSampleRCurve()
-        ).setLinearHeadingInterpolation(PoseStorage.currentHeading, angle)
-            .build()
-    }
-
     private fun refreshPose() {
         PoseStorage.currentPose = follower.pose
-    }
-
-    fun placeSpecimenBPathFollower() {
-        follower.followPath(placeSpecimenBPath())
-        refreshPose()
-    }
-
-    fun placeSpecimenRPathFollower() {
-        follower.followPath(placeSpecimenRPath())
-    }
-
-    fun goToBasketBPathFollower() {
-        follower.followPath(placeBasketBPath())
-        refreshPose()
-    }
-
-    fun goToBasketRPathFollower() {
-        follower.followPath(placeBasketRPath())
-        refreshPose()
-    }
-
-    fun goToSampleBPathFollower(offsetY: Double) {
-        follower.followPath(getSampleBPath(offsetY))
-        refreshPose()
-    }
-
-    fun goToSampleRPathFollower(offsetY: Double) {
-        follower.followPath(getSampleRPath(offsetY))
-        refreshPose()
-    }
-
-    fun goToEndBlPathFollower() {
-        follower.followPath(goToEndBlPath())
-        refreshPose()
-    }
-
-    fun goToEndBrPathFollower() {
-        follower.followPath(goToEndBrPath())
-        refreshPose()
-    }
-
-    fun goToEndRlPathFollower() {
-        follower.followPath(goToEndRlPath())
-        refreshPose()
-    }
-
-    fun goToEndRrPathFollower() {
-        follower.followPath(goToEndRrPath())
-        refreshPose()
-    }
-
-    fun goToHumanBPathFollower() {
-        follower.followPath(getSpecimenBPath())
-        refreshPose()
-    }
-
-    fun goToHumanRPathFollower() {
-        follower.followPath(getSpecimenRPath())
-        refreshPose()
-    }
-
-    fun goToNeutralSampleBPathFollower(angle: Double) {
-        follower.followPath(goToNeutralSampleB(angle))
-        refreshPose()
-    }
-
-    fun goToNeutralSampleRPathFollower(angle: Double) {
-        follower.followPath(goToNeutralSampleR(angle))
-        refreshPose()
     }
 
     enum class statesRR {
@@ -398,8 +339,11 @@ class AutoHardware(
     val smallSpecimenAutoR: StateMachine<statesRR> = StateMachine.Builder<statesRR>()
         .state(statesRR.DRIVE_TO_SPECIMEN_R)
         .onEnter(statesRR.DRIVE_TO_SPECIMEN_R) {
-            driverAid.highSpecimen()
-            placeSpecimenRPathFollower()
+            armSubsystem.setExtendTarget(1100.0)
+            armSubsystem.setPitchTargetDegrees(65.0)
+            scoringSubsystem.setPitchLow()
+            scoringSubsystem.setRotateCenter()
+            follower.followPath(scorePreload, true)
         }
         .whileState(statesRR.DRIVE_TO_SPECIMEN_R, { follower.atParametricEnd() }) {
             updateAll()
@@ -408,184 +352,24 @@ class AutoHardware(
             telemetry.addData("heading", follower.pose.heading);
             telemetry.update();
         }
-        .transition(statesRR.DRIVE_TO_SPECIMEN_R, { follower.atParametricEnd() }, 0.5)
+        .transition(statesRR.DRIVE_TO_SPECIMEN_R, { follower.atParametricEnd() }, 0.0)
         .state(statesRR.PLACE_SPECIMEN_R)
         .onEnter(statesRR.PLACE_SPECIMEN_R) {
-            armSubsystem.setExtendTarget(900.0)
+            armSubsystem.eMax = 0.5
+            armSubsystem.setExtendTarget(600.0)
         }
         .whileState(statesRR.PLACE_SPECIMEN_R, {
             armSubsystem.isExtendAtTarget(30.0)
         }) {
-            updateAll()
+            armSubsystem.update()
+        }
+        .onExit(statesRR.PLACE_SPECIMEN_R) {
+            armSubsystem.eMax = 1.0
+            scoringSubsystem.openClaw()
+            scoringSubsystem.update()
         }
         .transition(
             statesRR.PLACE_SPECIMEN_R,
-            {
-                (true)
-            },
-            0.0
-        )
-        .stopRunning(statesRR.STOP)
-        .build()
-
-    val fullSpecimenAutoR: StateMachine<statesRR> = StateMachine.Builder<statesRR>()
-        .state(statesRR.DRIVE_TO_SPECIMEN_R)
-        .onEnter(statesRR.DRIVE_TO_SPECIMEN_R) {
-            driverAid.highSpecimen()
-            placeSpecimenRPathFollower()
-        }
-        .whileState(statesRR.DRIVE_TO_SPECIMEN_R, { follower.atParametricEnd() }) {
-            updateAll()
-            telemetry.addData("x", follower.pose.x);
-            telemetry.addData("y", follower.pose.y);
-            telemetry.addData("heading", follower.pose.heading);
-            telemetry.update();
-        }
-        .transition(statesRR.DRIVE_TO_SPECIMEN_R, { follower.atParametricEnd() }, 0.5)
-        .state(statesRR.PLACE_SPECIMEN_R)
-        .onEnter(statesRR.PLACE_SPECIMEN_R) {
-            armSubsystem.setExtendTarget(900.0)
-        }
-        .whileState(statesRR.PLACE_SPECIMEN_R, {
-            armSubsystem.isExtendAtTarget(30.0)
-        }) {
-            updateAll()
-        }
-        .transition(
-            statesRR.PLACE_SPECIMEN_R,
-            {
-                (true)
-            },
-            0.0
-        )
-        .state(statesRR.GO_TO_SAMPLE_R)
-        .onEnter(statesRR.GO_TO_SAMPLE_R) {
-            goToSampleRCurve(0.0)
-        }
-        .whileState(statesRR.GO_TO_SAMPLE_R, { follower.atParametricEnd() }) {
-            updateAll()
-        }
-        .transition(statesRR.GO_TO_SAMPLE_R, { follower.atParametricEnd() }, 0.5)
-        .state(statesRR.GO_TO_SAMPLE_R2)
-        .onEnter(statesRR.GO_TO_SAMPLE_R2) {
-            goToSampleRCurve(0.0)
-        }
-        .whileState(statesRR.GO_TO_SAMPLE_R2, { follower.atParametricEnd() }) {
-            updateAll()
-        }
-        .transition(statesRR.GO_TO_SAMPLE_R2, { follower.atParametricEnd() }, 0.5)
-
-        .state(statesRR.GO_TO_SAMPLE_R3)
-        .onEnter(statesRR.GO_TO_SAMPLE_R3) {
-            goToSampleRCurve(0.0)
-        }
-        .whileState(statesRR.GO_TO_SAMPLE_R3, { follower.atParametricEnd() }) {
-            updateAll()
-        }
-        .transition(statesRR.GO_TO_SAMPLE_R3, { follower.atParametricEnd() }, 0.5)
-        .state(statesRR.GO_TO_HUMAN_R)
-        .onEnter(statesRR.GO_TO_HUMAN_R) {
-            driverAid.human()
-            driverAid.update()
-            goToHumanRPathFollower()
-        }
-        .whileState(statesRR.GO_TO_HUMAN_R, { follower.atParametricEnd() }) {
-            updateAll()
-        }
-        .transition(statesRR.GO_TO_HUMAN_R, { follower.atParametricEnd() }, 0.5)
-        .state(statesRR.GO_TO_SPECIMEN_R)
-        .onEnter(statesRR.GO_TO_SPECIMEN_R) {
-            goToSpecimenRCurve()
-            driverAid.highSpecimen()
-            driverAid.update()
-        }
-        .whileState(statesRR.GO_TO_SPECIMEN_R, { follower.atParametricEnd() }) {
-            updateAll()
-        }
-        .transition(statesRR.GO_TO_SPECIMEN_R, { follower.atParametricEnd() }, 0.5)
-        .state(statesRR.PLACE_SPECIMEN_R1)
-        .onEnter(statesRR.PLACE_SPECIMEN_R1) {
-            armSubsystem.setExtendTarget(900.0)
-        }
-        .whileState(statesRR.PLACE_SPECIMEN_R1, {
-            armSubsystem.isExtendAtTarget(30.0)
-        }) {
-            updateAll()
-        }
-        .transition(
-            statesRR.PLACE_SPECIMEN_R1,
-            {
-                (true)
-            },
-            0.0
-        )
-        .state(statesRR.GO_TO_HUMAN_R2)
-        .onEnter(statesRR.GO_TO_HUMAN_R2) {
-            driverAid.human()
-            driverAid.update()
-            goToHumanRPathFollower()
-        }
-        .whileState(statesRR.GO_TO_HUMAN_R2, { follower.atParametricEnd() }) {
-            updateAll()
-        }
-        .transition(statesRR.GO_TO_HUMAN_R2, { follower.atParametricEnd() }, 0.5)
-        .state(statesRR.GO_TO_SPECIMEN_R2)
-        .onEnter(statesRR.GO_TO_SPECIMEN_R2) {
-            goToSpecimenRCurve()
-            driverAid.highSpecimen()
-            driverAid.update()
-        }
-        .whileState(statesRR.GO_TO_SPECIMEN_R2, { follower.atParametricEnd() }) {
-            updateAll()
-        }
-        .transition(statesRR.GO_TO_SPECIMEN_R2, { follower.atParametricEnd() }, 0.5)
-        .state(statesRR.PLACE_SPECIMEN_R2)
-        .onEnter(statesRR.PLACE_SPECIMEN_R2) {
-            armSubsystem.setExtendTarget(900.0)
-        }
-        .whileState(statesRR.PLACE_SPECIMEN_R2, {
-            armSubsystem.isExtendAtTarget(30.0)
-        }) {
-            updateAll()
-        }
-        .transition(
-            statesRR.PLACE_SPECIMEN_R2,
-            {
-                (true)
-            },
-            0.0
-        )
-        .state(statesRR.GO_TO_HUMAN_R3)
-        .onEnter(statesRR.GO_TO_HUMAN_R3) {
-            driverAid.human()
-            driverAid.update()
-            goToHumanRPathFollower()
-        }
-        .whileState(statesRR.GO_TO_HUMAN_R3, { follower.atParametricEnd() }) {
-            updateAll()
-        }
-        .transition(statesRR.GO_TO_HUMAN_R3, { follower.atParametricEnd() }, 0.5)
-        .state(statesRR.GO_TO_SPECIMEN_R3)
-        .onEnter(statesRR.GO_TO_SPECIMEN_R3) {
-            goToSpecimenRCurve()
-            driverAid.highSpecimen()
-            driverAid.update()
-        }
-        .whileState(statesRR.GO_TO_SPECIMEN_R3, { follower.atParametricEnd() }) {
-            updateAll()
-        }
-        .transition(statesRR.GO_TO_SPECIMEN_R3, { follower.atParametricEnd() }, 0.5)
-        .state(statesRR.PLACE_SPECIMEN_R3)
-        .onEnter(statesRR.PLACE_SPECIMEN_R3) {
-            armSubsystem.setExtendTarget(900.0)
-        }
-        .whileState(statesRR.PLACE_SPECIMEN_R3, {
-            armSubsystem.isExtendAtTarget(30.0)
-        }) {
-            updateAll()
-        }
-        .transition(
-            statesRR.PLACE_SPECIMEN_R3,
             {
                 (true)
             },
@@ -593,241 +377,17 @@ class AutoHardware(
         )
         .state(statesRR.GO_TO_END_R)
         .onEnter(statesRR.GO_TO_END_R) {
-            driverAid.collapse()
-            driverAid.update()
-            goToEndRlPathFollower()
+            driverAid.human()
+            follower.followPath(move1)
         }
         .whileState(statesRR.GO_TO_END_R, { follower.atParametricEnd() }) {
             updateAll()
+            telemetry.addData("x", follower.pose.x);
+            telemetry.addData("y", follower.pose.y);
+            telemetry.addData("heading", follower.pose.heading);
+            telemetry.update();
         }
-        .transition(statesRR.GO_TO_END_R, { follower.atParametricEnd() }, 0.5)
+        .transition(statesRR.GO_TO_END_R, { true }, 0.0)
         .stopRunning(statesRR.STOP)
-        .build()
-
-    enum class statesRB {
-        DRIVE_TO_SPECIMEN_B,
-        PLACE_SPECIMEN_B,
-        GO_TO_SAMPLE_B,
-        GO_TO_SAMPLE_B2,
-        GO_TO_SAMPLE_B3,
-        GO_TO_HUMAN_B,
-        GO_TO_SPECIMEN_B,
-        PLACE_SPECIMEN_B1,
-        GO_TO_HUMAN_B2,
-        GO_TO_SPECIMEN_B2,
-        PLACE_SPECIMEN_B2,
-        GO_TO_HUMAN_B3,
-        GO_TO_SPECIMEN_B3,
-        PLACE_SPECIMEN_B3,
-        GO_TO_END_B,
-        STOP,
-    }
-
-    val smallSpecimenAutoB: StateMachine<statesRB> = StateMachine.Builder<statesRB>()
-        .state(statesRB.DRIVE_TO_SPECIMEN_B)
-        .onEnter(statesRB.DRIVE_TO_SPECIMEN_B) {
-            driverAid.highSpecimen()
-            placeSpecimenBPathFollower()
-        }
-        .whileState(statesRB.DRIVE_TO_SPECIMEN_B, { follower.atParametricEnd() }) {
-            updateAll()
-            telemetry.addData("x", follower.pose.x);
-            telemetry.addData("y", follower.pose.y);
-            telemetry.addData("heading", follower.pose.heading);
-            telemetry.update();
-        }
-        .transition(statesRB.DRIVE_TO_SPECIMEN_B, { follower.atParametricEnd() }, 0.5)
-        .state(statesRB.PLACE_SPECIMEN_B)
-        .onEnter(statesRB.PLACE_SPECIMEN_B) {
-            armSubsystem.setExtendTarget(900.0)
-        }
-        .whileState(statesRB.PLACE_SPECIMEN_B, {
-            armSubsystem.isExtendAtTarget(30.0)
-        }) {
-            updateAll()
-        }
-        .transition(
-            statesRB.PLACE_SPECIMEN_B,
-            {
-                (true)
-            },
-            0.0
-        )
-        .stopRunning(statesRB.STOP)
-        .build()
-
-    val fullSpecimenAutoB: StateMachine<statesRB> = StateMachine.Builder<statesRB>()
-        .state(statesRB.DRIVE_TO_SPECIMEN_B)
-        .onEnter(statesRB.DRIVE_TO_SPECIMEN_B) {
-            driverAid.highSpecimen()
-            placeSpecimenBPathFollower()
-        }
-        .whileState(statesRB.DRIVE_TO_SPECIMEN_B, { follower.atParametricEnd() }) {
-            updateAll()
-            telemetry.addData("x", follower.pose.x);
-            telemetry.addData("y", follower.pose.y);
-            telemetry.addData("heading", follower.pose.heading);
-            telemetry.update();
-        }
-        .transition(statesRB.DRIVE_TO_SPECIMEN_B, { follower.atParametricEnd() }, 0.5)
-        .state(statesRB.PLACE_SPECIMEN_B)
-        .onEnter(statesRB.PLACE_SPECIMEN_B) {
-            armSubsystem.setExtendTarget(900.0)
-        }
-        .whileState(statesRB.PLACE_SPECIMEN_B, {
-            armSubsystem.isExtendAtTarget(30.0)
-        }) {
-            updateAll()
-        }
-        .transition(
-            statesRB.PLACE_SPECIMEN_B,
-            {
-                (true)
-            },
-            0.0
-        )
-        .state(statesRB.GO_TO_SAMPLE_B)
-        .onEnter(statesRB.GO_TO_SAMPLE_B) {
-            goToSampleBPathFollower(0.0)
-        }
-        .whileState(statesRB.GO_TO_SAMPLE_B, { follower.atParametricEnd() }) {
-            updateAll()
-        }
-        .transition(statesRB.GO_TO_SAMPLE_B, { follower.atParametricEnd() }, 0.5)
-        .state(statesRB.GO_TO_SAMPLE_B2)
-        .onEnter(statesRB.GO_TO_SAMPLE_B2) {
-            goToSampleBPathFollower(0.0)
-        }
-        .whileState(statesRB.GO_TO_SAMPLE_B2, { follower.atParametricEnd() }) {
-            updateAll()
-        }
-        .transition(statesRB.GO_TO_SAMPLE_B2, { follower.atParametricEnd() }, 0.5)
-        .state(statesRB.GO_TO_SAMPLE_B3)
-        .onEnter(statesRB.GO_TO_SAMPLE_B3) {
-            goToSampleBPathFollower(0.0)
-        }
-        .whileState(statesRB.GO_TO_SAMPLE_B3, { follower.atParametricEnd() }) {
-            updateAll()
-        }
-        .transition(statesRB.GO_TO_SAMPLE_B3, { follower.atParametricEnd() }, 0.5)
-        .state(statesRB.GO_TO_HUMAN_B)
-        .onEnter(statesRB.GO_TO_HUMAN_B) {
-            driverAid.human()
-            driverAid.update()
-            goToHumanBPathFollower()
-        }
-        .whileState(statesRB.GO_TO_HUMAN_B, { follower.atParametricEnd() }) {
-            updateAll()
-        }
-        .transition(statesRB.GO_TO_HUMAN_B, { follower.atParametricEnd() }, 0.5)
-        .state(statesRB.GO_TO_SPECIMEN_B)
-        .onEnter(statesRB.GO_TO_SPECIMEN_B) {
-            goToSpecimenBCurve()
-            driverAid.highSpecimen()
-            driverAid.update()
-        }
-        .whileState(statesRB.GO_TO_SPECIMEN_B, { follower.atParametricEnd() }) {
-            updateAll()
-        }
-        .transition(statesRB.GO_TO_SPECIMEN_B, { follower.atParametricEnd() }, 0.5)
-        .state(statesRB.PLACE_SPECIMEN_B1)
-        .onEnter(statesRB.PLACE_SPECIMEN_B1) {
-            armSubsystem.setExtendTarget(900.0)
-        }
-        .whileState(statesRB.PLACE_SPECIMEN_B1, {
-            armSubsystem.isExtendAtTarget(30.0)
-        }) {
-            updateAll()
-        }
-        .transition(
-            statesRB.PLACE_SPECIMEN_B1,
-            {
-                (true)
-            },
-            0.0
-        )
-        .state(statesRB.GO_TO_HUMAN_B2)
-        .onEnter(statesRB.GO_TO_HUMAN_B2) {
-            driverAid.human()
-            driverAid.update()
-            goToHumanBPathFollower()
-        }
-        .whileState(statesRB.GO_TO_HUMAN_B2, { follower.atParametricEnd() }) {
-            updateAll()
-        }
-        .transition(statesRB.GO_TO_HUMAN_B2, { follower.atParametricEnd() }, 0.5)
-        .state(statesRB.GO_TO_SPECIMEN_B2)
-        .onEnter(statesRB.GO_TO_SPECIMEN_B2) {
-            goToSpecimenBCurve()
-            driverAid.highSpecimen()
-            driverAid.update()
-        }
-        .whileState(statesRB.GO_TO_SPECIMEN_B2, { follower.atParametricEnd() }) {
-            updateAll()
-        }
-        .transition(statesRB.GO_TO_SPECIMEN_B2, { follower.atParametricEnd() }, 0.5)
-        .state(statesRB.PLACE_SPECIMEN_B2)
-        .onEnter(statesRB.PLACE_SPECIMEN_B2) {
-            armSubsystem.setExtendTarget(900.0)
-        }
-        .whileState(statesRB.PLACE_SPECIMEN_B2, {
-            armSubsystem.isExtendAtTarget(30.0)
-        }) {
-            updateAll()
-        }
-        .transition(
-            statesRB.PLACE_SPECIMEN_B2,
-            {
-                (true)
-            },
-            0.0
-        )
-        .state(statesRB.GO_TO_HUMAN_B3)
-        .onEnter(statesRB.GO_TO_HUMAN_B3) {
-            driverAid.human()
-            driverAid.update()
-            goToHumanBPathFollower()
-        }
-        .whileState(statesRB.GO_TO_HUMAN_B3, { follower.atParametricEnd() }) {
-            updateAll()
-        }
-        .transition(statesRB.GO_TO_HUMAN_B3, { follower.atParametricEnd() }, 0.5)
-        .state(statesRB.GO_TO_SPECIMEN_B3)
-        .onEnter(statesRB.GO_TO_SPECIMEN_B3) {
-            goToSpecimenBCurve()
-            driverAid.highSpecimen()
-            driverAid.update()
-        }
-        .whileState(statesRB.GO_TO_SPECIMEN_B3, { follower.atParametricEnd() }) {
-            updateAll()
-        }
-        .transition(statesRB.GO_TO_SPECIMEN_B3, { follower.atParametricEnd() }, 0.5)
-        .state(statesRB.PLACE_SPECIMEN_B3)
-        .onEnter(statesRB.PLACE_SPECIMEN_B3) {
-            armSubsystem.setExtendTarget(900.0)
-        }
-        .whileState(statesRB.PLACE_SPECIMEN_B3, {
-            armSubsystem.isExtendAtTarget(30.0)
-        }) {
-            updateAll()
-        }
-        .transition(
-            statesRB.PLACE_SPECIMEN_B3,
-            {
-                (true)
-            },
-            0.0
-        )
-        .state(statesRB.GO_TO_END_B)
-        .onEnter(statesRB.GO_TO_END_B) {
-            driverAid.collapse()
-            driverAid.update()
-            goToEndBlPathFollower()
-        }
-        .whileState(statesRB.GO_TO_END_B, { follower.atParametricEnd() }) {
-            updateAll()
-        }
-        .transition(statesRB.GO_TO_END_B, { follower.atParametricEnd() }, 0.5)
-        .stopRunning(statesRB.STOP)
         .build()
 }

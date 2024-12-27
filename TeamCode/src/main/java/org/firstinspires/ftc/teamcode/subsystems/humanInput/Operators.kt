@@ -92,7 +92,7 @@ object Operators {
         if (myOpMode.gamepad2.left_trigger > 0.0) {
             da.lift()
         } else {
-            da.liftSequence.restartAtBeginning();
+            da.firstLevelLift.restartAtBeginning();
         }
         if (myOpMode.gamepad2.options) {
             da.daState = DriverAid.DAState.IDLE

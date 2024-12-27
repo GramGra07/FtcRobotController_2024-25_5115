@@ -55,7 +55,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     private var extendMotor2: DcMotorEx
     private var extendState: ExtendState = ExtendState.IDLE
     private var ePower: Double = 0.0
-    private var eMax = 1.0
+    var eMax = 1.0
     private var eMin = -1.0
     private var extendPIDF: PIDFController = PIDFController(0.0, 0.0, 0.0, 0.0)
     private var extendTarget = 0
@@ -201,6 +201,8 @@ class ArmSubsystem(ahwMap: HardwareMap) {
         telemetry.addData("Arm Subsystem", "")
         pitchEncoder.telemetry(telemetry)
         extendEncoder.telemetry(telemetry)
+        telemetry.addData("eTarget", extendTarget)
+        telemetry.addData("pTarget", pitchT)
         telemetry.addData("pAngle", pAngle(pitchEncoder.currentPosition.toDouble()))
         telemetry.addData("extendMax (ticks)", calculateExtendMax())
     }
