@@ -22,6 +22,7 @@ import kotlin.math.sin
 class DriveSubsystem(
     ahwMap: HardwareMap,
     private var localizerSubsystem: LocalizerSubsystem,
+    var auto: Boolean
 ) {
     private var motorFrontLeft: DcMotorEx
     private var motorBackLeft: DcMotorEx
@@ -52,10 +53,12 @@ class DriveSubsystem(
                 "motorBackRight",
                 DcMotor.RunMode.RUN_WITHOUT_ENCODER
             )
+//        if (!auto) {
         motorFrontLeft.direction = DcMotorSimple.Direction.REVERSE
         motorFrontRight.direction = DcMotorSimple.Direction.FORWARD
         motorBackLeft.direction = DcMotorSimple.Direction.REVERSE
         motorBackRight.direction = DcMotorSimple.Direction.FORWARD
+//        }
     }
 
     private var frontRightPower: Double = 0.0

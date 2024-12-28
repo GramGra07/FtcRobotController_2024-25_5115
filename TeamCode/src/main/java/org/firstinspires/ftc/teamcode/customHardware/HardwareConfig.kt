@@ -72,7 +72,7 @@ open class HardwareConfig(
                 PoseStorage.currentPose
             )
 
-        driveSubsystem = DriveSubsystem(ahwMap, localizerSubsystem)
+        driveSubsystem = DriveSubsystem(ahwMap, localizerSubsystem, auto)
 
         allHubs = ahwMap.getAll(LynxModule::class.java)
         for (hub in allHubs) {
