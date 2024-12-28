@@ -20,7 +20,7 @@ class AutoHardware(
 
     init {
         super.initRobot(ahwMap, true, startLocation)
-        drive = super.localizerSubsystem.drive
+        drive = MecanumDrive(ahwMap, startLocation.startPose)
         telemetry.addData("Status", "Initialized")
         telemetry.addData("Alliance", startLocation.alliance)
         telemetry.update()
@@ -43,24 +43,24 @@ class AutoHardware(
     }
 
     companion object {
-        val blueStartLeft = Pose2d(6.0 - 72, 108.0 - 72, Math.toRadians(180.0))
-        val blueStartRight = Pose2d(6.0 - 72, 60.0 - 72, Math.toRadians(180.0))
-        val redStartLeft = Pose2d(135.0 - 72, 88.0 - 72, Math.toRadians(0.0))
-        val redStartRight = Pose2d(135.0 - 72, 80.0 - 72, Math.toRadians(0.0))
-        val blueEndLeft = Pose2d(96.0 - 72, 62.0 - 72, Math.toRadians(-90.0))
-        val blueEndRight = Pose2d(62.0 - 72, 108.0 - 72, Math.toRadians(-90.0))
-        val redEndLeft = Pose2d(62.0 - 72, 48.0 - 72, Math.toRadians(90.0))
-        val redEndRight = Pose2d(82.0 - 72, 48.0 - 72, Math.toRadians(90.0))
-        val blueHuman = Pose2d(12.0 - 72, 24.0 - 72, Math.toRadians(0.0))
-        val redHuman = Pose2d(130.0 - 72, 120.0 - 72, Math.toRadians(0.0))
-        val blueBasket = Pose2d(22.0 - 72, 122.0 - 72, Math.toRadians(45.0))
-        val redBasket = Pose2d(122.0 - 72, 22.0 - 72, Math.toRadians(135.0))
-        val blueSpecimen = Pose2d(36.0 - 72, 72.0 - 72, Math.toRadians(180.0))
-        val redSpecimen = Pose2d(102.5 - 72, 72.0 - 72, Math.toRadians(0.0))
-        val blueSample = Pose2d(60.0 - 72, 12.0 - 72, Math.toRadians(-90.0))
-        val redSample = Pose2d(84.0 - 72, 132.0 - 72, Math.toRadians(-90.0))
-        val blueNeutralSample = Pose2d(26.0 - 72, 132.0 - 72, Math.toRadians(0.0))
-        val redNeutralSample = Pose2d(118.0 - 72, 12.0 - 72, Math.toRadians(0.0))
+        val blueStartLeft = Pose2d(-8.0, 63.0, Math.toRadians(-90.0))
+        val blueStartRight = Pose2d(8.0, 63.0, Math.toRadians(-90.0))
+        val redStartLeft = Pose2d(-8.0, -63.0, Math.toRadians(90.0))
+        val redStartRight = Pose2d(8.0, -63.0, Math.toRadians(90.0))// used to be 135-72
+        val blueEndLeft = Pose2d(-24.0, 10.0, Math.toRadians(180.0))
+        val blueEndRight = Pose2d(-24.0, -10.0, Math.toRadians(180.0))
+        val redEndLeft = Pose2d(24.0, 10.0, Math.toRadians(0.0))
+        val redEndRight = Pose2d(24.0, -10.0, Math.toRadians(0.0))
+        val blueHuman = Pose2d(-46.0, 54.0, Math.toRadians(90.0))
+        val redHuman = Pose2d(46.0, -54.0, Math.toRadians(-90.0))
+        val blueBasket = Pose2d(50.0, 50.0, Math.toRadians(135.0))
+        val redBasket = Pose2d(-50.0, -50.0, Math.toRadians(45.0))
+        val blueSpecimen = Pose2d(0.0, 36.0, blueStartRight.heading.toDouble())
+        val redSpecimen = Pose2d(0.0, -36.0, redStartRight.heading.toDouble())
+        val blueSample = Pose2d(-60.0, 12.0, Math.toRadians(0.0))
+        val redSample = Pose2d(60.0, -12.0, Math.toRadians(0.0))
+        val blueNeutralSample = Pose2d(56.0, 12.0, blueStartRight.heading.toDouble())
+        val redNeutralSample = Pose2d(-56.0, -12.0, redStartRight.heading.toDouble())
     }
 
 
@@ -314,13 +314,12 @@ class AutoHardware(
                 ),
                 ParallelAction(
                     drive.actionBuilder(redStartRight)
-                        .splineTo(Vector2d(126.0 - 72, 72.0 - 72), redStartRight.heading.toDouble())
-                        .splineTo(
+                        .splineToConstantHeading(
                             Vector2d(redSpecimen.position.x, redSpecimen.position.y),
                             redSpecimen.heading.toDouble()
                         )
                         .build(),
-                    armSubsystem.setPEAction(1479.1, 1100.0)
+                    armSubsystem.setPEAction(1479.0, 1100.0)
                 )
             )
         )
@@ -341,21 +340,46 @@ class AutoHardware(
             ParallelAction(
 //        runBlocking(
 //            drive.actionBuilder(redSpecimen)
-//                .splineTo(Vector2d(84.0, 132.0), redSpecimen.heading.toDouble())
-//                .splineTo(Vector2d(redSample.position.x, redSample.position.y), redSample.heading.toDouble())
+//                .setTangent(Math.toRadians(-90.0))
+//                .splineToLinearHeading(
+//                    new Pose2d(36, -24, redSample.heading.toDouble()),
+//            redSpecimen.heading.toDouble()
+//        )
+//            .splineToConstantHeading(
+//                new Vector2d(redSample.position.x-12.0, redSample.position.y),
+//        redSample.heading.toDouble()
+//        )
+//        .setTangent(redSpecimen.heading.toDouble())
+//            .lineToY(redHuman.position.y)
 //                .build()
 //        )
-                drive.actionBuilder(redSpecimen)
-                    .splineTo(
-                        Vector2d(redHuman.position.x, redHuman.position.y),
-                        redSpecimen.heading.toDouble()
-                    )
+                drive.actionBuilder(redSpecimen).strafeToLinearHeading(
+                    Vector2d(redHuman.position.x, redHuman.position.y),
+                    redHuman.heading.toDouble()
+                )
                     .build(),
-                driverAid.daAction(listOf(Runnable { driverAid.human() }))
+                driverAid.daAction(listOf(Runnable { driverAid.collapse() }))
             )
         )
 
     }
+    //TODO: This is code for all three moves
+//    .setTangent(redStartLeft.heading.toDouble())
+//    .splineToLinearHeading(new Pose2d(redSample.position.x - 3, redSample.position.y, redSample.heading.toDouble()), redSample.heading.toDouble())
+//    .strafeTo(new Vector2d(redSample.position.x - 3, redHuman.position.y))
+//    .setTangent(redStartRight.heading.toDouble())
+//    .splineToConstantHeading(new Vector2d(redSample.position.x + 1, redSample.position.y), redSample.heading.toDouble())
+//    .strafeTo(new Vector2d(redSample.position.x + 1, redHuman.position.y))
+
+    // TODO: This is code for grab place 1
+//    .strafeToLinearHeading(new Vector2d(redHuman.position.x, redHuman.position.y), redHuman.heading.toDouble())
+//    .setTangent(Math.toRadians(180.0))
+//    .splineToLinearHeading(new Pose2d(redSpecimen.position.x, redSpecimen.position.y, redSpecimen.heading.toDouble()), redSpecimen.heading.toDouble())
+    //TODO this is code for end
+
+//                .strafeTo(new Vector2d(36, -31))
+//                .setTangent(Math.toRadians(90))
+//                .splineToLinearHeading(redEndRight, blueEndRight.heading.toDouble())
 
 //    val smallSpecimenAutoR: StateMachine<statesRR> = StateMachine.Builder<statesRR>()
 //        .state(statesRR.DRIVE_TO_SPECIMEN_R)

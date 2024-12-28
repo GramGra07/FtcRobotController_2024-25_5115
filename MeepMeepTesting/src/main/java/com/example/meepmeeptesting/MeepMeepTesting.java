@@ -1,59 +1,86 @@
 package com.example.meepmeeptesting;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.Pose2d;
+import com.acmerobotics.roadrunner.Vector2d;
 import com.noahbres.meepmeep.MeepMeep;
-import com.noahbres.meepmeep.core.colorscheme.scheme.ColorSchemeBlueDark;
 import com.noahbres.meepmeep.roadrunner.DefaultBotBuilder;
 import com.noahbres.meepmeep.roadrunner.entity.RoadRunnerBotEntity;
-
-import java.awt.Image;
-import java.io.File;
-import java.io.IOException;
-
-import javax.imageio.ImageIO;
 
 public class MeepMeepTesting {
     public static void main(String[] args) {
         MeepMeep meepMeep = new MeepMeep(800);
-        Pose2d startPose = new Pose2d(38,10,  Math.toRadians(90));
-        int maxVel = 57;
-        int maxAccel = 60;
-        int maxAngVel = 360;
-        int maxAngAccel = 360;
-        double trackWidth = 13.24;
-        double robotWidth = 16;
-        double robotHeight = 18;
-        RoadRunnerBotEntity bot = new DefaultBotBuilder(meepMeep)
-                .setColorScheme(new ColorSchemeBlueDark())
-                .setConstraints(maxVel, maxAccel, 60, 60, trackWidth)
-                .setDimensions(robotWidth, robotHeight)//bot width and height
-                .followTrajectorySequence(drive ->
-                        drive.trajectorySequenceBuilder(startPose)
-                                .lineToLinearHeading(new Pose2d(12, 36, Math.toRadians(-90)))
-                                .lineToLinearHeading(new Pose2d(12, -60, Math.toRadians(-90)))
-                                .addDisplacementMarker(() -> {
-                                })
-                                .lineToLinearHeading(new Pose2d(12, 36, Math.toRadians(-90)))
-                                .lineToLinearHeading(new Pose2d(35, 48, Math.toRadians(90)))
-                                .build()
-                );
+        Pose2d startPose = new Pose2d(8.0, -63.0, Math.toRadians(90.0));
+        RoadRunnerBotEntity myBot = new DefaultBotBuilder(meepMeep)
+                // Set bot constraints: maxVel, maxAccel, maxAngVel, maxAngAccel, track width
+                .setStartPose(startPose)
+                .setDimensions(12, 17)
+                .setConstraints(60, 60, Math.toRadians(180), Math.toRadians(180), 15)
+                .build();
+        Pose2d blueStartLeft = new Pose2d(-8.0, 63.0, Math.toRadians(-90.0));
+        Pose2d blueStartRight = new Pose2d(8.0, 63.0, Math.toRadians(-90.0));
+        Pose2d redStartLeft = new Pose2d(-8.0, -63.0, Math.toRadians(90.0));
+        Pose2d redStartRight = new Pose2d(8.0, -63.0, Math.toRadians(90.0)); // used to be 135-72
+        Pose2d blueEndLeft = new Pose2d(-24.0, 10.0, Math.toRadians(180.0));
+        Pose2d blueEndRight = new Pose2d(-24.0, -10.0, Math.toRadians(180.0));
+        Pose2d redEndLeft = new Pose2d(24.0, 10.0, Math.toRadians(0.0));
+        Pose2d redEndRight = new Pose2d(24.0, -10.0, Math.toRadians(0.0));
+        Pose2d blueHuman = new Pose2d(-46.0, 54.0, Math.toRadians(90.0));
+        Pose2d redHuman = new Pose2d(46.0, -54.0, Math.toRadians(-90.0));
+        Pose2d blueBasket = new Pose2d(50.0, 50.0, Math.toRadians(135.0));
+        Pose2d redBasket = new Pose2d(-50.0, -50.0, Math.toRadians(45.0));
+        Pose2d blueSpecimen = new Pose2d(0.0, 36.0, blueStartRight.heading.toDouble());
+        Pose2d redSpecimen = new Pose2d(0.0, -36.0, redStartRight.heading.toDouble());
+        Pose2d blueSample = new Pose2d(-60.0, 12.0, Math.toRadians(0.0));
+        Pose2d redSample = new Pose2d(60.0, -12.0, Math.toRadians(0.0));
+        Pose2d blueNeutralSample = new Pose2d(56.0, 12.0, blueStartRight.heading.toDouble());
+        Pose2d redNeutralSample = new Pose2d(-56.0, -12.0, redStartRight.heading.toDouble());
 
-        // to speed up ,SampleMecanumDrive.getVelocityConstraint(90, 90, 13.24),SampleMecanumDrive.getAccelerationConstraint(90)
-        Image img = null;
-        try {
-            img = ImageIO.read(new File("/Users/gradengentry/Desktop/robotics/field.png"));
-        }
-        // graden: "/Users/gradengentry/Desktop/robotics/field.png"
-        // chase: "C:\Users\bubba\OneDrive\Desktop\Robotics\field.png"
-        catch (IOException e) {
-        }
-
-        meepMeep.setBackground(img)
+        myBot.runAction(myBot.getDrive().actionBuilder(startPose)
+                .splineToConstantHeading(
+                        new Vector2d(redSpecimen.position.x, redSpecimen.position.y),
+                        redSpecimen.heading.toDouble()
+                )
+                //
+                .setTangent(Math.toRadians(-90.0))
+                .splineToLinearHeading(
+                        new Pose2d(36, -24, redSample.heading.toDouble()),
+                        redSpecimen.heading.toDouble()
+                )
+                .splineToConstantHeading(
+                        new Vector2d(redSample.position.x - 12, redSample.position.y),
+                        redSample.heading.toDouble()
+                )
+                .setTangent(redSpecimen.heading.toDouble())
+                .lineToY(redHuman.position.y)
+                //
+                .setReversed(true)
+                .setTangent(redStartLeft.heading.toDouble())
+                .splineToLinearHeading(new Pose2d(redSample.position.x - 3, redSample.position.y, redSample.heading.toDouble()), redSample.heading.toDouble())
+                .strafeTo(new Vector2d(redSample.position.x - 3, redHuman.position.y))
+                .setTangent(redStartRight.heading.toDouble())
+                .splineToConstantHeading(new Vector2d(redSample.position.x + 1, redSample.position.y), redSample.heading.toDouble())
+                .strafeTo(new Vector2d(redSample.position.x + 1, redHuman.position.y))
+//                //
+//                .strafeToLinearHeading(new Vector2d(redHuman.position.x, redHuman.position.y), redHuman.heading.toDouble())
+//                .setTangent(Math.toRadians(180.0))
+//                .splineToLinearHeading(new Pose2d(redSpecimen.position.x, redSpecimen.position.y, redSpecimen.heading.toDouble()), redSpecimen.heading.toDouble())
+//
+//                .strafeToLinearHeading(new Vector2d(redHuman.position.x, redHuman.position.y), redHuman.heading.toDouble())
+//                .setTangent(Math.toRadians(180.0))
+//                .splineToLinearHeading(new Pose2d(redSpecimen.position.x, redSpecimen.position.y, redSpecimen.heading.toDouble()), redSpecimen.heading.toDouble())
+//                .strafeToLinearHeading(new Vector2d(redHuman.position.x, redHuman.position.y), redHuman.heading.toDouble())
+//                .setTangent(Math.toRadians(180.0))
+//                .splineToLinearHeading(new Pose2d(redSpecimen.position.x, redSpecimen.position.y, redSpecimen.heading.toDouble()), redSpecimen.heading.toDouble())
+//
+//                //
+//                .strafeTo(new Vector2d(36, -31))
+//                .setTangent(Math.toRadians(90))
+//                .splineToLinearHeading(redEndRight, blueEndRight.heading.toDouble())
+                .build());
+        meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_JUICE_DARK)
                 .setDarkMode(true)
-                .setAxesInterval(20)
                 .setBackgroundAlpha(0.95f)
-                .addEntity(bot)
-                //.addEntity(mySecondBot)
+                .addEntity(myBot)
                 .start();
     }
 }

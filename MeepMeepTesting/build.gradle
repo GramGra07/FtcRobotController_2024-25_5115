@@ -1,5 +1,6 @@
 plugins {
     id 'java-library'
+    id 'org.jetbrains.kotlin.jvm'
 }
 
 java {
@@ -12,5 +13,5 @@ repositories {
 }
 
 dependencies {
-    implementation 'com.github.NoahBres:MeepMeep:2.0.3'
+    implementation 'com.acmerobotics.roadrunner:MeepMeep:0.1.6'
 }
