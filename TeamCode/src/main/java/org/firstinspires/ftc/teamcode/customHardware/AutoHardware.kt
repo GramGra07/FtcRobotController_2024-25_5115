@@ -303,7 +303,7 @@ class AutoHardware(
         STOP,
     }
 
-    fun smallSpecimenAuto() {
+    fun scorePreload() {
         runBlocking(
             SequentialAction(
                 scoringSubsystem.servoAction(
@@ -336,46 +336,110 @@ class AutoHardware(
             )
         )
         armSubsystem.eMax = 1.0
+
+
+    }
+
+    fun moveAll() {
         runBlocking(
             ParallelAction(
-//        runBlocking(
-//            drive.actionBuilder(redSpecimen)
-//                .setTangent(Math.toRadians(-90.0))
-//                .splineToLinearHeading(
-//                    new Pose2d(36, -24, redSample.heading.toDouble()),
-//            redSpecimen.heading.toDouble()
-//        )
-//            .splineToConstantHeading(
-//                new Vector2d(redSample.position.x-12.0, redSample.position.y),
-//        redSample.heading.toDouble()
-//        )
-//        .setTangent(redSpecimen.heading.toDouble())
-//            .lineToY(redHuman.position.y)
-//                .build()
-//        )
-                drive.actionBuilder(redSpecimen).strafeToLinearHeading(
-                    Vector2d(redHuman.position.x, redHuman.position.y),
-                    redHuman.heading.toDouble()
-                )
+                drive.actionBuilder(redSpecimen)
+                    .setTangent(Math.toRadians(-90.0))
+                    .splineToLinearHeading(
+                        Pose2d(36.0, -24.0, redSample.heading.toDouble()),
+                        redSpecimen.heading.toDouble()
+                    )
+                    .splineToConstantHeading(
+                        Vector2d(redSample.position.x - 12.0, redSample.position.y),
+                        redSample.heading.toDouble()
+                    )
+                    .setTangent(redSpecimen.heading.toDouble())
+                    .lineToY(redHuman.position.y)
+                    .setTangent(redStartLeft.heading.toDouble())
+                    .splineToLinearHeading(
+                        Pose2d(
+                            redSample.position.x - 3,
+                            redSample.position.y,
+                            redSample.heading.toDouble()
+                        ), redSample.heading.toDouble()
+                    )
+                    .strafeTo(Vector2d(redSample.position.x - 3, redHuman.position.y))
+                    .setTangent(redStartRight.heading.toDouble())
+                    .splineToConstantHeading(
+                        Vector2d(
+                            redSample.position.x + 1,
+                            redSample.position.y
+                        ), redSample.heading.toDouble()
+                    )
+                    .strafeTo(Vector2d(redSample.position.x + 1, redHuman.position.y))
+
                     .build(),
+
                 driverAid.daAction(listOf(Runnable { driverAid.collapse() }))
             )
         )
 
     }
-    //TODO: This is code for all three moves
-//    .setTangent(redStartLeft.heading.toDouble())
-//    .splineToLinearHeading(new Pose2d(redSample.position.x - 3, redSample.position.y, redSample.heading.toDouble()), redSample.heading.toDouble())
-//    .strafeTo(new Vector2d(redSample.position.x - 3, redHuman.position.y))
-//    .setTangent(redStartRight.heading.toDouble())
-//    .splineToConstantHeading(new Vector2d(redSample.position.x + 1, redSample.position.y), redSample.heading.toDouble())
-//    .strafeTo(new Vector2d(redSample.position.x + 1, redHuman.position.y))
 
-    // TODO: This is code for grab place 1
-//    .strafeToLinearHeading(new Vector2d(redHuman.position.x, redHuman.position.y), redHuman.heading.toDouble())
-//    .setTangent(Math.toRadians(180.0))
-//    .splineToLinearHeading(new Pose2d(redSpecimen.position.x, redSpecimen.position.y, redSpecimen.heading.toDouble()), redSpecimen.heading.toDouble())
-    //TODO this is code for end
+    fun grab1() {
+        runBlocking(
+            ParallelAction(
+                drive.actionBuilder(
+                    Pose2d(
+                        redSample.position.x + 1,
+                        redHuman.position.y,
+                        redSample.heading.toDouble()
+                    )
+                )
+
+                    .strafeToLinearHeading(
+                        Vector2d(redHuman.position.x, redHuman.position.y),
+                        redHuman.heading.toDouble()
+                    )
+
+                    .build(),
+                driverAid.daAction(listOf(Runnable { driverAid.pickup() }))
+            )
+        )
+    }
+
+    fun place() {
+        runBlocking(
+            ParallelAction(
+                drive.actionBuilder(
+                    redHuman
+                )
+                    .setTangent(Math.toRadians(180.0))
+                    .splineToLinearHeading(
+                        Pose2d(
+                            redSpecimen.position.x,
+                            redSpecimen.position.y,
+                            redSpecimen.heading.toDouble()
+                        ), redSpecimen.heading.toDouble()
+                    )
+
+                    .build(),
+                driverAid.daAction(listOf(Runnable { driverAid.highSpecimen() }))
+            )
+        )
+    }
+
+    fun end() {
+        runBlocking(
+            ParallelAction(
+                drive.actionBuilder(
+                    redSpecimen
+                )
+                    .strafeTo(Vector2d(36.0, -31.0))
+                    .setTangent(Math.toRadians(90.0))
+                    .splineToLinearHeading(redEndRight, blueEndRight.heading.toDouble())
+
+                    .build(),
+                driverAid.daAction(listOf(Runnable { driverAid.collapse() }))
+            )
+        )
+    }
+//TODO this is code for end
 
 //                .strafeTo(new Vector2d(36, -31))
 //                .setTangent(Math.toRadians(90))

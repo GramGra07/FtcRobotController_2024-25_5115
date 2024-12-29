@@ -26,7 +26,7 @@ class oneStepAuto(val alliance: Alliance) : LinearOpMode() {
         waitForStart()
 
         if (opModeIsActive()) {
-            robot.smallSpecimenAuto()
+            robot.scorePreload()
         }
     }
 }
