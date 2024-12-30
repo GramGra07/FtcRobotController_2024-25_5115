@@ -54,6 +54,7 @@ open class HardwareConfig(
         lateinit var loopTimeController: LoopTimeController
 
         var once = false
+        var canMove = true
 
         private var hasMovedOnInit = false
 
@@ -80,7 +81,7 @@ open class HardwareConfig(
         }
 
         armSubsystem =
-            ArmSubsystem(ahwMap)
+            ArmSubsystem(ahwMap, auto)
         scoringSubsystem =
             ScoringSubsystem(ahwMap, auto, armSubsystem)
 
@@ -94,6 +95,7 @@ open class HardwareConfig(
         once = false
         localizerSubsystem.draw(dashboard)
         if (!auto) {
+            canMove = false
             mecanumDrive = localizerSubsystem.drive
             loopTimeController = LoopTimeController(timer)
             telemetry.update()
@@ -118,14 +120,14 @@ open class HardwareConfig(
         )
         driveSubsystem.update()
 
-        localizerSubsystem.update(timer)
+//        localizerSubsystem.update(timer)
 
         scoringSubsystem.update()
-
         armSubsystem.update(
             -myOpMode.gamepad2.right_stick_y.toDouble(),
             -myOpMode.gamepad2.left_stick_y.toDouble()
         )
+
 
         driverAid.update()
 
@@ -173,8 +175,8 @@ open class HardwareConfig(
         teleSpace()
 //        reLocalizationSubsystem.telemetry(telemetry)
 //        teleSpace()
-        localizerSubsystem.telemetry(telemetry)
-        teleSpace()
+//        localizerSubsystem.telemetry(telemetry)
+//        teleSpace()
         armSubsystem.telemetry(telemetry)
         teleSpace()
 //        scoringSubsystem.telemetry(telemetry)
@@ -193,9 +195,11 @@ open class HardwareConfig(
         armSubsystem: ArmSubsystem,
         scoringSubsystem: ScoringSubsystem
     ) {
-        if ((!myOpMode.gamepad1.atRest() || !myOpMode.gamepad2.atRest()) && !hasMovedOnInit) {
+        if ((!myOpMode.gamepad1.atRest() || !myOpMode.gamepad2.atRest()) && !hasMovedOnInit
+        ) {
             scoringSubsystem.setup()
             hasMovedOnInit = true
+
         }
     }
 }

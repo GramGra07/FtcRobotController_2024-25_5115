@@ -7,7 +7,7 @@ import com.acmerobotics.dashboard.config.Config;
 public class ServoUtil {
     public static double openClaw = 180;
 
-    public static double closeClaw = 105;
+    public static double closeClaw = 90;
 
     public static double rotateLeft = 0;
     public static double rotateCenter = 63;

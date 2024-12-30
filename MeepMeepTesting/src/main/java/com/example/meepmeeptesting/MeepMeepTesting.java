@@ -36,66 +36,62 @@ public class MeepMeepTesting {
         Pose2d redNeutralSample = new Pose2d(-56.0, -12.0, redStartRight.heading.toDouble());
 
         myBot.runAction(myBot.getDrive().actionBuilder(startPose).setTangent(Math.toRadians(-90.0))
+                .splineToLinearHeading(
+                        new Pose2d(36.0, -24.0, redSample.heading.toDouble()),
+                        redSpecimen.heading.toDouble()
+                )
+                .splineToConstantHeading(
+                        new Vector2d(redSample.position.x - 12.0, redSample.position.y),
+                        redSample.heading.toDouble()
+                )
+                .setTangent(redSpecimen.heading.toDouble())
+                .lineToY(redHuman.position.y)
+                .setTangent(redStartLeft.heading.toDouble())
+                .splineToLinearHeading(new Pose2d(redSample.position.x - 3, redSample.position.y, redSample.heading.toDouble()), redSample.heading.toDouble())
+                .strafeTo(new Vector2d(redSample.position.x - 3, redHuman.position.y))
+                .setTangent(redStartRight.heading.toDouble())
+                .splineToConstantHeading(new Vector2d(redSample.position.x + 1, redSample.position.y), redSample.heading.toDouble())
+                .strafeTo(new Vector2d(redSample.position.x + 1, redHuman.position.y))
+                .splineToConstantHeading(
+                        new Vector2d(redSpecimen.position.x, redSpecimen.position.y),
+                        redSpecimen.heading.toDouble()
+                )
+                //
+                .setTangent(Math.toRadians(-90.0))
+                .splineToLinearHeading(
+                        new Pose2d(36, -24, redSample.heading.toDouble()),
+                        redSpecimen.heading.toDouble()
+                )
+                .splineToConstantHeading(
+                        new Vector2d(redSample.position.x - 12, redSample.position.y),
+                        redSample.heading.toDouble()
+                )
+                .setTangent(redSpecimen.heading.toDouble())
+                .lineToY(redHuman.position.y)
+                //
+                .setReversed(true)
+                .setTangent(redStartLeft.heading.toDouble())
+                .splineToLinearHeading(new Pose2d(redSample.position.x - 3, redSample.position.y, redSample.heading.toDouble()), redSample.heading.toDouble())
+                .strafeTo(new Vector2d(redSample.position.x - 3, redHuman.position.y))
+                .setTangent(redStartRight.heading.toDouble())
+                .splineToConstantHeading(new Vector2d(redSample.position.x + 1, redSample.position.y), redSample.heading.toDouble())
+                .strafeTo(new Vector2d(redSample.position.x + 1, redHuman.position.y))
+                //
+                .strafeToLinearHeading(new Vector2d(redHuman.position.x, redHuman.position.y), redHuman.heading.toDouble())
+                .setTangent(Math.toRadians(180.0))
+                .splineToLinearHeading(new Pose2d(redSpecimen.position.x, redSpecimen.position.y, redSpecimen.heading.toDouble()), redSpecimen.heading.toDouble())
+
+                .strafeToLinearHeading(new Vector2d(redHuman.position.x, redHuman.position.y), redHuman.heading.toDouble())
+                .setTangent(Math.toRadians(180.0))
+                .splineToLinearHeading(new Pose2d(redSpecimen.position.x, redSpecimen.position.y, redSpecimen.heading.toDouble()), redSpecimen.heading.toDouble())
+                .strafeToLinearHeading(new Vector2d(redHuman.position.x, redHuman.position.y), redHuman.heading.toDouble())
+                .setTangent(Math.toRadians(180.0))
+                .splineToLinearHeading(new Pose2d(redSpecimen.position.x, redSpecimen.position.y, redSpecimen.heading.toDouble()), redSpecimen.heading.toDouble())
+
+                //
                 .strafeTo(new Vector2d(36, -31))
                 .setTangent(Math.toRadians(90))
                 .splineToLinearHeading(redEndRight, blueEndRight.heading.toDouble())
-
-//                .splineToLinearHeading(
-//                        new Pose2d(36.0, -24.0, redSample.heading.toDouble()),
-//                        redSpecimen.heading.toDouble()
-//                )
-//                .splineToConstantHeading(
-//                        new Vector2d(redSample.position.x - 12.0, redSample.position.y),
-//                        redSample.heading.toDouble()
-//                )
-//                .setTangent(redSpecimen.heading.toDouble())
-//                .lineToY(redHuman.position.y)
-//                .setTangent(redStartLeft.heading.toDouble())
-//                .splineToLinearHeading(new Pose2d(redSample.position.x - 3, redSample.position.y, redSample.heading.toDouble()), redSample.heading.toDouble())
-//                .strafeTo(new Vector2d(redSample.position.x - 3, redHuman.position.y))
-//                .setTangent(redStartRight.heading.toDouble())
-//                .splineToConstantHeading(new Vector2d(redSample.position.x + 1, redSample.position.y), redSample.heading.toDouble())
-//                .strafeTo(new Vector2d(redSample.position.x + 1, redHuman.position.y))
-//                .splineToConstantHeading(
-//                        new Vector2d(redSpecimen.position.x, redSpecimen.position.y),
-//                        redSpecimen.heading.toDouble()
-//                )
-//                //
-//                .setTangent(Math.toRadians(-90.0))
-//                .splineToLinearHeading(
-//                        new Pose2d(36, -24, redSample.heading.toDouble()),
-//                        redSpecimen.heading.toDouble()
-//                )
-//                .splineToConstantHeading(
-//                        new Vector2d(redSample.position.x - 12, redSample.position.y),
-//                        redSample.heading.toDouble()
-//                )
-//                .setTangent(redSpecimen.heading.toDouble())
-//                .lineToY(redHuman.position.y)
-//                //
-//                .setReversed(true)
-//                .setTangent(redStartLeft.heading.toDouble())
-//                .splineToLinearHeading(new Pose2d(redSample.position.x - 3, redSample.position.y, redSample.heading.toDouble()), redSample.heading.toDouble())
-//                .strafeTo(new Vector2d(redSample.position.x - 3, redHuman.position.y))
-//                .setTangent(redStartRight.heading.toDouble())
-//                .splineToConstantHeading(new Vector2d(redSample.position.x + 1, redSample.position.y), redSample.heading.toDouble())
-//                .strafeTo(new Vector2d(redSample.position.x + 1, redHuman.position.y))
-//                //
-//                .strafeToLinearHeading(new Vector2d(redHuman.position.x, redHuman.position.y), redHuman.heading.toDouble())
-//                .setTangent(Math.toRadians(180.0))
-//                .splineToLinearHeading(new Pose2d(redSpecimen.position.x, redSpecimen.position.y, redSpecimen.heading.toDouble()), redSpecimen.heading.toDouble())
-//
-//                .strafeToLinearHeading(new Vector2d(redHuman.position.x, redHuman.position.y), redHuman.heading.toDouble())
-//                .setTangent(Math.toRadians(180.0))
-//                .splineToLinearHeading(new Pose2d(redSpecimen.position.x, redSpecimen.position.y, redSpecimen.heading.toDouble()), redSpecimen.heading.toDouble())
-//                .strafeToLinearHeading(new Vector2d(redHuman.position.x, redHuman.position.y), redHuman.heading.toDouble())
-//                .setTangent(Math.toRadians(180.0))
-//                .splineToLinearHeading(new Pose2d(redSpecimen.position.x, redSpecimen.position.y, redSpecimen.heading.toDouble()), redSpecimen.heading.toDouble())
-//
-//                //
-//                .strafeTo(new Vector2d(36, -31))
-//                .setTangent(Math.toRadians(90))
-//                .splineToLinearHeading(redEndRight, blueEndRight.heading.toDouble())
                 .build());
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_JUICE_DARK)
                 .setDarkMode(true)

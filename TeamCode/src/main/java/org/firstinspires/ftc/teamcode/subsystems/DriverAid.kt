@@ -48,14 +48,14 @@ class DriverAid(
 
     private var collapseE = 0.0
     private var collapseP = 100.0
-    private var hSpecimenE = 1400.0
+    private var hSpecimenE = 1200.0
     private var hSpecimenP = 1200.0
     private var hBasketE = 2250.0
     private var hBasketP = 2000.0
     private var pickupE = 1100.0
     private var pickupP = 150.0
     private var humanE = 200.0
-    private var humanP = 250.0
+    private var humanP = 350.0
     private val useConfig = true
     fun update() {
         if (useConfig) {
@@ -130,12 +130,9 @@ class DriverAid(
     private fun pickupSequence(scoringSubsystem: ScoringSubsystem) {
         usingDA = true
         scoringSubsystem.setPitchMed()
+        scoringSubsystem.setRotateCenter()
+        scoringSubsystem.openClaw()
         armSubsystem.setPE(pickupP, pickupE, false)
-        if (armSubsystem.isExtendAtTarget(100.0) && armSubsystem.isPitchAtTarget(100.0)) {
-            scoringSubsystem.setRotateCenter()
-//            scoringSubsystem.setPitchLow()
-            scoringSubsystem.openClaw()
-        }
         end()
     }
 
@@ -156,17 +153,16 @@ class DriverAid(
     }
 
     class DAActions(
-        funcs: List<Runnable>,
+        val funcs: List<Runnable>,
         val armSubsystem: ArmSubsystem,
         val scoringSubsystem: ScoringSubsystem,
         val driverAid: DriverAid
     ) : Action {
-        private val funcs = funcs
         override fun run(packet: TelemetryPacket): Boolean {
             funcs.forEach(Runnable::run)
+            driverAid.update()
             armSubsystem.update()
             scoringSubsystem.update()
-            driverAid.update()
             return !armSubsystem.bothAtTarget()
         }
     }

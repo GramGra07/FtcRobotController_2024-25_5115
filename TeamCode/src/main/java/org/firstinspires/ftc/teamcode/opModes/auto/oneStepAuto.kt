@@ -27,6 +27,7 @@ class oneStepAuto(val alliance: Alliance) : LinearOpMode() {
 
         if (opModeIsActive()) {
             robot.scorePreload()
+            robot.end()
         }
     }
 }

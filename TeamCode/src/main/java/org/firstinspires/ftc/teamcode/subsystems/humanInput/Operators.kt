@@ -100,6 +100,9 @@ object Operators {
         if (myOpMode.gamepad2.right_stick_button) {
             armSubsystem.setPE(VarConfig.pitch, VarConfig.extend)
         }
+        if (myOpMode.gamepad2.left_stick_button) {
+            armSubsystem.setExtendTarget(600.0)
+        }
 
         if (!armSubsystem.usePIDFe) {
             armSubsystem.setPowerExtend(0.0, -myOpMode.gamepad2.right_stick_y.toDouble())

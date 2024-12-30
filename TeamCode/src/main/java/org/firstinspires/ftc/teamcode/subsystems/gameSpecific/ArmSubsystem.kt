@@ -17,7 +17,9 @@ import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.PIDVals.pitchF
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.PIDVals.pitchFExtend
 import kotlin.math.cos
 
-class ArmSubsystem(ahwMap: HardwareMap) {
+class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
+    val pitchNegate = if (auto) 1.0 else -1.0
+        get() = field
 
     enum class ExtendState {
         PID,
@@ -112,7 +114,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
 
     fun setPowerPitch(target: Double, overridePower: Double? = 0.0) {
         pPower = if (usePIDFp) {
-            calculatePID(pitchPIDF, -pitchEncoder.currentPosition.toDouble(), target)
+            calculatePID(pitchPIDF, -pitchEncoder.currentPosition.toDouble() * pitchNegate, target)
         } else {
             Range.clip(
                 overridePower ?: 0.0,
@@ -191,7 +193,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
     }
 
     private fun calculateExtendMax(): Double {
-        val angle = pAngle(-pitchEncoder.currentPosition.toDouble())
+        val angle = pAngle(-pitchEncoder.currentPosition.toDouble() * pitchNegate)
         val x = 42
         val cosAngle = cos(Math.toRadians(angle))
         val returnable = Range.clip((x / cosAngle) - 18, 0.0, maxExtendIn) * ticksPerInchExtend
@@ -205,7 +207,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
         extendEncoder.telemetry(telemetry)
         telemetry.addData("eTarget", extendTarget)
         telemetry.addData("pTarget", pitchT)
-        telemetry.addData("pAngle", pAngle(-pitchEncoder.currentPosition.toDouble()))
+        telemetry.addData("pAngle", pAngle(-pitchEncoder.currentPosition.toDouble() * pitchNegate))
         telemetry.addData("extendMax (ticks)", calculateExtendMax())
     }
 
@@ -216,7 +218,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
 
     fun isPitchAtTarget(tolerance: Double = 100.0): Boolean {
         return MathFunctions.inTolerance(
-            -pitchEncoder.currentPosition.toDouble(),
+            -pitchEncoder.currentPosition.toDouble() * pitchNegate,
             pitchT.toDouble(),
             tolerance
         )
@@ -236,7 +238,7 @@ class ArmSubsystem(ahwMap: HardwareMap) {
             extendTarget.toDouble(),
             tolerance
         ) && MathFunctions.inTolerance(
-            -pitchEncoder.currentPosition.toDouble(),
+            -pitchEncoder.currentPosition.toDouble() * pitchNegate,
             pitchT.toDouble(),
             tolerance
         )
@@ -266,7 +268,10 @@ class ArmSubsystem(ahwMap: HardwareMap) {
             armSubsystem.setPE(p, e)
             armSubsystem.update()
             packet.put("pTarget", armSubsystem.pitchT)
-            packet.put("p", -armSubsystem.pitchEncoder.currentPosition)
+            packet.put(
+                "p",
+                -armSubsystem.pitchEncoder.currentPosition.toDouble() * armSubsystem.pitchNegate
+            )
             packet.put("eTarget", armSubsystem.extendTarget)
             packet.put("e", armSubsystem.extendEncoder.getMost())
             return !armSubsystem.bothAtTarget()

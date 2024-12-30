@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
 import org.firstinspires.ftc.teamcode.followers.roadRunner.MecanumDrive
+import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.DAVars.hSpecimenP
 
 
 class AutoHardware(
@@ -61,136 +62,6 @@ class AutoHardware(
         val redSample = Pose2d(60.0, -12.0, Math.toRadians(0.0))
         val blueNeutralSample = Pose2d(56.0, 12.0, blueStartRight.heading.toDouble())
         val redNeutralSample = Pose2d(-56.0, -12.0, redStartRight.heading.toDouble())
-    }
-
-
-    fun buildPaths() {
-//        scorePreload = follower.pathBuilder()
-//            .addPath(
-//                BezierCurve(
-//                    Point(redStartRight),
-//                    Point(126.0, 72.0),
-//                    Point(redSpecimen)
-//                )
-//            )
-//            .setLinearHeadingInterpolation(redStartRight.heading, redSpecimen.heading)
-//            .build()
-//
-//        move1 = follower.pathBuilder()
-//            .addPath(
-//                BezierCurve(
-//                    Point(redSpecimen),
-//                    Point(84.0, 132.0),
-//                    Point(redSample)
-//                )
-//            )
-//            .setLinearHeadingInterpolation(redSpecimen.heading, redSample.heading)
-//            .addPath(BezierLine(Point(redSample), Point(redHuman)))
-//            .setConstantHeadingInterpolation(redSample.heading)
-//            .build()
-//
-//        move2 = follower.pathBuilder()
-//            .addPath(
-//                BezierCurve(
-//                    Point(redHuman),
-//                    Point(84.0, 132.0),
-//                    Point(redSample)
-//                )
-//            )
-//            .setLinearHeadingInterpolation(redHuman.heading, redSample.heading)
-//            .addPath(BezierLine(Point(redSample), Point(redSpecimen)))
-//            .setConstantHeadingInterpolation(redSample.heading)
-//            .build()
-//
-//        move3 = follower.pathBuilder()
-//            .addPath(
-//                BezierCurve(
-//                    Point(redSpecimen),
-//                    Point(84.0, 132.0),
-//                    Point(redSample)
-//                )
-//            )
-//            .setLinearHeadingInterpolation(redSpecimen.heading, redSample.heading)
-//            .addPath(BezierLine(Point(redSample), Point(redHuman)))
-//            .setConstantHeadingInterpolation(redSample.heading)
-//            .build()
-//
-//        pickup1 = follower.pathBuilder()
-//            .addPath(
-//                BezierCurve(
-//                    Point(redHuman),
-//                    Point(redHuman)
-//                )
-//            )
-//            .setConstantHeadingInterpolation(redHuman.heading)
-//            .build()
-//
-//        score1 = follower.pathBuilder()
-//            .addPath(
-//                BezierCurve(
-//                    Point(redHuman),
-//                    Point(126.0, 72.0),
-//                    Point(redSpecimen)
-//                )
-//            )
-//            .setLinearHeadingInterpolation(redHuman.heading, redSpecimen.heading)
-//            .build()
-//
-//        pickup2 = follower.pathBuilder()
-//            .addPath(
-//                BezierCurve(
-//                    Point(redSpecimen),
-//                    Point(126.0, 72.0),
-//                    Point(redHuman)
-//                )
-//            )
-//            .setLinearHeadingInterpolation(redSpecimen.heading, redHuman.heading)
-//            .build()
-//
-//        score2 = follower.pathBuilder()
-//            .addPath(
-//                BezierCurve(
-//                    Point(redHuman),
-//                    Point(126.0, 72.0),
-//                    Point(redSpecimen)
-//                )
-//            )
-//            .setLinearHeadingInterpolation(redHuman.heading, redSpecimen.heading)
-//            .build()
-//
-//        pickup3 = follower.pathBuilder()
-//            .addPath(
-//                BezierCurve(
-//                    Point(redSpecimen),
-//                    Point(126.0, 72.0),
-//                    Point(redHuman)
-//                )
-//            )
-//            .setLinearHeadingInterpolation(redSpecimen.heading, redHuman.heading)
-//            .build()
-//
-//        score3 = follower.pathBuilder()
-//            .addPath(
-//                BezierCurve(
-//                    Point(redHuman),
-//                    Point(126.0, 72.0),
-//                    Point(redSpecimen)
-//                )
-//            )
-//            .setLinearHeadingInterpolation(redHuman.heading, redSpecimen.heading)
-//            .build()
-//
-//        end = follower.pathBuilder()
-//            .addPath(
-//                BezierCurve(
-//                    Point(redSpecimen),
-//                    Point(118.0, 24.0),
-//                    Point(80.0, 30.0),
-//                    Point(redEndRight)
-//                )
-//            )
-//            .setLinearHeadingInterpolation(redSpecimen.heading, redEndRight.heading)
-//            .build()
     }
 
 //    fun goToSpecimenBCurve(): BezierCurve {
@@ -305,28 +176,21 @@ class AutoHardware(
 
     fun scorePreload() {
         runBlocking(
-            SequentialAction(
-                scoringSubsystem.servoAction(
-                    listOf(
-                        Runnable { scoringSubsystem.setPitchHigh() },
-                        Runnable { scoringSubsystem.setRotateCenter() }
+            ParallelAction(
+                drive.actionBuilder(redStartRight)
+                    .splineToConstantHeading(
+                        Vector2d(redSpecimen.position.x, redSpecimen.position.y),
+                        redSpecimen.heading.toDouble()
                     )
-                ),
-                ParallelAction(
-                    drive.actionBuilder(redStartRight)
-                        .splineToConstantHeading(
-                            Vector2d(redSpecimen.position.x, redSpecimen.position.y),
-                            redSpecimen.heading.toDouble()
-                        )
-                        .build(),
-                    armSubsystem.setPEAction(1479.0, 1100.0)
-                )
+                    .build(),
+                driverAid.daAction(listOf(Runnable { driverAid.highSpecimen() })),
+            ),
+
             )
-        )
         armSubsystem.eMax = 0.5
         runBlocking(
             SequentialAction(
-                armSubsystem.setPEAction(1479.1, 600.0),
+                armSubsystem.setPEAction(hSpecimenP, 600.0),
                 scoringSubsystem.servoAction(
                     listOf(
                         Runnable { scoringSubsystem.openClaw() },
@@ -398,7 +262,7 @@ class AutoHardware(
                     )
 
                     .build(),
-                driverAid.daAction(listOf(Runnable { driverAid.pickup() }))
+                driverAid.daAction(listOf(Runnable { driverAid.human() }))
             )
         )
     }
