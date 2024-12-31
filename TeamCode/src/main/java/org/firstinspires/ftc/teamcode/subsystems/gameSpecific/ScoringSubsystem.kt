@@ -197,6 +197,15 @@ class ScoringSubsystem(
         update()
     }
 
+    fun specimenRotate(pangle: Double) {
+        val angle = pangle
+        val angle2 = 90 - angle
+        val angle3 = 180 - angle2
+        val angleWrap = abs(pivotHigh) + abs(pivotLow)
+        val angleSend = (angle3 / 180) * angleWrap
+        pitchServo.setPose(angleSend)
+    }
+
     private fun lockRotate(lock: CameraLock) {
         val angle = lock.angle
         val correctedAngle = if (angle / abs(angle) == -1.0) {

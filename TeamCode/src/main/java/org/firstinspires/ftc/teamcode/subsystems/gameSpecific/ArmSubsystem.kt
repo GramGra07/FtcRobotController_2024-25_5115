@@ -19,6 +19,7 @@ import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.PIDVals.pitchF
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.PIDVals.pitchFExtend
 import kotlin.math.asin
 import kotlin.math.cos
+import kotlin.math.sqrt
 
 class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
     val pitchNegate = if (auto) 1.0 else -1.0
@@ -52,8 +53,8 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
     val ticksPerDegree: Double = ticksPer90 / 90.0
     val maxPitchTicks = 2600
 
-    private fun pAngle(ticks: Double): Double {
-        return (ticks * degreePerTick)
+    fun pAngle(): Double {
+        return ((-pitchEncoder.currentPosition.toDouble() * pitchNegate) * degreePerTick)
     }
 
     var usePIDFe = true
@@ -209,7 +210,7 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
     }
 
     private fun calculateExtendMax(): Double {
-        val angle = pAngle(-pitchEncoder.currentPosition.toDouble() * pitchNegate)
+        val angle = pAngle()
         val x = 42
         val cosAngle = cos(Math.toRadians(angle))
         val returnable = Range.clip((x / cosAngle) - 18, 0.0, maxExtendIn) * ticksPerInchExtend
@@ -223,7 +224,7 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
         extendEncoder.telemetry(telemetry)
         telemetry.addData("eTarget", extendTarget)
         telemetry.addData("pTarget", pitchT)
-        telemetry.addData("pAngle", pAngle(-pitchEncoder.currentPosition.toDouble() * pitchNegate))
+        telemetry.addData("pAngle", pAngle())
         telemetry.addData("extendMax (ticks)", calculateExtendMax())
     }
 
@@ -279,9 +280,16 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
         }
     }
 
-    class PEAction(val armSubsystem: ArmSubsystem, val p: Double, val e: Double) : Action {
+    fun setHeight(height: Double, length: Double) {
+        val h = sqrt((height * height) + (length * length))
+        val angle = asin(height / h)
+        setExtendTargetIn(h)
+        setPitchTargetDegrees(angle)
+    }
+
+    class PEAction(private val funcs: List<Runnable>, val armSubsystem: ArmSubsystem) : Action {
         override fun run(packet: TelemetryPacket): Boolean {
-            armSubsystem.setPE(p, e)
+            funcs.forEach(Runnable::run)
             armSubsystem.update()
             packet.put("pTarget", armSubsystem.pitchT)
             packet.put(
@@ -294,7 +302,7 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
         }
     }
 
-    fun setPEAction(p: Double, e: Double): Action {
-        return PEAction(this, p, e)
+    fun setPEAction(funcs: List<Runnable>): Action {
+        return PEAction(funcs, this)
     }
 }

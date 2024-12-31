@@ -187,10 +187,15 @@ class AutoHardware(
             ),
 
             )
-        armSubsystem.eMax = 0.5
         runBlocking(
             SequentialAction(
-                armSubsystem.setPEAction(hSpecimenP, 600.0),
+                armSubsystem.setPEAction(
+                    listOf(
+                        Runnable { armSubsystem.eMax = 0.5 },
+                        Runnable { armSubsystem.setPE(hSpecimenP, 600.0) },
+                        Runnable { armSubsystem.eMax = 1.0 }
+                    )
+                ),
                 scoringSubsystem.servoAction(
                     listOf(
                         Runnable { scoringSubsystem.openClaw() },
@@ -199,7 +204,6 @@ class AutoHardware(
                 )
             )
         )
-        armSubsystem.eMax = 1.0
 
 
     }
