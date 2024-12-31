@@ -133,6 +133,9 @@ class DriverAid(
         scoringSubsystem.setRotateCenter()
         scoringSubsystem.openClaw()
         armSubsystem.setPE(pickupP, pickupE, false)
+        if (armSubsystem.bothAtTarget()) {
+            armSubsystem.correctHeight()
+        }
         end()
     }
 

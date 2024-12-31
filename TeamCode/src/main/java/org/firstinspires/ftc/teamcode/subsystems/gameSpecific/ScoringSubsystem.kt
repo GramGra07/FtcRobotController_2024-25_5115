@@ -209,7 +209,7 @@ class ScoringSubsystem(
 
     private fun autoLevel() {
         val angle =
-            armSubsystem.ticksPerDegree * armSubsystem.pitchEncoder.currentPosition.toDouble()
+            armSubsystem.degreePerTick * armSubsystem.pitchEncoder.currentPosition.toDouble()
         val coAng = Range.clip(angle + 80, -60.0, 80.0)
         pitchServo.setPose(coAng)
     }

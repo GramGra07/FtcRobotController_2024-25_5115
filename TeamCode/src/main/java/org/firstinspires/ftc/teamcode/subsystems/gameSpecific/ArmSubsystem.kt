@@ -6,20 +6,22 @@ import com.arcrobotics.ftclib.controller.PIDFController
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
+import com.qualcomm.robotcore.hardware.DistanceSensor
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.robotcore.external.Telemetry
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import org.firstinspires.ftc.teamcode.customHardware.sensors.DualEncoder
 import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.initMotor
 import org.firstinspires.ftc.teamcode.utilClass.MathFunctions
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.PIDVals
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.PIDVals.pitchFCollapse
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.PIDVals.pitchFExtend
+import kotlin.math.asin
 import kotlin.math.cos
 
 class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
     val pitchNegate = if (auto) 1.0 else -1.0
-        get() = field
 
     enum class ExtendState {
         PID,
@@ -46,12 +48,12 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
 
     private var ticksPer90 = 2048.0
 
-    val ticksPerDegree: Double = 90.0 / ticksPer90
-    val ticksPerDegreeFunc: Double = ticksPer90 / 90.0
+    val degreePerTick: Double = 90.0 / ticksPer90
+    val ticksPerDegree: Double = ticksPer90 / 90.0
     val maxPitchTicks = 2600
 
     private fun pAngle(ticks: Double): Double {
-        return (ticks * ticksPerDegree)
+        return (ticks * degreePerTick)
     }
 
     var usePIDFe = true
@@ -70,7 +72,10 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
     private val maxExtendIn = 32.5
     private val maxExtendTicksTOTAL = 2200
     private val ticksPerInchExtend = maxExtendTicksTOTAL / maxExtendIn
+    private val inPerTickExtend = maxExtendIn / maxExtendTicksTOTAL
     var maxExtendTicks = maxExtendTicksTOTAL
+
+    var distanceSensor: DistanceSensor
 
 
     init {
@@ -98,6 +103,17 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
         extendMotor2.direction = DcMotorSimple.Direction.REVERSE
 
         updatePID()
+
+        distanceSensor = ahwMap.get(DistanceSensor::class.java, "distanceSensor")
+    }
+
+    fun correctHeight() {
+        val targetDistance = 4
+        val dError = targetDistance - distanceSensor.getDistance(DistanceUnit.INCH)
+        val h = extendEncoder.getMost() * inPerTickExtend
+        val angle = asin(dError / h)
+        val newTarget = (angle * ticksPerDegree) + pitchT
+        pitchT = newTarget
     }
 
     fun setPowerExtend(target: Double, power: Double? = 0.0) {
@@ -130,7 +146,7 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
     }
 
     fun setPitchTargetDegrees(degrees: Double) {
-        pitchT = (degrees * ticksPerDegreeFunc)
+        pitchT = (degrees * ticksPerDegree)
     }
 
     fun setExtendTarget(target: Double) {
