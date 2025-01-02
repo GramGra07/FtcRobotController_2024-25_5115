@@ -202,7 +202,7 @@ class ScoringSubsystem(
         val angle2 = 90 - angle
         val angle3 = 180 - angle2
         val angleWrap = abs(pivotHigh) + abs(pivotLow)
-        val angleSend = (angle3 / 180) * angleWrap
+        val angleSend = (angle2)
         pitchServo.setPose(angleSend)
     }
 

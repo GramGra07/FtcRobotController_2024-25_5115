@@ -109,7 +109,8 @@ class DriverAid(
 
     private fun highSpecimenSequence(scoringSubsystem: ScoringSubsystem) {
         usingDA = true
-        armSubsystem.setPE(hSpecimenP, hSpecimenE)
+//        armSubsystem.setPE(hSpecimenP, hSpecimenE)
+        armSubsystem.setHeight(25.0, 22.0, true, true)
         scoringSubsystem.specimenRotate(armSubsystem.pAngle())
         scoringSubsystem.setRotateCenter()
         end()

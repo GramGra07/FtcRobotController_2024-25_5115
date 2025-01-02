@@ -109,7 +109,7 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
     }
 
     fun correctHeight() {
-        val targetDistance = 4
+        val targetDistance = 5.3
         val dError = targetDistance - distanceSensor.getDistance(DistanceUnit.INCH)
         val h = extendEncoder.getMost() * inPerTickExtend
         val angle = asin(dError / h)
@@ -280,11 +280,19 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
         }
     }
 
-    fun setHeight(height: Double, length: Double) {
-        val h = sqrt((height * height) + (length * length))
-        val angle = asin(height / h)
-        setExtendTargetIn(h)
-        setPitchTargetDegrees(angle)
+    fun setHeight(
+        height: Double,
+        length: Double,
+        compensateForClaw: Boolean = false,
+        compensateForPivot: Boolean = false
+    ) {
+        val correctedHeight =
+            height - (if (compensateForClaw) 5.3 else 0.0) - if (compensateForPivot) 3.71 else 0.0
+        val h = sqrt((correctedHeight * correctedHeight) + (length * length))
+        val angle = asin(correctedHeight / h)
+        val correctedH = h - 16.0
+        setExtendTargetIn(correctedH)
+        setPitchTargetDegrees(Math.toDegrees(angle))
     }
 
     class PEAction(private val funcs: List<Runnable>, val armSubsystem: ArmSubsystem) : Action {
