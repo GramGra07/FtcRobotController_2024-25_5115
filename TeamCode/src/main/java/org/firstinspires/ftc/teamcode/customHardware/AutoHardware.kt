@@ -2,14 +2,12 @@ package org.firstinspires.ftc.teamcode.customHardware
 
 import com.acmerobotics.roadrunner.ParallelAction
 import com.acmerobotics.roadrunner.Pose2d
-import com.acmerobotics.roadrunner.SequentialAction
 import com.acmerobotics.roadrunner.Vector2d
 import com.acmerobotics.roadrunner.ftc.runBlocking
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
 import org.firstinspires.ftc.teamcode.followers.roadRunner.MecanumDrive
-import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.DAVars.hSpecimenP
 
 
 class AutoHardware(
@@ -188,19 +186,9 @@ class AutoHardware(
 
             )
         runBlocking(
-            SequentialAction(
-                armSubsystem.setPEAction(
-                    listOf(
-                        Runnable { armSubsystem.eMax = 0.5 },
-                        Runnable { armSubsystem.setPE(hSpecimenP, 600.0) },
-                        Runnable { armSubsystem.eMax = 1.0 }
-                    )
-                ),
-                scoringSubsystem.servoAction(
-                    listOf(
-                        Runnable { scoringSubsystem.openClaw() },
-                        Runnable { scoringSubsystem.setRotateCenter() }
-                    )
+            scoringSubsystem.servoAction(
+                listOf(
+                    Runnable { scoringSubsystem.openClaw() },
                 )
             )
         )
@@ -298,9 +286,11 @@ class AutoHardware(
                 drive.actionBuilder(
                     redSpecimen
                 )
-                    .strafeTo(Vector2d(36.0, -31.0))
+                    .strafeTo(Vector2d(-36.0, -31.0))
                     .setTangent(Math.toRadians(90.0))
-                    .splineToLinearHeading(redEndRight, blueEndRight.heading.toDouble())
+                    .lineToY(blueEndRight.position.y)
+                    .setTangent(blueEndRight.heading.toDouble())
+                    .lineToXLinearHeading(blueEndRight.position.x, blueEndRight.heading.toDouble())
 
                     .build(),
                 driverAid.daAction(listOf(Runnable { driverAid.collapse() }))

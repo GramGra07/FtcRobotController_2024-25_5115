@@ -46,6 +46,7 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
     private var pMin = -0.7
     private var pitchPIDF: PIDFController = PIDFController(0.0, 0.0, 0.0, 0.0)
     var pitchT: Double = 0.0
+    var pitchOffset: Double = 0.0
 
     private var ticksPer90 = 2048.0
 
@@ -108,13 +109,23 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
         distanceSensor = ahwMap.get(DistanceSensor::class.java, "distanceSensor")
     }
 
+    fun findOffset() {
+        val target = 7.0
+        val dError = target - distanceSensor.getDistance(DistanceUnit.INCH)
+        val h = extendEncoder.getMost() * inPerTickExtend
+        val angle = asin(dError / h)
+        val offset = Math.toDegrees(angle) * ticksPerDegree
+//        pitchOffset = offset
+    }
+
     fun correctHeight() {
-        val targetDistance = 5.3
+        val targetDistance = 6.1
         val dError = targetDistance - distanceSensor.getDistance(DistanceUnit.INCH)
         val h = extendEncoder.getMost() * inPerTickExtend
         val angle = asin(dError / h)
-        val newTarget = (angle * ticksPerDegree) + pitchT
-        pitchT = newTarget
+        val newTarget = (Math.toDegrees(angle) * ticksPerDegree) + pitchT
+        setPitchTarget(newTarget)
+
     }
 
     fun setPowerExtend(target: Double, power: Double? = 0.0) {
@@ -143,11 +154,11 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
     }
 
     fun setPitchTarget(target: Double) {
-        pitchT = target
+        pitchT = target + pitchOffset
     }
 
     fun setPitchTargetDegrees(degrees: Double) {
-        pitchT = (degrees * ticksPerDegree)
+        pitchT = (degrees * ticksPerDegree) + pitchOffset
     }
 
     fun setExtendTarget(target: Double) {
@@ -173,6 +184,7 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
         }
         power()
         pMax = 0.8
+        PIDVals.pitchPIDFCo.d = 0.00005
     }
 
     fun power() {
@@ -220,6 +232,7 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
 
     fun telemetry(telemetry: Telemetry) {
         telemetry.addData("Arm Subsystem", "")
+        telemetry.addData("Dist", distanceSensor.getDistance(DistanceUnit.INCH))
         pitchEncoder.telemetry(telemetry)
         extendEncoder.telemetry(telemetry)
         telemetry.addData("eTarget", extendTarget)

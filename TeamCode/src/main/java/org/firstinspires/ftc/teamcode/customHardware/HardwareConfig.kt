@@ -153,6 +153,7 @@ open class HardwareConfig(
 
     fun once() {
         if (!once) {
+            armSubsystem.findOffset()
             telemetry.clearAll()
             timer.reset()
 //            startCameraStream()

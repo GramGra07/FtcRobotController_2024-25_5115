@@ -6,6 +6,7 @@ import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ArmSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ScoringSubsystem
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.DAVars
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.LiftVars
+import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.PIDVals
 import org.gentrifiedApps.statemachineftc.SequentialRunSM
 
 class DriverAid(
@@ -46,16 +47,22 @@ class DriverAid(
         daState = DAState.HUMAN
     }
 
-    private var collapseE = 0.0
-    private var collapseP = 100.0
-    private var hSpecimenE = 1200.0
-    private var hSpecimenP = 1200.0
-    private var hBasketE = 2250.0
-    private var hBasketP = 2000.0
-    private var pickupE = 1100.0
-    private var pickupP = 150.0
-    private var humanE = 200.0
-    private var humanP = 350.0
+    companion object {
+
+        private var collapseE = 0.0
+        private var collapseP = 100.0
+        private var hSpecimenE = 1200.0
+        private var hSpecimenP = 1200.0
+        private var hBasketE = 2250.0
+        private var hBasketP = 2000.0
+        private var pickupE = 1100.0
+        var pickupP = 150.0
+        private var humanE = 200.0
+        private var humanP = 350.0
+    }
+
+    private var pickupOnce = 0
+
     private val useConfig = true
     fun update() {
         if (useConfig) {
@@ -93,7 +100,7 @@ class DriverAid(
             }
 
             DAState.IDLE -> {
-
+                pickupOnce = 0
             }
         }
 //        }
@@ -110,7 +117,7 @@ class DriverAid(
     private fun highSpecimenSequence(scoringSubsystem: ScoringSubsystem) {
         usingDA = true
 //        armSubsystem.setPE(hSpecimenP, hSpecimenE)
-        armSubsystem.setHeight(25.0, 22.0, true, true)
+        armSubsystem.setHeight(26.0, 27.0, true, true)
         scoringSubsystem.specimenRotate(armSubsystem.pAngle())
         scoringSubsystem.setRotateCenter()
         end()
@@ -122,7 +129,7 @@ class DriverAid(
         scoringSubsystem.setRotateCenter()
         armSubsystem.pMax = 0.5
         armSubsystem.setPE(hBasketP, hBasketE, true)
-        if (armSubsystem.isPitchAtTarget(200.0) && armSubsystem.isExtendAtTarget(100.0)) {
+        if (armSubsystem.isPitchAtTarget(200.0) && armSubsystem.isExtendAtTarget(200.0)) {
             scoringSubsystem.setPitchHigh()
         }
         end()
@@ -130,13 +137,12 @@ class DriverAid(
 
     private fun pickupSequence(scoringSubsystem: ScoringSubsystem) {
         usingDA = true
+
+        PIDVals.pitchPIDFCo.d = 0.00025
         scoringSubsystem.setPitchMed()
         scoringSubsystem.setRotateCenter()
         scoringSubsystem.openClaw()
         armSubsystem.setPE(pickupP, pickupE, false)
-        if (armSubsystem.bothAtTarget()) {
-            armSubsystem.correctHeight()
-        }
         end()
     }
 

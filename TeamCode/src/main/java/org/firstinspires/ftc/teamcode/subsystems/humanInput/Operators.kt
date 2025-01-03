@@ -6,7 +6,6 @@ import org.firstinspires.ftc.teamcode.extensions.GamepadExtensions.buttonJustPre
 import org.firstinspires.ftc.teamcode.subsystems.DriverAid
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ArmSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ScoringSubsystem
-import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.VarConfig
 
 object Operators {
 
@@ -97,9 +96,13 @@ object Operators {
         if (myOpMode.gamepad2.options) {
             da.daState = DriverAid.DAState.IDLE
         }
-        if (myOpMode.gamepad2.right_stick_button) {
-            armSubsystem.setPE(VarConfig.pitch, VarConfig.extend)
-        }
+//        if (myOpMode.gamepad2.right_stick_button) {
+//            armSubsystem.setPE(VarConfig.pitch, VarConfig.extend)
+//        }
+
+//        if (myOpMode.gamepad2.right_stick_button) {
+//            armSubsystem.correctHeight()
+//        }
         if (myOpMode.gamepad2.left_stick_button) {
             armSubsystem.setExtendTarget(600.0)
         }
