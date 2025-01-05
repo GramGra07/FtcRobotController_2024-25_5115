@@ -117,7 +117,7 @@ class DriverAid(
     private fun highSpecimenSequence(scoringSubsystem: ScoringSubsystem) {
         usingDA = true
 //        armSubsystem.setPE(hSpecimenP, hSpecimenE)
-        armSubsystem.setHeight(26.0, 27.0, true, true)
+        armSubsystem.setHeight(24.0, 30.0, true, true)
         scoringSubsystem.specimenRotate(armSubsystem.pAngle())
         scoringSubsystem.setRotateCenter()
         end()
@@ -164,21 +164,15 @@ class DriverAid(
 
     class DAActions(
         val funcs: List<Runnable>,
-        val armSubsystem: ArmSubsystem,
-        val scoringSubsystem: ScoringSubsystem,
-        val driverAid: DriverAid
     ) : Action {
         override fun run(packet: TelemetryPacket): Boolean {
             funcs.forEach(Runnable::run)
-            driverAid.update()
-            armSubsystem.update()
-            scoringSubsystem.update()
-            return !armSubsystem.bothAtTarget()
+            return false
         }
     }
 
     fun daAction(funcs: List<Runnable>): Action {
-        return DAActions(funcs, armSubsystem, scoringSubsystem, this)
+        return DAActions(funcs)
     }
 
     private var liftState = false

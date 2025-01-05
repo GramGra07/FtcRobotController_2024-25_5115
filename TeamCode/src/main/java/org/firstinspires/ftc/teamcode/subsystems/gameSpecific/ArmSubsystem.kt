@@ -169,15 +169,19 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
         extendTarget = (inches * ticksPerInchExtend).toInt()
     }
 
-    fun update(pitchPower: Double? = 0.0, extendPower: Double? = 0.0) {
+    fun update(
+        pitchPower: Double? = 0.0,
+        extendPower: Double? = 0.0,
+        overridePower: Boolean = false
+    ) {
         updatePID()
         calculateExtendMax()
-        if (usePIDFp) {
+        if (usePIDFp && !overridePower) {
             setPowerPitch(pitchT)
         } else {
             setPowerPitch(0.0, pitchPower)
         }
-        if (usePIDFe) {
+        if (usePIDFe && !overridePower) {
             setPowerExtend(extendTarget.toDouble())
         } else {
             setPowerExtend(0.0, extendPower)
@@ -308,7 +312,8 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
         setPitchTargetDegrees(Math.toDegrees(angle))
     }
 
-    class PEAction(private val funcs: List<Runnable>, val armSubsystem: ArmSubsystem) : Action {
+    class PEAction(private val funcs: List<Runnable>, private val armSubsystem: ArmSubsystem) :
+        Action {
         override fun run(packet: TelemetryPacket): Boolean {
             funcs.forEach(Runnable::run)
             armSubsystem.update()

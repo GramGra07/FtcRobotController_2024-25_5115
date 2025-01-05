@@ -1,13 +1,20 @@
 package org.firstinspires.ftc.teamcode.customHardware
 
+import com.acmerobotics.dashboard.telemetry.TelemetryPacket
+import com.acmerobotics.roadrunner.Action
+import com.acmerobotics.roadrunner.InstantAction
 import com.acmerobotics.roadrunner.ParallelAction
 import com.acmerobotics.roadrunner.Pose2d
+import com.acmerobotics.roadrunner.SequentialAction
 import com.acmerobotics.roadrunner.Vector2d
 import com.acmerobotics.roadrunner.ftc.runBlocking
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
 import org.firstinspires.ftc.teamcode.followers.roadRunner.MecanumDrive
+import org.firstinspires.ftc.teamcode.subsystems.DriverAid
+import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ArmSubsystem
+import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ScoringSubsystem
 
 
 class AutoHardware(
@@ -51,140 +58,37 @@ class AutoHardware(
         val redEndLeft = Pose2d(24.0, 10.0, Math.toRadians(0.0))
         val redEndRight = Pose2d(24.0, -10.0, Math.toRadians(0.0))
         val blueHuman = Pose2d(-46.0, 54.0, Math.toRadians(90.0))
-        val redHuman = Pose2d(46.0, -54.0, Math.toRadians(-90.0))
+        val redHuman = Pose2d(46.0, -60.0, Math.toRadians(-90.0))
         val blueBasket = Pose2d(50.0, 50.0, Math.toRadians(135.0))
         val redBasket = Pose2d(-50.0, -50.0, Math.toRadians(45.0))
         val blueSpecimen = Pose2d(0.0, 36.0, blueStartRight.heading.toDouble())
-        val redSpecimen = Pose2d(0.0, -36.0, redStartRight.heading.toDouble())
+        val redSpecimen = Pose2d(0.0, -30.0, redStartRight.heading.toDouble())
         val blueSample = Pose2d(-60.0, 12.0, Math.toRadians(0.0))
         val redSample = Pose2d(60.0, -12.0, Math.toRadians(0.0))
         val blueNeutralSample = Pose2d(56.0, 12.0, blueStartRight.heading.toDouble())
-        val redNeutralSample = Pose2d(-56.0, -12.0, redStartRight.heading.toDouble())
+        val redNeutralSample = Pose2d(-58.0, -40.0, redStartRight.heading.toDouble())
+
+
+        var runAction = true
     }
 
-//    fun goToSpecimenBCurve(): BezierCurve {
-//        return BezierCurve(
-//            PoseStorage.currentPoint,
-//            Point(24.0, 72.0),
-//            blueSpecimen
-//        )
-//    }
-//
-//    fun goToBasketBCurve(): BezierCurve {
-//        return BezierCurve(
-//            PoseStorage.currentPoint,
-//            Point(36.0, 120.0),
-//            blueBasket
-//        )
-//    }
-//
-//    fun goToBasketRCurve(): BezierCurve {
-//        return BezierCurve(
-//            PoseStorage.currentPoint,
-//            Point(108.0, 24.0),
-//            redBasket
-//        )
-//    }
-//
-//    fun goToNeutralSampleBCurve(): BezierCurve {
-//        return BezierCurve(
-//            PoseStorage.currentPoint,
-//            Point(30.0, 120.0),
-//            blueNeutralSample
-//        )
-//    }
-//
-//    fun goToNeutralSampleRCurve(): BezierCurve {
-//        return BezierCurve(
-//            PoseStorage.currentPoint,
-//            Point(114.0, 24.0),
-//            redNeutralSample
-//        )
-//    }
-//
-//    fun goToSampleBCurve(offsetY: Double): BezierCurve {
-//        return BezierCurve(
-//            PoseStorage.currentPoint,
-//            Point(64.0, 22.0),
-//            Point(blueSample.x, blueSample.y + offsetY)
-//        )
-//    }
-//
-//    fun goToSampleRCurve(offsetY: Double): BezierCurve {
-//        return BezierCurve(
-//            PoseStorage.currentPoint,
-//            Point(84.0, 132.0),
-//            Point(redSample.x, redSample.y + offsetY)
-//        )
-//    }
-//
-//    fun goToEndBlCurve(): BezierCurve {
-//        return BezierCurve(
-//            PoseStorage.currentPoint,
-//            Point(26.0, 120.0),
-//            Point(64.0, 114.0),
-//            blueEndLeft
-//        )
-//    }
-//
-//    fun goToEndBrCurve(): BezierCurve {
-//        return BezierCurve(
-//            PoseStorage.currentPoint,
-//            Point(26.0, 120.0),
-//            Point(64.0, 114.0),
-//            blueEndRight
-//        )
-//    }
-//
-//    fun goToEndRlCurve(): BezierCurve {
-//        return BezierCurve(
-//            PoseStorage.currentPoint,
-//            Point(118.0, 24.0),
-//            Point(80.0, 30.0),
-//            redEndLeft
-//        )
-//    }
-//
-//    fun goToHumanBCurve(): BezierCurve {
-//        return BezierCurve(
-//            PoseStorage.currentPoint,
-//            Point(34.0, 34.0),
-//            blueHuman
-//        )
-//    }
-
-    enum class statesRR {
-        DRIVE_TO_SPECIMEN_R,
-        PLACE_SPECIMEN_R,
-        GO_TO_SAMPLE_R,
-        GO_TO_SAMPLE_R2,
-        GO_TO_SAMPLE_R3,
-        GO_TO_HUMAN_R,
-        GO_TO_SPECIMEN_R,
-        PLACE_SPECIMEN_R1,
-        GO_TO_HUMAN_R2,
-        GO_TO_SPECIMEN_R2,
-        PLACE_SPECIMEN_R2,
-        GO_TO_HUMAN_R3,
-        GO_TO_SPECIMEN_R3,
-        PLACE_SPECIMEN_R3,
-        GO_TO_END_R,
-        STOP,
-    }
-
-    fun scorePreload() {
+    fun scorePreloadSpeci() {
+        runAction = true
         runBlocking(
             ParallelAction(
-                drive.actionBuilder(redStartRight)
-                    .splineToConstantHeading(
-                        Vector2d(redSpecimen.position.x, redSpecimen.position.y),
-                        redSpecimen.heading.toDouble()
-                    )
-                    .build(),
+                SequentialAction(
+                    drive.actionBuilder(redStartRight)
+                        .splineToConstantHeading(
+                            Vector2d(redSpecimen.position.x, redSpecimen.position.y),
+                            redSpecimen.heading.toDouble()
+                        )
+                        .build(),
+                    InstantAction { runAction = false }
+                ),
                 driverAid.daAction(listOf(Runnable { driverAid.highSpecimen() })),
+                uAction(driverAid, armSubsystem, scoringSubsystem)
             ),
-
-            )
+        )
         runBlocking(
             scoringSubsystem.servoAction(
                 listOf(
@@ -192,164 +96,359 @@ class AutoHardware(
                 )
             )
         )
-
-
     }
 
-    fun moveAll() {
+    fun moveAllSpeci() {
+        runAction = true
         runBlocking(
             ParallelAction(
-                drive.actionBuilder(redSpecimen)
-                    .setTangent(Math.toRadians(-90.0))
-                    .splineToLinearHeading(
-                        Pose2d(36.0, -24.0, redSample.heading.toDouble()),
-                        redSpecimen.heading.toDouble()
-                    )
-                    .splineToConstantHeading(
-                        Vector2d(redSample.position.x - 12.0, redSample.position.y),
-                        redSample.heading.toDouble()
-                    )
-                    .setTangent(redSpecimen.heading.toDouble())
-                    .lineToY(redHuman.position.y)
-                    .setTangent(redStartLeft.heading.toDouble())
-                    .splineToLinearHeading(
-                        Pose2d(
-                            redSample.position.x - 3,
-                            redSample.position.y,
+                SequentialAction(
+                    drive.actionBuilder(redSpecimen)
+                        .setTangent(Math.toRadians(-90.0))
+                        .splineToLinearHeading(
+                            Pose2d(36.0, -24.0, redSample.heading.toDouble()),
+                            redSpecimen.heading.toDouble()
+                        )
+                        .splineToConstantHeading(
+                            Vector2d(redSample.position.x - 16.0, redSample.position.y),
                             redSample.heading.toDouble()
-                        ), redSample.heading.toDouble()
-                    )
-                    .strafeTo(Vector2d(redSample.position.x - 3, redHuman.position.y))
-                    .setTangent(redStartRight.heading.toDouble())
-                    .splineToConstantHeading(
-                        Vector2d(
-                            redSample.position.x + 1,
-                            redSample.position.y
-                        ), redSample.heading.toDouble()
-                    )
-                    .strafeTo(Vector2d(redSample.position.x + 1, redHuman.position.y))
+                        )
+                        .setTangent(redSpecimen.heading.toDouble())
+                        .lineToY(redHuman.position.y)
+                        .setTangent(redStartLeft.heading.toDouble())
+                        .splineToLinearHeading(
+                            Pose2d(
+                                redSample.position.x - 5,
+                                redSample.position.y,
+                                redSample.heading.toDouble()
+                            ), redSample.heading.toDouble()
+                        )
+                        .strafeTo(Vector2d(redSample.position.x - 5, redHuman.position.y))
+                        .setTangent(redStartRight.heading.toDouble())
+                        .splineToConstantHeading(
+                            Vector2d(
+                                redSample.position.x + 2,
+                                redSample.position.y
+                            ), redSample.heading.toDouble()
+                        )
+                        .strafeTo(Vector2d(redSample.position.x + 2, redHuman.position.y))
 
-                    .build(),
+                        .build(),
 
+                    InstantAction { runAction = false }
+                ),
+                uAction(driverAid, armSubsystem, scoringSubsystem),
                 driverAid.daAction(listOf(Runnable { driverAid.collapse() }))
             )
         )
 
     }
 
-    fun grab1() {
+    fun grabSpeci() {
+        runAction = true
         runBlocking(
             ParallelAction(
-                drive.actionBuilder(
-                    Pose2d(
-                        redSample.position.x + 1,
-                        redHuman.position.y,
-                        redSample.heading.toDouble()
-                    )
-                )
-
-                    .strafeToLinearHeading(
-                        Vector2d(redHuman.position.x, redHuman.position.y),
-                        redHuman.heading.toDouble()
+                SequentialAction(
+                    drive.actionBuilder(
+                        Pose2d(
+                            redSample.position.x + 1,
+                            redHuman.position.y,
+                            redSample.heading.toDouble()
+                        )
                     )
 
-                    .build(),
+                        .strafeToLinearHeading(
+                            Vector2d(redHuman.position.x, redHuman.position.y),
+                            redHuman.heading.toDouble()
+                        )
+
+                        .build(),
+                    InstantAction { runAction = false }
+                ),
+                uAction(driverAid, armSubsystem, scoringSubsystem),
                 driverAid.daAction(listOf(Runnable { driverAid.human() }))
             )
         )
     }
 
-    fun place() {
+    fun placeSpeci() {
+        runAction = true
         runBlocking(
             ParallelAction(
-                drive.actionBuilder(
-                    redHuman
-                )
-                    .setTangent(Math.toRadians(180.0))
-                    .splineToLinearHeading(
-                        Pose2d(
-                            redSpecimen.position.x,
-                            redSpecimen.position.y,
-                            redSpecimen.heading.toDouble()
-                        ), redSpecimen.heading.toDouble()
+                SequentialAction(
+                    drive.actionBuilder(
+                        redHuman
                     )
+                        .setTangent(Math.toRadians(180.0))
+                        .splineToLinearHeading(
+                            Pose2d(
+                                redSpecimen.position.x,
+                                redSpecimen.position.y,
+                                redSpecimen.heading.toDouble()
+                            ), redSpecimen.heading.toDouble()
+                        )
 
-                    .build(),
+                        .build(),
+                    InstantAction { runAction = false }
+                ),
+                uAction(driverAid, armSubsystem, scoringSubsystem),
                 driverAid.daAction(listOf(Runnable { driverAid.highSpecimen() }))
             )
         )
     }
 
-    fun end() {
+    fun scorePreloadSample() {
+        runAction = true
+        runBlocking(
+            SequentialAction(
+                ParallelAction(
+                    SequentialAction(
+                        drive.actionBuilder(
+                            redStartLeft
+                        )
+                            .setTangent(Math.toRadians(180.0))
+                            .strafeToLinearHeading(
+                                Vector2d(redBasket.position.x, redBasket.position.y),
+                                Math.toRadians(45.0)
+                            )
+                            .build(),
+                        InstantAction { runAction = false }
+                    ),
+                    uAction(driverAid, armSubsystem, scoringSubsystem),
+                    driverAid.daAction(listOf(Runnable { driverAid.highBasket() }))
+                ),
+            )
+        )
+        runBlocking(
+            scoringSubsystem.servoAction(
+                listOf(
+                    Runnable { scoringSubsystem.setPitchHigh() },
+                )
+            ),
+        )
+        runBlocking(
+            scoringSubsystem.servoAction(
+                listOf(
+                    Runnable { scoringSubsystem.openClaw() },
+                )
+            )
+        )
+    }
+
+    fun getSampleR() {
+
+        runAction = true
+        runBlocking(
+            SequentialAction(
+                ParallelAction(
+                    SequentialAction(
+                        drive.actionBuilder(
+                            redBasket
+                        ).setTangent(Math.toRadians(180.0))
+                            .strafeToLinearHeading(
+                                Vector2d(
+                                    redNeutralSample.position.x,
+                                    redNeutralSample.position.y
+                                ), Math.toRadians(50.0)
+                            )
+
+                            .build(),
+                        InstantAction { runAction = false },
+                    ),
+                    uAction(driverAid, armSubsystem, scoringSubsystem),
+                    driverAid.daAction(listOf(Runnable { driverAid.pickup() })),
+                    scoringSubsystem.servoAction(
+                        listOf(
+                            Runnable { scoringSubsystem.setPitchLow() },
+                        )
+                    )
+                ),
+            )
+        )
+        runBlocking(
+            scoringSubsystem.servoAction(
+                listOf(
+                    Runnable { scoringSubsystem.closeClaw() },
+                )
+            )
+        )
+    }
+
+    fun getSampleM() {
+
+        runAction = true
+        runBlocking(
+            SequentialAction(
+                ParallelAction(
+                    SequentialAction(
+                        drive.actionBuilder(
+                            redBasket
+                        ).setTangent(Math.toRadians(180.0))
+                            .splineToLinearHeading(redNeutralSample, Math.toRadians(0.0))
+                            .build(),
+                        InstantAction { runAction = false },
+                    ),
+                    uAction(driverAid, armSubsystem, scoringSubsystem),
+                    driverAid.daAction(listOf(Runnable { driverAid.pickup() })),
+                    scoringSubsystem.servoAction(
+                        listOf(
+                            Runnable { scoringSubsystem.setPitchLow() },
+                        )
+                    )
+                ),
+            )
+        )
+        runBlocking(
+            scoringSubsystem.servoAction(
+                listOf(
+                    Runnable { scoringSubsystem.closeClaw() },
+                )
+            )
+        )
+    }
+
+    fun getSampleL() {
+
+        runAction = true
+        runBlocking(
+            SequentialAction(
+                ParallelAction(
+                    SequentialAction(
+                        drive.actionBuilder(
+                            redBasket
+                        ).setTangent(Math.toRadians(180.0))
+                            .strafeToLinearHeading(
+                                Vector2d(
+                                    redNeutralSample.position.x,
+                                    redNeutralSample.position.y
+                                ), Math.toRadians(130.0)
+                            )
+                            .build(),
+                        InstantAction { runAction = false },
+                    ),
+                    uAction(driverAid, armSubsystem, scoringSubsystem),
+                    driverAid.daAction(listOf(Runnable { driverAid.pickup() })),
+                    scoringSubsystem.servoAction(
+                        listOf(
+                            Runnable { scoringSubsystem.setPitchLow() },
+                        )
+                    )
+                ),
+            )
+        )
+        runBlocking(
+            scoringSubsystem.servoAction(
+                listOf(
+                    Runnable { scoringSubsystem.closeClaw() },
+                )
+            )
+        )
+    }
+
+    fun scoreSample(from: Pose2d) {
+        runAction = true
+        runBlocking(
+            SequentialAction(
+                ParallelAction(
+                    SequentialAction(
+                        drive.actionBuilder(
+                            from
+                        )
+                            .strafeToLinearHeading(
+                                Vector2d(redBasket.position.x, redBasket.position.y),
+                                Math.toRadians(45.0)
+                            )
+                            .build(),
+                        InstantAction { runAction = false },
+                    ),
+                    uAction(driverAid, armSubsystem, scoringSubsystem),
+                    driverAid.daAction(listOf(Runnable { driverAid.highBasket() })),
+                ),
+            )
+
+        )
+        runBlocking(
+            scoringSubsystem.servoAction(
+                listOf(
+                    Runnable { scoringSubsystem.setPitchHigh() },
+                )
+            ),
+        )
+        runBlocking(
+            scoringSubsystem.servoAction(
+                listOf(
+                    Runnable { scoringSubsystem.openClaw() },
+                )
+            )
+        )
+    }
+
+    fun end(from: Pose2d) {
+        runAction = true
         runBlocking(
             ParallelAction(
-                drive.actionBuilder(
-                    redSpecimen
-                )
-                    .strafeTo(Vector2d(-36.0, -31.0))
-                    .setTangent(Math.toRadians(90.0))
-                    .lineToY(blueEndRight.position.y)
-                    .setTangent(blueEndRight.heading.toDouble())
-                    .lineToXLinearHeading(blueEndRight.position.x, blueEndRight.heading.toDouble())
+                SequentialAction(
+                    drive.actionBuilder(
+                        from
+                    )
+                        .strafeTo(Vector2d(-36.0, -31.0))
+                        .setTangent(Math.toRadians(90.0))
+                        .lineToY(blueEndRight.position.y)
+                        .setTangent(blueEndRight.heading.toDouble())
+                        .lineToXLinearHeading(
+                            blueEndRight.position.x,
+                            blueEndRight.heading.toDouble()
+                        )
 
-                    .build(),
+                        .build(),
+                    InstantAction { runAction = false }
+                ),
+                uAction(driverAid, armSubsystem, scoringSubsystem),
                 driverAid.daAction(listOf(Runnable { driverAid.collapse() }))
             )
         )
     }
-//TODO this is code for end
 
-//                .strafeTo(new Vector2d(36, -31))
-//                .setTangent(Math.toRadians(90))
-//                .splineToLinearHeading(redEndRight, blueEndRight.heading.toDouble())
+    fun endHuman() {
+        runAction = true
+        runBlocking(
+            ParallelAction(
+                uAction(driverAid, armSubsystem, scoringSubsystem),
+                driverAid.daAction(listOf(Runnable { driverAid.collapse() })),
+                SequentialAction(
+                    drive.actionBuilder(
+                        redSpecimen
+                    )
+                        .strafeToLinearHeading(
+                            Vector2d(redHuman.position.x, redHuman.position.y - 4),
+                            redHuman.heading.toDouble()
+                        )
+                        .build(),
 
-//    val smallSpecimenAutoR: StateMachine<statesRR> = StateMachine.Builder<statesRR>()
-//        .state(statesRR.DRIVE_TO_SPECIMEN_R)
-//        .onEnter(statesRR.DRIVE_TO_SPECIMEN_R) {
-//        }
-//        .whileState(statesRR.DRIVE_TO_SPECIMEN_R, { drive. }) {
-//            updateAll()
-//            telemetry.addData("x", follower.pose.x);
-//            telemetry.addData("y", follower.pose.y);
-//            telemetry.addData("heading", follower.pose.heading);
-//            telemetry.update();
-//        }
-//        .transition(statesRR.DRIVE_TO_SPECIMEN_R, { follower.atParametricEnd() }, 0.0)
-//        .state(statesRR.PLACE_SPECIMEN_R)
-//        .onEnter(statesRR.PLACE_SPECIMEN_R) {
-//            armSubsystem.eMax = 0.5
-//            armSubsystem.setExtendTarget(600.0)
-//        }
-//        .whileState(statesRR.PLACE_SPECIMEN_R, {
-//            armSubsystem.isExtendAtTarget(30.0)
-//        }) {
-//            armSubsystem.update()
-//        }
-//        .onExit(statesRR.PLACE_SPECIMEN_R) {
-//            armSubsystem.eMax = 1.0
-//            scoringSubsystem.openClaw()
-//            scoringSubsystem.update()
-//        }
-//        .transition(
-//            statesRR.PLACE_SPECIMEN_R,
-//            {
-//                (true)
-//            },
-//            0.0
-//        )
-//        .state(statesRR.GO_TO_END_R)
-//        .onEnter(statesRR.GO_TO_END_R) {
-//            driverAid.human()
-//            follower.followPath(move1)
-//        }
-//        .whileState(statesRR.GO_TO_END_R, { follower.atParametricEnd() }) {
-//            updateAll()
-//            telemetry.addData("x", follower.pose.x);
-//            telemetry.addData("y", follower.pose.y);
-//            telemetry.addData("heading", follower.pose.heading);
-//            telemetry.update();
-//        }
-//        .transition(statesRR.GO_TO_END_R, { true }, 0.0)
-//        .stopRunning(statesRR.STOP)
-//        .build()
+                    InstantAction { runAction = false }
+                )
+            )
+        )
+    }
+
+    class updateAction(
+        val driverAid: DriverAid,
+        val armSubsystem: ArmSubsystem,
+        val scoringSubsystem: ScoringSubsystem,
+    ) : Action {
+        override fun run(packet: TelemetryPacket): Boolean {
+            driverAid.update()
+            armSubsystem.update()
+            scoringSubsystem.update()
+            return Companion.runAction || !armSubsystem.bothAtTarget()
+        }
+    }
+
+    fun uAction(
+        driverAid: DriverAid,
+        armSubsystem: ArmSubsystem,
+        scoringSubsystem: ScoringSubsystem,
+    ): Action {
+        return updateAction(driverAid, armSubsystem, scoringSubsystem)
+    }
 }

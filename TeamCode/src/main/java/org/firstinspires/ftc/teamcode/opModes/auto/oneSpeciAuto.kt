@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.Alliance
 
 //@Autonomous(group = GroupingTitles.auto) //@Disabled//disabling the opmode
-class FullAuto(val alliance: Alliance) : LinearOpMode() {
+class oneSpeciAuto(val alliance: Alliance) : LinearOpMode() {
     override fun runOpMode() { //if opmode is started
         val robot = AutoHardware(
             this,
@@ -17,17 +17,17 @@ class FullAuto(val alliance: Alliance) : LinearOpMode() {
                 if (alliance == Alliance.RED) redStartRight else blueStartRight,
             )
         )
-//        var auto: StateMachine<out Enum<*>> = robot.fullSpecimenAutoR
+//        var auto: StateMachine<out Enum<*>> = robot.smallSpecimenAutoR
 //        if (alliance == Alliance.BLUE) {
-//            auto = robot.fullSpecimenAutoB
+//            auto = robot.smallSpecimenAutoB
 //        }
         robot.autoSetup()
         robot.once()
         waitForStart()
 
-//        auto.start()
-//        while (auto.mainLoop(this)) {
-//            auto.update()
-//        }
+        if (opModeIsActive()) {
+            robot.scorePreloadSpeci()
+            robot.endHuman()
+        }
     }
 }
