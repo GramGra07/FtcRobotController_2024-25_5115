@@ -26,10 +26,12 @@ public final class AutoRegistrar {
     private static final List<Class<? extends OpMode>> opModeClasses = new ArrayList<>();
 
     static {
-        opModeClasses.add(oneSpeciAuto.class);
-        opModeClasses.add(FullSpeciAuto.class);
-        opModeClasses.add(oneSampleAuto.class);
-        opModeClasses.add(FullSampleAuto.class);
+        opModeClasses.add(oneSpeci.class);
+//        opModeClasses.add(FullSpeciAuto.class);
+        opModeClasses.add(oneSample.class);
+//        opModeClasses.add(FullSampleAuto.class);
+//        opModeClasses.add(twoSpeci.class);
+        opModeClasses.add(parkHuman.class);
     }
 
     @OpModeRegistrar

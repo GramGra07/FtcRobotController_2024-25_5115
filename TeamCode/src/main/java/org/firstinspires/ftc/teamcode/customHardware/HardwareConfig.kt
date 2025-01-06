@@ -123,10 +123,12 @@ open class HardwareConfig(
 //        localizerSubsystem.update(timer)
 
         scoringSubsystem.update()
-        armSubsystem.update(
-            -myOpMode.gamepad2.right_stick_y.toDouble(),
-            -myOpMode.gamepad2.left_stick_y.toDouble()
-        )
+        if (hasMovedOnInit) {
+            armSubsystem.update(
+                -myOpMode.gamepad2.right_stick_y.toDouble(),
+                -myOpMode.gamepad2.left_stick_y.toDouble()
+            )
+        }
 
 
         driverAid.update()

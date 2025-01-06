@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.Alliance
 
 //@Autonomous(group = GroupingTitles.auto) //@Disabled//disabling the opmode
-class oneSampleAuto(val alliance: Alliance) : LinearOpMode() {
+class oneSample(val alliance: Alliance) : LinearOpMode() {
     override fun runOpMode() { //if opmode is started
         val robot = AutoHardware(
             this,

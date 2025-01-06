@@ -22,7 +22,8 @@ class DriverAid(
         HIGH_SPECIMEN,
         HIGH_BASKET,
         PICKUP,
-        HUMAN
+        HUMAN,
+        auto
     }
 
     var daState = DAState.IDLE
@@ -47,6 +48,10 @@ class DriverAid(
         daState = DAState.HUMAN
     }
 
+    fun auto() {
+        daState = DAState.auto
+    }
+
     companion object {
 
         private var collapseE = 0.0
@@ -56,7 +61,7 @@ class DriverAid(
         private var hBasketE = 2250.0
         private var hBasketP = 2000.0
         private var pickupE = 1100.0
-        var pickupP = 150.0
+        var pickupP = 100.0
         private var humanE = 200.0
         private var humanP = 350.0
     }
@@ -99,6 +104,10 @@ class DriverAid(
                 humanSequence(scoringSubsystem)
             }
 
+            DAState.auto -> {
+                autoScoreSequence(scoringSubsystem)
+            }
+
             DAState.IDLE -> {
                 pickupOnce = 0
             }
@@ -106,15 +115,23 @@ class DriverAid(
 //        }
     }
 
+    private fun autoScoreSequence(scoringSubsystem: ScoringSubsystem) {
+        usingDA = true
+        scoringSubsystem.closeClaw()
+        scoringSubsystem.setPitchMed()
+        armSubsystem.setPE(2000.0, 0.0)
+        end()
+    }
+
     private fun collapseSequence(scoringSubsystem: ScoringSubsystem) {
         usingDA = true
         scoringSubsystem.closeClaw()
-        scoringSubsystem.setPitchHigh()
+//        scoringSubsystem.setPitchHigh()
         armSubsystem.setPE(collapseP, collapseE, false)
         end()
     }
 
-    private fun highSpecimenSequence(scoringSubsystem: ScoringSubsystem) {
+    fun highSpecimenSequence(scoringSubsystem: ScoringSubsystem) {
         usingDA = true
 //        armSubsystem.setPE(hSpecimenP, hSpecimenE)
         armSubsystem.setHeight(24.0, 30.0, true, true)
@@ -224,13 +241,15 @@ class DriverAid(
             .onEnter(AutoLift.extend_pivot) {
                 scoringSubsystem.setPitchLow()
                 scoringSubsystem.closeClaw()
-                armSubsystem.setPE(LiftVars.step1P, LiftVars.step1E)
+                armSubsystem.setPE(LiftVars.step1P, LiftVars.step1E, false)
             }
             .transition(AutoLift.extend_pivot) {
                 armSubsystem.isPitchAtTarget(150.0) && armSubsystem.isExtendAtTarget()
             }
             .state(AutoLift.hook1st)
             .onEnter(AutoLift.hook1st) {
+                scoringSubsystem.setPitchIdle()
+                scoringSubsystem.setRotateIdle()
                 armSubsystem.setPE(LiftVars.step2P, LiftVars.step2E)
             }
             .transition(AutoLift.hook1st) {

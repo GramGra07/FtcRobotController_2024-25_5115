@@ -78,9 +78,9 @@ object Operators {
             da.collapse()
         }
 
-        if (!armSubsystem.usePIDFp) {
-            armSubsystem.setPowerPitch(0.0, myOpMode.gamepad2.left_stick_y.toDouble())
-        }
+//        if (!armSubsystem.usePIDFp) {
+//            armSubsystem.setPowerPitch(0.0, myOpMode.gamepad2.left_stick_y.toDouble())
+//        }
 //        else {
 //            if (myOpMode.gamepad2.left_stick_button) {
 //                armSubsystem.setPitchTarget(0.0)
@@ -104,7 +104,7 @@ object Operators {
 //            armSubsystem.correctHeight()
 //        }
         if (myOpMode.gamepad2.left_stick_button) {
-            armSubsystem.setExtendTarget(600.0)
+            scoringSubsystem.setPitchHigh()
         }
 
         if (!armSubsystem.usePIDFe) {

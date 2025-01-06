@@ -3,12 +3,13 @@ package org.firstinspires.ftc.teamcode.opModes.auto
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.firstinspires.ftc.teamcode.customHardware.AutoHardware
 import org.firstinspires.ftc.teamcode.customHardware.AutoHardware.Companion.blueStartRight
+import org.firstinspires.ftc.teamcode.customHardware.AutoHardware.Companion.redSpecimen
 import org.firstinspires.ftc.teamcode.customHardware.AutoHardware.Companion.redStartRight
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.Alliance
 
 //@Autonomous(group = GroupingTitles.auto) //@Disabled//disabling the opmode
-class oneSpeciAuto(val alliance: Alliance) : LinearOpMode() {
+class twoSpeci(val alliance: Alliance) : LinearOpMode() {
     override fun runOpMode() { //if opmode is started
         val robot = AutoHardware(
             this,
@@ -27,6 +28,8 @@ class oneSpeciAuto(val alliance: Alliance) : LinearOpMode() {
 
         if (opModeIsActive()) {
             robot.scorePreloadSpeci()
+            robot.grabSpeci(redSpecimen)
+            robot.placeSpeci()
             robot.endHuman()
         }
     }
