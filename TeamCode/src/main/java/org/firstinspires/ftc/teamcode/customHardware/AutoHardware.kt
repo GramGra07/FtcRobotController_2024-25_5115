@@ -22,11 +22,10 @@ class AutoHardware(
     startLocation: StartLocation,
     ahwMap: HardwareMap = opmode.hardwareMap,
 ) : HardwareConfig(opmode, true, startLocation, ahwMap) {
-    lateinit var drive: MecanumDrive
+    var drive: MecanumDrive = MecanumDrive(ahwMap, startLocation.startPose)
 
     init {
-        super.initRobot(ahwMap, true, startLocation)
-        drive = MecanumDrive(ahwMap, startLocation.startPose)
+//        super.initRobot(ahwMap, true, startLocation)
         telemetry.addData("Status", "Initialized")
         telemetry.addData("Alliance", startLocation.alliance)
         telemetry.update()
@@ -214,7 +213,7 @@ class AutoHardware(
                             .build(),
                         InstantAction { runAction = false }
                     ),
-                    uAction(driverAid, armSubsystem, scoringSubsystem),
+                    uAction(driverAid, armSubsystem, scoringSubsystem, 450.0),
                     driverAid.daAction(listOf(Runnable { driverAid.highBasket() }))
                 ),
             )
@@ -361,7 +360,7 @@ class AutoHardware(
                             .build(),
                         InstantAction { runAction = false },
                     ),
-                    uAction(driverAid, armSubsystem, scoringSubsystem),
+                    uAction(driverAid, armSubsystem, scoringSubsystem, 450.0),
                     driverAid.daAction(listOf(Runnable { driverAid.highBasket() })),
                 ),
             )
@@ -435,12 +434,15 @@ class AutoHardware(
         val driverAid: DriverAid,
         val armSubsystem: ArmSubsystem,
         val scoringSubsystem: ScoringSubsystem,
+        val tolerance: Double = 100.0,
     ) : Action {
         override fun run(packet: TelemetryPacket): Boolean {
             driverAid.update()
             armSubsystem.update()
             scoringSubsystem.update()
-            return Companion.runAction || !armSubsystem.bothAtTarget()
+            packet.put(armSubsystem.pitchT.toString(), armSubsystem.pitchEncoder.currentPosition)
+            packet.put(armSubsystem.extendTarget.toString(), armSubsystem.extendEncoder.getMost())
+            return Companion.runAction || !armSubsystem.bothAtTarget(tolerance)
         }
     }
 
@@ -448,7 +450,8 @@ class AutoHardware(
         driverAid: DriverAid,
         armSubsystem: ArmSubsystem,
         scoringSubsystem: ScoringSubsystem,
+        tolerance: Double = 100.0
     ): Action {
-        return updateAction(driverAid, armSubsystem, scoringSubsystem)
+        return updateAction(driverAid, armSubsystem, scoringSubsystem, tolerance)
     }
 }

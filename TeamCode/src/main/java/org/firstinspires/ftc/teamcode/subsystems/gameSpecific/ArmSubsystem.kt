@@ -66,9 +66,9 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
     var eMax = 1.0
     private var eMin = -1.0
     private var extendPIDF: PIDFController = PIDFController(0.0, 0.0, 0.0, 0.0)
-    private var extendTarget = 0
+    var extendTarget = 0
 
-    private var extendEncoder: DualEncoder
+    var extendEncoder: DualEncoder
     var pitchEncoder: DcMotorEx
 
     private val maxExtendIn = 32.5
@@ -162,7 +162,7 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
     }
 
     fun setExtendTarget(target: Double) {
-        extendTarget = target.toInt()
+        extendTarget = (target).toInt()
     }
 
     fun setExtendTargetIn(inches: Double) {
