@@ -85,7 +85,7 @@ open class HardwareConfig(
         scoringSubsystem =
             ScoringSubsystem(ahwMap, auto, armSubsystem)
 
-        driverAid = DriverAid(scoringSubsystem, armSubsystem, localizerSubsystem)
+        driverAid = DriverAid(scoringSubsystem, armSubsystem, localizerSubsystem, auto)
 //        reLocalizationSubsystem =
 //            ReLocalizationSubsystem(ahwMap)
 

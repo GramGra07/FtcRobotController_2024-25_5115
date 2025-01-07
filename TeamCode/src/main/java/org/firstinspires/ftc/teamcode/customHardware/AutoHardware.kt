@@ -102,7 +102,15 @@ class AutoHardware(
         runBlocking(
             ParallelAction(
                 SequentialAction(
+                    SleepAction(0.5),
+                    ParallelAction(
+                        driverAid.daAction(listOf(Runnable { driverAid.collapse() })),
+                        scoringSubsystem.servoAction(listOf(Runnable { scoringSubsystem.setPitchHigh() }))
+                    )
+                ),
+                SequentialAction(
                     drive.actionBuilder(redSpecimen)
+                        .lineToY(redHuman.position.y + 10)
                         .setTangent(Math.toRadians(-90.0))
                         .splineToLinearHeading(
                             Pose2d(36.0, -24.0, redSample.heading.toDouble()),
@@ -122,84 +130,109 @@ class AutoHardware(
                                 redSample.heading.toDouble()
                             ), redSample.heading.toDouble()
                         )
-                        .strafeTo(Vector2d(redSample.position.x - 5, redHuman.position.y))
+                        .lineToY(redHuman.position.y)
                         .setTangent(redStartRight.heading.toDouble())
                         .splineToConstantHeading(
                             Vector2d(
-                                redSample.position.x + 2,
+                                redSample.position.x + 4,
                                 redSample.position.y
                             ), redSample.heading.toDouble()
                         )
-                        .strafeTo(Vector2d(redSample.position.x + 2, redHuman.position.y))
+                        .lineToY(redHuman.position.y)
 
                         .build(),
 
                     InstantAction { runAction = false }
                 ),
                 uAction(driverAid, armSubsystem, scoringSubsystem),
-                driverAid.daAction(listOf(Runnable { driverAid.collapse() }))
             )
         )
 
     }
 
-    fun grabSpeci(from: Pose2d) {
+    fun grabSpeci(from: Pose2d, d: Boolean = false) {
+        runAction = true
+        runBlocking(
+            SequentialAction(
+                ParallelAction(
+                    SequentialAction(
+                        SleepAction(0.5),
+                        driverAid.daAction(listOf(Runnable { driverAid.human() }))
+                    ),
+                    SequentialAction(
+                        drive.actionBuilder(from).apply {
+                            if (d) {
+                                lineToY(redHuman.position.y + 10)
+                            }
+                        }.strafeToLinearHeading(
+                            Vector2d(redHuman.position.x, redHuman.position.y + 8),
+                            redHuman.heading.toDouble()
+                        ).build(),
+                        InstantAction { runAction = false }
+                    ),
+                    uAction(driverAid, armSubsystem, scoringSubsystem),
+                ),
+            )
+        )
+        runAction = true
+        runBlocking(
+            SequentialAction(
+                ParallelAction(
+                    SequentialAction(
+                        drive.actionBuilder(
+                            Pose2d(
+                                Vector2d(redHuman.position.x, redHuman.position.y + 8),
+                                redHuman.heading.toDouble()
+                            )
+                        )
+                            .lineToY(redHuman.position.y)
+                            .stopAndAdd(scoringSubsystem.servoAction(listOf(Runnable { scoringSubsystem.closeClaw() })))
+                            .build(),
+                        InstantAction { runAction = false },
+                    ),
+//                    uAction(driverAid, armSubsystem, scoringSubsystem),
+                ),
+                ParallelAction(
+                    scoringSubsystem.servoAction(listOf(Runnable { scoringSubsystem.closeClaw() })),
+//                    uAction(driverAid, armSubsystem, scoringSubsystem)
+                )
+            )
+        )
+    }
+
+    fun placeSpeci(offset: Int) {
         runAction = true
         runBlocking(
             ParallelAction(
                 SequentialAction(
-                    drive.actionBuilder(
-                        from
-                    )
-
-                        .strafeToLinearHeading(
-                            Vector2d(redHuman.position.x, redHuman.position.y + 3),
-                            redHuman.heading.toDouble()
-                        )
-
-                        .build(),
-                    InstantAction { runAction = false }
+                    SleepAction(1.0),
+                    driverAid.daAction(listOf(Runnable { driverAid.highSpecimen() }))
                 ),
-                uAction(driverAid, armSubsystem, scoringSubsystem),
-                driverAid.daAction(listOf(Runnable { driverAid.collapse() }))
-            )
-        )
-        runBlocking(
-            SequentialAction(
-                ParallelAction(
-                    uAction(driverAid, armSubsystem, scoringSubsystem),
-                    driverAid.daAction(listOf(Runnable { driverAid.human() }))
-                ),
-                SleepAction(1.0),
-                scoringSubsystem.servoAction(listOf(Runnable { scoringSubsystem.closeClaw() }))
-            )
-        )
-    }
-
-    fun placeSpeci() {
-        runAction = true
-        runBlocking(
-            ParallelAction(
                 SequentialAction(
                     drive.actionBuilder(
                         redHuman
                     )
-                        .setTangent(Math.toRadians(180.0)).afterTime(
-                            0.25,
-                            driverAid.daAction(listOf(Runnable { driverAid.highSpecimen() }))
-                        )
+                        .setTangent(Math.toRadians(180.0))
                         .splineToLinearHeading(
                             Pose2d(
-                                redSpecimen.position.x,
-                                redSpecimen.position.y,
+                                redSpecimen.position.x + offset,
+                                redHuman.position.y + 20,
                                 redSpecimen.heading.toDouble()
                             ), redSpecimen.heading.toDouble()
                         )
+                        .lineToY(redSpecimen.position.y)
 
                         .build(),
                     InstantAction { runAction = false }
                 ),
                 uAction(driverAid, armSubsystem, scoringSubsystem),
+            )
+        )
+        runBlocking(
+            scoringSubsystem.servoAction(
+                listOf(
+                    Runnable { scoringSubsystem.openClaw() },
+                )
             )
         )
     }
@@ -439,13 +472,16 @@ class AutoHardware(
         runBlocking(
             ParallelAction(
                 uAction(driverAid, armSubsystem, scoringSubsystem),
-                driverAid.daAction(listOf(Runnable { driverAid.collapse() })),
+                SequentialAction(
+                    SleepAction(0.5), driverAid.daAction(listOf(Runnable { driverAid.collapse() }))
+                ),
                 SequentialAction(
                     drive.actionBuilder(
                         from
                     )
+                        .lineToY(redHuman.position.y + 10)
                         .strafeToLinearHeading(
-                            Vector2d(redHuman.position.x, redHuman.position.y - 4),
+                            Vector2d(redHuman.position.x, redHuman.position.y),
                             redHuman.heading.toDouble()
                         )
                         .build(),

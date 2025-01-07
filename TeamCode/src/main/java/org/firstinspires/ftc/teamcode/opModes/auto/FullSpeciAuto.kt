@@ -6,6 +6,7 @@ import org.firstinspires.ftc.teamcode.customHardware.AutoHardware
 import org.firstinspires.ftc.teamcode.customHardware.AutoHardware.Companion.blueStartRight
 import org.firstinspires.ftc.teamcode.customHardware.AutoHardware.Companion.redHuman
 import org.firstinspires.ftc.teamcode.customHardware.AutoHardware.Companion.redSample
+import org.firstinspires.ftc.teamcode.customHardware.AutoHardware.Companion.redSpecimen
 import org.firstinspires.ftc.teamcode.customHardware.AutoHardware.Companion.redStartRight
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.Alliance
@@ -38,7 +39,22 @@ class FullSpeciAuto(val alliance: Alliance) : LinearOpMode() {
                     redSample.heading.toDouble()
                 )
             )
-            robot.placeSpeci()
+            robot.placeSpeci(-3)
+//            robot.grabSpeci(
+//                Pose2d(
+//                    redSpecimen.position.x - 3,
+//                    redSpecimen.position.y,
+//                    redSpecimen.heading.toDouble()
+//                )
+//            )
+//            robot.placeSpeci(-6)
+            robot.endHuman(
+                Pose2d(
+                    redSpecimen.position.x - 6,
+                    redSpecimen.position.y,
+                    redSpecimen.heading.toDouble()
+                )
+            )
         }
     }
 }

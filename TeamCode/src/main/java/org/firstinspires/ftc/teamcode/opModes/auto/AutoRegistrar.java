@@ -30,7 +30,7 @@ public final class AutoRegistrar {
 //        opModeClasses.add(FullSpeciAuto.class);
         opModeClasses.add(oneSample.class);
 //        opModeClasses.add(FullSampleAuto.class);
-//        opModeClasses.add(twoSpeci.class);
+        opModeClasses.add(twoSpeci.class);
         opModeClasses.add(parkHuman.class);
     }
 

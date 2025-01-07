@@ -28,8 +28,8 @@ class twoSpeci(val alliance: Alliance) : LinearOpMode() {
 
         if (opModeIsActive()) {
             robot.scorePreloadSpeci()
-            robot.grabSpeci(redSpecimen)
-            robot.placeSpeci()
+            robot.grabSpeci(redSpecimen, true)
+            robot.placeSpeci(-3)
             robot.endHuman()
         }
     }

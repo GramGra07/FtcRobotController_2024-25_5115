@@ -13,6 +13,7 @@ class DriverAid(
     private val scoringSubsystem: ScoringSubsystem,
     val armSubsystem: ArmSubsystem,
     private val localizerSubsystem: LocalizerSubsystem,
+    val auto: Boolean
 ) {
     var usingDA = false
 
@@ -101,7 +102,7 @@ class DriverAid(
             }
 
             DAState.HUMAN -> {
-                humanSequence(scoringSubsystem)
+                humanSequence(scoringSubsystem, auto)
             }
 
             DAState.auto -> {
@@ -163,12 +164,16 @@ class DriverAid(
         end()
     }
 
-    private fun humanSequence(scoringSubsystem: ScoringSubsystem) {
+    private fun humanSequence(scoringSubsystem: ScoringSubsystem, auto: Boolean) {
         usingDA = true
         scoringSubsystem.setPitchMed()
         scoringSubsystem.setRotateCenter()
         scoringSubsystem.openClaw()
-        armSubsystem.setPE(humanP, humanE)
+        if (auto) {
+            armSubsystem.setPE(humanP - 100, humanE, false)
+        } else {
+            armSubsystem.setPE(humanP, humanE)
+        }
         end()
     }
 
@@ -244,6 +249,7 @@ class DriverAid(
                 armSubsystem.setPE(LiftVars.step1P, LiftVars.step1E, false)
             }
             .transition(AutoLift.extend_pivot) {
+                armSubsystem.setPE(LiftVars.step1P, LiftVars.step1E, false)
                 armSubsystem.isPitchAtTarget(150.0) && armSubsystem.isExtendAtTarget()
             }
             .state(AutoLift.hook1st)
@@ -253,6 +259,7 @@ class DriverAid(
                 armSubsystem.setPE(LiftVars.step2P, LiftVars.step2E)
             }
             .transition(AutoLift.hook1st) {
+                armSubsystem.setPE(LiftVars.step2P, LiftVars.step2E)
                 armSubsystem.isPitchAtTarget() && armSubsystem.isExtendAtTarget()
             }
             .state(AutoLift.hook2nd)
@@ -260,6 +267,7 @@ class DriverAid(
                 armSubsystem.setPE(100.0, LiftVars.step2E, false)
             }
             .transition(AutoLift.hook2nd) {
+                armSubsystem.setPE(100.0, LiftVars.step2E, false)
                 armSubsystem.isPitchAtTarget() && armSubsystem.isExtendAtTarget()
             }
             .stopRunning(AutoLift.stop)
