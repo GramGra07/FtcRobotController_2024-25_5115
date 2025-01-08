@@ -9,13 +9,11 @@ import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
 import org.firstinspires.ftc.teamcode.customHardware.loopTime.LoopTimeController
 import org.firstinspires.ftc.teamcode.customHardware.loopTime.LoopTimeController.Companion.every
-import org.firstinspires.ftc.teamcode.followers.roadRunner.MecanumDrive
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.DriverAid
 import org.firstinspires.ftc.teamcode.subsystems.LocalizerSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ArmSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ScoringSubsystem
-import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers.bindDriverButtons
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers.currentFieldCentric
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Operators.bindOtherButtons
 import org.firstinspires.ftc.teamcode.utilClass.storage.PoseStorage
@@ -34,7 +32,6 @@ open class HardwareConfig(
 
     lateinit var driveSubsystem: DriveSubsystem
     lateinit var localizerSubsystem: LocalizerSubsystem
-    lateinit var mecanumDrive: MecanumDrive
 
     lateinit var armSubsystem: ArmSubsystem
     lateinit var scoringSubsystem: ScoringSubsystem
@@ -96,17 +93,12 @@ open class HardwareConfig(
         localizerSubsystem.draw(dashboard)
         if (!auto) {
             canMove = false
-            mecanumDrive = localizerSubsystem.drive
             loopTimeController = LoopTimeController(timer)
             telemetry.update()
         }
     }
 
     fun doBulk() {
-        bindDriverButtons(
-            myOpMode, driveSubsystem,
-//            liftSubsystem,
-        )
         bindOtherButtons(
             myOpMode,
             scoringSubsystem,
@@ -119,6 +111,7 @@ open class HardwareConfig(
             myOpMode,
         )
         driveSubsystem.update()
+
         loopTimeController.every(3) {
             scoringSubsystem.update()
         }
@@ -159,7 +152,7 @@ open class HardwareConfig(
 
     fun once() {
         if (!once) {
-            armSubsystem.findOffset()
+//            armSubsystem.findOffset()
             telemetry.clearAll()
             timer.reset()
 //            startCameraStream()

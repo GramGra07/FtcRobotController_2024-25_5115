@@ -69,7 +69,7 @@ class DriverAid(
 
     private var pickupOnce = 0
 
-    private val useConfig = true
+    private val useConfig = false
     fun update() {
         if (useConfig) {
             collapseE = DAVars.collapseE

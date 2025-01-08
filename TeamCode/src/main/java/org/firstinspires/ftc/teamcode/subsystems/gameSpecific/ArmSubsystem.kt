@@ -6,11 +6,9 @@ import com.arcrobotics.ftclib.controller.PIDFController
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import com.qualcomm.robotcore.hardware.DcMotorSimple
-import com.qualcomm.robotcore.hardware.DistanceSensor
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.robotcore.external.Telemetry
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit
 import org.firstinspires.ftc.teamcode.customHardware.sensors.DualEncoder
 import org.firstinspires.ftc.teamcode.extensions.MotorExtensions.initMotor
 import org.firstinspires.ftc.teamcode.utilClass.MathFunctions
@@ -77,7 +75,7 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
     private val inPerTickExtend = maxExtendIn / maxExtendTicksTOTAL
     var maxExtendTicks = maxExtendTicksTOTAL
 
-    var distanceSensor: DistanceSensor
+//    var distanceSensor: DistanceSensor
 
 
     init {
@@ -106,50 +104,50 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
 
         updatePID()
 
-        distanceSensor = ahwMap.get(DistanceSensor::class.java, "distanceSensor")
+//        distanceSensor = ahwMap.get(DistanceSensor::class.java, "distanceSensor")
     }
 
-    fun findOffset() {
-        val target = 7.0
-        val dError = target - distanceSensor.getDistance(DistanceUnit.INCH)
-        val h = extendEncoder.getMost() * inPerTickExtend
-        val angle = asin(dError / h)
-        val offset = Math.toDegrees(angle) * ticksPerDegree
-//        pitchOffset = offset
-    }
-
-    fun correctHeight() {
-        val targetDistance = 6.1
-        val dError = targetDistance - distanceSensor.getDistance(DistanceUnit.INCH)
-        val h = extendEncoder.getMost() * inPerTickExtend
-        val angle = asin(dError / h)
-        val newTarget = (Math.toDegrees(angle) * ticksPerDegree) + pitchT
-        setPitchTarget(newTarget)
-
-    }
+//    fun findOffset() {
+//        val target = 7.0
+//        val dError = target - distanceSensor.getDistance(DistanceUnit.INCH)
+//        val h = extendEncoder.getMost() * inPerTickExtend
+//        val angle = asin(dError / h)
+//        val offset = Math.toDegrees(angle) * ticksPerDegree
+////        pitchOffset = offset
+//    }
+//
+//    fun correctHeight() {
+//        val targetDistance = 6.1
+//        val dError = targetDistance - distanceSensor.getDistance(DistanceUnit.INCH)
+//        val h = extendEncoder.getMost() * inPerTickExtend
+//        val angle = asin(dError / h)
+//        val newTarget = (Math.toDegrees(angle) * ticksPerDegree) + pitchT
+//        setPitchTarget(newTarget)
+//
+//    }
 
     fun setPowerExtend(target: Double, power: Double? = 0.0) {
-        ePower = if (usePIDFe) {
+        ePower = //if (usePIDFe) {
             calculatePID(extendPIDF, extendEncoder.getMost(), target)
-        } else {
-            Range.clip(
-                power ?: 0.0,
-                eMin,
-                eMax
-            )
-        }
+//        } else {
+//            Range.clip(
+//                power ?: 0.0,
+//                eMin,
+//                eMax
+//            )
+//        }
     }
 
     fun setPowerPitch(target: Double, overridePower: Double? = 0.0) {
-        pPower = if (usePIDFp) {
+        pPower = //if (usePIDFp) {
             calculatePID(pitchPIDF, -pitchEncoder.currentPosition.toDouble() * pitchNegate, target)
-        } else {
-            Range.clip(
-                overridePower ?: 0.0,
-                pMin,
-                pMax
-            )
-        }
+//        } else {
+//            Range.clip(
+//                overridePower ?: 0.0,
+//                pMin,
+//                pMax
+//            )
+//        }
         pPower = Range.clip(pPower, pMin, pMax)
     }
 
@@ -174,7 +172,7 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
         extendPower: Double? = 0.0,
         overridePower: Boolean = false
     ) {
-        updatePID()
+//        updatePID()
         calculateExtendMax()
         if (usePIDFp && !overridePower) {
             setPowerPitch(pitchT)
@@ -199,21 +197,23 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
     }
 
     private fun updatePID() {
-        extendPIDF.setPIDF(
-            PIDVals.extendPIDFCo.p,
-            PIDVals.extendPIDFCo.i,
-            PIDVals.extendPIDFCo.d,
-            PIDVals.extendPIDFCo.f
-        )
+//        extendPIDF.setPIDF(
+//            PIDVals.extendPIDFCo.p,
+//            PIDVals.extendPIDFCo.i,
+//            PIDVals.extendPIDFCo.d,
+//            PIDVals.extendPIDFCo.f
+//        )
+        extendPIDF.setPIDF(0.013, 0.0, 0.0000, 0.0)
         val fTick = (pitchFExtend - pitchFCollapse) / maxExtendTicksTOTAL
         val pitchF = (fTick * extendEncoder.getMost()) + pitchFCollapse
 //        val pitchF = PIDVals.pitchPIDFCo.f
-        pitchPIDF.setPIDF(
-            PIDVals.pitchPIDFCo.p,
-            PIDVals.pitchPIDFCo.i,
-            PIDVals.pitchPIDFCo.d,
-            pitchF
-        )
+//        pitchPIDF.setPIDF(
+//            PIDVals.pitchPIDFCo.p,
+//            PIDVals.pitchPIDFCo.i,
+//            PIDVals.pitchPIDFCo.d,
+//            pitchF
+//        )
+        pitchPIDF.setPIDF(0.0017, 0.0, 0.00005, pitchF)
     }
 
     private fun calculatePID(controller: PIDFController, current: Double, target: Double): Double {
@@ -236,7 +236,7 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
 
     fun telemetry(telemetry: Telemetry) {
         telemetry.addData("Arm Subsystem", "")
-        telemetry.addData("Dist", distanceSensor.getDistance(DistanceUnit.INCH))
+//        telemetry.addData("Dist", distanceSensor.getDistance(DistanceUnit.INCH))
         pitchEncoder.telemetry(telemetry)
         extendEncoder.telemetry(telemetry)
         telemetry.addData("eTarget", extendTarget)
