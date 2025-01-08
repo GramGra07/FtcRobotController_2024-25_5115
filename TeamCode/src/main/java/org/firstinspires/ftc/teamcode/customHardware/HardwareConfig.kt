@@ -119,19 +119,22 @@ open class HardwareConfig(
             myOpMode,
         )
         driveSubsystem.update()
-
-//        localizerSubsystem.update(timer)
-
-        scoringSubsystem.update()
+        loopTimeController.every(3) {
+            scoringSubsystem.update()
+        }
+//        loopTimeController.every(3) {
         if (hasMovedOnInit) {
             armSubsystem.update(
                 -myOpMode.gamepad2.right_stick_y.toDouble(),
                 -myOpMode.gamepad2.left_stick_y.toDouble()
             )
         }
+//        }
 
 
-        driverAid.update()
+        loopTimeController.every(3) {
+            driverAid.update()
+        }
 
 //        loopTimeController.every(if (VarConfig.loopSaver) 30 else 10) {
 //            reLocalizationSubsystem.update(localizerSubsystem, VarConfig.relocalize)
@@ -147,8 +150,9 @@ open class HardwareConfig(
 ////            stopCameraStream()
 ////        }
 //
-        localizerSubsystem.draw(dashboard)
-
+        if (!VarConfig.loopSaver) {
+            localizerSubsystem.draw(dashboard)
+        }
         loopTimeController.update()
         moveOnInit(myOpMode, armSubsystem, scoringSubsystem)
     }

@@ -150,7 +150,7 @@ class AutoHardware(
 
     }
 
-    fun grabSpeci(from: Pose2d, d: Boolean = false) {
+    fun grabSpeci(from: Pose2d) {
         runAction = true
         runBlocking(
             SequentialAction(
@@ -160,14 +160,11 @@ class AutoHardware(
                         driverAid.daAction(listOf(Runnable { driverAid.human() }))
                     ),
                     SequentialAction(
-                        drive.actionBuilder(from).apply {
-                            if (d) {
-                                lineToY(redHuman.position.y + 10)
-                            }
-                        }.strafeToLinearHeading(
-                            Vector2d(redHuman.position.x, redHuman.position.y + 8),
-                            redHuman.heading.toDouble()
-                        ).build(),
+                        drive.actionBuilder(from).lineToY(redHuman.position.y + 10)
+                            .strafeToLinearHeading(
+                                Vector2d(redHuman.position.x, redHuman.position.y + 8),
+                                redHuman.heading.toDouble()
+                            ).build(),
                         InstantAction { runAction = false }
                     ),
                     uAction(driverAid, armSubsystem, scoringSubsystem),
@@ -220,7 +217,7 @@ class AutoHardware(
                                 redSpecimen.heading.toDouble()
                             ), redSpecimen.heading.toDouble()
                         )
-                        .lineToY(redSpecimen.position.y)
+                        .lineToY(redHuman.position.y + 25)
 
                         .build(),
                     InstantAction { runAction = false }

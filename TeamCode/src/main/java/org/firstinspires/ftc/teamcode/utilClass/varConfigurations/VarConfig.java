@@ -7,7 +7,7 @@ import com.acmerobotics.dashboard.config.Config;
 public class VarConfig {
     public static double pitch = 400.0;
     public static double extend = 400.0;
-    public static boolean loopSaver = false;
+    public static boolean loopSaver = true;
     public static boolean autoRotateClaw = true;
     public static double slowMult = 3;
 

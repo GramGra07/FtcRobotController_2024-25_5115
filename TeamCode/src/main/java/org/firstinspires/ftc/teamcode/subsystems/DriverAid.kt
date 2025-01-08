@@ -60,7 +60,7 @@ class DriverAid(
         private var hSpecimenE = 1200.0
         private var hSpecimenP = 1200.0
         private var hBasketE = 2250.0
-        private var hBasketP = 2000.0
+        private var hBasketP = 1900.0
         private var pickupE = 1100.0
         var pickupP = 100.0
         private var humanE = 200.0
@@ -170,7 +170,7 @@ class DriverAid(
         scoringSubsystem.setRotateCenter()
         scoringSubsystem.openClaw()
         if (auto) {
-            armSubsystem.setPE(humanP - 100, humanE, false)
+            armSubsystem.setPE(humanP - 50, humanE, false)
         } else {
             armSubsystem.setPE(humanP, humanE)
         }
