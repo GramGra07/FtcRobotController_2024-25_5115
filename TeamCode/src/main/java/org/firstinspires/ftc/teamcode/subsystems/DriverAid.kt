@@ -58,10 +58,10 @@ class DriverAid(
         private var collapseE = 0.0
         private var collapseP = 100.0
         private var hSpecimenE = 1200.0
-        private var hSpecimenP = 1200.0
+        private var hSpecimenP = 1300.0
         private var hBasketE = 2250.0
         private var hBasketP = 1900.0
-        private var pickupE = 1100.0
+        private var pickupE = 1300.0
         var pickupP = 100.0
         private var humanE = 200.0
         private var humanP = 350.0
@@ -147,9 +147,9 @@ class DriverAid(
         scoringSubsystem.setRotateCenter()
         armSubsystem.pMax = 0.5
         armSubsystem.setPE(hBasketP, hBasketE, true)
-        if (armSubsystem.isPitchAtTarget(200.0) && armSubsystem.isExtendAtTarget(200.0)) {
-            scoringSubsystem.setPitchHigh()
-        }
+//        if (armSubsystem.isPitchAtTarget(200.0) && armSubsystem.isExtendAtTarget(200.0)) {
+//            scoringSubsystem.setPitchHigh()
+//        }
         end()
     }
 
@@ -172,7 +172,7 @@ class DriverAid(
         if (auto) {
             armSubsystem.setPE(humanP - 50, humanE, false)
         } else {
-            armSubsystem.setPE(humanP, humanE)
+            armSubsystem.setPE(humanP - 25, humanE)
         }
         end()
     }

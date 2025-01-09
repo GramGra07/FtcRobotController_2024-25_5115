@@ -60,7 +60,7 @@ class AutoHardware(
         val blueHuman = Pose2d(-46.0, 54.0, Math.toRadians(90.0))
         val redHuman = Pose2d(46.0, -60.0, Math.toRadians(-90.0))
         val blueBasket = Pose2d(50.0, 50.0, Math.toRadians(135.0))
-        val redBasket = Pose2d(-38.0, -48.0, Math.toRadians(45.0))
+        val redBasket = Pose2d(-40.0, -50.0, Math.toRadians(45.0))
         val blueSpecimen = Pose2d(0.0, 36.0, blueStartRight.heading.toDouble())
         val redSpecimen = Pose2d(0.0, -28.0, redStartRight.heading.toDouble())
         val blueSample = Pose2d(-60.0, 12.0, Math.toRadians(0.0))
@@ -440,6 +440,7 @@ class AutoHardware(
 
     fun end(from: Pose2d) {
         runAction = true
+        driverAid.daAction(listOf(Runnable { driverAid.auto() }))
         runBlocking(
             ParallelAction(
                 SequentialAction(
@@ -459,7 +460,6 @@ class AutoHardware(
                     InstantAction { runAction = false }
                 ),
                 uAction(driverAid, armSubsystem, scoringSubsystem),
-                driverAid.daAction(listOf(Runnable { driverAid.auto() }))
             )
         )
     }
