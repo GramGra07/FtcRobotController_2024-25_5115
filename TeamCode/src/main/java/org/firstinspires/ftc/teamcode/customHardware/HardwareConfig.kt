@@ -115,6 +115,7 @@ open class HardwareConfig(
         loopTimeController.every(3) {
             scoringSubsystem.update()
         }
+        driverAid.update()
 //        loopTimeController.every(3) {
         if (hasMovedOnInit) {
             armSubsystem.update(
@@ -123,9 +124,6 @@ open class HardwareConfig(
             )
         }
 //        }
-
-
-        driverAid.update()
 
 
 //        loopTimeController.every(if (VarConfig.loopSaver) 30 else 10) {

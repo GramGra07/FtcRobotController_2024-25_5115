@@ -11,10 +11,14 @@ import org.gentrifiedApps.statemachineftc.SequentialRunSM
 
 class DriverAid(
     private val scoringSubsystem: ScoringSubsystem,
-    val armSubsystem: ArmSubsystem,
+    public val armSubsystem: ArmSubsystem,
     private val localizerSubsystem: LocalizerSubsystem,
     val auto: Boolean
 ) {
+    init {
+        daFunc = DAFunc(DAState.IDLE, {}, null, null, null, armSubsystem)
+    }
+
     var usingDA = false
 
     enum class DAState {
@@ -59,7 +63,7 @@ class DriverAid(
         private var hSpecimenE = 1200.0
         private var hSpecimenP = 1300.0
         private var hBasketE = 2250.0
-        private var hBasketP = 1900.0
+        private var hBasketP = 2000.0
         private var pickupE = 1300.0
         var pickupP = 100.0
         private var humanE = 200.0

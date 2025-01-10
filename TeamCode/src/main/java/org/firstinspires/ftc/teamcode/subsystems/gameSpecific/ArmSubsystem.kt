@@ -301,7 +301,7 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
                 }
             } else {
                 setPitchTarget(p)
-                if (isPitchAtTarget()) {
+                if (isPitchAtTarget(200.0)) {
                     setExtendTarget(e)
                     secondActionComplete = true
                 }
