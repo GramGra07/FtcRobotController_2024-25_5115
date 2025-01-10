@@ -64,7 +64,7 @@ class DriverAid(
         private var pickupE = 1300.0
         var pickupP = 100.0
         private var humanE = 200.0
-        private var humanP = 350.0
+        private var humanP = 300.0
     }
 
     private var pickupOnce = 0
@@ -135,7 +135,7 @@ class DriverAid(
     fun highSpecimenSequence(scoringSubsystem: ScoringSubsystem) {
         usingDA = true
 //        armSubsystem.setPE(hSpecimenP, hSpecimenE)
-        armSubsystem.setHeight(24.0, 30.0, true, true)
+        armSubsystem.setHeight(24.5, 30.0, true, true)
         scoringSubsystem.specimenRotate(armSubsystem.pAngle())
         scoringSubsystem.setRotateCenter()
         end()

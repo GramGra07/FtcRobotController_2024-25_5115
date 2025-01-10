@@ -14,5 +14,5 @@ public class ServoUtil {
 
     public static double pivotHigh = 78;
     public static double pivotLow = -90.0;
-    public static double pivotMid = -10.0;
+    public static double pivotMid = -20.0;
 }

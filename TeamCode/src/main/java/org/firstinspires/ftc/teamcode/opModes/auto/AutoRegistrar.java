@@ -28,10 +28,12 @@ public final class AutoRegistrar {
     static {
         opModeClasses.add(oneSpeci.class);
 //        opModeClasses.add(FullSpeciAuto.class);
-        opModeClasses.add(oneSample.class);
+//        opModeClasses.add(oneSample.class);
 //        opModeClasses.add(FullSampleAuto.class);
         opModeClasses.add(twoSpeci.class);
+//        opModeClasses.add(threeSpeci.class);
         opModeClasses.add(parkHuman.class);
+
     }
 
     @OpModeRegistrar

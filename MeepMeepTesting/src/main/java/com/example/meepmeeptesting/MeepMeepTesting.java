@@ -36,14 +36,22 @@ public class MeepMeepTesting {
         Pose2d redNeutralSample = new Pose2d(-58.0, -40, redStartRight.heading.toDouble());
 
         myBot.runAction(myBot.getDrive().actionBuilder(startPose)
-                .setTangent(Math.toRadians(180))
-                .strafeToLinearHeading(new Vector2d(redBasket.position.x, redBasket.position.y), Math.toRadians(45.0)).strafeTo(new Vector2d(-36.0, -31.0))
-                .setTangent(Math.toRadians(90.0))
-                .lineToY(blueEndRight.position.y)
-                .setTangent(blueEndRight.heading.toDouble())
-                .lineToXLinearHeading(
-                        blueEndRight.position.x,
-                        blueEndRight.heading.toDouble()
+                .lineToY(redHuman.position.y + 10)
+                .setTangent(Math.toRadians(-90.0))
+                .splineToLinearHeading(
+                        new Pose2d(36.0, -24.0, redSample.heading.toDouble()),
+                        redSpecimen.heading.toDouble()
+                )
+                .splineToConstantHeading(
+                        new Vector2d(redSample.position.x - 16.0, redSample.position.y),
+                        redSample.heading.toDouble()
+                )
+                .setTangent(redSpecimen.heading.toDouble())
+                .lineToY(redHuman.position.y)
+                .lineToY(redHuman.position.y + 10)
+                .strafeToLinearHeading(
+                        new Vector2d(redHuman.position.x, redHuman.position.y + 8),
+                        redHuman.heading.toDouble()
                 )
                 .build());
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_JUICE_DARK)

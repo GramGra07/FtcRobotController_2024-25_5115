@@ -97,6 +97,38 @@ class AutoHardware(
         )
     }
 
+    fun moveOneSpeci(from: Pose2d) {
+        runAction = true
+        runBlocking(
+            ParallelAction(
+                SequentialAction(
+                    SleepAction(0.5),
+                    ParallelAction(
+                        driverAid.daAction(listOf(Runnable { driverAid.collapse() })),
+                        scoringSubsystem.servoAction(listOf(Runnable { scoringSubsystem.setPitchHigh() }))
+                    )
+                ),
+                SequentialAction(
+                    drive.actionBuilder(from)
+                        .lineToY(redHuman.position.y + 10)
+                        .setTangent(Math.toRadians(-90.0))
+                        .splineToLinearHeading(
+                            Pose2d(36.0, -24.0, redSample.heading.toDouble()),
+                            redSpecimen.heading.toDouble()
+                        )
+                        .splineToConstantHeading(
+                            Vector2d(redSample.position.x - 16.0, redSample.position.y),
+                            redSample.heading.toDouble()
+                        )
+                        .setTangent(redSpecimen.heading.toDouble())
+                        .lineToY(redHuman.position.y)
+                        .build(),
+                    InstantAction { runAction = false }
+                )
+            )
+        )
+    }
+
     fun moveAllSpeci() {
         runAction = true
         runBlocking(
@@ -150,7 +182,7 @@ class AutoHardware(
 
     }
 
-    fun grabSpeci(from: Pose2d) {
+    fun grabSpeci(from: Pose2d, wait: Boolean? = null) {
         runAction = true
         runBlocking(
             SequentialAction(
@@ -171,6 +203,11 @@ class AutoHardware(
                 ),
             )
         )
+        if (wait != null && wait) {
+            runBlocking(
+                SleepAction(2.0)
+            )
+        }
         runAction = true
         runBlocking(
             SequentialAction(
