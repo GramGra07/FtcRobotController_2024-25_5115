@@ -27,31 +27,30 @@ class DriverAid(
         auto
     }
 
-    var daState = DAState.IDLE
+    fun auto() {
+        autoScoreFunc.runInit()
+    }
 
     fun collapse() {
-        daState = DAState.COLLAPSE
+        collapseFunc.runInit()
     }
 
     fun highSpecimen() {
-        daState = DAState.HIGH_SPECIMEN
+        highSpecimenFunc.runInit()
     }
 
     fun highBasket() {
-        daState = DAState.HIGH_BASKET
+        highBasketFunc.runInit()
     }
 
     fun pickup() {
-        daState = DAState.PICKUP
+        pickupFunc.runInit()
     }
 
     fun human() {
-        daState = DAState.HUMAN
+        humanFunc.runInit()
     }
 
-    fun auto() {
-        daState = DAState.auto
-    }
 
     companion object {
 
@@ -65,6 +64,8 @@ class DriverAid(
         var pickupP = 100.0
         private var humanE = 200.0
         private var humanP = 300.0
+        var daState = DAState.IDLE
+        lateinit var daFunc: DAFunc
     }
 
     private var pickupOnce = 0
@@ -83,104 +84,72 @@ class DriverAid(
             humanE = DAVars.humanE
             humanP = DAVars.humanP
         }
-//        if (usingDA) {
-        when (daState) {
-            DAState.COLLAPSE -> {
-                collapseSequence(scoringSubsystem)
-            }
-
-            DAState.HIGH_SPECIMEN -> {
-                highSpecimenSequence(scoringSubsystem)
-            }
-
-            DAState.HIGH_BASKET -> {
-                highBasketSequence(scoringSubsystem)
-            }
-
-            DAState.PICKUP -> {
-                pickupSequence(scoringSubsystem)
-            }
-
-            DAState.HUMAN -> {
-                humanSequence(scoringSubsystem, auto)
-            }
-
-            DAState.auto -> {
-                autoScoreSequence(scoringSubsystem)
-            }
-
-            DAState.IDLE -> {
-                pickupOnce = 0
-            }
-        }
-//        }
+        daFunc.runArmSub()
     }
 
-    private fun autoScoreSequence(scoringSubsystem: ScoringSubsystem) {
-        usingDA = true
+    val autoScoreFunc = DAFunc(DAState.auto, {
         scoringSubsystem.closeClaw()
         scoringSubsystem.setPitchMed()
-        armSubsystem.setPE(2000.0, 0.0)
-        end()
-    }
+    }, Triple(2000.0, 0.0, null), null, armSubsystem)
 
-    private fun collapseSequence(scoringSubsystem: ScoringSubsystem) {
-        usingDA = true
+    val collapseFunc = DAFunc(DAState.COLLAPSE, {
         scoringSubsystem.closeClaw()
-//        scoringSubsystem.setPitchHigh()
-        armSubsystem.setPE(collapseP, collapseE, false)
-        end()
-    }
+    }, Triple(collapseP, collapseE, false), null, armSubsystem)
 
-    fun highSpecimenSequence(scoringSubsystem: ScoringSubsystem) {
-        usingDA = true
-//        armSubsystem.setPE(hSpecimenP, hSpecimenE)
-        armSubsystem.setHeight(24.5, 30.0, true, true)
+    val highSpecimenFunc = DAFunc(DAState.HIGH_SPECIMEN, {
         scoringSubsystem.specimenRotate(armSubsystem.pAngle())
         scoringSubsystem.setRotateCenter()
-        end()
-    }
+    }, null, { armSubsystem.setHeight(24.5, 30.0, true, true) }, armSubsystem)
 
-    private fun highBasketSequence(scoringSubsystem: ScoringSubsystem) {
-        usingDA = true
+    val highBasketFunc = DAFunc(DAState.HIGH_BASKET, {
         scoringSubsystem.setPitchMed()
         scoringSubsystem.setRotateCenter()
         armSubsystem.pMax = 0.5
-        armSubsystem.setPE(hBasketP, hBasketE, true)
-//        if (armSubsystem.isPitchAtTarget(200.0) && armSubsystem.isExtendAtTarget(200.0)) {
-//            scoringSubsystem.setPitchHigh()
-//        }
-        end()
-    }
+    }, Triple(hBasketP, hBasketE, true), null, armSubsystem)
 
-    private fun pickupSequence(scoringSubsystem: ScoringSubsystem) {
-        usingDA = true
+    val pickupFunc = DAFunc(
+        DAState.PICKUP,
+        {
+            PIDVals.pitchPIDFCo.d = 0.00025
+            scoringSubsystem.setPitchMed()
+            scoringSubsystem.setRotateCenter()
+            scoringSubsystem.openClaw()
+        }, Triple(pickupP, pickupE, false), null, armSubsystem
+    )
 
-        PIDVals.pitchPIDFCo.d = 0.00025
+    val humanFunc = DAFunc(DAState.HUMAN, {
         scoringSubsystem.setPitchMed()
         scoringSubsystem.setRotateCenter()
         scoringSubsystem.openClaw()
-        armSubsystem.setPE(pickupP, pickupE, false)
-        end()
+    }, Triple(humanP - if (auto) 50 else 25, humanE, false), null, armSubsystem)
+
+    fun isDone(tolerance: Double): Boolean {
+        return daFunc.isEnded(tolerance)
     }
 
-    private fun humanSequence(scoringSubsystem: ScoringSubsystem, auto: Boolean) {
-        usingDA = true
-        scoringSubsystem.setPitchMed()
-        scoringSubsystem.setRotateCenter()
-        scoringSubsystem.openClaw()
-        if (auto) {
-            armSubsystem.setPE(humanP - 50, humanE, false)
-        } else {
-            armSubsystem.setPE(humanP - 25, humanE)
-        }
-        end()
-    }
-
-    private fun end(
+    class DAFunc(
+        val state: DAState,
+        val funcs: Runnable,
+        val setPE: Triple<Double, Double, Boolean?>?,
+        val armSubFunc: Runnable?,
+        val armSubsystem: ArmSubsystem
     ) {
-        if (armSubsystem.isExtendAtTarget(100.0) && armSubsystem.isPitchAtTarget(100.0)) {
-            daState = DAState.IDLE
+        fun runInit() {
+            daState = state
+            funcs.run()
+            daFunc = this
+        }
+
+        fun runArmSub() {
+            if (setPE != null) {
+                armSubsystem.setPE(setPE.first, setPE.second, setPE.third)
+            } else {
+                armSubFunc?.run()
+            }
+        }
+
+        fun isEnded(tolerance: Double): Boolean {
+            return armSubsystem.bothAtTarget(tolerance) && armSubsystem.secondActionComplete()
         }
     }
 

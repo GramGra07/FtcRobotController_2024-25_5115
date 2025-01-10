@@ -125,9 +125,8 @@ open class HardwareConfig(
 //        }
 
 
-        loopTimeController.every(3) {
-            driverAid.update()
-        }
+        driverAid.update()
+
 
 //        loopTimeController.every(if (VarConfig.loopSaver) 30 else 10) {
 //            reLocalizationSubsystem.update(localizerSubsystem, VarConfig.relocalize)

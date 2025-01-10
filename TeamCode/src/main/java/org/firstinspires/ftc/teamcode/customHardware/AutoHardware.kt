@@ -531,7 +531,6 @@ class AutoHardware(
         val armSubsystem: ArmSubsystem,
         val scoringSubsystem: ScoringSubsystem,
         val tolerance: Double = 100.0,
-        val load: Boolean = false
     ) : Action {
         override fun run(packet: TelemetryPacket): Boolean {
             driverAid.update()
@@ -539,11 +538,7 @@ class AutoHardware(
             scoringSubsystem.update()
             packet.put(armSubsystem.pitchT.toString(), armSubsystem.pitchEncoder.currentPosition)
             packet.put(armSubsystem.extendTarget.toString(), armSubsystem.extendEncoder.getMost())
-            return if (!load) {
-                Companion.runAction || !armSubsystem.bothAtTarget(tolerance)
-            } else {
-                Companion.runAction
-            }
+            return Companion.runAction || (!driverAid.isDone(tolerance))
         }
     }
 
@@ -552,7 +547,6 @@ class AutoHardware(
         armSubsystem: ArmSubsystem,
         scoringSubsystem: ScoringSubsystem,
         tolerance: Double = 100.0,
-        load: Boolean = false
     ): Action {
         return updateAction(driverAid, armSubsystem, scoringSubsystem, tolerance)
     }

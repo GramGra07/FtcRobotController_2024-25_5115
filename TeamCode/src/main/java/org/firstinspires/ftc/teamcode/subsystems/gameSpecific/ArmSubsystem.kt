@@ -20,6 +20,14 @@ import kotlin.math.cos
 import kotlin.math.sqrt
 
 class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
+    companion object {
+        var secondActionComplete: Boolean = false
+    }
+
+    fun secondActionComplete(): Boolean {
+        return secondActionComplete
+    }
+
     val pitchNegate = if (auto) 1.0 else -1.0
 
     enum class ExtendState {
@@ -279,19 +287,23 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
     }
 
     fun setPE(p: Double, e: Double, pitchFirst: Boolean? = null) {
+        secondActionComplete = false
         if (pitchFirst == null) {
             setPitchTarget(p)
             setExtendTarget(e)
+            secondActionComplete = true
         } else {
             if (pitchFirst == false) {
                 setExtendTarget(e)
                 if (isExtendAtTarget()) {
                     setPitchTarget(p)
+                    secondActionComplete = true
                 }
             } else {
                 setPitchTarget(p)
                 if (isPitchAtTarget()) {
                     setExtendTarget(e)
+                    secondActionComplete = true
                 }
             }
         }
