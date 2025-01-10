@@ -90,38 +90,40 @@ class DriverAid(
     val autoScoreFunc = DAFunc(DAState.auto, {
         scoringSubsystem.closeClaw()
         scoringSubsystem.setPitchMed()
-    }, Triple(2000.0, 0.0, null), null, armSubsystem)
+    }, Triple(2000.0, 0.0, null), null, null, armSubsystem)
 
     val collapseFunc = DAFunc(DAState.COLLAPSE, {
         scoringSubsystem.closeClaw()
-    }, Triple(collapseP, collapseE, false), null, armSubsystem)
+    }, Triple(collapseP, collapseE, false), null, null, armSubsystem)
 
     val highSpecimenFunc = DAFunc(DAState.HIGH_SPECIMEN, {
         scoringSubsystem.specimenRotate(armSubsystem.pAngle())
         scoringSubsystem.setRotateCenter()
-    }, null, { armSubsystem.setHeight(24.5, 30.0, true, true) }, armSubsystem)
+    }, null, { armSubsystem.setHeight(24.5, 30.0, true, true) }, null, armSubsystem)
 
     val highBasketFunc = DAFunc(DAState.HIGH_BASKET, {
         scoringSubsystem.setPitchMed()
         scoringSubsystem.setRotateCenter()
+    }, Triple(hBasketP, hBasketE, true), null, {
         armSubsystem.pMax = 0.5
-    }, Triple(hBasketP, hBasketE, true), null, armSubsystem)
+    }, armSubsystem)
 
     val pickupFunc = DAFunc(
         DAState.PICKUP,
         {
-            PIDVals.pitchPIDFCo.d = 0.00025
             scoringSubsystem.setPitchMed()
             scoringSubsystem.setRotateCenter()
             scoringSubsystem.openClaw()
-        }, Triple(pickupP, pickupE, false), null, armSubsystem
+        }, Triple(pickupP, pickupE, false), null, {
+            PIDVals.pitchPIDFCo.d = 0.00025
+        }, armSubsystem
     )
 
     val humanFunc = DAFunc(DAState.HUMAN, {
         scoringSubsystem.setPitchMed()
         scoringSubsystem.setRotateCenter()
         scoringSubsystem.openClaw()
-    }, Triple(humanP - if (auto) 50 else 25, humanE, false), null, armSubsystem)
+    }, Triple(humanP - if (auto) 50 else 25, humanE, false), null, null, armSubsystem)
 
     fun isDone(tolerance: Double): Boolean {
         return daFunc.isEnded(tolerance)
@@ -132,6 +134,7 @@ class DriverAid(
         val funcs: Runnable,
         val setPE: Triple<Double, Double, Boolean?>?,
         val armSubFunc: Runnable?,
+        val armPowerFunc: Runnable?,
         val armSubsystem: ArmSubsystem
     ) {
         fun runInit() {
@@ -141,6 +144,7 @@ class DriverAid(
         }
 
         fun runArmSub() {
+            armPowerFunc?.run()
             if (setPE != null) {
                 armSubsystem.setPE(setPE.first, setPE.second, setPE.third)
             } else {
