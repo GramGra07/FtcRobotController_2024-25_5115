@@ -1,11 +1,7 @@
 package org.firstinspires.ftc.teamcode.opModes.auto
 
-import com.acmerobotics.roadrunner.Pose2d
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.firstinspires.ftc.teamcode.customHardware.AutoHardware
-import org.firstinspires.ftc.teamcode.customHardware.AutoHardware.Companion.blueStartRight
-import org.firstinspires.ftc.teamcode.customHardware.AutoHardware.Companion.redHuman
-import org.firstinspires.ftc.teamcode.customHardware.AutoHardware.Companion.redSpecimen
 import org.firstinspires.ftc.teamcode.customHardware.AutoHardware.Companion.redStartRight
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.Alliance
@@ -17,7 +13,7 @@ class twoSpeci(val alliance: Alliance) : LinearOpMode() {
             this,
             StartLocation(
                 this.alliance,
-                if (alliance == Alliance.RED) redStartRight else blueStartRight,
+                redStartRight,
             )
         )
 //        var auto: StateMachine<out Enum<*>> = robot.smallSpecimenAutoR
@@ -30,14 +26,9 @@ class twoSpeci(val alliance: Alliance) : LinearOpMode() {
 
         if (opModeIsActive()) {
             robot.scorePreloadSpeci()
-            robot.grabSpeci(redSpecimen)
+            robot.grabSpeci()
             robot.placeSpeci(-3)
             robot.endHuman(
-                Pose2d(
-                    redSpecimen.position.x - 3,
-                    redHuman.position.y + 25,
-                    redSpecimen.heading.toDouble()
-                )
             )
         }
     }
