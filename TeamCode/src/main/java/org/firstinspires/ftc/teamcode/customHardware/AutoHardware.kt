@@ -75,23 +75,24 @@ class AutoHardware(
     fun scorePreloadSpeci() {
         runAction = true
         runBlocking(
-            ParallelAction(
-                SequentialAction(
-                    drive.actionBuilder(redStartRight)
-                        .strafeToConstantHeading(
-                            Vector2d(redSpecimen.position.x - 2, redSpecimen.position.y),
-                        )
-                        .build(),
-                    InstantAction { runAction = false }
+            SequentialAction(
+                ParallelAction(
+                    SequentialAction(
+                        drive.actionBuilder(redStartRight)
+                            .strafeToConstantHeading(
+                                Vector2d(redSpecimen.position.x - 10, redSpecimen.position.y),
+                            )
+                            .build(),
+                        InstantAction { runAction = false }
+                    ),
+                    driverAid.daAction(listOf(Runnable { driverAid.highSpecimen() })),
+                    uAction(driverAid, armSubsystem, scoringSubsystem)
                 ),
-                driverAid.daAction(listOf(Runnable { driverAid.highSpecimen() })),
-                uAction(driverAid, armSubsystem, scoringSubsystem)
-            ),
-        )
-        runBlocking(
-            scoringSubsystem.servoAction(
-                listOf(
-                    Runnable { scoringSubsystem.openClaw() },
+
+                scoringSubsystem.servoAction(
+                    listOf(
+                        Runnable { scoringSubsystem.openClaw() },
+                    )
                 )
             )
         )

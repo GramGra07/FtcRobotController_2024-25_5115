@@ -35,23 +35,9 @@ public class MeepMeepTesting {
         Pose2d blueNeutralSample = new Pose2d(56.0, 12.0, blueStartRight.heading.toDouble());
         Pose2d redNeutralSample = new Pose2d(-58.0, -40, redStartRight.heading.toDouble());
 
-        myBot.runAction(myBot.getDrive().actionBuilder(startPose)
-                .lineToY(redHuman.position.y + 10)
-                .setTangent(Math.toRadians(-90.0))
-                .splineToLinearHeading(
-                        new Pose2d(36.0, -24.0, redSample.heading.toDouble()),
-                        redSpecimen.heading.toDouble()
-                )
-                .splineToConstantHeading(
-                        new Vector2d(redSample.position.x - 16.0, redSample.position.y),
-                        redSample.heading.toDouble()
-                )
-                .setTangent(redSpecimen.heading.toDouble())
-                .lineToY(redHuman.position.y)
-                .lineToY(redHuman.position.y + 10)
-                .strafeToLinearHeading(
-                        new Vector2d(redHuman.position.x, redHuman.position.y + 8),
-                        redHuman.heading.toDouble()
+        myBot.runAction(myBot.getDrive().actionBuilder(redStartRight)
+                .strafeToConstantHeading(
+                        new Vector2d(redSpecimen.position.x - 2, redSpecimen.position.y)
                 )
                 .build());
         meepMeep.setBackground(MeepMeep.Background.FIELD_INTO_THE_DEEP_JUICE_DARK)
