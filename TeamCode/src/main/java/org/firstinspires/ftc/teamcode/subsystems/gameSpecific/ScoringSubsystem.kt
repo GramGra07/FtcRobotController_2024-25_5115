@@ -2,15 +2,18 @@ package org.firstinspires.ftc.teamcode.subsystems.gameSpecific
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.acmerobotics.roadrunner.Action
+import com.qualcomm.hardware.limelightvision.Limelight3A
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.Servo
 import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.robotcore.external.Telemetry
+import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.Alliance
 import org.firstinspires.ftc.teamcode.customHardware.servos.AxonServo
 import org.firstinspires.ftc.teamcode.customHardware.servos.SynchronizedServo
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.initServo
 import org.firstinspires.ftc.teamcode.utilClass.CameraLock
 import org.firstinspires.ftc.teamcode.utilClass.ServoFunc
+import org.firstinspires.ftc.teamcode.utilClass.storage.GameStorage
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.ServoUtil
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.ServoUtil.pivotHigh
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.ServoUtil.pivotLow
@@ -53,43 +56,40 @@ class ScoringSubsystem(
     private var rotateServo: AxonServo
     private var rotateState: RotateState = RotateState.IDLE
 
-//    private lateinit var limelight3A: Limelight3A
+    private lateinit var limelight3A: Limelight3A
 
     init {
         claw = initServo(ahwMap, "claw")
         pitchServo = SynchronizedServo(ahwMap, "pitchServo", true)
         rotateServo = AxonServo(ahwMap, "rotateServo")
         if (auto) {
-//            limelight3A = ahwMap.get(Limelight3A::class.java, "limelight")
-//            limelight3A.start()
-//            limelight3A.pipelineSwitch(1)
-//            val use_blue = if (GameStorage.alliance == Alliance.BLUE) {
-//                1
-//            } else {
-//                0
-//            }
-//            limelight3A.updatePythonInputs(use_blue.toDouble(), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+            limelight3A = ahwMap.get(Limelight3A::class.java, "limelight")
+            limelight3A.start()
+            limelight3A.pipelineSwitch(1)
+            val use_blue = if (GameStorage.alliance == Alliance.BLUE) {
+                1
+            } else {
+                0
+            }
+            limelight3A.updatePythonInputs(use_blue.toDouble(), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
             setup()
         }
     }
 
-//    fun getLimeLightResult(): Double {
-//        val result = limelight3A.latestResult
-//        val pythonOutputs: DoubleArray = result.getPythonOutput()
-//        var angle: Double = 0.0
-//        if (pythonOutputs.isNotEmpty()) {
-//            angle = pythonOutputs[6]
-//        }
-//        return angle
-//    }
-
-    fun update() {
-//        getLimeLightResult()
-        updateServos()
+    var llPose = 0.0
+    fun getLimeLightResult() {
+        val result = limelight3A.latestResult
+        val pythonOutputs: DoubleArray = result.getPythonOutput()
+        var angle: Double = 0.0
+        if (pythonOutputs.isNotEmpty()) {
+            angle = pythonOutputs[6]
+            llPose = angle
+        }
     }
 
-    fun setPitchAuto() {
-        pitchState = PitchState.AUTO
+    fun update() {
+        getLimeLightResult()
+        updateServos()
     }
 
     fun openClaw() {
