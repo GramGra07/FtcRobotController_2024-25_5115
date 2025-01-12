@@ -135,13 +135,14 @@ class DriverAid(
 
     class DAFunc(
         val state: DAState,
-        val funcs: Runnable,
-        val setPE: Triple<Double, Double, Boolean?>?,
-        val armSubFunc: Runnable?,
-        val armPowerFunc: Runnable?,
-        val armSubsystem: ArmSubsystem
+        private val funcs: Runnable,
+        private val setPE: Triple<Double, Double, Boolean?>?,
+        private val armSubFunc: Runnable?,
+        private val armPowerFunc: Runnable?,
+        private val armSubsystem: ArmSubsystem
     ) {
         fun runInit() {
+            armSubsystem.resetHitPosition()
             daState = state
             funcs.run()
             daFunc = this
@@ -157,7 +158,7 @@ class DriverAid(
         }
 
         fun isEnded(tolerance: Double): Boolean {
-            return armSubsystem.bothAtTarget(tolerance) && armSubsystem.secondActionComplete()
+            return armSubsystem.bothAtTarget(tolerance)
         }
     }
 

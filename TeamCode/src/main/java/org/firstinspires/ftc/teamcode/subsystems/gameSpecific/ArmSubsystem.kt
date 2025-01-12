@@ -20,14 +20,6 @@ import kotlin.math.cos
 import kotlin.math.sqrt
 
 class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
-    companion object {
-        var secondActionComplete: Boolean = false
-    }
-
-    fun secondActionComplete(): Boolean {
-        return secondActionComplete
-    }
-
     val pitchNegate = if (auto) 1.0 else -1.0
 
     enum class ExtendState {
@@ -205,23 +197,23 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
     }
 
     private fun updatePID() {
-//        extendPIDF.setPIDF(
-//            PIDVals.extendPIDFCo.p,
-//            PIDVals.extendPIDFCo.i,
-//            PIDVals.extendPIDFCo.d,
-//            PIDVals.extendPIDFCo.f
-//        )
-        extendPIDF.setPIDF(0.013, 0.0, 0.0000, 0.0)
+        extendPIDF.setPIDF(
+            PIDVals.extendPIDFCo.p,
+            PIDVals.extendPIDFCo.i,
+            PIDVals.extendPIDFCo.d,
+            PIDVals.extendPIDFCo.f
+        )
+//        extendPIDF.setPIDF(0.013, 0.0, 0.0000, 0.0)
         val fTick = (pitchFExtend - pitchFCollapse) / maxExtendTicksTOTAL
         val pitchF = (fTick * extendEncoder.getMost()) + pitchFCollapse
 //        val pitchF = PIDVals.pitchPIDFCo.f
-//        pitchPIDF.setPIDF(
-//            PIDVals.pitchPIDFCo.p,
-//            PIDVals.pitchPIDFCo.i,
-//            PIDVals.pitchPIDFCo.d,
-//            pitchF
-//        )
-        pitchPIDF.setPIDF(0.0017, 0.0, 0.00005, pitchF)
+        pitchPIDF.setPIDF(
+            PIDVals.pitchPIDFCo.p,
+            PIDVals.pitchPIDFCo.i,
+            PIDVals.pitchPIDFCo.d,
+            pitchF
+        )
+//        pitchPIDF.setPIDF(0.0017, 0.0, 0.00005, pitchF)
     }
 
     private fun calculatePID(controller: PIDFController, current: Double, target: Double): Double {
@@ -286,28 +278,48 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
         )
     }
 
+    private var pitchHitPosition = false
+    private var extendHitPosition = false
+
+    fun resetHitPosition() {
+        pitchHitPosition = false
+        extendHitPosition = false
+    }
+
     fun setPE(p: Double, e: Double, pitchFirst: Boolean? = null) {
-        secondActionComplete = false
-        if (pitchFirst == null) {
-            setPitchTarget(p)
-            setExtendTarget(e)
-            secondActionComplete = true
-        } else {
-            if (pitchFirst == false) {
-                setExtendTarget(e)
-                if (isExtendAtTarget()) {
+        // Update hit positions dynamically
+        pitchHitPosition = isPitchAtTarget(200.0)
+        extendHitPosition = isExtendAtTarget()
+
+        when (pitchFirst) {
+            null -> {
+                // Default behavior: Set pitch first, then extend
+                if (!pitchHitPosition) setPitchTarget(p)
+                if (!extendHitPosition) setExtendTarget(e)
+            }
+
+            true -> {
+                // Set pitch first and wait for it to reach target
+                if (!pitchHitPosition) {
                     setPitchTarget(p)
-                    secondActionComplete = true
                 }
-            } else {
-                setPitchTarget(p)
-                if (isPitchAtTarget(200.0)) {
+                if (pitchHitPosition && !extendHitPosition) {
                     setExtendTarget(e)
-                    secondActionComplete = true
+                }
+            }
+
+            false -> {
+                // Set extend first and wait for it to reach target
+                if (!extendHitPosition) {
+                    setExtendTarget(e)
+                }
+                if (extendHitPosition && !pitchHitPosition) {
+                    setPitchTarget(p)
                 }
             }
         }
     }
+
 
     fun setHeight(
         height: Double,
