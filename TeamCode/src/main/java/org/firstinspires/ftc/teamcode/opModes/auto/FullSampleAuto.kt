@@ -1,10 +1,7 @@
 package org.firstinspires.ftc.teamcode.opModes.auto
 
-import com.acmerobotics.roadrunner.Pose2d
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.firstinspires.ftc.teamcode.customHardware.AutoHardware
-import org.firstinspires.ftc.teamcode.customHardware.AutoHardware.Companion.blueStartLeft
-import org.firstinspires.ftc.teamcode.customHardware.AutoHardware.Companion.redNeutralSample
 import org.firstinspires.ftc.teamcode.customHardware.AutoHardware.Companion.redStartLeft
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.Alliance
@@ -16,7 +13,7 @@ class FullSampleAuto(val alliance: Alliance) : LinearOpMode() {
             this,
             StartLocation(
                 this.alliance,
-                if (alliance == Alliance.RED) redStartLeft else blueStartLeft,
+                redStartLeft,
             )
         )
 //        var auto: StateMachine<out Enum<*>> = robot.fullSpecimenAutoR
@@ -31,29 +28,14 @@ class FullSampleAuto(val alliance: Alliance) : LinearOpMode() {
             robot.scorePreloadSample()
             robot.getSampleR()
             robot.scoreSample(
-                Pose2d(
-                    redNeutralSample.position.x,
-                    redNeutralSample.position.y,
-                    Math.toRadians(50.0)
-                )
             )
             robot.getSampleM()
             robot.scoreSample(
-                Pose2d(
-                    redNeutralSample.position.x,
-                    redNeutralSample.position.y,
-                    Math.toRadians(0.0)
-                )
             )
             robot.getSampleL()
             robot.scoreSample(
-                Pose2d(
-                    redNeutralSample.position.x,
-                    redNeutralSample.position.y,
-                    Math.toRadians(130.0)
-                )
             )
-            robot.end(redNeutralSample)
+            robot.end()
         }
     }
 }

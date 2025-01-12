@@ -25,11 +25,13 @@ class AutoHardware(
 ) : HardwareConfig(opmode, true, startLocation, ahwMap) {
     var drive: MecanumDrive = MecanumDrive(ahwMap, startLocation.startPose)
 
+
     init {
 //        super.initRobot(ahwMap, true, startLocation)
         telemetry.addData("Status", "Initialized")
         telemetry.addData("Alliance", startLocation.alliance)
         telemetry.update()
+        lastPose = startLocation.startPose
         opmode.waitForStart()
         timer.reset()
     }
@@ -49,55 +51,60 @@ class AutoHardware(
     }
 
     companion object {
-        val blueStartLeft = Pose2d(-8.0, 63.0, Math.toRadians(-90.0))
-        val blueStartRight = Pose2d(8.0, 63.0, Math.toRadians(-90.0))
         val redStartLeft = Pose2d(-8.0, -63.0, Math.toRadians(90.0))
         val redStartRight = Pose2d(8.0, -63.0, Math.toRadians(90.0))// used to be 135-72
-        val blueEndLeft = Pose2d(-24.0, 10.0, Math.toRadians(180.0))
-        val blueEndRight = Pose2d(-10.0, -10.0, Math.toRadians(180.0))
-        val redEndLeft = Pose2d(24.0, 10.0, Math.toRadians(0.0))
-        val redEndRight = Pose2d(24.0, -10.0, Math.toRadians(0.0))
-        val blueHuman = Pose2d(-46.0, 54.0, Math.toRadians(90.0))
+        val redEndLeft = Pose2d(-24.0, 10.0, Math.toRadians(180.0))
+        val redEndRight = Pose2d(-10.0, -10.0, Math.toRadians(180.0))
         val redHuman = Pose2d(46.0, -60.0, Math.toRadians(-90.0))
-        val blueBasket = Pose2d(50.0, 50.0, Math.toRadians(135.0))
-        val redBasket = Pose2d(-40.0, -50.0, Math.toRadians(45.0))
-        val blueSpecimen = Pose2d(0.0, 36.0, blueStartRight.heading.toDouble())
-        val redSpecimen = Pose2d(0.0, -28.0, redStartRight.heading.toDouble())
-        val blueSample = Pose2d(-60.0, 12.0, Math.toRadians(0.0))
+        val redBasket = Pose2d(-47.0, -47.0, Math.toRadians(45.0))
+        val redSpecimen = Pose2d(0.0, -32.0, redStartRight.heading.toDouble())
         val redSample = Pose2d(60.0, -12.0, Math.toRadians(0.0))
-        val blueNeutralSample = Pose2d(56.0, 12.0, blueStartRight.heading.toDouble())
         val redNeutralSample = Pose2d(-58.0, -40.0, redStartRight.heading.toDouble())
 
 
         var runAction = true
+        lateinit var lastPose: Pose2d
+    }
+
+    class SetPoseAction(private val autoHardware: AutoHardware) : Action {
+        override fun run(packet: TelemetryPacket): Boolean {
+            lastPose = autoHardware.drive.pose
+            return false
+        }
+    }
+
+    fun setLastPose(): Action {
+        return SetPoseAction(this)
     }
 
     fun scorePreloadSpeci() {
         runAction = true
         runBlocking(
-            ParallelAction(
-                SequentialAction(
-                    drive.actionBuilder(redStartRight)
-                        .strafeToConstantHeading(
-                            Vector2d(redSpecimen.position.x - 2, redSpecimen.position.y),
-                        )
-                        .build(),
-                    InstantAction { runAction = false }
-                ),
+            SequentialAction(
                 driverAid.daAction(listOf(Runnable { driverAid.highSpecimen() })),
-                uAction(driverAid, armSubsystem, scoringSubsystem)
-            ),
-        )
-        runBlocking(
-            scoringSubsystem.servoAction(
-                listOf(
-                    Runnable { scoringSubsystem.openClaw() },
+                ParallelAction(
+                    SequentialAction(
+                        drive.actionBuilder(lastPose)
+                            .strafeToConstantHeading(
+                                Vector2d(redSpecimen.position.x, redSpecimen.position.y),
+                            )
+                            .build(),
+                        InstantAction { runAction = false },
+                        setLastPose()
+                    ),
+                    uAction(driverAid, armSubsystem, scoringSubsystem)
+                ),
+
+                scoringSubsystem.servoAction(
+                    listOf(
+                        Runnable { scoringSubsystem.openClaw() },
+                    )
                 )
             )
         )
     }
 
-    fun moveOneSpeci(from: Pose2d) {
+    fun moveOneSpeci() {
         runAction = true
         runBlocking(
             ParallelAction(
@@ -109,7 +116,7 @@ class AutoHardware(
                     )
                 ),
                 SequentialAction(
-                    drive.actionBuilder(from)
+                    drive.actionBuilder(lastPose)
                         .lineToY(redHuman.position.y + 10)
                         .setTangent(Math.toRadians(-90.0))
                         .splineToLinearHeading(
@@ -123,7 +130,8 @@ class AutoHardware(
                         .setTangent(redSpecimen.heading.toDouble())
                         .lineToY(redHuman.position.y)
                         .build(),
-                    InstantAction { runAction = false }
+                    InstantAction { runAction = false },
+                    setLastPose()
                 )
             )
         )
@@ -141,7 +149,7 @@ class AutoHardware(
                     )
                 ),
                 SequentialAction(
-                    drive.actionBuilder(redSpecimen)
+                    drive.actionBuilder(lastPose)
                         .lineToY(redHuman.position.y + 10)
                         .setTangent(Math.toRadians(-90.0))
                         .splineToLinearHeading(
@@ -174,7 +182,8 @@ class AutoHardware(
 
                         .build(),
 
-                    InstantAction { runAction = false }
+                    InstantAction { runAction = false },
+                    setLastPose()
                 ),
                 uAction(driverAid, armSubsystem, scoringSubsystem),
             )
@@ -182,7 +191,7 @@ class AutoHardware(
 
     }
 
-    fun grabSpeci(from: Pose2d, wait: Boolean? = null) {
+    fun grabSpeci(wait: Double? = null) {
         runAction = true
         runBlocking(
             SequentialAction(
@@ -192,20 +201,21 @@ class AutoHardware(
                         driverAid.daAction(listOf(Runnable { driverAid.human() }))
                     ),
                     SequentialAction(
-                        drive.actionBuilder(from).lineToY(redHuman.position.y + 10)
+                        drive.actionBuilder(lastPose).lineToY(redHuman.position.y + 12)
                             .strafeToLinearHeading(
-                                Vector2d(redHuman.position.x, redHuman.position.y + 8),
+                                Vector2d(redHuman.position.x, redHuman.position.y + 12),
                                 redHuman.heading.toDouble()
                             ).build(),
-                        InstantAction { runAction = false }
+                        InstantAction { runAction = false },
+                        setLastPose()
                     ),
                     uAction(driverAid, armSubsystem, scoringSubsystem),
                 ),
             )
         )
-        if (wait != null && wait) {
+        if (wait != null) {
             runBlocking(
-                SleepAction(2.0)
+                SleepAction(wait)
             )
         }
         runAction = true
@@ -214,22 +224,16 @@ class AutoHardware(
                 ParallelAction(
                     SequentialAction(
                         drive.actionBuilder(
-                            Pose2d(
-                                Vector2d(redHuman.position.x, redHuman.position.y + 8),
-                                redHuman.heading.toDouble()
-                            )
+                            lastPose
                         )
+                            .setTangent(Math.toRadians(270.0))
                             .lineToY(redHuman.position.y)
-                            .stopAndAdd(scoringSubsystem.servoAction(listOf(Runnable { scoringSubsystem.closeClaw() })))
                             .build(),
+                        scoringSubsystem.servoAction(listOf(Runnable { scoringSubsystem.closeClaw() })),
                         InstantAction { runAction = false },
+                        setLastPose()
                     ),
-//                    uAction(driverAid, armSubsystem, scoringSubsystem),
                 ),
-                ParallelAction(
-                    scoringSubsystem.servoAction(listOf(Runnable { scoringSubsystem.closeClaw() })),
-//                    uAction(driverAid, armSubsystem, scoringSubsystem)
-                )
             )
         )
     }
@@ -244,20 +248,20 @@ class AutoHardware(
                 ),
                 SequentialAction(
                     drive.actionBuilder(
-                        redHuman
+                        lastPose
                     )
                         .setTangent(Math.toRadians(180.0))
                         .splineToLinearHeading(
                             Pose2d(
                                 redSpecimen.position.x + offset,
-                                redHuman.position.y + 20,
+                                redSpecimen.position.y,
                                 redSpecimen.heading.toDouble()
                             ), redSpecimen.heading.toDouble()
                         )
-                        .lineToY(redHuman.position.y + 25)
 
                         .build(),
-                    InstantAction { runAction = false }
+                    InstantAction { runAction = false },
+                    setLastPose()
                 ),
                 uAction(driverAid, armSubsystem, scoringSubsystem),
             )
@@ -275,10 +279,11 @@ class AutoHardware(
         runAction = true
         runBlocking(
             SequentialAction(
+                driverAid.daAction(listOf(Runnable { driverAid.highBasket() })),
                 ParallelAction(
                     SequentialAction(
                         drive.actionBuilder(
-                            redStartLeft
+                            lastPose
                         )
                             .setTangent(Math.toRadians(180.0))
                             .strafeToLinearHeading(
@@ -286,45 +291,29 @@ class AutoHardware(
                                 Math.toRadians(45.0)
                             )
                             .build(),
-                        InstantAction { runAction = false }
+                        InstantAction { runAction = false },
+                        setLastPose()
                     ),
                     uAction(driverAid, armSubsystem, scoringSubsystem, 450.0),
-                    driverAid.daAction(listOf(Runnable { driverAid.highBasket() }))
                 ),
             )
         )
         runAction = true
-//        runBlocking(
-//            ParallelAction(
-//                SequentialAction(
-//                    SleepAction(1.0), InstantAction { runAction = false }),
-//                uAction(driverAid, armSubsystem, scoringSubsystem, 100.0, true)
-//            )
-//        )
         runBlocking(
-            scoringSubsystem.servoAction(
-                listOf(
-                    Runnable { scoringSubsystem.setPitchHigh() },
-                )
-            ),
-        )
-        runBlocking(
-            SleepAction(1.0)
-        )
-        runBlocking(
-            scoringSubsystem.servoAction(
-                listOf(
-                    Runnable { scoringSubsystem.openClaw() },
+            SequentialAction(
+                scoringSubsystem.servoAction(
+                    listOf(
+                        Runnable { scoringSubsystem.setPitchHigh() },
+                    )
+                ),
+                SleepAction(1.0),
+                scoringSubsystem.servoAction(
+                    listOf(
+                        Runnable { scoringSubsystem.openClaw() },
+                    )
                 )
             )
         )
-//        runBlocking(
-//            ParallelAction(
-//                SequentialAction(
-//                    SleepAction(1.0), InstantAction { runAction = false }),
-//                uAction(driverAid, armSubsystem, scoringSubsystem, 100.0, true)
-//            )
-//        )
     }
 
     fun getSampleR() {
@@ -335,7 +324,7 @@ class AutoHardware(
                 ParallelAction(
                     SequentialAction(
                         drive.actionBuilder(
-                            redBasket
+                            lastPose
                         ).setTangent(Math.toRadians(180.0))
                             .strafeToLinearHeading(
                                 Vector2d(
@@ -346,6 +335,7 @@ class AutoHardware(
 
                             .build(),
                         InstantAction { runAction = false },
+                        setLastPose()
                     ),
                     uAction(driverAid, armSubsystem, scoringSubsystem),
                     driverAid.daAction(listOf(Runnable { driverAid.pickup() })),
@@ -374,11 +364,12 @@ class AutoHardware(
                 ParallelAction(
                     SequentialAction(
                         drive.actionBuilder(
-                            redBasket
+                            lastPose
                         ).setTangent(Math.toRadians(180.0))
                             .splineToLinearHeading(redNeutralSample, Math.toRadians(0.0))
                             .build(),
                         InstantAction { runAction = false },
+                        setLastPose()
                     ),
                     uAction(driverAid, armSubsystem, scoringSubsystem),
                     driverAid.daAction(listOf(Runnable { driverAid.pickup() })),
@@ -407,7 +398,7 @@ class AutoHardware(
                 ParallelAction(
                     SequentialAction(
                         drive.actionBuilder(
-                            redBasket
+                            lastPose
                         ).setTangent(Math.toRadians(180.0))
                             .strafeToLinearHeading(
                                 Vector2d(
@@ -417,6 +408,7 @@ class AutoHardware(
                             )
                             .build(),
                         InstantAction { runAction = false },
+                        setLastPose()
                     ),
                     uAction(driverAid, armSubsystem, scoringSubsystem),
                     driverAid.daAction(listOf(Runnable { driverAid.pickup() })),
@@ -437,14 +429,14 @@ class AutoHardware(
         )
     }
 
-    fun scoreSample(from: Pose2d) {
+    fun scoreSample() {
         runAction = true
         runBlocking(
             SequentialAction(
                 ParallelAction(
                     SequentialAction(
                         drive.actionBuilder(
-                            from
+                            lastPose
                         )
                             .strafeToLinearHeading(
                                 Vector2d(redBasket.position.x, redBasket.position.y),
@@ -452,6 +444,7 @@ class AutoHardware(
                             )
                             .build(),
                         InstantAction { runAction = false },
+                        setLastPose()
                     ),
                     uAction(driverAid, armSubsystem, scoringSubsystem, 250.0),
                     driverAid.daAction(listOf(Runnable { driverAid.highBasket() })),
@@ -475,33 +468,34 @@ class AutoHardware(
         )
     }
 
-    fun end(from: Pose2d) {
+    fun end() {
         runAction = true
         driverAid.daAction(listOf(Runnable { driverAid.auto() }))
         runBlocking(
             ParallelAction(
                 SequentialAction(
                     drive.actionBuilder(
-                        from
+                        lastPose
                     )
                         .strafeTo(Vector2d(-36.0, -31.0))
                         .setTangent(Math.toRadians(90.0))
-                        .lineToY(blueEndRight.position.y + 2)
-                        .setTangent(blueEndRight.heading.toDouble())
+                        .lineToY(redEndRight.position.y + 2)
+                        .setTangent(redEndRight.heading.toDouble())
                         .lineToXLinearHeading(
-                            blueEndRight.position.x,
-                            blueEndRight.heading.toDouble()
+                            redEndRight.position.x,
+                            redEndRight.heading.toDouble()
                         )
 
                         .build(),
-                    InstantAction { runAction = false }
+                    InstantAction { runAction = false },
+                    setLastPose()
                 ),
                 uAction(driverAid, armSubsystem, scoringSubsystem),
             )
         )
     }
 
-    fun endHuman(from: Pose2d = redSpecimen) {
+    fun endHuman() {
         runAction = true
         runBlocking(
             ParallelAction(
@@ -511,7 +505,7 @@ class AutoHardware(
                 ),
                 SequentialAction(
                     drive.actionBuilder(
-                        from
+                        lastPose
                     )
                         .lineToY(redHuman.position.y + 10)
                         .strafeToLinearHeading(
@@ -520,7 +514,8 @@ class AutoHardware(
                         )
                         .build(),
 
-                    InstantAction { runAction = false }
+                    InstantAction { runAction = false },
+                    setLastPose()
                 )
             )
         )
