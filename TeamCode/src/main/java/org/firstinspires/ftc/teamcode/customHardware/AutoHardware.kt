@@ -75,9 +75,6 @@ class AutoHardware(
     fun scorePreloadSpeci() {
         runAction = true
         runBlocking(
-            SleepAction(5.0)
-        )
-        runBlocking(
             ParallelAction(
                 SequentialAction(
                     drive.actionBuilder(redStartRight)
