@@ -131,7 +131,7 @@ class ScoringSubsystem(
     fun telemetry(telemetry: Telemetry) {
         telemetry.addData("Scoring Subsystem", "")
         rotateServo.telemetry(telemetry)
-//        telemetry.addData("angle", getLimeLightResult())
+        telemetry.addData("angle", llPose)
     }
 
     private fun updateServos() {
