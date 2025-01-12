@@ -11,7 +11,7 @@ import org.gentrifiedApps.statemachineftc.SequentialRunSM
 
 class DriverAid(
     private val scoringSubsystem: ScoringSubsystem,
-    public val armSubsystem: ArmSubsystem,
+    val armSubsystem: ArmSubsystem,
     private val localizerSubsystem: LocalizerSubsystem,
     val auto: Boolean
 ) {
@@ -163,7 +163,7 @@ class DriverAid(
     }
 
     class DAActions(
-        val funcs: List<Runnable>,
+        private val funcs: List<Runnable>,
     ) : Action {
         override fun run(packet: TelemetryPacket): Boolean {
             funcs.forEach(Runnable::run)
@@ -175,20 +175,6 @@ class DriverAid(
         return DAActions(funcs)
     }
 
-    private var liftState = false
-    fun easyLiftL1() {
-        usingDA = true
-        if (!liftState) {
-            scoringSubsystem.setPitchLow()
-            scoringSubsystem.closeClaw()
-            armSubsystem.setPE(LiftVars.step1P, LiftVars.step2E)
-        }
-        if (armSubsystem.isExtendAtTarget(100.0) && armSubsystem.isPitchAtTarget(200.0)) {
-            liftState = true
-            armSubsystem.setPE(LiftVars.step2P, LiftVars.step2E)
-        }
-    }
-
     fun lift() {
         usingDA = true
         if (!firstLevelLift.isStarted) {
@@ -198,25 +184,13 @@ class DriverAid(
         }
     }
 
-//    fun getRobotAngle(): Double {
-//        return localizerSubsystem.poseUpdater.imuData.pitch
-//    }
 
     enum class AutoLift {
         extend_pivot,
         hook1st,
-        lift1st,
-        pivotBack,
-        sit1st,
-        extend2nd,
         hook2nd,
-        lift2nd,
-        pivot2nd,
-        sit2nd,
-        collapse,
         stop
     }
-
 
     val firstLevelLift: SequentialRunSM<AutoLift> =
         SequentialRunSM.Builder<AutoLift>()
@@ -228,58 +202,22 @@ class DriverAid(
             }
             .transition(AutoLift.extend_pivot) {
                 armSubsystem.setPE(LiftVars.step1P, LiftVars.step1E, false)
-                armSubsystem.isPitchAtTarget(150.0) && armSubsystem.isExtendAtTarget()
-            }
-            .state(AutoLift.hook1st)
-            .onEnter(AutoLift.hook1st) {
-                scoringSubsystem.setPitchIdle()
-                scoringSubsystem.setRotateIdle()
-                armSubsystem.setPE(LiftVars.step2P, LiftVars.step2E)
-            }
-            .transition(AutoLift.hook1st) {
-                armSubsystem.setPE(LiftVars.step2P, LiftVars.step2E)
-                armSubsystem.isPitchAtTarget() && armSubsystem.isExtendAtTarget()
-            }
-            .state(AutoLift.hook2nd)
-            .onEnter(AutoLift.hook2nd) {
-                armSubsystem.setPE(100.0, LiftVars.step2E, false)
-            }
-            .transition(AutoLift.hook2nd) {
-                armSubsystem.setPE(100.0, LiftVars.step2E, false)
-                armSubsystem.isPitchAtTarget() && armSubsystem.isExtendAtTarget()
-            }
-            .stopRunning(AutoLift.stop)
-            .build()
-    val liftSequence: SequentialRunSM<AutoLift> =
-        SequentialRunSM.Builder<AutoLift>()
-            .state(AutoLift.extend_pivot)
-            .onEnter(AutoLift.extend_pivot) {
-                scoringSubsystem.setPitchLow()
-                scoringSubsystem.closeClaw()
-                armSubsystem.setPE(LiftVars.step1P, LiftVars.step1E)
-            }
-            .transition(AutoLift.extend_pivot) {
-                armSubsystem.isPitchAtTarget(150.0) && armSubsystem.isExtendAtTarget()
+                armSubsystem.bothAtTarget()
             }
             .state(AutoLift.hook1st)
             .onEnter(AutoLift.hook1st) {
                 armSubsystem.setPE(LiftVars.step2P, LiftVars.step2E)
             }
             .transition(AutoLift.hook1st) {
-                armSubsystem.isPitchAtTarget() && armSubsystem.isExtendAtTarget()
+                armSubsystem.setPE(LiftVars.step2P, LiftVars.step2E)
+                armSubsystem.bothAtTarget()
             }
             .state(AutoLift.hook2nd)
             .onEnter(AutoLift.hook2nd) {
-                armSubsystem.setPE(100.0, LiftVars.step2E, false)
+                armSubsystem.setPE(LiftVars.step3P, LiftVars.step2E, false)
             }
             .transition(AutoLift.hook2nd) {
-                armSubsystem.isPitchAtTarget() && armSubsystem.isExtendAtTarget()
-            }
-            .state(AutoLift.lift1st)
-            .onEnter(AutoLift.lift1st) {
-                armSubsystem.setPE(LiftVars.step3P, LiftVars.step3E)
-            }
-            .transition(AutoLift.lift1st) {
+                armSubsystem.setPE(LiftVars.step3P, LiftVars.step2E, false)
                 armSubsystem.isPitchAtTarget() && armSubsystem.isExtendAtTarget()
             }
             .stopRunning(AutoLift.stop)
