@@ -70,16 +70,19 @@ def runPipeline(image, llrobot):
         else:
             color_one, color_two = 0, 0  # Default (unknown color)
 
+        min_angle = 7
+        max_angle = 63
+
+        # Compute the wrap range
+        range_size = max_angle - min_angle + 1
+
+        # Wrap the angle to the range
+        wrapped_angle = ((-range_size / 90) * angle) + max_angle
         # Update llpython with results
-        llpython = [angle, cx, cy, color_one, color_two, 0, 0, 0]
+        llpython = [wrapped_angle, cx, cy, color_one, color_two, 0, 0, 0]
 
         # Add visualization text
-        cv2.putText(image, f"Angle: {angle:.2f}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7,
-                    (255, 255, 255), 2)
-        cv2.putText(image, f"Center: ({cx}, {cy})", (10, 60), cv2.FONT_HERSHEY_SIMPLEX, 0.7,
-                    (255, 255, 255), 2)
-        cv2.putText(image, f"Color: ({color_one}, {color_two})", (10, 90), cv2.FONT_HERSHEY_SIMPLEX,
-                    0.7,
+        cv2.putText(image, f"Angle: {wrapped_angle:.2f}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7,
                     (255, 255, 255), 2)
     else:
         # No contours found
