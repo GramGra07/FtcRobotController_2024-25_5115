@@ -56,6 +56,7 @@ class ScoringSubsystem(
     enum class RotateState {
         LEFT,
         CENTER,
+        AUTO,
         IDLE,
     }
 
@@ -139,6 +140,10 @@ class ScoringSubsystem(
         rotateState = RotateState.CENTER
     }
 
+    fun setRotateAuto() {
+        rotateState = RotateState.AUTO
+    }
+
     fun setRotateIdle() {
         rotateState = RotateState.IDLE
     }
@@ -168,11 +173,13 @@ class ScoringSubsystem(
             PitchState.HIGH -> {
                 pitchServo.setPose(pivotHigh)
                 pitchState = PitchState.IDLE
+                setRotateIdle()
             }
 
             PitchState.LOW -> {
                 pitchServo.setPose(pivotLow)
                 pitchState = PitchState.IDLE
+                setRotateIdle()
             }
 
             PitchState.MED -> {
@@ -201,6 +208,10 @@ class ScoringSubsystem(
             }
 
             RotateState.IDLE -> {
+            }
+
+            RotateState.AUTO -> {
+                rotateServo.setPosition(llResult.angle)
             }
         }
     }

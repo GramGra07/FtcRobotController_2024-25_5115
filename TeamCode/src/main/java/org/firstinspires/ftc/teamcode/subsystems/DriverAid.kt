@@ -116,7 +116,7 @@ class DriverAid(
         DAState.PICKUP,
         {
             scoringSubsystem.setPitchMed()
-            scoringSubsystem.setRotateCenter()
+            scoringSubsystem.setRotateAuto()
             scoringSubsystem.openClaw()
         }, Triple(pickupP, pickupE, false), null, {
             PIDVals.pitchPIDFCo.d = 0.00025
