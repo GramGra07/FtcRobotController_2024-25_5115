@@ -6,6 +6,7 @@ def runPipeline(image, llrobot):
     # Initialize variables
     closestRect = None
     llpython = [0] * 8  # Initialize with zeros
+    angle = 0.0
 
     # Define YCrCb and HSV thresholds
     lowerYCrCb = np.array([0, 151, 0], dtype=np.uint8)
@@ -36,25 +37,59 @@ def runPipeline(image, llrobot):
     # Find contours
     contours, _ = cv2.findContours(binary_mask, cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
 
-    if contours:
-        # Find the largest contour (assuming it's the most relevant)
-        largest_contour = max(contours, key=cv2.contourArea)
+    # Handle case where no contours are found
+    if not contours:
+        cv2.putText(image, "No objects detected", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7,
+                    (0, 0, 255), 2)
+        return np.array([]), image, llpython
 
-        # Fit a rotated rectangle to the largest contour
-        rect = cv2.minAreaRect(largest_contour)
+    # Image center
+    height, width = image.shape[:2]
+    center_x, center_y = width // 2, height // 2
+
+    # Variables to track the best contour
+    best_contour = None
+    best_distance = float('inf')
+
+    min_area = 10000
+    max_area = 50000
+
+    for contour in contours:
+        area = cv2.contourArea(contour)
+        if min_area <= area <= max_area:
+            # Calculate moments and center of contour
+            M = cv2.moments(contour)
+            if M["m00"] != 0:
+                cx = int(M["m10"] / M["m00"])
+                cy = int(M["m01"] / M["m00"])
+
+                # Calculate distance from image center
+                distance = np.sqrt((cx - center_x) ** 2 + (cy - center_y) ** 2)
+
+                # Update the best contour based on the shortest distance
+                if distance < best_distance:
+                    best_contour = contour
+                    best_distance = distance
+
+    # Process best_contour only if one is found
+    if best_contour is not None:
+        # Draw the best contour
+        cv2.drawContours(image, [best_contour], 0, (0, 255, 0), 2)
+
+        # Get rotated bounding box
+        rect = cv2.minAreaRect(best_contour)
         box = cv2.boxPoints(rect)
-        box = np.int0(box * 2)  # Scale back to original image size
+        box = np.int0(box)
 
-        # Draw the rectangle
-        cv2.drawContours(image, [box], 0, (0, 255, 0), 2)
+        # Extract details from rotated rectangle
+        (cx, cy), (w, h), angle = rect
+        angle = (angle + 180) % 360 - 180  # Normalize angle to (-180, 180)
 
-        # Get the center coordinates
-        cx, cy = int(rect[0][0] * 2), int(rect[0][1] * 2)  # Scale back to original image size
-        cv2.line(image, (cx - 10, cy), (cx + 10, cy), (0, 0, 255), 2)
-        cv2.line(image, (cx, cy - 10), (cx, cy + 10), (0, 0, 255), 2)
-
-        # Calculate the angle of the rectangle
-        angle = rect[2]
+        # Draw the rotated bounding box
+        cv2.drawContours(image, [box], 0, (255, 0, 0), 2)
+        cv2.circle(image, (int(cx), int(cy)), 5, (0, 0, 255), -1)
+        cv2.putText(image, f"Angle: {angle:.2f}°", (10, 120), cv2.FONT_HERSHEY_SIMPLEX, 0.7,
+                    (255, 255, 255), 2)
 
         # Sample the color at the center point
         center_color = image[cy, cx]  # BGR color format
@@ -70,23 +105,16 @@ def runPipeline(image, llrobot):
         else:
             color_one, color_two = 0, 0  # Default (unknown color)
 
+        # Wrap angle to specific range
         min_angle = 7
         max_angle = 63
-
-        # Compute the wrap range
         range_size = max_angle - min_angle + 1
-
-        # Wrap the angle to the range
         wrapped_angle = ((-range_size / 90) * angle) + max_angle
+
         # Update llpython with results
-        llpython = [wrapped_angle, cx, cy, color_one, color_two, 0, 0, 0]
-
-        # Add visualization text
-        cv2.putText(image, f"Angle: {wrapped_angle:.2f}", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7,
-                    (255, 255, 255), 2)
+        llpython = [wrapped_angle, cx, cy, color_one, color_two, int(w), int(h), int(area)]
     else:
-        # No contours found
-        cv2.putText(image, "No objects detected", (10, 30), cv2.FONT_HERSHEY_SIMPLEX, 0.7,
-                    (0, 0, 255), 2)
+        # No valid contour found
+        llpython = [0, 0, 0, 0, 0, 0, 0, 0]
 
-    return np.array([[]]), image, llpython
+    return best_contour if best_contour is not None else np.array([]), image, llpython
