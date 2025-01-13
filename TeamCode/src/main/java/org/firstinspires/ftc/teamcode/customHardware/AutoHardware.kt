@@ -30,6 +30,7 @@ class AutoHardware(
         telemetry.addData("Status", "Initialized")
         telemetry.addData("Alliance", startLocation.alliance)
         telemetry.update()
+        autoSetup()
         opmode.waitForStart()
         timer.reset()
     }

@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.opModes.auto
 import com.acmerobotics.roadrunner.Pose2d
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.firstinspires.ftc.teamcode.customHardware.AutoHardware
-import org.firstinspires.ftc.teamcode.customHardware.AutoHardware.Companion.blueStartRight
 import org.firstinspires.ftc.teamcode.customHardware.AutoHardware.Companion.redHuman
 import org.firstinspires.ftc.teamcode.customHardware.AutoHardware.Companion.redSample
 import org.firstinspires.ftc.teamcode.customHardware.AutoHardware.Companion.redSpecimen
@@ -18,14 +17,9 @@ class threeSpeci(val alliance: Alliance) : LinearOpMode() {
             this,
             StartLocation(
                 this.alliance,
-                if (alliance == Alliance.RED) redStartRight else blueStartRight,
+                redStartRight,
             )
         )
-//        var auto: StateMachine<out Enum<*>> = robot.smallSpecimenAutoR
-//        if (alliance == Alliance.BLUE) {
-//            auto = robot.smallSpecimenAutoB
-//        }
-        robot.autoSetup()
         robot.once()
         waitForStart()
 

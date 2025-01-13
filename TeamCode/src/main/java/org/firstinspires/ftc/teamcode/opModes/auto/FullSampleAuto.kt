@@ -3,7 +3,6 @@ package org.firstinspires.ftc.teamcode.opModes.auto
 import com.acmerobotics.roadrunner.Pose2d
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.firstinspires.ftc.teamcode.customHardware.AutoHardware
-import org.firstinspires.ftc.teamcode.customHardware.AutoHardware.Companion.blueStartLeft
 import org.firstinspires.ftc.teamcode.customHardware.AutoHardware.Companion.redNeutralSample
 import org.firstinspires.ftc.teamcode.customHardware.AutoHardware.Companion.redStartLeft
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
@@ -16,14 +15,9 @@ class FullSampleAuto(val alliance: Alliance) : LinearOpMode() {
             this,
             StartLocation(
                 this.alliance,
-                if (alliance == Alliance.RED) redStartLeft else blueStartLeft,
+                redStartLeft,
             )
         )
-//        var auto: StateMachine<out Enum<*>> = robot.fullSpecimenAutoR
-//        if (alliance == Alliance.BLUE) {
-//            auto = robot.fullSpecimenAutoB
-//        }
-        robot.autoSetup()
         robot.once()
         waitForStart()
 

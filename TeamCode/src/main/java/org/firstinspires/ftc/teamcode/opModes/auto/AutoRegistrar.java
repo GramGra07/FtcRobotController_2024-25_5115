@@ -17,7 +17,7 @@ public final class AutoRegistrar {
 
     private static OpModeMeta metaForClass(Class<? extends OpMode> cls, Alliance alliance) {
         return new OpModeMeta.Builder()
-                .setName(cls.getSimpleName())// + (alliance == Alliance.RED ? "R" : "B"))
+                .setName(cls.getSimpleName() + alliance.toChar())
                 .setGroup(GroupingTitles.auto)
                 .setFlavor(OpModeMeta.Flavor.AUTONOMOUS)
                 .build();
@@ -39,12 +39,12 @@ public final class AutoRegistrar {
     @OpModeRegistrar
     public static void register(OpModeManager manager) {
         for (Class<? extends OpMode> opModeClass : opModeClasses) {
-//            for (Alliance alliance : Alliance.values()) {
-            manager.register(
-                    metaForClass(opModeClass, Alliance.RED),
-                    createInstance(opModeClass, Alliance.RED)
-            );
-//            }
+            for (Alliance alliance : Alliance.values()) {
+                manager.register(
+                        metaForClass(opModeClass, Alliance.RED),
+                        createInstance(opModeClass, Alliance.RED)
+                );
+            }
         }
     }
 
