@@ -9,6 +9,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
 import org.firstinspires.ftc.teamcode.customHardware.loopTime.LoopTimeController
 import org.firstinspires.ftc.teamcode.customHardware.loopTime.LoopTimeController.Companion.every
+import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.setPatternCo
 import org.firstinspires.ftc.teamcode.subsystems.DriveSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.DriverAid
 import org.firstinspires.ftc.teamcode.subsystems.LocalizerSubsystem
@@ -155,6 +156,7 @@ open class HardwareConfig(
 //            startCameraStream()
             myOpMode.gamepad1.setLedColor(229.0, 74.0, 161.0, -1)
             myOpMode.gamepad2.setLedColor(0.0, 0.0, 0.0, -1)
+            scoringSubsystem.blink.setPatternCo()
             once = true
         }
     }
