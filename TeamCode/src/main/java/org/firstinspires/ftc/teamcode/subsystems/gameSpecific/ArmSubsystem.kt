@@ -22,6 +22,8 @@ import kotlin.math.sqrt
 class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
     val pitchNegate = if (auto) 1.0 else -1.0
 
+    val gearRatioMult = 1.249
+
     enum class ExtendState {
         PID,
         MANUAL,
@@ -70,9 +72,8 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
     var pitchEncoder: DcMotorEx
 
     private val maxExtendIn = 32.5
-    private val maxExtendTicksTOTAL = 2200
-    private val ticksPerInchExtend = maxExtendTicksTOTAL / maxExtendIn
-    private val inPerTickExtend = maxExtendIn / maxExtendTicksTOTAL
+    private val maxExtendTicksTOTAL = 2200 * gearRatioMult
+    private val ticksPerInchExtend = (maxExtendTicksTOTAL / maxExtendIn)
     var maxExtendTicks = maxExtendTicksTOTAL
 
 //    var distanceSensor: DistanceSensor
@@ -230,7 +231,7 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
         val x = 42
         val cosAngle = cos(Math.toRadians(angle))
         val returnable = Range.clip((x / cosAngle) - 18, 0.0, maxExtendIn) * ticksPerInchExtend
-        maxExtendTicks = returnable.toInt()
+        maxExtendTicks = returnable
         return returnable
     }
 
