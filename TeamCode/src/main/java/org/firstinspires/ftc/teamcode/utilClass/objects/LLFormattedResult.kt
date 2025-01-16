@@ -1,10 +1,10 @@
 package org.firstinspires.ftc.teamcode.utilClass.objects
 
 data class LLFormattedResult(
-    val angle: Double,
-    val centerX: Double,
-    val centerY: Double,
-    val color: BinaryArray,
+    var angle: Double,
+    var centerX: Double,
+    var centerY: Double,
+    var color: BinaryArray,
 
     ) {
     companion object {

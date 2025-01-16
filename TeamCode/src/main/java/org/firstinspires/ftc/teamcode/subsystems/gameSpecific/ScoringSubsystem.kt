@@ -30,7 +30,7 @@ class ScoringSubsystem(
     private val auto: Boolean,
     private val armSubsystem: ArmSubsystem
 ) {
-    var llResult = LLFormattedResult.empty()
+    private var llResult = LLFormattedResult.empty()
 
     enum class ClawState {
         OPEN,
@@ -70,13 +70,13 @@ class ScoringSubsystem(
         claw = initServo(ahwMap, "claw")
         pitchServo = SynchronizedServo(ahwMap, "pitchServo", true)
         rotateServo = AxonServo(ahwMap, "rotateServo")
-        blink = ahwMap.get(RevBlinkinLedDriver::class.java, "blinkin")
-        blink.setPatternCo()
+        blink = ahwMap.get(RevBlinkinLedDriver::class.java, "blink")
         limelight3A = ahwMap.get(Limelight3A::class.java, "limelight")
-        limelight3A.start()
-        limelight3A.pipelineSwitch(1)
         val useBlue = GameStorage.alliance.toBinary()[0]
+        limelight3A.pipelineSwitch(1)
         limelight3A.updatePythonInputs(useBlue, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+        limelight3A.setPollRateHz(100)
+        limelight3A.start()
         setup()
     }
 
@@ -85,21 +85,14 @@ class ScoringSubsystem(
     }
 
     fun getLimeLightResult() {
-        val result = limelight3A.latestResult
-        val pythonOutputs: DoubleArray = result.getPythonOutput()
-        llResult = if (pythonOutputs.isNotEmpty()) {
-            LLFormattedResult(
-                angle = pythonOutputs[0],
-                centerX = pythonOutputs[1],
-                centerY = pythonOutputs[2],
-                color = BinaryArray(2).apply {
-                    this[0] = pythonOutputs[3]
-                    this[1] = pythonOutputs[4]
-                },
-            )
-        } else {
-            LLFormattedResult.empty()
+        val pythonOutputs: DoubleArray = limelight3A.latestResult.getPythonOutput()
+        llResult.color = BinaryArray(2).apply {
+            this[0] = pythonOutputs[3]
+            this[1] = pythonOutputs[4]
         }
+        llResult.angle = pythonOutputs[0]
+        llResult.centerX = pythonOutputs[1]
+        llResult.centerY = pythonOutputs[2]
     }
 
     fun update() {
@@ -152,6 +145,9 @@ class ScoringSubsystem(
         telemetry.addData("Scoring Subsystem", "")
         rotateServo.telemetry(telemetry)
         telemetry.addData("angle", llResult.angle)
+        telemetry.addData("Color", llResult.color.toColor().toString())
+        telemetry.addData("v",
+            limelight3A.timeSinceLastUpdate)
     }
 
     private fun updateServos() {
@@ -229,8 +225,7 @@ class ScoringSubsystem(
     }
 
     fun specimenRotate(pangle: Double) {
-        val angle = pangle
-        val angle2 = 90 - angle
+        val angle2 = 90 - pangle
         val angleSend = (angle2 - 30)
         pitchServo.setPose(angleSend)
     }
@@ -242,7 +237,7 @@ class ScoringSubsystem(
         pitchServo.setPose(coAng)
     }
 
-    class ServoActions(private val funcs: List<Runnable>, val scoringSubsystem: ScoringSubsystem) :
+    class ServoActions(private val funcs: List<Runnable>, private val scoringSubsystem: ScoringSubsystem) :
         Action {
         override fun run(p: TelemetryPacket): Boolean {
             funcs.forEach(Runnable::run)

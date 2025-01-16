@@ -98,8 +98,8 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
         extendEncoder = DualEncoder(ahwMap, "extendMotor2", "extendMotor", "Arm Extend", false)
         pitchEncoder = initMotor(ahwMap, "motorFrontRight", DcMotor.RunMode.RUN_WITHOUT_ENCODER)
 
-        pitchMotor.direction = DcMotorSimple.Direction.REVERSE
-        pitchMotor2.direction = DcMotorSimple.Direction.REVERSE
+//        pitchMotor.direction = DcMotorSimple.Direction.REVERSE
+//        pitchMotor2.direction = DcMotorSimple.Direction.REVERSE
         extendMotor.direction = DcMotorSimple.Direction.REVERSE
         extendMotor2.direction = DcMotorSimple.Direction.REVERSE
 
@@ -141,7 +141,7 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
 
     fun setPowerPitch(target: Double, overridePower: Double? = 0.0) {
         pPower = //if (usePIDFp) {
-            calculatePID(pitchPIDF, -pitchEncoder.currentPosition.toDouble() * pitchNegate, target)
+            calculatePID(pitchPIDF, pitchEncoder.currentPosition.toDouble(), target)
 //        } else {
 //            Range.clip(
 //                overridePower ?: 0.0,
@@ -248,12 +248,12 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
 
     fun DcMotorEx.telemetry(telemetry: Telemetry) {
         telemetry.addData("Motor", this.deviceName)
-        telemetry.addData("Position", -this.currentPosition)
+        telemetry.addData("Position", this.currentPosition)
     }
 
     fun isPitchAtTarget(tolerance: Double = 100.0): Boolean {
         return MathFunctions.inTolerance(
-            -pitchEncoder.currentPosition.toDouble() * pitchNegate,
+            pitchEncoder.currentPosition.toDouble(),
             pitchT.toDouble(),
             tolerance
         )
@@ -273,7 +273,7 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
             extendTarget.toDouble(),
             tolerance
         ) && MathFunctions.inTolerance(
-            -pitchEncoder.currentPosition.toDouble() * pitchNegate,
+            -pitchEncoder.currentPosition.toDouble(),
             pitchT.toDouble(),
             tolerance
         )
@@ -288,9 +288,6 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
     }
 
     fun setPE(p: Double, e: Double, pitchFirst: Boolean? = null) {
-        // Update hit positions dynamically
-        pitchHitPosition = isPitchAtTarget(200.0)
-        extendHitPosition = isExtendAtTarget()
 
         when (pitchFirst) {
             null -> {
@@ -304,7 +301,7 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
                 if (!pitchHitPosition) {
                     setPitchTarget(p)
                 }
-                if (pitchHitPosition && !extendHitPosition) {
+                if (pitchHitPosition) {
                     setExtendTarget(e)
                 }
             }
@@ -314,11 +311,15 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
                 if (!extendHitPosition) {
                     setExtendTarget(e)
                 }
-                if (extendHitPosition && !pitchHitPosition) {
+                if (extendHitPosition) {
                     setPitchTarget(p)
                 }
             }
         }
+
+        // Update hit positions dynamically
+        pitchHitPosition = isPitchAtTarget(250.0)
+        extendHitPosition = isExtendAtTarget()
     }
 
 

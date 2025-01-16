@@ -16,7 +16,7 @@ class DriverAid(
     val auto: Boolean
 ) {
     init {
-        daFunc = DAFunc(DAState.IDLE, {}, null, null, null, armSubsystem)
+        daFunc = DAFunc(DAState.IDLE, {}, null, null, armSubsystem)
     }
 
     var usingDA = false
@@ -94,21 +94,21 @@ class DriverAid(
     val autoScoreFunc = DAFunc(DAState.auto, {
         scoringSubsystem.closeClaw()
         scoringSubsystem.setPitchMed()
-    }, Triple(2000.0, 0.0, null), null, null, armSubsystem)
+    }, {armSubsystem.setPE(2000.0, 0.0,null)}, null, armSubsystem)
 
     val collapseFunc = DAFunc(DAState.COLLAPSE, {
         scoringSubsystem.closeClaw()
-    }, Triple(collapseP, collapseE, false), null, null, armSubsystem)
+    }, {armSubsystem.setPE(collapseP, collapseE,false)}, null, armSubsystem)
 
     val highSpecimenFunc = DAFunc(DAState.HIGH_SPECIMEN, {
         scoringSubsystem.specimenRotate(armSubsystem.pAngle())
         scoringSubsystem.setRotateCenter()
-    }, null, { armSubsystem.setHeight(24.5, 30.0, true, true) }, null, armSubsystem)
+    }, { armSubsystem.setHeight(24.5, 30.0, true, true) }, null, armSubsystem)
 
     val highBasketFunc = DAFunc(DAState.HIGH_BASKET, {
         scoringSubsystem.setPitchMed()
         scoringSubsystem.setRotateCenter()
-    }, Triple(hBasketP, hBasketE, true), null, {
+    }, {armSubsystem.setPE(hBasketP, hBasketE,true)}, {
         armSubsystem.pMax = 0.5
     }, armSubsystem)
 
@@ -118,7 +118,7 @@ class DriverAid(
             scoringSubsystem.setPitchMed()
             scoringSubsystem.setRotateAuto()
             scoringSubsystem.openClaw()
-        }, Triple(pickupP, pickupE, false), null, {
+        }, {armSubsystem.setPE(pickupP, pickupE,false)}, {
             PIDVals.pitchPIDFCo.d = 0.00025
         }, armSubsystem
     )
@@ -127,7 +127,7 @@ class DriverAid(
         scoringSubsystem.setPitchMed()
         scoringSubsystem.setRotateCenter()
         scoringSubsystem.openClaw()
-    }, Triple(humanP - if (auto) 50 else 25, humanE, false), null, null, armSubsystem)
+    }, {armSubsystem.setPE(humanP - if (auto) 50 else 25, humanE, null)}, null, armSubsystem)
 
     fun isDone(tolerance: Double): Boolean {
         return daFunc.isEnded(tolerance)
@@ -136,7 +136,6 @@ class DriverAid(
     class DAFunc(
         val state: DAState,
         private val funcs: Runnable,
-        private val setPE: Triple<Double, Double, Boolean?>?,
         private val armSubFunc: Runnable?,
         private val armPowerFunc: Runnable?,
         private val armSubsystem: ArmSubsystem
@@ -150,11 +149,7 @@ class DriverAid(
 
         fun runArmSub() {
             armPowerFunc?.run()
-            if (setPE != null) {
-                armSubsystem.setPE(setPE.first, setPE.second, setPE.third)
-            } else {
-                armSubFunc?.run()
-            }
+            armSubFunc?.run()
         }
 
         fun isEnded(tolerance: Double): Boolean {
