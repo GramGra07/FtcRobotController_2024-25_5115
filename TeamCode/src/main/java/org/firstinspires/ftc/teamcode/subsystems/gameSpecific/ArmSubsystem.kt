@@ -22,6 +22,8 @@ import kotlin.math.sqrt
 class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
     val pitchNegate = if (auto) 1.0 else -1.0
 
+    val gearRatioMult = 1.249
+
     enum class ExtendState {
         PID,
         MANUAL,
@@ -70,9 +72,8 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
     var pitchEncoder: DcMotorEx
 
     private val maxExtendIn = 32.5
-    private val maxExtendTicksTOTAL = 2200
-    private val ticksPerInchExtend = maxExtendTicksTOTAL / maxExtendIn
-    private val inPerTickExtend = maxExtendIn / maxExtendTicksTOTAL
+    private val maxExtendTicksTOTAL = 2200 * gearRatioMult
+    private val ticksPerInchExtend = (maxExtendTicksTOTAL / maxExtendIn)
     var maxExtendTicks = maxExtendTicksTOTAL
 
 //    var distanceSensor: DistanceSensor
@@ -97,8 +98,8 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
         extendEncoder = DualEncoder(ahwMap, "extendMotor2", "extendMotor", "Arm Extend", false)
         pitchEncoder = initMotor(ahwMap, "motorFrontRight", DcMotor.RunMode.RUN_WITHOUT_ENCODER)
 
-        pitchMotor.direction = DcMotorSimple.Direction.REVERSE
-        pitchMotor2.direction = DcMotorSimple.Direction.REVERSE
+//        pitchMotor.direction = DcMotorSimple.Direction.REVERSE
+//        pitchMotor2.direction = DcMotorSimple.Direction.REVERSE
         extendMotor.direction = DcMotorSimple.Direction.REVERSE
         extendMotor2.direction = DcMotorSimple.Direction.REVERSE
 
@@ -140,7 +141,7 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
 
     fun setPowerPitch(target: Double, overridePower: Double? = 0.0) {
         pPower = //if (usePIDFp) {
-            calculatePID(pitchPIDF, -pitchEncoder.currentPosition.toDouble() * pitchNegate, target)
+            calculatePID(pitchPIDF, pitchEncoder.currentPosition.toDouble(), target)
 //        } else {
 //            Range.clip(
 //                overridePower ?: 0.0,
@@ -197,23 +198,23 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
     }
 
     private fun updatePID() {
-//        extendPIDF.setPIDF(
-//            PIDVals.extendPIDFCo.p,
-//            PIDVals.extendPIDFCo.i,
-//            PIDVals.extendPIDFCo.d,
-//            PIDVals.extendPIDFCo.f
-//        )
-        extendPIDF.setPIDF(0.013, 0.0, 0.0000, 0.0)
+        extendPIDF.setPIDF(
+            PIDVals.extendPIDFCo.p,
+            PIDVals.extendPIDFCo.i,
+            PIDVals.extendPIDFCo.d,
+            PIDVals.extendPIDFCo.f
+        )
+//        extendPIDF.setPIDF(0.013, 0.0, 0.0000, 0.0)
         val fTick = (pitchFExtend - pitchFCollapse) / maxExtendTicksTOTAL
         val pitchF = (fTick * extendEncoder.getMost()) + pitchFCollapse
 //        val pitchF = PIDVals.pitchPIDFCo.f
-//        pitchPIDF.setPIDF(
-//            PIDVals.pitchPIDFCo.p,
-//            PIDVals.pitchPIDFCo.i,
-//            PIDVals.pitchPIDFCo.d,
-//            pitchF
-//        )
-        pitchPIDF.setPIDF(0.0017, 0.0, 0.00005, pitchF)
+        pitchPIDF.setPIDF(
+            PIDVals.pitchPIDFCo.p,
+            PIDVals.pitchPIDFCo.i,
+            PIDVals.pitchPIDFCo.d,
+            pitchF
+        )
+//        pitchPIDF.setPIDF(0.0017, 0.0, 0.00005, pitchF)
     }
 
     private fun calculatePID(controller: PIDFController, current: Double, target: Double): Double {
@@ -230,7 +231,7 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
         val x = 42
         val cosAngle = cos(Math.toRadians(angle))
         val returnable = Range.clip((x / cosAngle) - 18, 0.0, maxExtendIn) * ticksPerInchExtend
-        maxExtendTicks = returnable.toInt()
+        maxExtendTicks = returnable
         return returnable
     }
 
@@ -247,12 +248,12 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
 
     fun DcMotorEx.telemetry(telemetry: Telemetry) {
         telemetry.addData("Motor", this.deviceName)
-        telemetry.addData("Position", -this.currentPosition)
+        telemetry.addData("Position", this.currentPosition)
     }
 
     fun isPitchAtTarget(tolerance: Double = 100.0): Boolean {
         return MathFunctions.inTolerance(
-            -pitchEncoder.currentPosition.toDouble() * pitchNegate,
+            pitchEncoder.currentPosition.toDouble(),
             pitchT.toDouble(),
             tolerance
         )
@@ -272,30 +273,55 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
             extendTarget.toDouble(),
             tolerance
         ) && MathFunctions.inTolerance(
-            -pitchEncoder.currentPosition.toDouble() * pitchNegate,
+            -pitchEncoder.currentPosition.toDouble(),
             pitchT.toDouble(),
             tolerance
         )
     }
 
+    private var pitchHitPosition = false
+    private var extendHitPosition = false
+
+    fun resetHitPosition() {
+        pitchHitPosition = false
+        extendHitPosition = false
+    }
+
     fun setPE(p: Double, e: Double, pitchFirst: Boolean? = null) {
-        if (pitchFirst == null) {
-            setPitchTarget(p)
-            setExtendTarget(e)
-        } else {
-            if (pitchFirst == false) {
-                setExtendTarget(e)
-                if (isExtendAtTarget()) {
+
+        when (pitchFirst) {
+            null -> {
+                // Default behavior: Set pitch first, then extend
+                if (!pitchHitPosition) setPitchTarget(p)
+                if (!extendHitPosition) setExtendTarget(e)
+            }
+
+            true -> {
+                // Set pitch first and wait for it to reach target
+                if (!pitchHitPosition) {
                     setPitchTarget(p)
                 }
-            } else {
-                setPitchTarget(p)
-                if (isPitchAtTarget()) {
+                if (pitchHitPosition) {
                     setExtendTarget(e)
                 }
             }
+
+            false -> {
+                // Set extend first and wait for it to reach target
+                if (!extendHitPosition) {
+                    setExtendTarget(e)
+                }
+                if (extendHitPosition) {
+                    setPitchTarget(p)
+                }
+            }
         }
+
+        // Update hit positions dynamically
+        pitchHitPosition = isPitchAtTarget(250.0)
+        extendHitPosition = isExtendAtTarget()
     }
+
 
     fun setHeight(
         height: Double,

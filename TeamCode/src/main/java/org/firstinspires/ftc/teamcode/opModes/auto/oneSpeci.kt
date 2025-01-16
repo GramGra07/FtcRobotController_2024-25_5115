@@ -16,11 +16,7 @@ class oneSpeci(val alliance: Alliance) : LinearOpMode() {
                 redStartRight,
             )
         )
-//        var auto: StateMachine<out Enum<*>> = robot.smallSpecimenAutoR
-//        if (alliance == Alliance.BLUE) {
-//            auto = robot.smallSpecimenAutoB
-//        }
-        robot.autoSetup()
+
         robot.once()
         waitForStart()
 

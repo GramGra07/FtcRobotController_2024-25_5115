@@ -93,9 +93,7 @@ object Operators {
         } else {
             da.firstLevelLift.restartAtBeginning();
         }
-        if (myOpMode.gamepad2.options) {
-            da.daState = DriverAid.DAState.IDLE
-        }
+
 //        if (myOpMode.gamepad2.right_stick_button) {
 //            armSubsystem.setPE(VarConfig.pitch, VarConfig.extend)
 //        }
@@ -113,9 +111,6 @@ object Operators {
             if (!da.usingDA) {
                 armSubsystem.setExtendTarget(myOpMode.gamepad2.right_trigger.toDouble() * armSubsystem.maxExtendTicks)
             }
-        }
-        if (myOpMode.gamepad2.right_trigger > 0.0) {
-            da.usingDA = false
         }
     }
 }

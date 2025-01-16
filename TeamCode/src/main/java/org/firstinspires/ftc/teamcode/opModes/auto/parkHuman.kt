@@ -17,7 +17,6 @@ class parkHuman(val alliance: Alliance) : LinearOpMode() {
             )
         )
 
-        robot.autoSetup()
         robot.once()
         waitForStart()
 

@@ -2,20 +2,27 @@ package org.firstinspires.ftc.teamcode.subsystems.gameSpecific
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.acmerobotics.roadrunner.Action
+import com.qualcomm.hardware.limelightvision.Limelight3A
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.Servo
 import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.robotcore.external.Telemetry
+import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.toBinary
+import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.toBinary2
 import org.firstinspires.ftc.teamcode.customHardware.servos.AxonServo
 import org.firstinspires.ftc.teamcode.customHardware.servos.SynchronizedServo
+import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.blinkFrom
+import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.setPatternCo
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.initServo
-import org.firstinspires.ftc.teamcode.utilClass.CameraLock
 import org.firstinspires.ftc.teamcode.utilClass.ServoFunc
+import org.firstinspires.ftc.teamcode.utilClass.objects.BinaryArray
+import org.firstinspires.ftc.teamcode.utilClass.objects.LLFormattedResult
+import org.firstinspires.ftc.teamcode.utilClass.storage.GameStorage
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.ServoUtil
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.ServoUtil.pivotHigh
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.ServoUtil.pivotLow
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.ServoUtil.pivotMid
-import kotlin.math.abs
 
 
 class ScoringSubsystem(
@@ -23,6 +30,8 @@ class ScoringSubsystem(
     private val auto: Boolean,
     private val armSubsystem: ArmSubsystem
 ) {
+    private var llResult = LLFormattedResult.empty()
+
     enum class ClawState {
         OPEN,
         CLOSE,
@@ -47,49 +56,49 @@ class ScoringSubsystem(
     enum class RotateState {
         LEFT,
         CENTER,
+        AUTO,
         IDLE,
     }
 
     private var rotateServo: AxonServo
     private var rotateState: RotateState = RotateState.IDLE
 
-//    private lateinit var limelight3A: Limelight3A
+    private lateinit var limelight3A: Limelight3A
+    var blink: RevBlinkinLedDriver
 
     init {
         claw = initServo(ahwMap, "claw")
         pitchServo = SynchronizedServo(ahwMap, "pitchServo", true)
         rotateServo = AxonServo(ahwMap, "rotateServo")
-        if (auto) {
-//            limelight3A = ahwMap.get(Limelight3A::class.java, "limelight")
-//            limelight3A.start()
-//            limelight3A.pipelineSwitch(1)
-//            val use_blue = if (GameStorage.alliance == Alliance.BLUE) {
-//                1
-//            } else {
-//                0
-//            }
-//            limelight3A.updatePythonInputs(use_blue.toDouble(), 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
-            setup()
-        }
+        blink = ahwMap.get(RevBlinkinLedDriver::class.java, "blink")
+        limelight3A = ahwMap.get(Limelight3A::class.java, "limelight")
+        val useBlue = GameStorage.alliance.toBinary()[0]
+        limelight3A.pipelineSwitch(1)
+        limelight3A.updatePythonInputs(useBlue, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
+        limelight3A.setPollRateHz(100)
+        limelight3A.start()
+        setup()
     }
 
-//    fun getLimeLightResult(): Double {
-//        val result = limelight3A.latestResult
-//        val pythonOutputs: DoubleArray = result.getPythonOutput()
-//        var angle: Double = 0.0
-//        if (pythonOutputs.isNotEmpty()) {
-//            angle = pythonOutputs[6]
-//        }
-//        return angle
-//    }
+    fun updateBlink() {
+        blink.setPatternCo(llResult.color.toColor().blinkFrom())
+    }
+
+    fun getLimeLightResult() {
+        val pythonOutputs: DoubleArray = limelight3A.latestResult.getPythonOutput()
+        llResult.color = BinaryArray(2).apply {
+            this[0] = pythonOutputs[3]
+            this[1] = pythonOutputs[4]
+        }
+        llResult.angle = pythonOutputs[0]
+        llResult.centerX = pythonOutputs[1]
+        llResult.centerY = pythonOutputs[2]
+    }
 
     fun update() {
-//        getLimeLightResult()
+        getLimeLightResult()
         updateServos()
-    }
-
-    fun setPitchAuto() {
-        pitchState = PitchState.AUTO
+        updateBlink()
     }
 
     fun openClaw() {
@@ -124,6 +133,10 @@ class ScoringSubsystem(
         rotateState = RotateState.CENTER
     }
 
+    fun setRotateAuto() {
+        rotateState = RotateState.AUTO
+    }
+
     fun setRotateIdle() {
         rotateState = RotateState.IDLE
     }
@@ -131,7 +144,10 @@ class ScoringSubsystem(
     fun telemetry(telemetry: Telemetry) {
         telemetry.addData("Scoring Subsystem", "")
         rotateServo.telemetry(telemetry)
-//        telemetry.addData("angle", getLimeLightResult())
+        telemetry.addData("angle", llResult.angle)
+        telemetry.addData("Color", llResult.color.toColor().toString())
+        telemetry.addData("v",
+            limelight3A.timeSinceLastUpdate)
     }
 
     private fun updateServos() {
@@ -153,11 +169,13 @@ class ScoringSubsystem(
             PitchState.HIGH -> {
                 pitchServo.setPose(pivotHigh)
                 pitchState = PitchState.IDLE
+                setRotateIdle()
             }
 
             PitchState.LOW -> {
                 pitchServo.setPose(pivotLow)
                 pitchState = PitchState.IDLE
+                setRotateIdle()
             }
 
             PitchState.MED -> {
@@ -187,6 +205,10 @@ class ScoringSubsystem(
 
             RotateState.IDLE -> {
             }
+
+            RotateState.AUTO -> {
+                rotateServo.setPosition(llResult.angle)
+            }
         }
     }
 
@@ -195,25 +217,17 @@ class ScoringSubsystem(
         closeClaw()
         setRotateCenter()
         update()
+        if (auto) {
+            blink.setPatternCo(GameStorage.alliance.toBinary2().toColor().blinkFrom())
+        } else {
+            blink.setPatternCo()
+        }
     }
 
     fun specimenRotate(pangle: Double) {
-        val angle = pangle
-        val angle2 = 90 - angle
-        val angle3 = 180 - angle2
-        val angleWrap = abs(pivotHigh) + abs(pivotLow)
+        val angle2 = 90 - pangle
         val angleSend = (angle2 - 30)
         pitchServo.setPose(angleSend)
-    }
-
-    private fun lockRotate(lock: CameraLock) {
-        val angle = lock.angle
-        val correctedAngle = if (angle / abs(angle) == -1.0) {
-            90 + angle
-        } else {
-            angle
-        }
-        rotateServo.setPosition((correctedAngle / 5) * 5)
     }
 
     private fun autoLevel() {
@@ -223,7 +237,7 @@ class ScoringSubsystem(
         pitchServo.setPose(coAng)
     }
 
-    class ServoActions(private val funcs: List<Runnable>, val scoringSubsystem: ScoringSubsystem) :
+    class ServoActions(private val funcs: List<Runnable>, private val scoringSubsystem: ScoringSubsystem) :
         Action {
         override fun run(p: TelemetryPacket): Boolean {
             funcs.forEach(Runnable::run)

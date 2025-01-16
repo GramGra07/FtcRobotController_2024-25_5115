@@ -15,6 +15,10 @@ class DriverAid(
     private val localizerSubsystem: LocalizerSubsystem,
     val auto: Boolean
 ) {
+    init {
+        daFunc = DAFunc(DAState.IDLE, {}, null, null, armSubsystem)
+    }
+
     var usingDA = false
 
     enum class DAState {
@@ -27,44 +31,45 @@ class DriverAid(
         auto
     }
 
-    var daState = DAState.IDLE
+    fun auto() {
+        autoScoreFunc.runInit()
+    }
 
     fun collapse() {
-        daState = DAState.COLLAPSE
+        collapseFunc.runInit()
     }
 
     fun highSpecimen() {
-        daState = DAState.HIGH_SPECIMEN
+        highSpecimenFunc.runInit()
     }
 
     fun highBasket() {
-        daState = DAState.HIGH_BASKET
+        highBasketFunc.runInit()
     }
 
     fun pickup() {
-        daState = DAState.PICKUP
+        pickupFunc.runInit()
     }
 
     fun human() {
-        daState = DAState.HUMAN
+        humanFunc.runInit()
     }
 
-    fun auto() {
-        daState = DAState.auto
-    }
 
     companion object {
 
         private var collapseE = 0.0
         private var collapseP = 100.0
-        private var hSpecimenE = 1200.0
+        private var hSpecimenE = 1200.0 * 1.249
         private var hSpecimenP = 1300.0
-        private var hBasketE = 2250.0
-        private var hBasketP = 1900.0
-        private var pickupE = 1300.0
-        var pickupP = 100.0
-        private var humanE = 200.0
+        private var hBasketE = 2250.0 * 1.249
+        private var hBasketP = 2000.0
+        private var pickupE = 1300.0 * 1.249
+        var pickupP = 0.0
+        private var humanE = 200.0 * 1.249
         private var humanP = 300.0
+        var daState = DAState.IDLE
+        lateinit var daFunc: DAFunc
     }
 
     private var pickupOnce = 0
@@ -83,109 +88,77 @@ class DriverAid(
             humanE = DAVars.humanE
             humanP = DAVars.humanP
         }
-//        if (usingDA) {
-        when (daState) {
-            DAState.COLLAPSE -> {
-                collapseSequence(scoringSubsystem)
-            }
-
-            DAState.HIGH_SPECIMEN -> {
-                highSpecimenSequence(scoringSubsystem)
-            }
-
-            DAState.HIGH_BASKET -> {
-                highBasketSequence(scoringSubsystem)
-            }
-
-            DAState.PICKUP -> {
-                pickupSequence(scoringSubsystem)
-            }
-
-            DAState.HUMAN -> {
-                humanSequence(scoringSubsystem, auto)
-            }
-
-            DAState.auto -> {
-                autoScoreSequence(scoringSubsystem)
-            }
-
-            DAState.IDLE -> {
-                pickupOnce = 0
-            }
-        }
-//        }
+        daFunc.runArmSub()
     }
 
-    private fun autoScoreSequence(scoringSubsystem: ScoringSubsystem) {
-        usingDA = true
+    val autoScoreFunc = DAFunc(DAState.auto, {
         scoringSubsystem.closeClaw()
         scoringSubsystem.setPitchMed()
-        armSubsystem.setPE(2000.0, 0.0)
-        end()
-    }
+    }, {armSubsystem.setPE(2000.0, 0.0,null)}, null, armSubsystem)
 
-    private fun collapseSequence(scoringSubsystem: ScoringSubsystem) {
-        usingDA = true
+    val collapseFunc = DAFunc(DAState.COLLAPSE, {
         scoringSubsystem.closeClaw()
-//        scoringSubsystem.setPitchHigh()
-        armSubsystem.setPE(collapseP, collapseE, false)
-        end()
-    }
+    }, {armSubsystem.setPE(collapseP, collapseE,false)}, null, armSubsystem)
 
-    fun highSpecimenSequence(scoringSubsystem: ScoringSubsystem) {
-        usingDA = true
-//        armSubsystem.setPE(hSpecimenP, hSpecimenE)
-        armSubsystem.setHeight(24.5, 30.0, true, true)
+    val highSpecimenFunc = DAFunc(DAState.HIGH_SPECIMEN, {
         scoringSubsystem.specimenRotate(armSubsystem.pAngle())
         scoringSubsystem.setRotateCenter()
-        end()
-    }
+    }, { armSubsystem.setHeight(24.5, 30.0, true, true) }, null, armSubsystem)
 
-    private fun highBasketSequence(scoringSubsystem: ScoringSubsystem) {
-        usingDA = true
+    val highBasketFunc = DAFunc(DAState.HIGH_BASKET, {
         scoringSubsystem.setPitchMed()
         scoringSubsystem.setRotateCenter()
+    }, {armSubsystem.setPE(hBasketP, hBasketE,true)}, {
         armSubsystem.pMax = 0.5
-        armSubsystem.setPE(hBasketP, hBasketE, true)
-//        if (armSubsystem.isPitchAtTarget(200.0) && armSubsystem.isExtendAtTarget(200.0)) {
-//            scoringSubsystem.setPitchHigh()
-//        }
-        end()
-    }
+    }, armSubsystem)
 
-    private fun pickupSequence(scoringSubsystem: ScoringSubsystem) {
-        usingDA = true
+    val pickupFunc = DAFunc(
+        DAState.PICKUP,
+        {
+            scoringSubsystem.setPitchMed()
+            scoringSubsystem.setRotateAuto()
+            scoringSubsystem.openClaw()
+        }, {armSubsystem.setPE(pickupP, pickupE,false)}, {
+            PIDVals.pitchPIDFCo.d = 0.00025
+        }, armSubsystem
+    )
 
-        PIDVals.pitchPIDFCo.d = 0.00025
+    val humanFunc = DAFunc(DAState.HUMAN, {
         scoringSubsystem.setPitchMed()
         scoringSubsystem.setRotateCenter()
         scoringSubsystem.openClaw()
-        armSubsystem.setPE(pickupP, pickupE, false)
-        end()
+    }, {armSubsystem.setPE(humanP - if (auto) 50 else 25, humanE, null)}, null, armSubsystem)
+
+    fun isDone(tolerance: Double): Boolean {
+        return daFunc.isEnded(tolerance)
     }
 
-    private fun humanSequence(scoringSubsystem: ScoringSubsystem, auto: Boolean) {
-        usingDA = true
-        scoringSubsystem.setPitchMed()
-        scoringSubsystem.setRotateCenter()
-        scoringSubsystem.openClaw()
-        if (auto) {
-            armSubsystem.setPE(humanP - 50, humanE, false)
-        } else {
-            armSubsystem.setPE(humanP - 25, humanE)
-        }
-        end()
-    }
-
-    private fun end(
+    class DAFunc(
+        val state: DAState,
+        private val funcs: Runnable,
+        private val armSubFunc: Runnable?,
+        private val armPowerFunc: Runnable?,
+        private val armSubsystem: ArmSubsystem
     ) {
-        if (armSubsystem.isExtendAtTarget(100.0) && armSubsystem.isPitchAtTarget(100.0)) {
-            daState = DAState.IDLE
+        fun runInit() {
+            armSubsystem.resetHitPosition()
+            daState = state
+            funcs.run()
+            daFunc = this
+        }
+
+        fun runArmSub() {
+            armPowerFunc?.run()
+            armSubFunc?.run()
+        }
+
+        fun isEnded(tolerance: Double): Boolean {
+            return armSubsystem.bothAtTarget(tolerance)
         }
     }
 
     class DAActions(
-        val funcs: List<Runnable>,
+        private val funcs: List<Runnable>,
     ) : Action {
         override fun run(packet: TelemetryPacket): Boolean {
             funcs.forEach(Runnable::run)
@@ -197,20 +170,6 @@ class DriverAid(
         return DAActions(funcs)
     }
 
-    private var liftState = false
-    fun easyLiftL1() {
-        usingDA = true
-        if (!liftState) {
-            scoringSubsystem.setPitchLow()
-            scoringSubsystem.closeClaw()
-            armSubsystem.setPE(LiftVars.step1P, LiftVars.step2E)
-        }
-        if (armSubsystem.isExtendAtTarget(100.0) && armSubsystem.isPitchAtTarget(200.0)) {
-            liftState = true
-            armSubsystem.setPE(LiftVars.step2P, LiftVars.step2E)
-        }
-    }
-
     fun lift() {
         usingDA = true
         if (!firstLevelLift.isStarted) {
@@ -220,25 +179,13 @@ class DriverAid(
         }
     }
 
-//    fun getRobotAngle(): Double {
-//        return localizerSubsystem.poseUpdater.imuData.pitch
-//    }
 
     enum class AutoLift {
         extend_pivot,
         hook1st,
-        lift1st,
-        pivotBack,
-        sit1st,
-        extend2nd,
         hook2nd,
-        lift2nd,
-        pivot2nd,
-        sit2nd,
-        collapse,
         stop
     }
-
 
     val firstLevelLift: SequentialRunSM<AutoLift> =
         SequentialRunSM.Builder<AutoLift>()
@@ -250,58 +197,22 @@ class DriverAid(
             }
             .transition(AutoLift.extend_pivot) {
                 armSubsystem.setPE(LiftVars.step1P, LiftVars.step1E, false)
-                armSubsystem.isPitchAtTarget(150.0) && armSubsystem.isExtendAtTarget()
-            }
-            .state(AutoLift.hook1st)
-            .onEnter(AutoLift.hook1st) {
-                scoringSubsystem.setPitchIdle()
-                scoringSubsystem.setRotateIdle()
-                armSubsystem.setPE(LiftVars.step2P, LiftVars.step2E)
-            }
-            .transition(AutoLift.hook1st) {
-                armSubsystem.setPE(LiftVars.step2P, LiftVars.step2E)
-                armSubsystem.isPitchAtTarget() && armSubsystem.isExtendAtTarget()
-            }
-            .state(AutoLift.hook2nd)
-            .onEnter(AutoLift.hook2nd) {
-                armSubsystem.setPE(100.0, LiftVars.step2E, false)
-            }
-            .transition(AutoLift.hook2nd) {
-                armSubsystem.setPE(100.0, LiftVars.step2E, false)
-                armSubsystem.isPitchAtTarget() && armSubsystem.isExtendAtTarget()
-            }
-            .stopRunning(AutoLift.stop)
-            .build()
-    val liftSequence: SequentialRunSM<AutoLift> =
-        SequentialRunSM.Builder<AutoLift>()
-            .state(AutoLift.extend_pivot)
-            .onEnter(AutoLift.extend_pivot) {
-                scoringSubsystem.setPitchLow()
-                scoringSubsystem.closeClaw()
-                armSubsystem.setPE(LiftVars.step1P, LiftVars.step1E)
-            }
-            .transition(AutoLift.extend_pivot) {
-                armSubsystem.isPitchAtTarget(150.0) && armSubsystem.isExtendAtTarget()
+                armSubsystem.bothAtTarget()
             }
             .state(AutoLift.hook1st)
             .onEnter(AutoLift.hook1st) {
                 armSubsystem.setPE(LiftVars.step2P, LiftVars.step2E)
             }
             .transition(AutoLift.hook1st) {
-                armSubsystem.isPitchAtTarget() && armSubsystem.isExtendAtTarget()
+                armSubsystem.setPE(LiftVars.step2P, LiftVars.step2E)
+                armSubsystem.bothAtTarget()
             }
             .state(AutoLift.hook2nd)
             .onEnter(AutoLift.hook2nd) {
-                armSubsystem.setPE(100.0, LiftVars.step2E, false)
+                armSubsystem.setPE(LiftVars.step3P, LiftVars.step2E, false)
             }
             .transition(AutoLift.hook2nd) {
-                armSubsystem.isPitchAtTarget() && armSubsystem.isExtendAtTarget()
-            }
-            .state(AutoLift.lift1st)
-            .onEnter(AutoLift.lift1st) {
-                armSubsystem.setPE(LiftVars.step3P, LiftVars.step3E)
-            }
-            .transition(AutoLift.lift1st) {
+                armSubsystem.setPE(LiftVars.step3P, LiftVars.step2E, false)
                 armSubsystem.isPitchAtTarget() && armSubsystem.isExtendAtTarget()
             }
             .stopRunning(AutoLift.stop)
