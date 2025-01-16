@@ -86,13 +86,15 @@ class ScoringSubsystem(
 
     fun getLimeLightResult() {
         val pythonOutputs: DoubleArray = limelight3A.latestResult.getPythonOutput()
-        llResult.color = BinaryArray(2).apply {
-            this[0] = pythonOutputs[3]
-            this[1] = pythonOutputs[4]
+        if (pythonOutputs != null) {
+            llResult.color = BinaryArray(2).apply {
+                this[0] = pythonOutputs[3]
+                this[1] = pythonOutputs[4]
+            }
+            llResult.angle = pythonOutputs[0]
+            llResult.centerX = pythonOutputs[1]
+            llResult.centerY = pythonOutputs[2]
         }
-        llResult.angle = pythonOutputs[0]
-        llResult.centerX = pythonOutputs[1]
-        llResult.centerY = pythonOutputs[2]
     }
 
     fun update() {

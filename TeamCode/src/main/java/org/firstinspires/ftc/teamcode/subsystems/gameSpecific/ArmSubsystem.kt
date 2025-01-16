@@ -20,7 +20,7 @@ import kotlin.math.cos
 import kotlin.math.sqrt
 
 class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
-    val pitchNegate = if (auto) 1.0 else -1.0
+    val pitchNegate = if (auto) -1.0 else 1.0
 
     val gearRatioMult = 1.249
 
@@ -141,7 +141,7 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
 
     fun setPowerPitch(target: Double, overridePower: Double? = 0.0) {
         pPower = //if (usePIDFp) {
-            calculatePID(pitchPIDF, pitchEncoder.currentPosition.toDouble(), target)
+            calculatePID(pitchPIDF, pitchEncoder.currentPosition.toDouble(), target) * pitchNegate
 //        } else {
 //            Range.clip(
 //                overridePower ?: 0.0,
@@ -153,11 +153,11 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
     }
 
     fun setPitchTarget(target: Double) {
-        pitchT = target + pitchOffset
+        pitchT = target
     }
 
     fun setPitchTargetDegrees(degrees: Double) {
-        pitchT = (degrees * ticksPerDegree) + pitchOffset
+        setPitchTarget(degrees*ticksPerDegree)
     }
 
     fun setExtendTarget(target: Double) {
@@ -273,7 +273,7 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
             extendTarget.toDouble(),
             tolerance
         ) && MathFunctions.inTolerance(
-            -pitchEncoder.currentPosition.toDouble(),
+            pitchEncoder.currentPosition.toDouble(),
             pitchT.toDouble(),
             tolerance
         )
@@ -346,7 +346,7 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
             packet.put("pTarget", armSubsystem.pitchT)
             packet.put(
                 "p",
-                -armSubsystem.pitchEncoder.currentPosition.toDouble() * armSubsystem.pitchNegate
+                armSubsystem.pitchEncoder.currentPosition.toDouble()
             )
             packet.put("eTarget", armSubsystem.extendTarget)
             packet.put("e", armSubsystem.extendEncoder.getMost())

@@ -271,6 +271,17 @@ class AutoHardware(
             )
         )
     }
+    fun testArm(){
+        runAction = true
+
+        driverAid.daAction(listOf(Runnable { driverAid.highSpecimen()}))
+        runBlocking(
+        ParallelAction(
+
+            uAction(driverAid, armSubsystem, scoringSubsystem, 450.0),
+        )
+        )
+    }
 
     fun scorePreloadSample() {
         runAction = true

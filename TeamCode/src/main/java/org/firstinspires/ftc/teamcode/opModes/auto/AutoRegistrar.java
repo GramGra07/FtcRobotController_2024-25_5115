@@ -34,6 +34,8 @@ public final class AutoRegistrar {
 //        opModeClasses.add(threeSpeci.class);
         opModeClasses.add(parkHuman.class);
 
+        opModeClasses.add(testArmAuto.class);
+
     }
 
     @OpModeRegistrar
