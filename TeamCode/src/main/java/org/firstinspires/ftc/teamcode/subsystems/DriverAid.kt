@@ -88,7 +88,7 @@ class DriverAid(
             humanE = DAVars.humanE
             humanP = DAVars.humanP
         }
-        daFunc.runArmSub()
+        daFunc.runALot()
     }
 
     val autoScoreFunc = DAFunc(DAState.auto, {
@@ -101,9 +101,10 @@ class DriverAid(
     }, {armSubsystem.setPE(collapseP, collapseE,false)}, null, armSubsystem)
 
     val highSpecimenFunc = DAFunc(DAState.HIGH_SPECIMEN, {
-        scoringSubsystem.specimenRotate(armSubsystem.pAngle())
         scoringSubsystem.setRotateCenter()
-    }, { armSubsystem.setHeight(24.5, 30.0, true, true) }, null, armSubsystem)
+    }, { armSubsystem.setHeight(24.5, 30.0, true, true) }, {
+        scoringSubsystem.specimenRotate(armSubsystem.pAngle())
+    }, armSubsystem)
 
     val highBasketFunc = DAFunc(DAState.HIGH_BASKET, {
         scoringSubsystem.setPitchMed()
@@ -116,10 +117,10 @@ class DriverAid(
         DAState.PICKUP,
         {
             scoringSubsystem.setPitchMed()
-            scoringSubsystem.setRotateAuto()
             scoringSubsystem.openClaw()
         }, {armSubsystem.setPE(pickupP, pickupE,false)}, {
             PIDVals.pitchPIDFCo.d = 0.00025
+            scoringSubsystem.setRotateAuto()
         }, armSubsystem
     )
 
@@ -137,7 +138,7 @@ class DriverAid(
         val state: DAState,
         private val funcs: Runnable,
         private val armSubFunc: Runnable?,
-        private val armPowerFunc: Runnable?,
+        private val runConstant: Runnable?,
         private val armSubsystem: ArmSubsystem
     ) {
         fun runInit() {
@@ -147,8 +148,8 @@ class DriverAid(
             daFunc = this
         }
 
-        fun runArmSub() {
-            armPowerFunc?.run()
+        fun runALot() {
+            runConstant?.run()
             armSubFunc?.run()
         }
 

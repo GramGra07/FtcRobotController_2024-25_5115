@@ -141,7 +141,7 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
 
     fun setPowerPitch(target: Double, overridePower: Double? = 0.0) {
         pPower = //if (usePIDFp) {
-            calculatePID(pitchPIDF, pitchEncoder.currentPosition.toDouble(), target) * pitchNegate
+            calculatePID(pitchPIDF, pitchEncoder.currentPosition.toDouble() * pitchNegate, target)
 //        } else {
 //            Range.clip(
 //                overridePower ?: 0.0,
@@ -253,7 +253,7 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
 
     fun isPitchAtTarget(tolerance: Double = 100.0): Boolean {
         return MathFunctions.inTolerance(
-            pitchEncoder.currentPosition.toDouble(),
+            pitchEncoder.currentPosition.toDouble() * pitchNegate,
             pitchT.toDouble(),
             tolerance
         )
@@ -268,15 +268,7 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
     }
 
     fun bothAtTarget(tolerance: Double = 100.0): Boolean {
-        return MathFunctions.inTolerance(
-            extendEncoder.getMost(),
-            extendTarget.toDouble(),
-            tolerance
-        ) && MathFunctions.inTolerance(
-            pitchEncoder.currentPosition.toDouble(),
-            pitchT.toDouble(),
-            tolerance
-        )
+        return isPitchAtTarget(tolerance) && isExtendAtTarget(tolerance)
     }
 
     private var pitchHitPosition = false
