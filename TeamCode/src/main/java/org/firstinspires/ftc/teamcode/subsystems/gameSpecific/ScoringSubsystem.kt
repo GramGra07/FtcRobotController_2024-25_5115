@@ -10,11 +10,16 @@ import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.toBinary
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.toBinary2
+import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities
+import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities.initializeProcessor
+import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities.targetLockProcessor
+import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.PROCESSORS
 import org.firstinspires.ftc.teamcode.customHardware.servos.AxonServo
 import org.firstinspires.ftc.teamcode.customHardware.servos.SynchronizedServo
 import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.blinkFrom
 import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.setPatternCo
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.initServo
+import org.firstinspires.ftc.teamcode.utilClass.CameraLock
 import org.firstinspires.ftc.teamcode.utilClass.ServoFunc
 import org.firstinspires.ftc.teamcode.utilClass.objects.BinaryArray
 import org.firstinspires.ftc.teamcode.utilClass.objects.LLFormattedResult
@@ -23,6 +28,7 @@ import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.ServoUtil
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.ServoUtil.pivotHigh
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.ServoUtil.pivotLow
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.ServoUtil.pivotMid
+import org.firstinspires.ftc.teamcode.vision.TargetLock
 
 
 class ScoringSubsystem(
@@ -30,8 +36,6 @@ class ScoringSubsystem(
     private val auto: Boolean,
     private val armSubsystem: ArmSubsystem
 ) {
-    private var llResult = LLFormattedResult.empty()
-
     enum class ClawState {
         OPEN,
         CLOSE,
@@ -63,42 +67,29 @@ class ScoringSubsystem(
     private var rotateServo: AxonServo
     private var rotateState: RotateState = RotateState.IDLE
 
-    private lateinit var limelight3A: Limelight3A
     var blink: RevBlinkinLedDriver
 
+    var targetLock: CameraLock = CameraLock.empty()
+
     init {
+        initializeProcessor(GameStorage.alliance,PROCESSORS.TARGET_LOCK,ahwMap,"Webcam 1",false)
         claw = initServo(ahwMap, "claw")
         pitchServo = SynchronizedServo(ahwMap, "pitchServo", true)
         rotateServo = AxonServo(ahwMap, "rotateServo")
         blink = ahwMap.get(RevBlinkinLedDriver::class.java, "blink")
-        limelight3A = ahwMap.get(Limelight3A::class.java, "limelight")
-        val useBlue = GameStorage.alliance.toBinary()[0]
-        limelight3A.pipelineSwitch(1)
-        limelight3A.updatePythonInputs(useBlue, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
-        limelight3A.setPollRateHz(100)
-        limelight3A.start()
         setup()
     }
 
+    fun updateLock(){
+        targetLock = targetLockProcessor.cameraLock
+    }
     fun updateBlink() {
-        blink.setPatternCo(llResult.color.toColor().blinkFrom())
+        blink.setPatternCo(targetLock.color.toColor().blinkFrom())
     }
 
-    fun getLimeLightResult() {
-        val pythonOutputs: DoubleArray = limelight3A.latestResult.getPythonOutput()
-        if (pythonOutputs != null) {
-            llResult.color = BinaryArray(2).apply {
-                this[0] = pythonOutputs[3]
-                this[1] = pythonOutputs[4]
-            }
-            llResult.angle = pythonOutputs[0]
-            llResult.centerX = pythonOutputs[1]
-            llResult.centerY = pythonOutputs[2]
-        }
-    }
 
     fun update() {
-        getLimeLightResult()
+        updateLock()
         updateServos()
         updateBlink()
     }
@@ -146,10 +137,7 @@ class ScoringSubsystem(
     fun telemetry(telemetry: Telemetry) {
         telemetry.addData("Scoring Subsystem", "")
         rotateServo.telemetry(telemetry)
-        telemetry.addData("angle", llResult.angle)
-        telemetry.addData("Color", llResult.color.toColor().toString())
-        telemetry.addData("v",
-            limelight3A.timeSinceLastUpdate)
+        targetLockProcessor.telemetry(telemetry)
     }
 
     private fun updateServos() {
@@ -209,7 +197,7 @@ class ScoringSubsystem(
             }
 
             RotateState.AUTO -> {
-                rotateServo.setPosition(llResult.angle)
+                rotateServo.setPosition(targetLock.angle)
             }
         }
     }

@@ -65,13 +65,13 @@ object CameraUtilities {
     private lateinit var aprilTag: AprilTagProcessor
     private lateinit var objProcessor: VPObjectDetect
     private lateinit var pubProcessor: MeanColorOfAreaDetector
-    private lateinit var targetLockProcessor: TargetLock
+    lateinit var targetLockProcessor: TargetLock
     fun initializeProcessor(
-        alliance: Alliance,
+        alliance: Alliance = Alliance.RED,
         processor: PROCESSORS?,
         ahwMap: HardwareMap,
-        camera: String,
-        ftcDashboard: Boolean
+        camera: String = "Webcam 1",
+        ftcDashboard: Boolean = false
     ): Boolean {
         when (processor) {
             PROCESSORS.TARGET_LOCK -> {
