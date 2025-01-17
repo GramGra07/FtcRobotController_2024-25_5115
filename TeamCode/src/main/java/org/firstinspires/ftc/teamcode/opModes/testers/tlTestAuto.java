@@ -21,7 +21,7 @@ public class tlTestAuto extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-        processor = new TargetLock(Alliance.BLUE, 20.0);
+        processor = new TargetLock(Alliance.BLUE);
 
         portal = new VisionPortal.Builder()
                 .setCamera(hardwareMap.get(WebcamName.class, "Webcam 1"))

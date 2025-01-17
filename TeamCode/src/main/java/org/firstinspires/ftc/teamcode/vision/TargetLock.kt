@@ -27,9 +27,9 @@ import kotlin.math.abs
 
 class TargetLock(
     private var alliance: Alliance,
-    private var isBlue: Boolean = (alliance == Alliance.BLUE)
 ) : VisionProcessor,
     CameraStreamSource {
+    private var isBlue: Boolean = (alliance == Alliance.BLUE)
     var cameraLock: CameraLock = CameraLock.empty()
     private val lastFrame = AtomicReference(Bitmap.createBitmap(1, 1, Bitmap.Config.RGB_565))
 
