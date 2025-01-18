@@ -8,8 +8,8 @@ enum class Alliance {
     fun toChar(): String {
 
         return when (this) {
-            Alliance.RED -> "R"
-            Alliance.BLUE -> "B"
+            RED -> "R"
+            BLUE -> "B"
         }
     }
 }

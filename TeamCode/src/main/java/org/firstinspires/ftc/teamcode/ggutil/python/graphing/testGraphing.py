@@ -55,7 +55,7 @@ def graph(r_file, title):
     if title == "":
         saveFile = "saved/graph.png"
     else:
-        saveFile = "saved/"+title + ".png"
+        saveFile = "saved/" + title + ".png"
     plt.savefig(saveFile)
     plt.show()
 
@@ -89,7 +89,7 @@ def setup():
 
 def drawField():
     # x points, y points
-    xPoints, yPoints = [-72,-24], [48,48]
+    xPoints, yPoints = [-72, -24], [48, 48]
     plt.plot(xPoints, yPoints, color="blue")
     xPoints, yPoints = [24, 72], [48, 48]
     plt.plot(xPoints, yPoints, color="red")
@@ -97,7 +97,7 @@ def drawField():
     plt.plot(xPoints, yPoints, color="blue")
     xPoints, yPoints = [0, 24], [72, 48]
     plt.plot(xPoints, yPoints, color="red")
-    xPoints, yPoints = [-72,-24], [-12, -12]
+    xPoints, yPoints = [-72, -24], [-12, -12]
     plt.plot(xPoints, yPoints, color="blue")
     xPoints, yPoints = [24, 72], [-12, -12]
     plt.plot(xPoints, yPoints, color="red")
@@ -118,20 +118,20 @@ def drawField():
     xPoints, yPoints = [-24, 24], [-6, -6]
     plt.plot(xPoints, yPoints, color="yellow")
     xPoints, yPoints = [-24, -24], [0, -24]
-    plt.plot(xPoints, yPoints,color="grey")
+    plt.plot(xPoints, yPoints, color="grey")
     xPoints, yPoints = [-48, -48], [0, -24]
-    plt.plot(xPoints, yPoints,color="grey")
+    plt.plot(xPoints, yPoints, color="grey")
     xPoints, yPoints = [24, 24], [0, -24]
-    plt.plot(xPoints, yPoints,color="grey")
+    plt.plot(xPoints, yPoints, color="grey")
     xPoints, yPoints = [48, 48], [0, -24]
-    plt.plot(xPoints, yPoints,color="grey")
+    plt.plot(xPoints, yPoints, color="grey")
     xPoints, yPoints = [-72, -72], [0, -24]
-    plt.plot(xPoints, yPoints,color="grey")
+    plt.plot(xPoints, yPoints, color="grey")
     xPoints, yPoints = [72, 72], [0, -24]
-    plt.plot(xPoints, yPoints,color="grey")
+    plt.plot(xPoints, yPoints, color="grey")
 
 
 setup()
-graph(fileWrite,"dec7Match10")
+graph(fileWrite, "dec7Match10")
 # title is optional, if you want it to be saved,
 # put a title in, otherwise leave blank ("")

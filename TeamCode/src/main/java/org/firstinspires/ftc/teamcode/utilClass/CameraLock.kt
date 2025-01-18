@@ -1,9 +1,7 @@
 package org.firstinspires.ftc.teamcode.utilClass
 
-import org.firstinspires.ftc.teamcode.customHardware.sensors.BrushlandRoboticsSensor
 import org.firstinspires.ftc.teamcode.extensions.VisionExtensions.cross
 import org.firstinspires.ftc.teamcode.utilClass.objects.BinaryArray
-import org.firstinspires.ftc.teamcode.utilClass.objects.LLFormattedResult
 import org.opencv.core.Mat
 import org.opencv.core.Point
 import org.opencv.core.Scalar
@@ -17,16 +15,17 @@ class CameraLock(
 ) {
     companion object {
         fun empty(): CameraLock {
-            return CameraLock(0.0, BinaryArray(1), Point(0.0, 0.0))
+            return CameraLock(0.0, BinaryArray(2), Point(0.0, 0.0))
         }
     }
+
     fun draw(frame: Mat) {
         cross(frame, center, 10, Scalar(255.0, 0.0, 0.0))
         Imgproc.circle(frame, center, 10, Scalar(255.0, 0.0, 0.0), 1)
     }
 
     override fun toString(): String {
-        return "Center: $center, Angle: $angle, Color: ${color.toColor().toString()}"
+        return "Center: $center, Angle: $angle, Color: ${color.toColor()}"
     }
 
     fun Point.toString(): String {

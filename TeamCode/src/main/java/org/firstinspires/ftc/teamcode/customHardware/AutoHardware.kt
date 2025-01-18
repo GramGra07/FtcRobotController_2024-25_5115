@@ -271,15 +271,16 @@ class AutoHardware(
             )
         )
     }
-    fun testArm(){
+
+    fun testArm() {
         runAction = true
 
         runBlocking(
-        ParallelAction(
-            driverAid.daAction(listOf(Runnable { driverAid.highSpecimen()})),
+            ParallelAction(
+                driverAid.daAction(listOf(Runnable { driverAid.highSpecimen() })),
 
-            uAction(driverAid, armSubsystem, scoringSubsystem, 100.0),
-        )
+                uAction(driverAid, armSubsystem, scoringSubsystem, 100.0),
+            )
         )
     }
 

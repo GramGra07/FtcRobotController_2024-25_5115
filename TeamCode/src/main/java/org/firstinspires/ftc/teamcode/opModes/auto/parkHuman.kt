@@ -22,7 +22,7 @@ class parkHuman(val alliance: Alliance) : LinearOpMode() {
 
         if (opModeIsActive()) {
             robot.endHuman(
-                
+
             )
         }
     }

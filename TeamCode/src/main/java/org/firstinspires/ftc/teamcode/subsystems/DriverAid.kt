@@ -94,11 +94,11 @@ class DriverAid(
     val autoScoreFunc = DAFunc(DAState.auto, {
         scoringSubsystem.closeClaw()
         scoringSubsystem.setPitchMed()
-    }, {armSubsystem.setPE(2000.0, 0.0,null)}, null, armSubsystem)
+    }, { armSubsystem.setPE(2000.0, 0.0, null) }, null, armSubsystem)
 
     val collapseFunc = DAFunc(DAState.COLLAPSE, {
         scoringSubsystem.closeClaw()
-    }, {armSubsystem.setPE(collapseP, collapseE,false)}, null, armSubsystem)
+    }, { armSubsystem.setPE(collapseP, collapseE, false) }, null, armSubsystem)
 
     val highSpecimenFunc = DAFunc(DAState.HIGH_SPECIMEN, {
         scoringSubsystem.setRotateCenter()
@@ -109,7 +109,7 @@ class DriverAid(
     val highBasketFunc = DAFunc(DAState.HIGH_BASKET, {
         scoringSubsystem.setPitchMed()
         scoringSubsystem.setRotateCenter()
-    }, {armSubsystem.setPE(hBasketP, hBasketE,true)}, {
+    }, { armSubsystem.setPE(hBasketP, hBasketE, true) }, {
         armSubsystem.pMax = 0.5
     }, armSubsystem)
 
@@ -118,7 +118,7 @@ class DriverAid(
         {
             scoringSubsystem.setPitchMed()
             scoringSubsystem.openClaw()
-        }, {armSubsystem.setPE(pickupP, pickupE,false)}, {
+        }, { armSubsystem.setPE(pickupP, pickupE, false) }, {
             PIDVals.pitchPIDFCo.d = 0.00025
             scoringSubsystem.setRotateAuto()
         }, armSubsystem
@@ -128,7 +128,7 @@ class DriverAid(
         scoringSubsystem.setPitchMed()
         scoringSubsystem.setRotateCenter()
         scoringSubsystem.openClaw()
-    }, {armSubsystem.setPE(humanP - if (auto) 50 else 25, humanE, null)}, null, armSubsystem)
+    }, { armSubsystem.setPE(humanP - if (auto) 50 else 25, humanE, null) }, null, armSubsystem)
 
     fun isDone(tolerance: Double): Boolean {
         return daFunc.isEnded(tolerance)

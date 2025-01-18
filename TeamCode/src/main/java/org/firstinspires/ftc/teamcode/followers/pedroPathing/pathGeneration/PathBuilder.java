@@ -14,9 +14,9 @@ import java.util.ArrayList;
  * @version 1.0, 3/11/2024
  */
 public class PathBuilder {
-    private ArrayList<Path> paths = new ArrayList<>();
+    private final ArrayList<Path> paths = new ArrayList<>();
 
-    private ArrayList<PathCallback> callbacks = new ArrayList<>();
+    private final ArrayList<PathCallback> callbacks = new ArrayList<>();
 
     /**
      * This is an empty constructor for the PathBuilder class so it can get started.

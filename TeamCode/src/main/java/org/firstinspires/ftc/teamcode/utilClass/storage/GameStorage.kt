@@ -4,6 +4,6 @@ import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.Allianc
 
 data class GameStorage(val alliance: Alliance) {
     companion object {
-        var alliance: Alliance = Alliance.BLUE
+        var alliance: Alliance = Alliance.RED
     }
 }

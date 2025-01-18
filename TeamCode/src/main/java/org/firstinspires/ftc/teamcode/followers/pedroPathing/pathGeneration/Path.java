@@ -17,7 +17,7 @@ import java.util.ArrayList;
  * @version 1.0, 3/10/2024
  */
 public class Path {
-    private BezierCurve curve;
+    private final BezierCurve curve;
 
     private double startHeading;
     private double endHeading;
@@ -295,8 +295,7 @@ public class Path {
      * @return returns if at end.
      */
     public boolean isAtParametricEnd() {
-        if (closestPointTValue >= pathEndTValueConstraint) return true;
-        return false;
+        return closestPointTValue >= pathEndTValueConstraint;
     }
 
     /**
@@ -305,8 +304,7 @@ public class Path {
      * @return returns if at start.
      */
     public boolean isAtParametricStart() {
-        if (closestPointTValue <= 1 - pathEndTValueConstraint) return true;
-        return false;
+        return closestPointTValue <= 1 - pathEndTValueConstraint;
     }
 
     /**

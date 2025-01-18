@@ -67,7 +67,7 @@ object CameraUtilities {
     private lateinit var pubProcessor: MeanColorOfAreaDetector
     lateinit var targetLockProcessor: TargetLock
     fun initializeProcessor(
-        alliance: Alliance = Alliance.RED,
+        alliance: Alliance,
         processor: PROCESSORS?,
         ahwMap: HardwareMap,
         camera: String = "Webcam 1",

@@ -2,15 +2,13 @@ package org.firstinspires.ftc.teamcode.subsystems.gameSpecific
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.acmerobotics.roadrunner.Action
-import com.qualcomm.hardware.limelightvision.Limelight3A
 import com.qualcomm.hardware.rev.RevBlinkinLedDriver
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.Servo
 import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.robotcore.external.Telemetry
-import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.toBinary
+import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.Alliance
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.toBinary2
-import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities.initializeProcessor
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities.targetLockProcessor
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.PROCESSORS
@@ -21,14 +19,11 @@ import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.setPatternCo
 import org.firstinspires.ftc.teamcode.extensions.ServoExtensions.initServo
 import org.firstinspires.ftc.teamcode.utilClass.CameraLock
 import org.firstinspires.ftc.teamcode.utilClass.ServoFunc
-import org.firstinspires.ftc.teamcode.utilClass.objects.BinaryArray
-import org.firstinspires.ftc.teamcode.utilClass.objects.LLFormattedResult
 import org.firstinspires.ftc.teamcode.utilClass.storage.GameStorage
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.ServoUtil
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.ServoUtil.pivotHigh
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.ServoUtil.pivotLow
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.ServoUtil.pivotMid
-import org.firstinspires.ftc.teamcode.vision.TargetLock
 
 
 class ScoringSubsystem(
@@ -72,7 +67,7 @@ class ScoringSubsystem(
     var targetLock: CameraLock = CameraLock.empty()
 
     init {
-        initializeProcessor(GameStorage.alliance,PROCESSORS.TARGET_LOCK,ahwMap,"Webcam 1",false)
+        initializeProcessor(GameStorage.alliance, PROCESSORS.TARGET_LOCK, ahwMap, "Webcam 1", true)
         claw = initServo(ahwMap, "claw")
         pitchServo = SynchronizedServo(ahwMap, "pitchServo", true)
         rotateServo = AxonServo(ahwMap, "rotateServo")
@@ -80,9 +75,10 @@ class ScoringSubsystem(
         setup()
     }
 
-    fun updateLock(){
+    fun updateLock() {
         targetLock = targetLockProcessor.cameraLock
     }
+
     fun updateBlink() {
         blink.setPatternCo(targetLock.color.toColor().blinkFrom())
     }
@@ -91,7 +87,6 @@ class ScoringSubsystem(
     fun update() {
         updateLock()
         updateServos()
-        updateBlink()
     }
 
     fun openClaw() {
@@ -185,11 +180,13 @@ class ScoringSubsystem(
         when (rotateState) {
             RotateState.LEFT -> {
                 rotateServo.setPosition(ServoUtil.rotateLeft)
+                blink.setPatternCo()
                 rotateState = RotateState.IDLE
             }
 
             RotateState.CENTER -> {
                 rotateServo.setPosition(ServoUtil.rotateCenter)
+                blink.setPatternCo()
                 rotateState = RotateState.IDLE
             }
 
@@ -198,6 +195,7 @@ class ScoringSubsystem(
 
             RotateState.AUTO -> {
                 rotateServo.setPosition(targetLock.angle)
+                updateBlink()
             }
         }
     }
@@ -227,7 +225,10 @@ class ScoringSubsystem(
         pitchServo.setPose(coAng)
     }
 
-    class ServoActions(private val funcs: List<Runnable>, private val scoringSubsystem: ScoringSubsystem) :
+    class ServoActions(
+        private val funcs: List<Runnable>,
+        private val scoringSubsystem: ScoringSubsystem
+    ) :
         Action {
         override fun run(p: TelemetryPacket): Boolean {
             funcs.forEach(Runnable::run)

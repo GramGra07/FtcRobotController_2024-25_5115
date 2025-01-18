@@ -26,7 +26,7 @@ import kotlin.math.abs
 
 
 class TargetLock(
-    private var alliance: Alliance,
+    alliance: Alliance,
 ) : VisionProcessor,
     CameraStreamSource {
     private var isBlue: Boolean = (alliance == Alliance.BLUE)
@@ -51,7 +51,7 @@ class TargetLock(
             Imgproc.RETR_EXTERNAL,
             Imgproc.CHAIN_APPROX_SIMPLE
         )
-        return contours
+        return contours.filter { Imgproc.contourArea(it) >= minArea }
     }
 
     private fun getContourCenter(contour: MatOfPoint): Point? {
@@ -64,6 +64,8 @@ class TargetLock(
         return null
     }
 
+    private val minArea = 4000.0
+
     override fun init(width: Int, height: Int, calibration: CameraCalibration) {
         lastFrame.set(Bitmap.createBitmap(width, height, Bitmap.Config.RGB_565))
     }
@@ -73,7 +75,7 @@ class TargetLock(
         Imgproc.GaussianBlur(frame, blurred, Size(15.0, 15.0), 0.0)
 
         val hsv = Mat()
-        Imgproc.cvtColor(blurred, hsv, Imgproc.COLOR_BGR2HSV)
+        Imgproc.cvtColor(blurred, hsv, Imgproc.COLOR_RGB2HSV)
 
         val lowerBlue = Scalar(100.0, 150.0, 0.0)
         val upperBlue = Scalar(140.0, 255.0, 255.0)
@@ -104,6 +106,7 @@ class TargetLock(
         allContours.addAll(colorContours)
 
         if (allContours.isEmpty()) {
+            cameraLock = CameraLock.empty()
             return arrayOf(MatOfPoint(), frame, intArrayOf(0, 0, 0, 0, 0))
         }
 
@@ -148,7 +151,7 @@ class TargetLock(
 
         val wrappedAngle = (-(56 / 90.0) * angle + 63).toInt()
 
-// Determine color of the selected contour
+        // Determine color of the selected contour
         val mask = Mat.zeros(frame.size(), CvType.CV_8U)
         Imgproc.drawContours(mask, listOf(closestContour), 0, Scalar(255.0), -1)
 
@@ -158,11 +161,12 @@ class TargetLock(
         Core.bitwise_and(mask, yellowMask, yellowAndMask)
         Core.bitwise_and(mask, colorMask, colorAndMask)
 
-        val selectedColor = if (Core.countNonZero(yellowAndMask) > Core.countNonZero(colorAndMask)) {
-            "yellow"
-        } else {
-            colorName
-        }
+        val selectedColor =
+            if (Core.countNonZero(yellowAndMask) > Core.countNonZero(colorAndMask)) {
+                "yellow"
+            } else {
+                colorName
+            }
 
         Imgproc.putText(
             frame, "Angle: $wrappedAngle°", Point(10.0, 30.0),
@@ -179,8 +183,9 @@ class TargetLock(
             "blue" -> 1 to 0   // Blue
             else -> 0 to 0     // Default (unknown color)
         }
-        cameraLock = CameraLock(wrappedAngle.toDouble(), BinaryArray(2).apply { this[0] =
-            colorOne.toDouble(); this[1] = colorTwo.toDouble()
+        cameraLock = CameraLock(wrappedAngle.toDouble(), BinaryArray(2).apply {
+            this[0] =
+                colorOne.toDouble(); this[1] = colorTwo.toDouble()
         }, contourCenter)
         cameraLock.draw(frame)
 
@@ -217,6 +222,7 @@ class TargetLock(
             )
         }
     }
+
     fun telemetry(telemetry: Telemetry) {
         telemetry.addData("Camera Lock", cameraLock.toString())
     }

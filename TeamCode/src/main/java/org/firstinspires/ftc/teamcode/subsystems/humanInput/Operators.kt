@@ -91,7 +91,7 @@ object Operators {
         if (myOpMode.gamepad2.left_trigger > 0.0) {
             da.lift()
         } else {
-            da.firstLevelLift.restartAtBeginning();
+            da.firstLevelLift.restartAtBeginning()
         }
 
 //        if (myOpMode.gamepad2.right_stick_button) {

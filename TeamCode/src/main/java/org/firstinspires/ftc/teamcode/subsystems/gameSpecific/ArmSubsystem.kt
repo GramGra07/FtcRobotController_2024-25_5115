@@ -157,7 +157,7 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
     }
 
     fun setPitchTargetDegrees(degrees: Double) {
-        setPitchTarget(degrees*ticksPerDegree)
+        setPitchTarget(degrees * ticksPerDegree)
     }
 
     fun setExtendTarget(target: Double) {
