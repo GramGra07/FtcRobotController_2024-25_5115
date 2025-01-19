@@ -25,21 +25,11 @@ class threeSpeci(val alliance: Alliance) : LinearOpMode() {
 
         if (opModeIsActive()) {
             robot.scorePreloadSpeci()
-            robot.grabSpeci(redSpecimen)
+            robot.grabSpeci()
             robot.placeSpeci(-3)
             robot.moveOneSpeci(
-                Pose2d(
-                    redSpecimen.position.x - 3,
-                    redHuman.position.y + 25,
-                    redSpecimen.heading.toDouble()
-                )
             )
-            robot.grabSpeci(
-                Pose2d(
-                    redSample.position.x - 16.0,
-                    redSample.position.y,
-                    redSample.heading.toDouble()
-                ), true
+            robot.grabSpeci( true
             )
             robot.placeSpeci(-6)
             robot.endHuman()

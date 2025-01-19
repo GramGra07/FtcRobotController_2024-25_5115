@@ -9,7 +9,7 @@ import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.Alliance
 import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles
 
-@TeleOp(group = GroupingTitles.tele)
+//@TeleOp(group = GroupingTitles.tele)
 class initTest : LinearOpMode() {
     lateinit var motorEx: List<DcMotorEx>
     override fun runOpMode() {

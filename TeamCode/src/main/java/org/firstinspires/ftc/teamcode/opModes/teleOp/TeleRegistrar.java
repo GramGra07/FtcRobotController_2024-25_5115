@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opModes.auto;
+package org.firstinspires.ftc.teamcode.opModes.teleOp;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.OpModeManager;
@@ -11,40 +11,35 @@ import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class AutoRegistrar {
-    private AutoRegistrar() {
+public final class TeleRegistrar {
+    private TeleRegistrar() {
     }
 
     private static OpModeMeta metaForClass(Class<? extends OpMode> cls, Alliance alliance) {
         return new OpModeMeta.Builder()
-                .setName(cls.getSimpleName())// + alliance.name())
-                .setGroup(GroupingTitles.auto)
-                .setFlavor(OpModeMeta.Flavor.AUTONOMOUS)
+                .setName(cls.getSimpleName() + alliance.name())
+                .setGroup(GroupingTitles.tele)
+                .setFlavor(OpModeMeta.Flavor.TELEOP)
+
                 .build();
     }
 
     private static final List<Class<? extends OpMode>> opModeClasses = new ArrayList<>();
 
     static {
-        opModeClasses.add(oneSpeci.class);
-//        opModeClasses.add(FullSpeciAuto.class);
-        opModeClasses.add(oneSample.class);
-//        opModeClasses.add(FullSampleAuto.class);
-        opModeClasses.add(twoSpeci.class);
-//        opModeClasses.add(threeSpeci.class);
-//        opModeClasses.add(parkHuman.class);
+        opModeClasses.add(teleOp.class);
 
     }
 
     @OpModeRegistrar
     public static void register(OpModeManager manager) {
         for (Class<? extends OpMode> opModeClass : opModeClasses) {
-//            for (Alliance alliance : Alliance.values()) {
+            for (Alliance alliance : Alliance.values()) {
                 manager.register(
-                        metaForClass(opModeClass, Alliance.RED),
-                        createInstance(opModeClass, Alliance.RED)
+                        metaForClass(opModeClass, alliance),
+                        createInstance(opModeClass, alliance)
                 );
-//            }
+            }
         }
     }
 

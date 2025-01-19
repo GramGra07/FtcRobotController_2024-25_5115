@@ -23,7 +23,7 @@ class oneSample(val alliance: Alliance) : LinearOpMode() {
 
         if (opModeIsActive()) {
             robot.scorePreloadSample()
-            robot.end(redBasket)
+            robot.end()
         }
     }
 }

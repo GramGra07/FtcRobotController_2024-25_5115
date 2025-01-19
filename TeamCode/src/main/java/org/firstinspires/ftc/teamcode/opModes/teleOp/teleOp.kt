@@ -7,12 +7,12 @@ import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.Alliance
 import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles
 
-@TeleOp(group = GroupingTitles.tele) //@Disabled//disabling the opmode
+//@TeleOp(group = GroupingTitles.tele) //@Disabled//disabling the opmode
 
-class teleOp : LinearOpMode() {
+class teleOp(val alliance: Alliance) : LinearOpMode() {
     //declaring the class
     override fun runOpMode() { //if opmode is started
-        val robot = HardwareConfig(this, false, StartLocation(Alliance.RED))
+        val robot = HardwareConfig(this, false, StartLocation(this.alliance)) //initializing the robot
         waitForStart()
         robot.once() //runs once
         while (opModeIsActive()) { //while the op mode is active

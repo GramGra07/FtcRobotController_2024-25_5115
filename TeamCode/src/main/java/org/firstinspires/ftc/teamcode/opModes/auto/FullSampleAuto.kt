@@ -25,29 +25,17 @@ class FullSampleAuto(val alliance: Alliance) : LinearOpMode() {
             robot.scorePreloadSample()
             robot.getSampleR()
             robot.scoreSample(
-                Pose2d(
-                    redNeutralSample.position.x,
-                    redNeutralSample.position.y,
-                    Math.toRadians(50.0)
-                )
+
             )
             robot.getSampleM()
             robot.scoreSample(
-                Pose2d(
-                    redNeutralSample.position.x,
-                    redNeutralSample.position.y,
-                    Math.toRadians(0.0)
-                )
+
             )
             robot.getSampleL()
             robot.scoreSample(
-                Pose2d(
-                    redNeutralSample.position.x,
-                    redNeutralSample.position.y,
-                    Math.toRadians(130.0)
-                )
+
             )
-            robot.end(redNeutralSample)
+            robot.end()
         }
     }
 }

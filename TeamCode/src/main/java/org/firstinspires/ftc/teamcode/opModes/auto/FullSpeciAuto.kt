@@ -27,11 +27,6 @@ class FullSpeciAuto(val alliance: Alliance) : LinearOpMode() {
             robot.scorePreloadSpeci()
             robot.moveAllSpeci()
             robot.grabSpeci(
-                Pose2d(
-                    redSample.position.x + 2,
-                    redHuman.position.y,
-                    redSample.heading.toDouble()
-                )
             )
             robot.placeSpeci(-3)
 //            robot.grabSpeci(
@@ -43,11 +38,6 @@ class FullSpeciAuto(val alliance: Alliance) : LinearOpMode() {
 //            )
 //            robot.placeSpeci(-6)
             robot.endHuman(
-                Pose2d(
-                    redSpecimen.position.x - 6,
-                    redSpecimen.position.y,
-                    redSpecimen.heading.toDouble()
-                )
             )
         }
     }

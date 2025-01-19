@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.opModes.tuners
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
@@ -8,7 +9,7 @@ import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.Allianc
 import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles
 
 @TeleOp(group = GroupingTitles.TESTING) //@Disabled//disabling the opmode
-
+@Disabled
 class pidTuner : LinearOpMode() {
     //declaring the class
     override fun runOpMode() { //if opmode is started
