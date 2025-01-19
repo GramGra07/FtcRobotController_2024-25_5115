@@ -67,7 +67,7 @@ class ScoringSubsystem(
     var targetLock: CameraLock = CameraLock.empty()
 
     init {
-        initializeProcessor(GameStorage.alliance, PROCESSORS.TARGET_LOCK, ahwMap, "Webcam 1", true)
+        if (!auto) initializeProcessor(GameStorage.alliance, PROCESSORS.TARGET_LOCK, ahwMap, "Webcam 1", true)
         claw = initServo(ahwMap, "claw")
         pitchServo = SynchronizedServo(ahwMap, "pitchServo", true)
         rotateServo = AxonServo(ahwMap, "rotateServo")
@@ -196,6 +196,7 @@ class ScoringSubsystem(
             RotateState.AUTO -> {
                 rotateServo.setPosition(targetLock.angle)
                 updateBlink()
+                rotateState = RotateState.IDLE
             }
         }
     }
@@ -214,7 +215,7 @@ class ScoringSubsystem(
 
     fun specimenRotate(pangle: Double) {
         val angle2 = 90 - pangle
-        val angleSend = (angle2 - 30)
+        val angleSend = (angle2 -90)
         pitchServo.setPose(angleSend)
     }
 

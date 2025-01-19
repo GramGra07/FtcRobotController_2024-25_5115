@@ -46,7 +46,7 @@ dependencies {
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.7'
 
     implementation 'com.github.GramGra07:StateMachineFTC:1.6.0'
-    implementation 'com.github.GramGra07:VelocityVision:1.1.0'
+    implementation 'com.github.GramGra07:VelocityVision:1.1.1'
     implementation 'com.github.GramGra07:GentrifiedAppsUtil:1.3.1'
 
     implementation 'com.github.DaCodingBeast:pso4pids:1.3.0'
