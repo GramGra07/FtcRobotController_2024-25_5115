@@ -13,5 +13,5 @@ public class DAVars {
     public static double pickUpE = 1100 * 1.249;
     public static double pickUpP = 0;
     public static double humanE = 200 * 1.249;
-    public static double humanP = 300;
+    public static double humanP = 270;
 }

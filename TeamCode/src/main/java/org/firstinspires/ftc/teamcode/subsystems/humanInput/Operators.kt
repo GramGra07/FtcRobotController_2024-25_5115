@@ -105,12 +105,5 @@ object Operators {
             scoringSubsystem.setPitchHigh()
         }
 
-        if (!armSubsystem.usePIDFe) {
-            armSubsystem.setPowerExtend(0.0, -myOpMode.gamepad2.right_stick_y.toDouble())
-        } else {
-            if (!da.usingDA) {
-                armSubsystem.setExtendTarget(myOpMode.gamepad2.right_trigger.toDouble() * armSubsystem.maxExtendTicks)
-            }
-        }
     }
 }

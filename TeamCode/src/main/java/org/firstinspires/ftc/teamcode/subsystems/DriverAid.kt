@@ -58,21 +58,21 @@ class DriverAid(
 
     companion object {
 
-        private var collapseE = 0.0
-        private var collapseP = 100.0
-        private var hSpecimenE = 1200.0 * 1.249
-        private var hSpecimenP = 1300.0
-        private var hBasketE = 2250.0 * 1.249
-        private var hBasketP = 2000.0
-        private var pickupE = 1300.0 * 1.249
-        var pickupP = 0.0
-        private var humanE = 200.0 * 1.249
-        private var humanP = 300.0
+        private var collapseE = DAVars.collapseE
+        private var collapseP = DAVars.collapseP
+
+        private var hSpecimenE = DAVars.hSpecimenE
+        private var hSpecimenP = DAVars.hSpecimenP
+        private var hBasketE = DAVars.hBasketE
+        private var hBasketP = DAVars.hBasketP
+        private var pickupE = DAVars.pickUpE
+        private var pickupP = DAVars.pickUpP
+        private var humanE = DAVars.humanE
+        private var humanP = DAVars.humanP
+
         var daState = DAState.IDLE
         lateinit var daFunc: DAFunc
     }
-
-    private var pickupOnce = 0
 
     private val useConfig = false
     fun update() {
@@ -94,10 +94,12 @@ class DriverAid(
     val autoScoreFunc = DAFunc(DAState.auto, {
         scoringSubsystem.closeClaw()
         scoringSubsystem.setPitchMed()
+        scoringSubsystem.setRotateIdle()
     }, { armSubsystem.setPE(2000.0, 0.0, null) }, null, armSubsystem)
 
     val collapseFunc = DAFunc(DAState.COLLAPSE, {
         scoringSubsystem.closeClaw()
+        scoringSubsystem.setRotateIdle()
     }, { armSubsystem.setPE(collapseP, collapseE, false) }, null, armSubsystem)
 
     val highSpecimenFunc = DAFunc(DAState.HIGH_SPECIMEN, {
@@ -128,7 +130,7 @@ class DriverAid(
         scoringSubsystem.setPitchMed()
         scoringSubsystem.setRotateCenter()
         scoringSubsystem.openClaw()
-    }, { armSubsystem.setPE(humanP - if (auto) 50 else 25, humanE, null) }, null, armSubsystem)
+    }, { armSubsystem.setPE(humanP, humanE, null) }, null, armSubsystem)
 
     fun isDone(tolerance: Double): Boolean {
         return daFunc.isEnded(tolerance)
@@ -151,10 +153,13 @@ class DriverAid(
         fun runALot() {
             runConstant?.run()
             armSubFunc?.run()
+            if (isEnded(200.0)){
+                daFunc = DAFunc(DAState.IDLE, {}, null, null, armSubsystem)
+            }
         }
 
         fun isEnded(tolerance: Double): Boolean {
-            return armSubsystem.bothAtTarget(tolerance)
+            return armSubsystem.bothAtTarget(tolerance) && armSubsystem.secondActionRun
         }
     }
 

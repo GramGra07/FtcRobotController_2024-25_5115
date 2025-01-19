@@ -100,8 +100,8 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
 
 //        pitchMotor.direction = DcMotorSimple.Direction.REVERSE
 //        pitchMotor2.direction = DcMotorSimple.Direction.REVERSE
-        extendMotor.direction = DcMotorSimple.Direction.REVERSE
-        extendMotor2.direction = DcMotorSimple.Direction.REVERSE
+//        extendMotor.direction = DcMotorSimple.Direction.REVERSE
+//        extendMotor2.direction = DcMotorSimple.Direction.REVERSE
 
         updatePID()
 
@@ -173,7 +173,7 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
         extendPower: Double? = 0.0,
         overridePower: Boolean = false
     ) {
-//        updatePID()
+        updatePID()
         calculateExtendMax()
         if (usePIDFp && !overridePower) {
             setPowerPitch(pitchT)
@@ -273,46 +273,50 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
 
     private var pitchHitPosition = false
     private var extendHitPosition = false
+    var secondActionRun = false
 
     fun resetHitPosition() {
         pitchHitPosition = false
         extendHitPosition = false
+        secondActionRun = false
     }
 
     fun setPE(p: Double, e: Double, pitchFirst: Boolean? = null) {
 
         when (pitchFirst) {
             null -> {
-                // Default behavior: Set pitch first, then extend
+                // Default behavior: Set pitch and extend simultaneously
                 if (!pitchHitPosition) setPitchTarget(p)
                 if (!extendHitPosition) setExtendTarget(e)
             }
 
             true -> {
-                // Set pitch first and wait for it to reach target
+                // Set pitch first, then extend
                 if (!pitchHitPosition) {
                     setPitchTarget(p)
                 }
                 if (pitchHitPosition) {
                     setExtendTarget(e)
+                    secondActionRun = true
                 }
             }
 
             false -> {
-                // Set extend first and wait for it to reach target
+                // Set extend first, then pitch
                 if (!extendHitPosition) {
                     setExtendTarget(e)
                 }
                 if (extendHitPosition) {
                     setPitchTarget(p)
+                    secondActionRun = true
                 }
             }
         }
-
-        // Update hit positions dynamically
-        pitchHitPosition = isPitchAtTarget(250.0)
-        extendHitPosition = isExtendAtTarget()
+        // Update hit positions
+        pitchHitPosition = isPitchAtTarget(300.0)
+        extendHitPosition = isExtendAtTarget(200.0)
     }
+
 
 
     fun setHeight(
