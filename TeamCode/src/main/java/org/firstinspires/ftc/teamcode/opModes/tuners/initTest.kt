@@ -1,13 +1,11 @@
 package org.firstinspires.ftc.teamcode.opModes.tuners
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.Alliance
-import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles
 
 //@TeleOp(group = GroupingTitles.tele)
 class initTest : LinearOpMode() {

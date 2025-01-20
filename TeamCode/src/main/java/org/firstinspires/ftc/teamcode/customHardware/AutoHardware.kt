@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.customHardware
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.acmerobotics.roadrunner.Action
-import com.acmerobotics.roadrunner.InstantAction
 import com.acmerobotics.roadrunner.ParallelAction
 import com.acmerobotics.roadrunner.Pose2d
 import com.acmerobotics.roadrunner.SequentialAction
@@ -64,7 +63,7 @@ class AutoHardware(
 
         var runAction = true
         val lastPose = PoseStorage.currentPose
-        fun updateLastPose(drive:MecanumDrive){
+        fun updateLastPose(drive: MecanumDrive) {
             PoseStorage.currentPose = drive.pose
             PoseStorage.currentPose = lastPose
         }
@@ -180,7 +179,7 @@ class AutoHardware(
 
     }
 
-    fun grabSpeci( wait: Boolean? = null) {
+    fun grabSpeci(wait: Boolean? = null) {
         runAction = true
         runBlocking(
             SequentialAction(
@@ -301,7 +300,7 @@ class AutoHardware(
                 )
             ),
 
-        )
+            )
     }
 
     fun getSampleR() {
@@ -492,10 +491,12 @@ class AutoHardware(
             )
         )
     }
-    fun endAction():Action{
+
+    fun endAction(): Action {
         return endAct(drive)
     }
-    class endAct(val drive: MecanumDrive):Action{
+
+    class endAct(val drive: MecanumDrive) : Action {
         override fun run(packet: TelemetryPacket): Boolean {
             runAction = false
             updateLastPose(this.drive)
@@ -526,5 +527,16 @@ class AutoHardware(
         tolerance: Double = 100.0,
     ): Action {
         return updateAction(driverAid, armSubsystem, scoringSubsystem, tolerance)
+    }
+
+
+    fun testArm() {
+        runAction = true
+        runBlocking(
+            ParallelAction(
+                driverAid.daAction(listOf(Runnable { driverAid.highSpecimen() })),
+                uAction(driverAid, armSubsystem, scoringSubsystem)
+            )
+        )
     }
 }

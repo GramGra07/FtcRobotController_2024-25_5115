@@ -33,6 +33,7 @@ public final class AutoRegistrar {
         opModeClasses.add(twoSpeci.class);
 //        opModeClasses.add(threeSpeci.class);
 //        opModeClasses.add(parkHuman.class);
+//        opModeClasses.add(testArmAuto.class);
 
     }
 
@@ -40,10 +41,10 @@ public final class AutoRegistrar {
     public static void register(OpModeManager manager) {
         for (Class<? extends OpMode> opModeClass : opModeClasses) {
 //            for (Alliance alliance : Alliance.values()) {
-                manager.register(
-                        metaForClass(opModeClass, Alliance.RED),
-                        createInstance(opModeClass, Alliance.RED)
-                );
+            manager.register(
+                    metaForClass(opModeClass, Alliance.RED),
+                    createInstance(opModeClass, Alliance.RED)
+            );
 //            }
         }
     }

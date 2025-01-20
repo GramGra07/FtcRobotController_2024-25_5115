@@ -1,10 +1,7 @@
 package org.firstinspires.ftc.teamcode.opModes.auto
 
-import com.acmerobotics.roadrunner.Pose2d
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import org.firstinspires.ftc.teamcode.customHardware.AutoHardware
-import org.firstinspires.ftc.teamcode.customHardware.AutoHardware.Companion.redHuman
-import org.firstinspires.ftc.teamcode.customHardware.AutoHardware.Companion.redSpecimen
 import org.firstinspires.ftc.teamcode.customHardware.AutoHardware.Companion.redStartRight
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.Alliance
