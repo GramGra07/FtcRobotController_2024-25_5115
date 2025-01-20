@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.toBinar
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities.initializeProcessor
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities.targetLockProcessor
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.PROCESSORS
+import org.firstinspires.ftc.teamcode.customHardware.sensors.BrushlandRoboticsSensor
 import org.firstinspires.ftc.teamcode.customHardware.servos.AxonServo
 import org.firstinspires.ftc.teamcode.customHardware.servos.SynchronizedServo
 import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.blinkFrom
@@ -23,6 +24,7 @@ import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.ServoUtil
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.ServoUtil.pivotHigh
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.ServoUtil.pivotLow
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.ServoUtil.pivotMid
+import org.gentrifiedApps.velocityvision.enums.Color
 
 
 class ScoringSubsystem(
@@ -205,6 +207,7 @@ class ScoringSubsystem(
             }
         }
     }
+    var shouldRotate = true
 
     fun setup() {
         setPitchHigh()
@@ -220,7 +223,7 @@ class ScoringSubsystem(
 
     fun specimenRotate(pangle: Double) {
         val angle2 = 90 - pangle
-        val angleSend = (angle2 - 90)
+        val angleSend = (angle2-30)
         pitchServo.setPose(angleSend)
     }
 

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.vision
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import com.acmerobotics.dashboard.config.Config
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.robotcore.external.function.Consumer
 import org.firstinspires.ftc.robotcore.external.function.Continuation
@@ -10,6 +11,7 @@ import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibra
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.Alliance
 import org.firstinspires.ftc.teamcode.utilClass.CameraLock
 import org.firstinspires.ftc.teamcode.utilClass.objects.BinaryArray
+import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.VarConfig
 import org.firstinspires.ftc.vision.VisionProcessor
 import org.opencv.android.Utils
 import org.opencv.core.Core
@@ -23,7 +25,6 @@ import org.opencv.core.Size
 import org.opencv.imgproc.Imgproc
 import java.util.concurrent.atomic.AtomicReference
 import kotlin.math.abs
-
 
 class TargetLock(
     alliance: Alliance,
@@ -83,8 +84,8 @@ class TargetLock(
         val upperRed1 = Scalar(10.0, 255.0, 255.0)
         val lowerRed2 = Scalar(170.0, 150.0, 0.0)
         val upperRed2 = Scalar(180.0, 255.0, 255.0)
-        val lowerYellow = Scalar(20.0, 100.0, 100.0)
-        val upperYellow = Scalar(30.0, 255.0, 255.0)
+        val lowerYellow = Scalar(25.0, 100.0, 100.0)
+        val upperYellow = Scalar(70.0, 255.0, 255.0)
 
         val yellowMask = createMask(hsv, lowerYellow, upperYellow)
 
@@ -144,9 +145,9 @@ class TargetLock(
 
         var angle = rect.angle
         angle = if (rect.size.width < rect.size.height) {
-            90 - abs(angle)
-        } else {
             abs(angle)
+        } else {
+            90- abs(angle)
         }
 
         val wrappedAngle = (-(56 / 90.0) * angle + 63).toInt()

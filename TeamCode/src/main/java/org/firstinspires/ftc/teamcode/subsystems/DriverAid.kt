@@ -78,7 +78,7 @@ class DriverAid(
         lateinit var daFunc: DAFunc
     }
 
-    private val useConfig = false
+    private val useConfig = true
     fun update() {
         if (useConfig) {
             collapseE = DAVars.collapseE
@@ -114,8 +114,8 @@ class DriverAid(
 
     val highSpecimenFunc = DAFunc(DAState.HIGH_SPECIMEN, {
         scoringSubsystem.setRotateCenter()
-    }, { armSubsystem.setHeight(24.5, 30.0, true, true) }, {
-        scoringSubsystem.specimenRotate(armSubsystem.pAngle())
+    }, { armSubsystem.setPE(hSpecimenP, hSpecimenE, ) }, {
+        scoringSubsystem.specimenRotate(hSpecimenP*armSubsystem.degreePerTick)
     }, armSubsystem)
 
     val highBasketFunc = DAFunc(DAState.HIGH_BASKET, {
@@ -124,12 +124,12 @@ class DriverAid(
     }, { armSubsystem.setPE(hBasketP, hBasketE, true) }, {
         armSubsystem.pMax = 0.5
     }, armSubsystem)
-
     val pickupFunc = DAFunc(
         DAState.PICKUP,
         {
             scoringSubsystem.setPitchMed()
             scoringSubsystem.openClaw()
+            scoringSubsystem.shouldRotate = true
         }, null, {
             if (!pickupSM.isStarted) {
                 pickupSM.start()
@@ -260,7 +260,7 @@ class DriverAid(
             }
             .transition(AutoLift.extend_pivot) {
                 armSubsystem.setPE(LiftVars.step1P, LiftVars.step1E, false)
-                val isEnded = armSubsystem.isEnded(400.0)
+                val isEnded = armSubsystem.isEnded(450.0)
                 if (isEnded) armSubsystem.resetHitPosition()
                 isEnded
             }

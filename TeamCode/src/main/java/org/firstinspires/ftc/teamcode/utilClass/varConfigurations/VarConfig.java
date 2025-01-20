@@ -5,6 +5,11 @@ import com.acmerobotics.dashboard.config.Config;
 // these variables can be changed from FTC dashboard
 @Config
 public class VarConfig {
+
+
+    public static double lowYellow = 40.0;
+
+    public static double highYellow = 50.0;
     public static double pitch = 400.0;
     public static double extend = 400.0;
     public static boolean loopSaver = true;

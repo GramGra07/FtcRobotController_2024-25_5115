@@ -46,12 +46,14 @@ object Operators {
             )
         ) {
             scoringSubsystem.setPitchMed()
+            scoringSubsystem.shouldRotate = false
         } else if (myOpMode.gamepad2.buttonJustPressed(
                 GamepadExtensions.PushButtons.CROSS,
                 2
             )
         ) {
             scoringSubsystem.setPitchLow()
+            scoringSubsystem.shouldRotate = false
         }
 
         if (myOpMode.gamepad2.buttonJustPressed(GamepadExtensions.PushButtons.DPAD_UP, 2)) {
@@ -103,6 +105,7 @@ object Operators {
 //        }
         if (myOpMode.gamepad2.left_stick_button) {
             scoringSubsystem.setPitchHigh()
+            scoringSubsystem.shouldRotate = false
         }
 
     }
