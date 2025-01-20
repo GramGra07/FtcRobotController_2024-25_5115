@@ -5,7 +5,6 @@ import com.acmerobotics.roadrunner.Action
 import com.arcrobotics.ftclib.controller.PIDFController
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
-import com.qualcomm.robotcore.hardware.DcMotorSimple
 import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.robotcore.external.Telemetry
@@ -55,7 +54,7 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
     val maxPitchTicks = 2600
 
     fun pAngle(): Double {
-        return ((-pitchEncoder.currentPosition.toDouble() * pitchNegate) * degreePerTick)
+        return ((pitchEncoder.currentPosition.toDouble() * pitchNegate) * degreePerTick)
     }
 
     var usePIDFe = true
@@ -271,11 +270,14 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
         return isPitchAtTarget(tolerance) && isExtendAtTarget(tolerance)
     }
 
+    fun isEnded(tolerance: Double = 100.0): Boolean {
+        return bothAtTarget(tolerance) && secondActionRun
+    }
+
     private var pitchHitPosition = false
     private var extendHitPosition = false
     var secondActionRun = false
-
-    fun resetHitPosition() {
+    fun resetHitPosition(shouldReset: Boolean = true) {
         pitchHitPosition = false
         extendHitPosition = false
         secondActionRun = false
@@ -316,7 +318,6 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
         pitchHitPosition = isPitchAtTarget(300.0)
         extendHitPosition = isExtendAtTarget(200.0)
     }
-
 
 
     fun setHeight(

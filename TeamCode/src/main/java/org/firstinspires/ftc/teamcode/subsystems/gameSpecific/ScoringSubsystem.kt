@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap
 import com.qualcomm.robotcore.hardware.Servo
 import com.qualcomm.robotcore.util.Range
 import org.firstinspires.ftc.robotcore.external.Telemetry
-import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.Alliance
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.toBinary2
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities.initializeProcessor
 import org.firstinspires.ftc.teamcode.customHardware.camera.camUtil.CameraUtilities.targetLockProcessor
@@ -67,7 +66,13 @@ class ScoringSubsystem(
     var targetLock: CameraLock = CameraLock.empty()
 
     init {
-        if (!auto) initializeProcessor(GameStorage.alliance, PROCESSORS.TARGET_LOCK, ahwMap, "Webcam 1", true)
+        if (!auto) initializeProcessor(
+            GameStorage.alliance,
+            PROCESSORS.TARGET_LOCK,
+            ahwMap,
+            "Webcam 1",
+            true
+        )
         claw = initServo(ahwMap, "claw")
         pitchServo = SynchronizedServo(ahwMap, "pitchServo", true)
         rotateServo = AxonServo(ahwMap, "rotateServo")
@@ -215,7 +220,7 @@ class ScoringSubsystem(
 
     fun specimenRotate(pangle: Double) {
         val angle2 = 90 - pangle
-        val angleSend = (angle2 -90)
+        val angleSend = (angle2 - 90)
         pitchServo.setPose(angleSend)
     }
 

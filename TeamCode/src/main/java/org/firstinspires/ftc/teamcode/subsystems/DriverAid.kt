@@ -6,7 +6,6 @@ import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ArmSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ScoringSubsystem
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.DAVars
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.LiftVars
-import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.PIDVals
 import org.gentrifiedApps.statemachineftc.SequentialRunSM
 
 class DriverAid(
@@ -28,7 +27,12 @@ class DriverAid(
         HIGH_BASKET,
         PICKUP,
         HUMAN,
-        auto
+        auto,
+        LIFT
+    }
+
+    fun lift() {
+        liftFunc.runInit()
     }
 
     fun auto() {
@@ -89,6 +93,12 @@ class DriverAid(
             humanP = DAVars.humanP
         }
         daFunc.runALot()
+        if (daState != DAState.LIFT) {
+            firstLevelLift.restartAtBeginning()
+        }
+        if (daState != DAState.PICKUP) {
+            pickupSM.restartAtBeginning()
+        }
     }
 
     val autoScoreFunc = DAFunc(DAState.auto, {
@@ -120,8 +130,12 @@ class DriverAid(
         {
             scoringSubsystem.setPitchMed()
             scoringSubsystem.openClaw()
-        }, { armSubsystem.setPE(pickupP, pickupE, false) }, {
-            PIDVals.pitchPIDFCo.d = 0.00025
+        }, null, {
+            if (!pickupSM.isStarted) {
+                pickupSM.start()
+            } else {
+                pickupSM.update()
+            }
             scoringSubsystem.setRotateAuto()
         }, armSubsystem
     )
@@ -131,6 +145,17 @@ class DriverAid(
         scoringSubsystem.setRotateCenter()
         scoringSubsystem.openClaw()
     }, { armSubsystem.setPE(humanP, humanE, null) }, null, armSubsystem)
+
+    val liftFunc = DAFunc(DAState.LIFT, {
+        scoringSubsystem.setPitchLow()
+        scoringSubsystem.closeClaw()
+    }, null, {
+        if (!firstLevelLift.isStarted) {
+            firstLevelLift.start()
+        } else {
+            firstLevelLift.update()
+        }
+    }, armSubsystem)
 
     fun isDone(tolerance: Double): Boolean {
         return daFunc.isEnded(tolerance)
@@ -153,13 +178,10 @@ class DriverAid(
         fun runALot() {
             runConstant?.run()
             armSubFunc?.run()
-            if (isEnded(200.0)){
-                daFunc = DAFunc(DAState.IDLE, {}, null, null, armSubsystem)
-            }
         }
 
         fun isEnded(tolerance: Double): Boolean {
-            return armSubsystem.bothAtTarget(tolerance) && armSubsystem.secondActionRun
+            return armSubsystem.isEnded(tolerance)
         }
     }
 
@@ -176,14 +198,49 @@ class DriverAid(
         return DAActions(funcs)
     }
 
-    fun lift() {
-        usingDA = true
-        if (!firstLevelLift.isStarted) {
-            firstLevelLift.start()
-        } else {
-            firstLevelLift.update()
-        }
+    enum class PickupState {
+        retract,
+        pivot,
+        extend,
+        stop
     }
+
+    val pickupSM = SequentialRunSM.Builder<PickupState>()
+        .state(PickupState.retract)
+        .onEnter(PickupState.retract) {
+            armSubsystem.setExtendTarget(0.0)
+            scoringSubsystem.setPitchMed()
+            scoringSubsystem.openClaw()
+        }
+        .transition(PickupState.retract) {
+            armSubsystem.isExtendAtTarget(100.0)
+        }
+        .state(PickupState.pivot)
+        .onEnter(PickupState.pivot) {
+            armSubsystem.setPitchTarget(pickupP)
+        }
+        .transition(PickupState.pivot) {
+            armSubsystem.isPitchAtTarget(200.0)
+        }
+        .state(PickupState.extend)
+        .onEnter(PickupState.extend) {
+            armSubsystem.setExtendTarget(pickupE)
+        }
+        .transition(PickupState.extend) {
+            armSubsystem.bothAtTarget()
+        }
+        .stopRunning(PickupState.stop)
+        .build()
+
+
+//    fun lift() {
+//        usingDA = true
+//        if (!firstLevelLift.isStarted) {
+//            firstLevelLift.start()
+//        } else {
+//            firstLevelLift.update()
+//        }
+//    }
 
 
     enum class AutoLift {
@@ -203,7 +260,9 @@ class DriverAid(
             }
             .transition(AutoLift.extend_pivot) {
                 armSubsystem.setPE(LiftVars.step1P, LiftVars.step1E, false)
-                armSubsystem.bothAtTarget()
+                val isEnded = armSubsystem.isEnded(400.0)
+                if (isEnded) armSubsystem.resetHitPosition()
+                isEnded
             }
             .state(AutoLift.hook1st)
             .onEnter(AutoLift.hook1st) {
@@ -211,7 +270,9 @@ class DriverAid(
             }
             .transition(AutoLift.hook1st) {
                 armSubsystem.setPE(LiftVars.step2P, LiftVars.step2E)
-                armSubsystem.bothAtTarget()
+                val isEnded = armSubsystem.isEnded(100.0)
+                if (isEnded) armSubsystem.resetHitPosition()
+                isEnded
             }
             .state(AutoLift.hook2nd)
             .onEnter(AutoLift.hook2nd) {
@@ -219,7 +280,9 @@ class DriverAid(
             }
             .transition(AutoLift.hook2nd) {
                 armSubsystem.setPE(LiftVars.step3P, LiftVars.step2E, false)
-                armSubsystem.isPitchAtTarget() && armSubsystem.isExtendAtTarget()
+                val isEnded = armSubsystem.isEnded(100.0)
+                if (isEnded) armSubsystem.resetHitPosition()
+                isEnded
             }
             .stopRunning(AutoLift.stop)
             .build()
