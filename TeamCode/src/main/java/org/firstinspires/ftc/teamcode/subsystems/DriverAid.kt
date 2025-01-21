@@ -244,7 +244,8 @@ class DriverAid(
 
 
     enum class AutoLift {
-        extend_pivot,
+                        extend_pivot,
+        hook,
         hook1st,
         hook2nd,
         stop
@@ -256,33 +257,25 @@ class DriverAid(
             .onEnter(AutoLift.extend_pivot) {
                 scoringSubsystem.setPitchLow()
                 scoringSubsystem.closeClaw()
-                armSubsystem.setPE(LiftVars.step1P, LiftVars.step1E, false)
+                armSubsystem.setPitchTargetDegrees(LiftVars.step1P)
+                armSubsystem.setExtendTarget(LiftVars.step1E)
             }
             .transition(AutoLift.extend_pivot) {
-                armSubsystem.setPE(LiftVars.step1P, LiftVars.step1E, false)
-                val isEnded = armSubsystem.isEnded(450.0)
-                if (isEnded) armSubsystem.resetHitPosition()
-                isEnded
+                armSubsystem.bothAtTarget(300.0)
             }
+            .state(AutoLift.hook)
+            .onEnter(AutoLift.hook) {
+                armSubsystem.setPitchTarget(2000.0)
+            }
+                .transition(AutoLift.hook) {
+                    armSubsystem.isPitchAtTarget(200.0)
+                }
             .state(AutoLift.hook1st)
             .onEnter(AutoLift.hook1st) {
                 armSubsystem.setPE(LiftVars.step2P, LiftVars.step2E)
             }
             .transition(AutoLift.hook1st) {
-                armSubsystem.setPE(LiftVars.step2P, LiftVars.step2E)
-                val isEnded = armSubsystem.isEnded(100.0)
-                if (isEnded) armSubsystem.resetHitPosition()
-                isEnded
-            }
-            .state(AutoLift.hook2nd)
-            .onEnter(AutoLift.hook2nd) {
-                armSubsystem.setPE(LiftVars.step3P, LiftVars.step2E, false)
-            }
-            .transition(AutoLift.hook2nd) {
-                armSubsystem.setPE(LiftVars.step3P, LiftVars.step2E, false)
-                val isEnded = armSubsystem.isEnded(100.0)
-                if (isEnded) armSubsystem.resetHitPosition()
-                isEnded
+                armSubsystem.bothAtTarget(200.0)
             }
             .stopRunning(AutoLift.stop)
             .build()
