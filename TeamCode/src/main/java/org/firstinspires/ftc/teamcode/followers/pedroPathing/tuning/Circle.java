@@ -25,10 +25,8 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Poin
 @Config
 //@Autonomous(name = "Circle", group = "Pathing Tuning")
 public class Circle extends OpMode {
-    private Telemetry telemetryA;
-
     public static double RADIUS = 10;
-
+    private Telemetry telemetryA;
     private Follower follower;
 
     private PathChain circle;

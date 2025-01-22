@@ -114,39 +114,21 @@ public class PoseUpdater {
     }
 
     /**
-     * This sets the offset for only the x position.
-     *
-     * @param offset This sets the offset.
-     */
-    public void setXOffset(double offset) {
-        xOffset = offset;
-    }
-
-    /**
-     * This sets the offset for only the y position.
-     *
-     * @param offset This sets the offset.
-     */
-    public void setYOffset(double offset) {
-        yOffset = offset;
-    }
-
-    /**
-     * This sets the offset for only the heading.
-     *
-     * @param offset This sets the offset.
-     */
-    public void setHeadingOffset(double offset) {
-        headingOffset = offset;
-    }
-
-    /**
      * This returns the x offset.
      *
      * @return returns the x offset.
      */
     public double getXOffset() {
         return xOffset;
+    }
+
+    /**
+     * This sets the offset for only the x position.
+     *
+     * @param offset This sets the offset.
+     */
+    public void setXOffset(double offset) {
+        xOffset = offset;
     }
 
     /**
@@ -159,12 +141,30 @@ public class PoseUpdater {
     }
 
     /**
+     * This sets the offset for only the y position.
+     *
+     * @param offset This sets the offset.
+     */
+    public void setYOffset(double offset) {
+        yOffset = offset;
+    }
+
+    /**
      * This returns the heading offset.
      *
      * @return returns the heading offset.
      */
     public double getHeadingOffset() {
         return headingOffset;
+    }
+
+    /**
+     * This sets the offset for only the heading.
+     *
+     * @param offset This sets the offset.
+     */
+    public void setHeadingOffset(double offset) {
+        headingOffset = offset;
     }
 
     /**
@@ -205,6 +205,16 @@ public class PoseUpdater {
     }
 
     /**
+     * This sets the current pose without using resettable offsets.
+     *
+     * @param set the pose to set the current pose to.
+     */
+    public void setPose(Pose set) {
+        resetOffset();
+        localizer.setPose(set);
+    }
+
+    /**
      * This returns the current raw pose, without any offsets applied. If this is called multiple times in
      * a single update, the current pose is cached so that subsequent calls don't have to repeat
      * localizer calls or calculations.
@@ -218,16 +228,6 @@ public class PoseUpdater {
         } else {
             return currentPose;
         }
-    }
-
-    /**
-     * This sets the current pose without using resettable offsets.
-     *
-     * @param set the pose to set the current pose to.
-     */
-    public void setPose(Pose set) {
-        resetOffset();
-        localizer.setPose(set);
     }
 
     /**

@@ -42,23 +42,23 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.NanoTimer;
  */
 @Config
 public class ThreeWheelLocalizer extends Localizer {
+    public static double FORWARD_TICKS_TO_INCHES = 0.00052189;//8192 * 1.37795 * 2 * Math.PI * 0.5008239963;
+    public static double STRAFE_TICKS_TO_INCHES = 0.00052189;//8192 * 1.37795 * 2 * Math.PI * 0.5018874659;
+    public static double TURN_TICKS_TO_RADIANS = 0.00053717;//8192 * 1.37795 * 2 * Math.PI * 0.5;
     private final HardwareMap hardwareMap;
-    private Pose startPose;
-    private Pose displacementPose;
-    private Pose currentVelocity;
-    private Matrix prevRotationMatrix;
     private final NanoTimer timer;
-    private long deltaTimeNano;
     private final Encoder leftEncoder;
     private final Encoder rightEncoder;
     private final Encoder strafeEncoder;
     private final Pose leftEncoderPose;
     private final Pose rightEncoderPose;
     private final Pose strafeEncoderPose;
+    private Pose startPose;
+    private Pose displacementPose;
+    private Pose currentVelocity;
+    private Matrix prevRotationMatrix;
+    private long deltaTimeNano;
     private double totalHeading;
-    public static double FORWARD_TICKS_TO_INCHES = 0.00052189;//8192 * 1.37795 * 2 * Math.PI * 0.5008239963;
-    public static double STRAFE_TICKS_TO_INCHES = 0.00052189;//8192 * 1.37795 * 2 * Math.PI * 0.5018874659;
-    public static double TURN_TICKS_TO_RADIANS = 0.00053717;//8192 * 1.37795 * 2 * Math.PI * 0.5;
 
     /**
      * This creates a new ThreeWheelLocalizer from a HardwareMap, with a starting Pose at (0,0)
@@ -116,6 +116,18 @@ public class ThreeWheelLocalizer extends Localizer {
     }
 
     /**
+     * This sets the current pose estimate. Changing this should just change the robot's current
+     * pose estimate, not anything to do with the start pose.
+     *
+     * @param setPose the new current pose estimate
+     */
+    @Override
+    public void setPose(Pose setPose) {
+        displacementPose = MathFunctions.subtractPoses(setPose, startPose);
+        resetEncoders();
+    }
+
+    /**
      * This returns the current velocity estimate.
      *
      * @return returns the current velocity estimate as a Pose
@@ -158,18 +170,6 @@ public class ThreeWheelLocalizer extends Localizer {
         prevRotationMatrix.set(1, 0, Math.sin(heading));
         prevRotationMatrix.set(1, 1, Math.cos(heading));
         prevRotationMatrix.set(2, 2, 1.0);
-    }
-
-    /**
-     * This sets the current pose estimate. Changing this should just change the robot's current
-     * pose estimate, not anything to do with the start pose.
-     *
-     * @param setPose the new current pose estimate
-     */
-    @Override
-    public void setPose(Pose setPose) {
-        displacementPose = MathFunctions.subtractPoses(setPose, startPose);
-        resetEncoders();
     }
 
     /**

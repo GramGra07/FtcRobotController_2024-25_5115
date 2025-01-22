@@ -43,29 +43,28 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.NanoTimer;
  */
 @Config
 public class TwoWheelLocalizer extends Localizer {
-    private final HardwareMap hardwareMap;
-    //    private IMU imu;
-    private final SparkFunOTOS spark;
-    private Pose startPose;
-    private Pose displacementPose;
-    private Pose currentVelocity;
-    private Matrix prevRotationMatrix;
-    private final NanoTimer timer;
-    private long deltaTimeNano;
-    private final Encoder forwardEncoder;
-    private final Encoder strafeEncoder;
-    private final Pose forwardEncoderPose;
-    private final Pose strafeEncoderPose;
-    private double previousIMUOrientation;
-    private double deltaRadians;
-    private double totalHeading;
     public static double FORWARD_TICKS_TO_INCHES = 0.003;
     public static double STRAFE_TICKS_TO_INCHES = 0.0042;
-
     public static double forwardEncX = 4;
     public static double forwardEncY = -3.16;
     public static double strafeEncX = -1.57;
     public static double strafeEncY = -1.44;
+    private final HardwareMap hardwareMap;
+    //    private IMU imu;
+    private final SparkFunOTOS spark;
+    private final NanoTimer timer;
+    private final Encoder forwardEncoder;
+    private final Encoder strafeEncoder;
+    private final Pose forwardEncoderPose;
+    private final Pose strafeEncoderPose;
+    private Pose startPose;
+    private Pose displacementPose;
+    private Pose currentVelocity;
+    private Matrix prevRotationMatrix;
+    private long deltaTimeNano;
+    private double previousIMUOrientation;
+    private double deltaRadians;
+    private double totalHeading;
 
     /**
      * This creates a new TwoWheelLocalizer from a HardwareMap, with a starting Pose at (0,0)
@@ -129,6 +128,18 @@ public class TwoWheelLocalizer extends Localizer {
     }
 
     /**
+     * This sets the current pose estimate. Changing this should just change the robot's current
+     * pose estimate, not anything to do with the start pose.
+     *
+     * @param setPose the new current pose estimate
+     */
+    @Override
+    public void setPose(Pose setPose) {
+        displacementPose = MathFunctions.subtractPoses(setPose, startPose);
+        resetEncoders();
+    }
+
+    /**
      * This returns the current velocity estimate.
      *
      * @return returns the current velocity estimate as a Pose
@@ -171,18 +182,6 @@ public class TwoWheelLocalizer extends Localizer {
         prevRotationMatrix.set(1, 0, Math.sin(heading));
         prevRotationMatrix.set(1, 1, Math.cos(heading));
         prevRotationMatrix.set(2, 2, 1.0);
-    }
-
-    /**
-     * This sets the current pose estimate. Changing this should just change the robot's current
-     * pose estimate, not anything to do with the start pose.
-     *
-     * @param setPose the new current pose estimate
-     */
-    @Override
-    public void setPose(Pose setPose) {
-        displacementPose = MathFunctions.subtractPoses(setPose, startPose);
-        resetEncoders();
     }
 
     /**

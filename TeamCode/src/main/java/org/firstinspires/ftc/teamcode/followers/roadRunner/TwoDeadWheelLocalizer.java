@@ -25,24 +25,14 @@ import org.firstinspires.ftc.teamcode.followers.roadRunner.messages.TwoDeadWheel
 
 @Config
 public final class TwoDeadWheelLocalizer implements Localizer {
-    public static class Params {
-        public double parYTicks = 1520.9; // y position of the parallel encoder (in tick units)
-        public double perpXTicks = -788; // x position of the perpendicular encoder (in tick units)
-    }
-
     public static Params PARAMS = new Params();
-
     public final Encoder par, perp;
     public final IMU imu;
-
+    private final double inPerTick;
     private int lastParPos, lastPerpPos;
     private Rotation2d lastHeading;
-
-    private final double inPerTick;
-
     private double lastRawHeadingVel, headingVelOffset;
     private boolean initialized;
-
     public TwoDeadWheelLocalizer(HardwareMap hardwareMap, IMU imu, double inPerTick) {
         // TODO: make sure your config has **motors** with these names (or change them)
         //   the encoders should be plugged into the slot matching the named motor
@@ -127,5 +117,10 @@ public final class TwoDeadWheelLocalizer implements Localizer {
         lastHeading = heading;
 
         return twist;
+    }
+
+    public static class Params {
+        public double parYTicks = 1520.9; // y position of the parallel encoder (in tick units)
+        public double perpXTicks = -788; // x position of the perpendicular encoder (in tick units)
     }
 }

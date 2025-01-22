@@ -12,6 +12,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class TeleRegistrar {
+    private static final List<Class<? extends OpMode>> opModeClasses = new ArrayList<>();
+
+    static {
+        opModeClasses.add(teleOp.class);
+
+    }
+
     private TeleRegistrar() {
     }
 
@@ -22,13 +29,6 @@ public final class TeleRegistrar {
                 .setFlavor(OpModeMeta.Flavor.TELEOP)
 
                 .build();
-    }
-
-    private static final List<Class<? extends OpMode>> opModeClasses = new ArrayList<>();
-
-    static {
-        opModeClasses.add(teleOp.class);
-
     }
 
     @OpModeRegistrar

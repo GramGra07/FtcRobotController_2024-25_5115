@@ -26,12 +26,10 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.Drawing;
 @Config
 //@Autonomous(name = "Lateral Localizer Tuner", group = "Pathing Tuning")
 public class LateralTuner extends OpMode {
+    public static double DISTANCE = 48;
     private PoseUpdater poseUpdater;
     private DashboardPoseTracker dashboardPoseTracker;
-
     private Telemetry telemetryA;
-
-    public static double DISTANCE = 48;
 
     /**
      * This initializes the PoseUpdater as well as the FTC Dashboard telemetry.

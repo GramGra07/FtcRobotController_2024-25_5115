@@ -19,21 +19,11 @@ import org.firstinspires.ftc.teamcode.followers.roadRunner.messages.ThreeDeadWhe
 
 @Config
 public final class ThreeDeadWheelLocalizer implements Localizer {
-    public static class Params {
-        public double par0YTicks = 1750.0; // y position of the first parallel encoder (in tick units)
-        public double par1YTicks = -1525.0; // y position of the second parallel encoder (in tick units)
-        public double perpXTicks = 785.0; // x position of the perpendicular encoder (in tick units)
-    }
-
     public static Params PARAMS = new Params();
-
     public final Encoder par0, par1, perp;
-
     public final double inPerTick;
-
     private int lastPar0Pos, lastPar1Pos, lastPerpPos;
     private boolean initialized;
-
     public ThreeDeadWheelLocalizer(HardwareMap hardwareMap, double inPerTick) {
         // TODO: make sure your config has **motors** with these names (or change them)
         //   the encoders should be plugged into the slot matching the named motor
@@ -97,5 +87,11 @@ public final class ThreeDeadWheelLocalizer implements Localizer {
         lastPerpPos = (int) perpPosVel.position;
 
         return twist;
+    }
+
+    public static class Params {
+        public double par0YTicks = 1750.0; // y position of the first parallel encoder (in tick units)
+        public double par1YTicks = -1525.0; // y position of the second parallel encoder (in tick units)
+        public double perpXTicks = 785.0; // x position of the perpendicular encoder (in tick units)
     }
 }

@@ -114,8 +114,8 @@ class DriverAid(
 
     val highSpecimenFunc = DAFunc(DAState.HIGH_SPECIMEN, {
         scoringSubsystem.setRotateCenter()
-    }, { armSubsystem.setPE(hSpecimenP, hSpecimenE, ) }, {
-        scoringSubsystem.specimenRotate(hSpecimenP*armSubsystem.degreePerTick)
+    }, { armSubsystem.setPE(hSpecimenP, hSpecimenE) }, {
+        scoringSubsystem.specimenRotate(hSpecimenP * armSubsystem.degreePerTick)
     }, armSubsystem)
 
     val highBasketFunc = DAFunc(DAState.HIGH_BASKET, {
@@ -244,7 +244,7 @@ class DriverAid(
 
 
     enum class AutoLift {
-                        extend_pivot,
+        extend_pivot,
         hook,
         hook1st,
         hook2nd,
@@ -267,9 +267,9 @@ class DriverAid(
             .onEnter(AutoLift.hook) {
                 armSubsystem.setPitchTarget(2000.0)
             }
-                .transition(AutoLift.hook) {
-                    armSubsystem.isPitchAtTarget(200.0)
-                }
+            .transition(AutoLift.hook) {
+                armSubsystem.isPitchAtTarget(200.0)
+            }
             .state(AutoLift.hook1st)
             .onEnter(AutoLift.hook1st) {
                 armSubsystem.setPE(LiftVars.step2P, LiftVars.step2E)

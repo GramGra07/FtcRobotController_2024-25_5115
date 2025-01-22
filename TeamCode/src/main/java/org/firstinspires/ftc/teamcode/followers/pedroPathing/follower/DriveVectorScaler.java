@@ -152,20 +152,20 @@ public class DriveVectorScaler {
     }
 
     /**
-     * Sets the maximum power that can be used by the drive vector scaler. Clamped between 0 and 1.
-     *
-     * @param maxPowerScaling setting the max power scaling
-     */
-    public void setMaxPowerScaling(double maxPowerScaling) {
-        this.maxPowerScaling = MathFunctions.clamp(maxPowerScaling, 0, 1);
-    }
-
-    /**
      * Gets the maximum power that can be used by the drive vector scaler. Ranges between 0 and 1.
      *
      * @return returns the max power scaling
      */
     public double getMaxPowerScaling() {
         return maxPowerScaling;
+    }
+
+    /**
+     * Sets the maximum power that can be used by the drive vector scaler. Clamped between 0 and 1.
+     *
+     * @param maxPowerScaling setting the max power scaling
+     */
+    public void setMaxPowerScaling(double maxPowerScaling) {
+        this.maxPowerScaling = MathFunctions.clamp(maxPowerScaling, 0, 1);
     }
 }

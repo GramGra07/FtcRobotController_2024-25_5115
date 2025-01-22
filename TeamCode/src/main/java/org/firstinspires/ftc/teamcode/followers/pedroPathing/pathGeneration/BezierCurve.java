@@ -21,16 +21,11 @@ import java.util.Collections;
 public class BezierCurve {
     // This contains the coefficients for the curve points
     private final ArrayList<BezierCurveCoefficients> pointCoefficients = new ArrayList<>();
-
+    private final int APPROXIMATION_STEPS = FollowerConstants.APPROXIMATION_STEPS;
+    private final int DASHBOARD_DRAWING_APPROXIMATION_STEPS = 100;
     // This contains the control points for the Bezier curve
     private ArrayList<Point> controlPoints = new ArrayList<>();
-
     private Vector endTangent = new Vector();
-
-    private final int APPROXIMATION_STEPS = FollowerConstants.APPROXIMATION_STEPS;
-
-    private final int DASHBOARD_DRAWING_APPROXIMATION_STEPS = 100;
-
     private double[][] dashboardDrawingPoints;
 
     private double UNIT_TO_TIME;

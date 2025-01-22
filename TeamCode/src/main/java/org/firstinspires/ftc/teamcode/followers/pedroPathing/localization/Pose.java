@@ -50,39 +50,21 @@ public class Pose {
     }
 
     /**
-     * This sets the x value.
-     *
-     * @param set the x value
-     */
-    public void setX(double set) {
-        x = set;
-    }
-
-    /**
-     * This sets the y value.
-     *
-     * @param set the y value
-     */
-    public void setY(double set) {
-        y = set;
-    }
-
-    /**
-     * This sets the heading value.
-     *
-     * @param set the heading value
-     */
-    public void setHeading(double set) {
-        heading = MathFunctions.normalizeAngle(set);
-    }
-
-    /**
      * This returns the x value.
      *
      * @return returns the x value
      */
     public double getX() {
         return x;
+    }
+
+    /**
+     * This sets the x value.
+     *
+     * @param set the x value
+     */
+    public void setX(double set) {
+        x = set;
     }
 
     /**
@@ -95,12 +77,30 @@ public class Pose {
     }
 
     /**
+     * This sets the y value.
+     *
+     * @param set the y value
+     */
+    public void setY(double set) {
+        y = set;
+    }
+
+    /**
      * This returns the heading value.
      *
      * @return returns the heading value
      */
     public double getHeading() {
         return heading;
+    }
+
+    /**
+     * This sets the heading value.
+     *
+     * @param set the heading value
+     */
+    public void setHeading(double set) {
+        heading = MathFunctions.normalizeAngle(set);
     }
 
     /**

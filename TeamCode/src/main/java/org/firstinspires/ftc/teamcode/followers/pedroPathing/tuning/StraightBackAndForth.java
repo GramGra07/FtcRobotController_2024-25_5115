@@ -30,10 +30,8 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.pathGeneration.Poin
 @Autonomous(name = "Straight Back And Forth", group = "Pathing Tuning")
 @Disabled
 public class StraightBackAndForth extends OpMode {
-    private Telemetry telemetryA;
-
     public static double DISTANCE = 40;
-
+    private Telemetry telemetryA;
     private boolean forward = true;
 
     private Follower follower;

@@ -26,12 +26,10 @@ import org.firstinspires.ftc.teamcode.followers.pedroPathing.util.Drawing;
 @Config
 //@Autonomous(name = "Turn Localizer Tuner", group = "Pathing Tuning")
 public class TurnTuner extends OpMode {
+    public static double ANGLE = 2 * Math.PI;
     private PoseUpdater poseUpdater;
     private DashboardPoseTracker dashboardPoseTracker;
-
     private Telemetry telemetryA;
-
-    public static double ANGLE = 2 * Math.PI;
 
     /**
      * This initializes the PoseUpdater as well as the FTC Dashboard telemetry.

@@ -14,10 +14,10 @@ public class DashboardPoseTracker {
     private final double[] xPositions;
     private final double[] yPositions;
     private final PoseUpdater poseUpdater;
-    private long lastUpdateTime;
     private final int TRACKING_LENGTH = 1500;
     private final long UPDATE_TIME = 50;
     private final int TRACKING_SIZE = TRACKING_LENGTH / (int) UPDATE_TIME;
+    private long lastUpdateTime;
 
     /**
      * This creates a new DashboardPoseTracker from a PoseUpdater.

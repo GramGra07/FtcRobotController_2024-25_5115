@@ -63,6 +63,15 @@ public class PathChain {
     }
 
     /**
+     * This returns the PathCallbacks of this PathChain in an ArrayList.
+     *
+     * @return returns the PathCallbacks.
+     */
+    public ArrayList<PathCallback> getCallbacks() {
+        return callbacks;
+    }
+
+    /**
      * This sets the PathCallbacks of the PathChain with some specified PathCallbacks.
      *
      * @param callbacks the specified PathCallbacks.
@@ -78,14 +87,5 @@ public class PathChain {
      */
     public void setCallbacks(ArrayList<PathCallback> callbacks) {
         this.callbacks = callbacks;
-    }
-
-    /**
-     * This returns the PathCallbacks of this PathChain in an ArrayList.
-     *
-     * @return returns the PathCallbacks.
-     */
-    public ArrayList<PathCallback> getCallbacks() {
-        return callbacks;
     }
 }

@@ -12,17 +12,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class AutoRegistrar {
-    private AutoRegistrar() {
-    }
-
-    private static OpModeMeta metaForClass(Class<? extends OpMode> cls, Alliance alliance) {
-        return new OpModeMeta.Builder()
-                .setName(cls.getSimpleName())// + alliance.name())
-                .setGroup(GroupingTitles.auto)
-                .setFlavor(OpModeMeta.Flavor.AUTONOMOUS)
-                .build();
-    }
-
     private static final List<Class<? extends OpMode>> opModeClasses = new ArrayList<>();
 
     static {
@@ -35,6 +24,17 @@ public final class AutoRegistrar {
 //        opModeClasses.add(parkHuman.class);
 //        opModeClasses.add(testArmAuto.class);
 
+    }
+
+    private AutoRegistrar() {
+    }
+
+    private static OpModeMeta metaForClass(Class<? extends OpMode> cls, Alliance alliance) {
+        return new OpModeMeta.Builder()
+                .setName(cls.getSimpleName())// + alliance.name())
+                .setGroup(GroupingTitles.auto)
+                .setFlavor(OpModeMeta.Flavor.AUTONOMOUS)
+                .build();
     }
 
     @OpModeRegistrar

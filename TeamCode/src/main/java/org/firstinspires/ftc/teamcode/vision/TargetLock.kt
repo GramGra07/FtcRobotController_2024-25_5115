@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.vision
 
 import android.graphics.Bitmap
 import android.graphics.Canvas
-import com.acmerobotics.dashboard.config.Config
 import org.firstinspires.ftc.robotcore.external.Telemetry
 import org.firstinspires.ftc.robotcore.external.function.Consumer
 import org.firstinspires.ftc.robotcore.external.function.Continuation
@@ -11,7 +10,6 @@ import org.firstinspires.ftc.robotcore.internal.camera.calibration.CameraCalibra
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.Alliance
 import org.firstinspires.ftc.teamcode.utilClass.CameraLock
 import org.firstinspires.ftc.teamcode.utilClass.objects.BinaryArray
-import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.VarConfig
 import org.firstinspires.ftc.vision.VisionProcessor
 import org.opencv.android.Utils
 import org.opencv.core.Core
@@ -147,7 +145,7 @@ class TargetLock(
         angle = if (rect.size.width < rect.size.height) {
             abs(angle)
         } else {
-            90- abs(angle)
+            90 - abs(angle)
         }
 
         val wrappedAngle = (-(56 / 90.0) * angle + 63).toInt()

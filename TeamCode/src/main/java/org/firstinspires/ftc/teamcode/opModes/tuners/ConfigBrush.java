@@ -48,6 +48,11 @@ public class ConfigBrush extends LinearOpMode {
  * Online documentation: <a href="https://docs.brushlandlabs.com">...</a>
  */
 class ColorRangefinder {
+    // other writeable registers
+    private static final byte CALIB_A_VAL_0 = 0x32;
+    private static final byte PS_DISTANCE_0 = 0x42;
+    private static final byte LED_BRIGHTNESS = 0x46;
+    private static final byte I2C_ADDRESS_REG = 0x47;
     public final RevColorSensorV3 emulator;
     private final I2cDeviceSynchSimple i2c;
 
@@ -55,6 +60,10 @@ class ColorRangefinder {
         this.emulator = emulator;
         this.i2c = emulator.getDeviceClient();
         this.i2c.enableWriteCoalescing(true);
+    }
+
+    public static int invertHue(int hue360) {
+        return ((hue360 - 180) % 360);
     }
 
     /**
@@ -212,16 +221,6 @@ class ColorRangefinder {
         PinNum(int modeAddress) {
             this.modeAddress = (byte) modeAddress;
         }
-    }
-
-    // other writeable registers
-    private static final byte CALIB_A_VAL_0 = 0x32;
-    private static final byte PS_DISTANCE_0 = 0x42;
-    private static final byte LED_BRIGHTNESS = 0x46;
-    private static final byte I2C_ADDRESS_REG = 0x47;
-
-    public static int invertHue(int hue360) {
-        return ((hue360 - 180) % 360);
     }
 
     public enum DigitalMode {
