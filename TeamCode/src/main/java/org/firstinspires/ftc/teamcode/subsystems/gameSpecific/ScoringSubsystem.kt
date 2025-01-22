@@ -201,7 +201,7 @@ class ScoringSubsystem(
             }
 
             RotateState.AUTO -> {
-                rotateServo.setPosition(targetLock.angle)
+                if (shouldRotate)rotateServo.setPosition(targetLock.angle)
                 updateBlink()
                 rotateState = RotateState.IDLE
             }
@@ -223,7 +223,7 @@ class ScoringSubsystem(
 
     fun specimenRotate(pangle: Double) {
         val angle2 = 90 - pangle
-        val angleSend = (angle2-30)
+        val angleSend = (angle2-20)
         pitchServo.setPose(angleSend)
     }
 

@@ -213,7 +213,7 @@ class DriverAid(
             scoringSubsystem.openClaw()
         }
         .transition(PickupState.retract) {
-            armSubsystem.isExtendAtTarget(100.0)
+            armSubsystem.isExtendAtTarget(200.0)
         }
         .state(PickupState.pivot)
         .onEnter(PickupState.pivot) {

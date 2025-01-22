@@ -284,7 +284,6 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
     }
 
     fun setPE(p: Double, e: Double, pitchFirst: Boolean? = null) {
-
         when (pitchFirst) {
             null -> {
                 // Default behavior: Set pitch and extend simultaneously
