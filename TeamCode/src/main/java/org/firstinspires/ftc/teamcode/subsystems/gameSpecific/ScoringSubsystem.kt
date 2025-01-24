@@ -90,7 +90,7 @@ class ScoringSubsystem(
 
 
     fun update() {
-        updateLock()
+        if (!auto)updateLock()
         updateServos()
     }
 
@@ -199,7 +199,13 @@ class ScoringSubsystem(
             }
 
             RotateState.AUTO -> {
-                if (shouldRotate) rotateServo.setPosition(targetLock.angle)
+                if (shouldRotate) {
+                    if (targetLock.angle != 0.0) {
+                        rotateServo.setPosition(targetLock.angle)
+                    }else{
+                        rotateServo.setPosition(ServoUtil.rotateCenter)
+                    }
+                }
                 updateBlink()
                 rotateState = RotateState.IDLE
             }
@@ -212,12 +218,8 @@ class ScoringSubsystem(
         setPitchHigh()
         closeClaw()
         setRotateCenter()
+        blink.setPatternCo()
         update()
-        if (auto) {
-            blink.setPatternCo(GameStorage.alliance.toBinary2().toColor().blinkFrom())
-        } else {
-            blink.setPatternCo()
-        }
     }
 
     fun specimenRotate(pangle: Double) {

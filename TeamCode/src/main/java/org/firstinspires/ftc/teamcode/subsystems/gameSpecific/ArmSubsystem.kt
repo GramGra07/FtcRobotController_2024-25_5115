@@ -289,6 +289,7 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
                 // Default behavior: Set pitch and extend simultaneously
                 if (!pitchHitPosition) setPitchTarget(p)
                 if (!extendHitPosition) setExtendTarget(e)
+                secondActionRun = true
             }
 
             true -> {

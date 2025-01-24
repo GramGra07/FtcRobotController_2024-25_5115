@@ -21,8 +21,9 @@ class oneSample(val alliance: Alliance) : LinearOpMode() {
         waitForStart()
 
         if (opModeIsActive()) {
+//            robot.hiBask()
             robot.scorePreloadSample()
-            robot.end()
+            robot.collapse()
         }
     }
 }

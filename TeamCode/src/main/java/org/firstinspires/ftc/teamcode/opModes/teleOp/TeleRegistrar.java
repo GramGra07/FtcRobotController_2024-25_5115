@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.OpModeRegistrar;
 
 import org.firstinspires.ftc.robotcore.internal.opmode.OpModeMeta;
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.Alliance;
+import org.firstinspires.ftc.teamcode.opModes.tuners.startupTest;
 import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles;
 
 import java.util.ArrayList;
@@ -16,7 +17,7 @@ public final class TeleRegistrar {
 
     static {
         opModeClasses.add(teleOp.class);
-
+        opModeClasses.add(startupTest.class);
     }
 
     private TeleRegistrar() {

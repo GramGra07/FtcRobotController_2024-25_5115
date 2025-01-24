@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.Alliance
 
 //@Autonomous(group = GroupingTitles.auto) //@Disabled//disabling the opmode
-class FullSampleAuto(val alliance: Alliance) : LinearOpMode() {
+class fourSample(val alliance: Alliance) : LinearOpMode() {
     override fun runOpMode() { //if opmode is started
         val robot = AutoHardware(
             this,
@@ -16,24 +16,19 @@ class FullSampleAuto(val alliance: Alliance) : LinearOpMode() {
                 redStartLeft,
             )
         )
+
         robot.once()
         waitForStart()
 
         if (opModeIsActive()) {
             robot.scorePreloadSample()
-            robot.getSampleR()
-            robot.scoreSample(
-
-            )
-            robot.getSampleM()
-            robot.scoreSample(
-
-            )
-            robot.getSampleL()
-            robot.scoreSample(
-
-            )
-            robot.end()
+            robot.getSample(50.0)
+            robot.scoreSample()
+            robot.getSample()
+            robot.scoreSample()
+            robot.getSample(130.0)
+            robot.scoreSample()
+            robot.collapse()
         }
     }
 }

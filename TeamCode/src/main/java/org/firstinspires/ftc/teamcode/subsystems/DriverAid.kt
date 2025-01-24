@@ -26,6 +26,7 @@ class DriverAid(
         HIGH_SPECIMEN,
         HIGH_BASKET,
         PICKUP,
+        AUTOPick,
         HUMAN,
         auto,
         LIFT
@@ -124,6 +125,42 @@ class DriverAid(
     }, { armSubsystem.setPE(hBasketP, hBasketE, true) }, {
         armSubsystem.pMax = 0.5
     }, armSubsystem)
+
+
+    enum class PickupState {
+        retract,
+        pivot,
+        extend,
+        stop
+    }
+
+    val pickupSM = SequentialRunSM.Builder<PickupState>()
+        .state(PickupState.retract)
+        .onEnter(PickupState.retract) {
+            armSubsystem.setExtendTarget(0.0)
+            scoringSubsystem.setPitchMed()
+            scoringSubsystem.openClaw()
+        }
+        .transition(PickupState.retract) {
+            armSubsystem.isExtendAtTarget(250.0)
+        }
+        .state(PickupState.pivot)
+        .onEnter(PickupState.pivot) {
+            armSubsystem.setPitchTarget(pickupP)
+        }
+        .transition(PickupState.pivot) {
+            armSubsystem.isPitchAtTarget(200.0)
+        }
+        .state(PickupState.extend)
+        .onEnter(PickupState.extend) {
+            armSubsystem.setExtendTarget(pickupE)
+        }
+        .transition(PickupState.extend) {
+            armSubsystem.bothAtTarget()
+        }
+        .stopRunning(PickupState.stop)
+        .build()
+
     val pickupFunc = DAFunc(
         DAState.PICKUP,
         {
@@ -137,7 +174,7 @@ class DriverAid(
                 pickupSM.update()
             }
             scoringSubsystem.setRotateAuto()
-        }, armSubsystem
+        }, armSubsystem,pickupSM
     )
 
     val humanFunc = DAFunc(DAState.HUMAN, {
@@ -166,7 +203,8 @@ class DriverAid(
         private val funcs: Runnable,
         private val armSubFunc: Runnable?,
         private val runConstant: Runnable?,
-        private val armSubsystem: ArmSubsystem
+        private val armSubsystem: ArmSubsystem,
+        private val pickupSM: SequentialRunSM<PickupState>? = null
     ) {
         fun runInit() {
             armSubsystem.resetHitPosition()
@@ -181,6 +219,9 @@ class DriverAid(
         }
 
         fun isEnded(tolerance: Double): Boolean {
+            if (daState == DAState.PICKUP){
+                return (pickupSM?.isRunning?.not()?:false)
+            }
             return armSubsystem.isEnded(tolerance)
         }
     }
@@ -198,39 +239,6 @@ class DriverAid(
         return DAActions(funcs)
     }
 
-    enum class PickupState {
-        retract,
-        pivot,
-        extend,
-        stop
-    }
-
-    val pickupSM = SequentialRunSM.Builder<PickupState>()
-        .state(PickupState.retract)
-        .onEnter(PickupState.retract) {
-            armSubsystem.setExtendTarget(0.0)
-            scoringSubsystem.setPitchMed()
-            scoringSubsystem.openClaw()
-        }
-        .transition(PickupState.retract) {
-            armSubsystem.isExtendAtTarget(200.0)
-        }
-        .state(PickupState.pivot)
-        .onEnter(PickupState.pivot) {
-            armSubsystem.setPitchTarget(pickupP)
-        }
-        .transition(PickupState.pivot) {
-            armSubsystem.isPitchAtTarget(200.0)
-        }
-        .state(PickupState.extend)
-        .onEnter(PickupState.extend) {
-            armSubsystem.setExtendTarget(pickupE)
-        }
-        .transition(PickupState.extend) {
-            armSubsystem.bothAtTarget()
-        }
-        .stopRunning(PickupState.stop)
-        .build()
 
 
 //    fun lift() {

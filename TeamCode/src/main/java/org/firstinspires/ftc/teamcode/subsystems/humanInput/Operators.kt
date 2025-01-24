@@ -34,12 +34,14 @@ object Operators {
 
         if (myOpMode.gamepad2.buttonJustPressed(GamepadExtensions.PushButtons.TRIANGLE, 2)) {
             scoringSubsystem.setRotateCenter()
+            scoringSubsystem.shouldRotate = false
         } else if (myOpMode.gamepad2.buttonJustPressed(
                 GamepadExtensions.PushButtons.SQUARE,
                 2
             )
         ) {
             scoringSubsystem.setRotateLeft()
+            scoringSubsystem.shouldRotate = false
         } else if (myOpMode.gamepad2.buttonJustPressed(
                 GamepadExtensions.PushButtons.CIRCLE,
                 2
