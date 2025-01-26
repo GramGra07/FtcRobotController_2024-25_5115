@@ -35,11 +35,19 @@ public final class TeleRegistrar {
     @OpModeRegistrar
     public static void register(OpModeManager manager) {
         for (Class<? extends OpMode> opModeClass : opModeClasses) {
-            for (Alliance alliance : Alliance.values()) {
+            if (opModeClass == startupTest.class){
                 manager.register(
-                        metaForClass(opModeClass, alliance),
-                        createInstance(opModeClass, alliance)
+                        metaForClass(opModeClass, Alliance.RED),
+                        createInstance(opModeClass, Alliance.RED)
                 );
+                continue;
+            }else {
+                for (Alliance alliance : Alliance.values()) {
+                    manager.register(
+                            metaForClass(opModeClass, alliance),
+                            createInstance(opModeClass, alliance)
+                    );
+                }
             }
         }
     }

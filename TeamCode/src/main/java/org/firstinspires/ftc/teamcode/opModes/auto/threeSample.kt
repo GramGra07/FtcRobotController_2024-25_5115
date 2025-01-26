@@ -22,9 +22,9 @@ class threeSample(val alliance: Alliance) : LinearOpMode() {
 
         if (opModeIsActive()) {
             robot.scorePreloadSample()
-            robot.getSample(50.0)
+            robot.getSample(AutoHardware.SampleLocation.RIGHT)
             robot.scoreSample()
-            robot.getSample()
+            robot.getSample(AutoHardware.SampleLocation.CENTER)
             robot.scoreSample()
             robot.collapse()
         }

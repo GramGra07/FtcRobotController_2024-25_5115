@@ -8,8 +8,8 @@ public class DAVars {
     public static double collapseP = 0;
     public static double hSpecimenE = 1450;
     public static double hSpecimenP = 850;
-    public static double hBasketE = 3200;
-    public static double hBasketP = 1700;
+    public static double hBasketE = 3000;
+    public static double hBasketP = 1725;//1850
     public static double pickUpE = 2000;
     public static double pickUpP = 0;
     public static double humanE = 500;

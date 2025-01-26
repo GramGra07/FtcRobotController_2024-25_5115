@@ -113,8 +113,10 @@ open class HardwareConfig(
         )
         driveSubsystem.update()
 
-        loopTimeController.every(3) {
-            scoringSubsystem.update()
+        if (hasMovedOnInit) {
+            loopTimeController.every(3) {
+                scoringSubsystem.update()
+            }
         }
         driverAid.update()
 //        loopTimeController.every(3) {

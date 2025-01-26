@@ -22,11 +22,11 @@ class fourSample(val alliance: Alliance) : LinearOpMode() {
 
         if (opModeIsActive()) {
             robot.scorePreloadSample()
-            robot.getSample(50.0)
+            robot.getSample(AutoHardware.SampleLocation.RIGHT)
             robot.scoreSample()
-            robot.getSample()
+            robot.getSample(AutoHardware.SampleLocation.CENTER)
             robot.scoreSample()
-            robot.getSample(130.0)
+            robot.getSample(AutoHardware.SampleLocation.LEFT)
             robot.scoreSample()
             robot.collapse()
         }

@@ -67,10 +67,7 @@ class DriverAid(
         private var collapseP = DAVars.collapseP
 
         private var hSpecimenE = DAVars.hSpecimenE
-        private var hSpecimenP = DAVars.hSpecimenP
         private var hBasketE = DAVars.hBasketE
-        private var hBasketP = DAVars.hBasketP
-        private var pickupE = DAVars.pickUpE
         private var pickupP = DAVars.pickUpP
         private var humanE = DAVars.humanE
         private var humanP = DAVars.humanP
@@ -85,10 +82,7 @@ class DriverAid(
             collapseE = DAVars.collapseE
             collapseP = DAVars.collapseP
             hSpecimenE = DAVars.hSpecimenE
-            hSpecimenP = DAVars.hSpecimenP
             hBasketE = DAVars.hBasketE
-            hBasketP = DAVars.hBasketP
-            pickupE = DAVars.pickUpE
             pickupP = DAVars.pickUpP
             humanE = DAVars.humanE
             humanP = DAVars.humanP
@@ -111,18 +105,19 @@ class DriverAid(
     val collapseFunc = DAFunc(DAState.COLLAPSE, {
         scoringSubsystem.closeClaw()
         scoringSubsystem.setRotateIdle()
-    }, { armSubsystem.setPE(collapseP, collapseE, false) }, null, armSubsystem)
+    }, { val bool = if (!auto) false else null
+        armSubsystem.setPE(collapseP, collapseE, false) }, null, armSubsystem)
 
     val highSpecimenFunc = DAFunc(DAState.HIGH_SPECIMEN, {
         scoringSubsystem.setRotateCenter()
-    }, { armSubsystem.setPE(hSpecimenP, hSpecimenE) }, {
-        scoringSubsystem.specimenRotate(hSpecimenP * armSubsystem.degreePerTick)
+    }, { armSubsystem.setPE(DAVars.hSpecimenP, hSpecimenE) }, {
+        scoringSubsystem.specimenRotate(DAVars.hSpecimenP * armSubsystem.degreePerTick)
     }, armSubsystem)
 
     val highBasketFunc = DAFunc(DAState.HIGH_BASKET, {
         scoringSubsystem.setPitchMed()
         scoringSubsystem.setRotateCenter()
-    }, { armSubsystem.setPE(hBasketP, hBasketE, true) }, {
+    }, { armSubsystem.setPE(DAVars.hBasketP, hBasketE, true) }, {
         armSubsystem.pMax = 0.5
     }, armSubsystem)
 
@@ -138,6 +133,9 @@ class DriverAid(
         .state(PickupState.retract)
         .onEnter(PickupState.retract) {
             armSubsystem.setExtendTarget(0.0)
+            if (auto){
+                armSubsystem.setPitchTarget(1500.0)
+            }
             scoringSubsystem.setPitchMed()
             scoringSubsystem.openClaw()
         }
@@ -153,7 +151,7 @@ class DriverAid(
         }
         .state(PickupState.extend)
         .onEnter(PickupState.extend) {
-            armSubsystem.setExtendTarget(pickupE)
+            armSubsystem.setExtendTarget(DAVars.pickUpE)
         }
         .transition(PickupState.extend) {
             armSubsystem.bothAtTarget()

@@ -22,7 +22,7 @@ class twoSample(val alliance: Alliance) : LinearOpMode() {
 
         if (opModeIsActive()) {
             robot.scorePreloadSample()
-            robot.getSample(50.0)
+            robot.getSample(AutoHardware.SampleLocation.RIGHT)
             robot.scoreSample()
             robot.collapse()
         }

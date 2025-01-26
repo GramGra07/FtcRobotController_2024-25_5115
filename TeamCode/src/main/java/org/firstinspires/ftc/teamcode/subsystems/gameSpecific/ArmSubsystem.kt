@@ -72,7 +72,7 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
 
     private val maxExtendIn = 32.5
     private val maxExtendTicksTOTAL = 2200 * gearRatioMult
-    private val ticksPerInchExtend = (maxExtendTicksTOTAL / maxExtendIn)
+    val ticksPerInchExtend = (maxExtendTicksTOTAL / maxExtendIn)
     var maxExtendTicks = maxExtendTicksTOTAL
 
 //    var distanceSensor: DistanceSensor
