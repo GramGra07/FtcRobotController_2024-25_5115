@@ -93,7 +93,6 @@ open class HardwareConfig(
         once = false
         localizerSubsystem.draw(dashboard)
         if (!auto) {
-            canMove = false
             loopTimeController = LoopTimeController(timer)
             telemetry.update()
         }
@@ -198,9 +197,7 @@ open class HardwareConfig(
     ) {
         if ((!myOpMode.gamepad1.atRest() || !myOpMode.gamepad2.atRest()) && !hasMovedOnInit
         ) {
-            scoringSubsystem.setup()
             hasMovedOnInit = true
-
         }
     }
 }

@@ -23,6 +23,7 @@ import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.ServoUtil
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.ServoUtil.pivotHigh
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.ServoUtil.pivotLow
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.ServoUtil.pivotMid
+import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.ServoUtil.rotateLeft
 
 
 class ScoringSubsystem(
@@ -56,6 +57,7 @@ class ScoringSubsystem(
         CENTER,
         AUTO,
         IDLE,
+        FREAK,
     }
 
     private var rotateServo: AxonServo
@@ -77,7 +79,7 @@ class ScoringSubsystem(
         pitchServo = SynchronizedServo(ahwMap, "pitchServo", true)
         rotateServo = AxonServo(ahwMap, "rotateServo")
         blink = ahwMap.get(RevBlinkinLedDriver::class.java, "blink")
-        setup()
+        if (auto)setup()
     }
 
     fun updateLock() {
@@ -120,6 +122,9 @@ class ScoringSubsystem(
 
     fun setRotateLeft() {
         rotateState = RotateState.LEFT
+    }
+    fun setRotateFreakBob(){
+        rotateState = RotateState.FREAK
     }
 
     fun setRotateCenter() {
@@ -191,6 +196,11 @@ class ScoringSubsystem(
 
             RotateState.CENTER -> {
                 rotateServo.setPosition(ServoUtil.rotateCenter)
+                blink.setPatternCo()
+                rotateState = RotateState.IDLE
+            }
+            RotateState.FREAK -> {
+                rotateServo.setPosition(((ServoUtil.rotateCenter+ rotateLeft)/2)+ rotateLeft)
                 blink.setPatternCo()
                 rotateState = RotateState.IDLE
             }

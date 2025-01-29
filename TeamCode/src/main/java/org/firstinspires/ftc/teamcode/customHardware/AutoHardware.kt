@@ -59,7 +59,7 @@ class AutoHardware(
         val redEndLeft = Pose2d(24.0, 10.0, Math.toRadians(0.0))
         val redEndRight = Pose2d(-10.0, -10.0, Math.toRadians(0.0))
         val redHuman = Pose2d(46.0, -60.0, Math.toRadians(-90.0))
-        val redBasket = Pose2d(-43.0, -43.0, Math.toRadians(45.0))
+        val redBasket = Pose2d(-42.0, -44.0, Math.toRadians(45.0))
         val redSpecimen = Pose2d(0.0, -34.0, redStartRight.heading.toDouble())
         val redSample = Pose2d(60.0, -12.0, Math.toRadians(0.0))
         val redNeutralSample = Pose2d(-58.0, -40.0, redStartRight.heading.toDouble())
@@ -82,7 +82,7 @@ class AutoHardware(
                     SequentialAction(
                         drive.actionBuilder(lastPose)
                             .strafeToConstantHeading(
-                                Vector2d(redSpecimen.position.x, redSpecimen.position.y),
+                                Vector2d(redSpecimen.position.x, redSpecimen.position.y-5),
                             )
                             .build(),
                         endAction()
@@ -95,7 +95,7 @@ class AutoHardware(
                         Runnable { scoringSubsystem.openClaw() },
                     )
                 ),
-                InstantAction{DAVars.hSpecimenP = 850.0}
+                InstantAction{DAVars.hSpecimenP = 950.0}
             )
         )
     }
@@ -211,27 +211,23 @@ class AutoHardware(
                 ParallelAction(
                     SequentialAction(
                         SleepAction(0.5),
-                        driverAid.daAction(listOf(Runnable { driverAid.human() }))
+                        ParallelAction(
+                        driverAid.daAction(listOf(Runnable { driverAid.human() })),
+
+                            uAction(driverAid, armSubsystem, scoringSubsystem,400.0),)
                     ),
                     SequentialAction(
                         drive.actionBuilder(lastPose)
-                            .lineToY(redHuman.position.y + 15)
+                            .lineToY(redHuman.position.y + 10)
                             .strafeToLinearHeading(
-                                Vector2d(redHuman.position.x, redHuman.position.y + 8),
-                                redHuman.heading.toDouble()
+                                Vector2d(redHuman.position.x, redHuman.position.y+10),
+                                Math.toRadians(270.0)
                             ).build(),
                         endAction()
                     ),
-                    uAction(driverAid, armSubsystem, scoringSubsystem),
                 ),
             )
         )
-        if (wait != null && wait) {
-            runBlocking(
-                SleepAction(2.0)
-            )
-        }
-        runAction = true
         runBlocking(
             SequentialAction(
                 ParallelAction(
@@ -268,7 +264,7 @@ class AutoHardware(
                         .splineToLinearHeading(
                             Pose2d(
                                 redSpecimen.position.x + offset,
-                                redSpecimen.position.y,
+                                redSpecimen.position.y-5,
                                 redSpecimen.heading.toDouble()
                             ), redSpecimen.heading.toDouble()
                         )
@@ -310,7 +306,7 @@ class AutoHardware(
 
     fun scorePreloadSample() {
         runAction = true
-        DAVars.hBasketP = 1850.0
+        DAVars.hBasketP = 1800.0
         runBlocking(
                 SequentialAction(
                     ParallelAction(
@@ -376,14 +372,14 @@ class AutoHardware(
     fun getSample(location: SampleLocation) {
         runAction = true
         val turnAngle = when (location) {
-            SampleLocation.LEFT -> 152.0
-            SampleLocation.CENTER -> 135.0
-            SampleLocation.RIGHT -> 105.0
+            SampleLocation.LEFT -> 160.0
+            SampleLocation.CENTER -> 140.0
+            SampleLocation.RIGHT -> 98.0
         }
         val offset = when (location) {
-            SampleLocation.LEFT -> 0
-            SampleLocation.CENTER -> -14
-            SampleLocation.RIGHT -> -10
+            SampleLocation.LEFT -> -17
+            SampleLocation.CENTER -> -16
+            SampleLocation.RIGHT -> -14
         }
         val pose = when (location) {
             SampleLocation.LEFT -> Pose2d(-68.0, -25.0, Math.toRadians(90.0))
@@ -401,22 +397,29 @@ class AutoHardware(
                         )
                             .turnTo(Math.toRadians(turnAngle))
                             .build(),
-                        endAction()
+                        endAction(),
                     ),
                     uAction(driverAid, armSubsystem, scoringSubsystem),
+//                    scoringSubsystem.servoAction(
+//                        listOf(
+//                            Runnable { scoringSubsystem.setRotateLeft() },
+//                        )
+//                    ),
                 ),
-                scoringSubsystem.servoAction(
-                    listOf(
-                        Runnable { scoringSubsystem.setRotateCenter() },
-                    )
-                ),
+//                SleepAction(0.2),
+//
                 scoringSubsystem.servoAction(
                     listOf(
                         Runnable { scoringSubsystem.setPitchLow() },
                     )
                 ),
-                SleepAction(0.2),
-
+                scoringSubsystem.servoAction(
+                    listOf(
+                        Runnable { if (location == SampleLocation.LEFT)scoringSubsystem.setRotateLeft()
+                                 if (location == SampleLocation.CENTER)scoringSubsystem.setRotateFreakBob()},
+                    )
+                ),
+                SleepAction(0.4),
                 scoringSubsystem.servoAction(
                     listOf(
                         Runnable { scoringSubsystem.closeClaw() },
@@ -439,7 +442,7 @@ class AutoHardware(
 
     fun scoreSample() {
         runAction = true
-        DAVars.hBasketP = 1850.0
+        DAVars.hBasketP = 1800.0
         runBlocking(
             SequentialAction(
                 ParallelAction(
@@ -501,7 +504,7 @@ class AutoHardware(
                         .lineToY(redHuman.position.y + 10)
                         .strafeToLinearHeading(
                             Vector2d(redHuman.position.x, redHuman.position.y),
-                            redHuman.heading.toDouble()
+                            Math.toRadians(90.0)
                         )
                         .build(),
 

@@ -19,9 +19,9 @@ public final class AutoRegistrar {
 //        opModeClasses.add(FullSpeciAuto.class);
         opModeClasses.add(oneSample.class);
 //        opModeClasses.add(FullSampleAuto.class);
-        opModeClasses.add(twoSpeci.class);
-        opModeClasses.add(threeSpeci.class);
-//        opModeClasses.add(parkHuman.class);
+//        opModeClasses.add(twoSpeci.class);
+//        opModeClasses.add(threeSpeci.class);
+        opModeClasses.add(parkHuman.class);
 //        opModeClasses.add(testArmAuto.class);
         opModeClasses.add(twoSample.class);
         opModeClasses.add(threeSample.class);

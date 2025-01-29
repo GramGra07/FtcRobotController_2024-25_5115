@@ -111,14 +111,14 @@ class DriverAid(
     val highSpecimenFunc = DAFunc(DAState.HIGH_SPECIMEN, {
         scoringSubsystem.setRotateCenter()
     }, { armSubsystem.setPE(DAVars.hSpecimenP, hSpecimenE) }, {
-        scoringSubsystem.specimenRotate(DAVars.hSpecimenP * armSubsystem.degreePerTick)
+        scoringSubsystem.specimenRotate((DAVars.hSpecimenP * armSubsystem.degreePerTick)+20)
     }, armSubsystem)
 
     val highBasketFunc = DAFunc(DAState.HIGH_BASKET, {
         scoringSubsystem.setPitchMed()
         scoringSubsystem.setRotateCenter()
     }, { armSubsystem.setPE(DAVars.hBasketP, hBasketE, true) }, {
-        armSubsystem.pMax = 0.5
+//        armSubsystem.pMax = 0.5
     }, armSubsystem)
 
 
@@ -253,6 +253,7 @@ class DriverAid(
         extend_pivot,
         hook,
         hook1st,
+        collapse,
         hook2nd,
         stop
     }
@@ -276,13 +277,21 @@ class DriverAid(
             .transition(AutoLift.hook) {
                 armSubsystem.isPitchAtTarget(200.0)
             }
-            .state(AutoLift.hook1st)
-            .onEnter(AutoLift.hook1st) {
-                armSubsystem.setPE(LiftVars.step2P, LiftVars.step2E)
+            .state(AutoLift.collapse)
+            .onEnter(AutoLift.collapse) {
+                armSubsystem.setExtendTarget(1200.0)
             }
-            .transition(AutoLift.hook1st) {
-                armSubsystem.bothAtTarget(200.0)
+            .transition(AutoLift.collapse) {
+                armSubsystem.isExtendAtTarget(200.0)
             }
+//            .state(AutoLift.hook1st)
+//            .onEnter(AutoLift.hook1st) {
+//                armSubsystem.setPE(LiftVars.step2P, LiftVars.step2E)
+////                armSubsystem.setExtendTarget(LiftVars.step2E)
+//            }
+//            .transition(AutoLift.hook1st) {
+//                false
+//            }
             .stopRunning(AutoLift.stop)
             .build()
 }
