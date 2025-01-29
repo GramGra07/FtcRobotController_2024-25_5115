@@ -94,9 +94,12 @@ object Operators {
 //        }
         if (myOpMode.gamepad2.left_trigger > 0.0) {
             da.lift()
+        }else if (myOpMode.gamepad2.right_trigger > 0.0) {
+            armSubsystem.setExtendTarget(armSubsystem.extendEncoder.getMost()-100)
         } else {
             da.firstLevelLift.restartAtBeginning()
         }
+
 
 //        if (myOpMode.gamepad2.right_stick_button) {
 //            armSubsystem.setPE(VarConfig.pitch, VarConfig.extend)

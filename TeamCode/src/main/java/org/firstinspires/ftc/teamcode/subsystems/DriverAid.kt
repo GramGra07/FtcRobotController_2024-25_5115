@@ -287,10 +287,9 @@ class DriverAid(
 //            .state(AutoLift.hook1st)
 //            .onEnter(AutoLift.hook1st) {
 //                armSubsystem.setPE(LiftVars.step2P, LiftVars.step2E)
-////                armSubsystem.setExtendTarget(LiftVars.step2E)
 //            }
 //            .transition(AutoLift.hook1st) {
-//                false
+//                armSubsystem.bothAtTarget(200.0)
 //            }
             .stopRunning(AutoLift.stop)
             .build()
