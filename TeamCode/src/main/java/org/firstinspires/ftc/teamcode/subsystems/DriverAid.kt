@@ -111,7 +111,7 @@ class DriverAid(
     val highSpecimenFunc = DAFunc(DAState.HIGH_SPECIMEN, {
         scoringSubsystem.setRotateCenter()
     }, { armSubsystem.setPE(DAVars.hSpecimenP, hSpecimenE) }, {
-        scoringSubsystem.specimenRotate((DAVars.hSpecimenP * armSubsystem.degreePerTick)+20)
+        scoringSubsystem.specimenRotate((DAVars.hSpecimenP * armSubsystem.degreePerTick))
     }, armSubsystem)
 
     val highBasketFunc = DAFunc(DAState.HIGH_BASKET, {

@@ -1,20 +1,22 @@
 package org.firstinspires.ftc.teamcode.opModes.tuners
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.DcMotorEx
 import org.firstinspires.ftc.teamcode.customHardware.HardwareConfig
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.Alliance
+import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles
 
-//@TeleOp(group = GroupingTitles.tele) //@Disabled//disabling the opmode
+@TeleOp(group = GroupingTitles.tele) //@Disabled//disabling the opmode
 
-class startupTest(val alliance: Alliance) : LinearOpMode() {
+class startupTest() : LinearOpMode() {
     //declaring the class
     lateinit var motorEx: List<DcMotorEx>
     override fun runOpMode() { //if opmode is started
         val robot =
-            HardwareConfig(this, true, StartLocation(this.alliance)) //initializing the robot
+            HardwareConfig(this, true, StartLocation(Alliance.RED)) //initializing the robot
         motorEx = listOf(
             hardwareMap.get(DcMotorEx::class.java, "motorFrontRight"),
             hardwareMap.get(DcMotorEx::class.java, "extendMotor"),

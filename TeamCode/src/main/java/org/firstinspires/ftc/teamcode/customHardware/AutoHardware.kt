@@ -59,7 +59,7 @@ class AutoHardware(
         val redEndLeft = Pose2d(24.0, 10.0, Math.toRadians(0.0))
         val redEndRight = Pose2d(-10.0, -10.0, Math.toRadians(0.0))
         val redHuman = Pose2d(46.0, -60.0, Math.toRadians(-90.0))
-        val redBasket = Pose2d(-42.0, -44.0, Math.toRadians(45.0))
+        val redBasket = Pose2d(-48.0, -50.0, Math.toRadians(45.0))
         val redSpecimen = Pose2d(0.0, -34.0, redStartRight.heading.toDouble())
         val redSample = Pose2d(60.0, -12.0, Math.toRadians(0.0))
         val redNeutralSample = Pose2d(-58.0, -40.0, redStartRight.heading.toDouble())
@@ -82,13 +82,13 @@ class AutoHardware(
                     SequentialAction(
                         drive.actionBuilder(lastPose)
                             .strafeToConstantHeading(
-                                Vector2d(redSpecimen.position.x, redSpecimen.position.y-5),
+                                Vector2d(redSpecimen.position.x, redSpecimen.position.y),
                             )
                             .build(),
                         endAction()
                     ),
                     driverAid.daAction(listOf(Runnable { driverAid.highSpecimen() })),
-                    uAction(driverAid, armSubsystem, scoringSubsystem)
+                    uAction(driverAid, armSubsystem, scoringSubsystem,400.0)
                 ),
                 scoringSubsystem.servoAction(
                     listOf(
@@ -361,6 +361,11 @@ class AutoHardware(
         val deltaY = pose2d.position.y - this.position.y
         return sqrt(deltaX * deltaX + deltaY * deltaY)
     }
+    fun Pose2d.angleTo(pose2d: Pose2d): Double {
+        val deltaX = pose2d.position.x - this.position.x
+        val deltaY = pose2d.position.y - this.position.y
+        return Math.atan2(deltaY, deltaX)
+    }
     fun calculateExtend(pose2d: Pose2d,newPose: Pose2d): Double {
         val distance = pose2d.distanceTo(newPose)
         return distance
@@ -371,22 +376,22 @@ class AutoHardware(
 
     fun getSample(location: SampleLocation) {
         runAction = true
-        val turnAngle = when (location) {
-            SampleLocation.LEFT -> 160.0
-            SampleLocation.CENTER -> 140.0
-            SampleLocation.RIGHT -> 98.0
-        }
-        val offset = when (location) {
-            SampleLocation.LEFT -> -17
-            SampleLocation.CENTER -> -16
-            SampleLocation.RIGHT -> -14
-        }
         val pose = when (location) {
             SampleLocation.LEFT -> Pose2d(-68.0, -25.0, Math.toRadians(90.0))
             SampleLocation.CENTER -> Pose2d(-58.0, -25.0, Math.toRadians(90.0))
             SampleLocation.RIGHT -> Pose2d(-48.0, -25.0, Math.toRadians(90.0))
         }
-        DAVars.pickUpE = (calculateExtend(lastPose, pose)+offset)*armSubsystem.ticksPerInchExtend
+        val turnAngle = when (location) {
+            SampleLocation.LEFT -> lastPose.angleTo(pose)+Math.toRadians(4.0)
+            SampleLocation.CENTER -> lastPose.angleTo(pose)+Math.toRadians(0.0)
+            SampleLocation.RIGHT -> lastPose.angleTo(pose)+Math.toRadians(-5.0)
+        }
+        val offset = when (location) {
+            SampleLocation.LEFT -> -5
+            SampleLocation.CENTER -> -5
+            SampleLocation.RIGHT -> -5
+        }
+        DAVars.pickUpE = (calculateExtend(lastPose, pose)+offset.toDouble())*armSubsystem.ticksPerInchExtend
         runBlocking(
             SequentialAction(
                 driverAid.daAction(listOf(Runnable { driverAid.pickup() })),
@@ -395,7 +400,7 @@ class AutoHardware(
                         drive.actionBuilder(
                             lastPose
                         )
-                            .turnTo(Math.toRadians(turnAngle))
+                            .turnTo((turnAngle))
                             .build(),
                         endAction(),
                     ),
@@ -415,8 +420,8 @@ class AutoHardware(
                 ),
                 scoringSubsystem.servoAction(
                     listOf(
-                        Runnable { if (location == SampleLocation.LEFT)scoringSubsystem.setRotateLeft()
-                                 if (location == SampleLocation.CENTER)scoringSubsystem.setRotateFreakBob()},
+                        Runnable { if (location == SampleLocation.LEFT)scoringSubsystem.setRotateFreakBob()
+                                 if (location == SampleLocation.CENTER)scoringSubsystem.setRotateCenter()},
                     )
                 ),
                 SleepAction(0.4),
