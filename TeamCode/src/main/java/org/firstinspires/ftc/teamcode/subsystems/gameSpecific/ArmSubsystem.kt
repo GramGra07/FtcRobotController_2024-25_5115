@@ -58,8 +58,8 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
     }
 
     var usePIDFe = true
-    private var extendMotor: DcMotorEx
-    private var extendMotor2: DcMotorEx
+    var extendMotor: DcMotorEx
+    var extendMotor2: DcMotorEx
     private var extendState: ExtendState = ExtendState.IDLE
     private var ePower: Double = 0.0
     var eMax = 1.0

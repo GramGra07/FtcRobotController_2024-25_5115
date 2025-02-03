@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.subsystems
 
 import com.acmerobotics.dashboard.telemetry.TelemetryPacket
 import com.acmerobotics.roadrunner.Action
+import com.qualcomm.robotcore.hardware.DcMotor
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ArmSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ScoringSubsystem
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.DAVars
@@ -76,7 +77,7 @@ class DriverAid(
         lateinit var daFunc: DAFunc
     }
 
-    private val useConfig = true
+    private val useConfig = false
     fun update() {
         if (useConfig) {
             collapseE = DAVars.collapseE
@@ -106,7 +107,8 @@ class DriverAid(
         scoringSubsystem.closeClaw()
         scoringSubsystem.setRotateIdle()
     }, { val bool = if (!auto) false else null
-        armSubsystem.setPE(collapseP, collapseE, false) }, null, armSubsystem)
+        armSubsystem.setPE(collapseP, collapseE, false) }, {
+    }, armSubsystem)
 
     val highSpecimenFunc = DAFunc(DAState.HIGH_SPECIMEN, {
         scoringSubsystem.setRotateCenter()
@@ -133,7 +135,7 @@ class DriverAid(
         .state(PickupState.retract)
         .onEnter(PickupState.retract) {
             armSubsystem.setExtendTarget(0.0)
-            if (auto){
+            if (auto && armSubsystem.pitchEncoder.currentPosition>1500.0){
                 armSubsystem.setPitchTarget(1500.0)
             }
             scoringSubsystem.setPitchMed()
@@ -154,6 +156,11 @@ class DriverAid(
             armSubsystem.setExtendTarget(DAVars.pickUpE)
         }
         .transition(PickupState.extend) {
+            if (auto){
+                if (armSubsystem.extendEncoder.getMost()>0.5*armSubsystem.extendTarget){
+                    scoringSubsystem.setPitchLow()
+                }
+            }
             armSubsystem.bothAtTarget()
         }
         .stopRunning(PickupState.stop)
@@ -212,8 +219,8 @@ class DriverAid(
         }
 
         fun runALot() {
-            runConstant?.run()
             armSubFunc?.run()
+            runConstant?.run()
         }
 
         fun isEnded(tolerance: Double): Boolean {
@@ -272,14 +279,14 @@ class DriverAid(
             }
             .state(AutoLift.hook)
             .onEnter(AutoLift.hook) {
-                armSubsystem.setPitchTarget(2000.0)
+                armSubsystem.setPitchTarget(1900.0)
             }
             .transition(AutoLift.hook) {
-                armSubsystem.isPitchAtTarget(200.0)
+                armSubsystem.isPitchAtTarget(400.0)
             }
             .state(AutoLift.collapse)
             .onEnter(AutoLift.collapse) {
-                armSubsystem.setExtendTarget(1200.0)
+                armSubsystem.setExtendTarget(1600.0)
             }
             .transition(AutoLift.collapse) {
                 armSubsystem.isExtendAtTarget(200.0)

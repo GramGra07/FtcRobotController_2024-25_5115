@@ -18,6 +18,7 @@ import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ScoringSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Drivers.currentFieldCentric
 import org.firstinspires.ftc.teamcode.subsystems.humanInput.Operators.bindOtherButtons
 import org.firstinspires.ftc.teamcode.utilClass.storage.PoseStorage
+import org.firstinspires.ftc.teamcode.utilClass.storage.TempAutoDAFix
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.VarConfig
 
 open class HardwareConfig(
@@ -37,6 +38,7 @@ open class HardwareConfig(
     lateinit var armSubsystem: ArmSubsystem
     lateinit var scoringSubsystem: ScoringSubsystem
     lateinit var driverAid: DriverAid
+//    lateinit var tempAuto: TempAutoDAFix
 //    lateinit var reLocalizationSubsystem: ReLocalizationSubsystem
 
 //    lateinit var brush: BrushlandRoboticsSensor
@@ -64,6 +66,7 @@ open class HardwareConfig(
         auto: Boolean,
         startLocation: StartLocation
     ) {
+//        tempAuto = TempAutoDAFix()
         startLocation.build()
         localizerSubsystem =
             LocalizerSubsystem(
@@ -95,6 +98,7 @@ open class HardwareConfig(
         if (!auto) {
             loopTimeController = LoopTimeController(timer)
             telemetry.update()
+//            tempAuto.resetAll()
         }
     }
 

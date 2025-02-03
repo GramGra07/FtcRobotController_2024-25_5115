@@ -17,6 +17,7 @@ import org.firstinspires.ftc.teamcode.subsystems.DriverAid
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ArmSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ScoringSubsystem
 import org.firstinspires.ftc.teamcode.utilClass.storage.PoseStorage
+import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.AutoVars
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.DAVars
 import kotlin.math.sqrt
 
@@ -59,7 +60,7 @@ class AutoHardware(
         val redEndLeft = Pose2d(24.0, 10.0, Math.toRadians(0.0))
         val redEndRight = Pose2d(-10.0, -10.0, Math.toRadians(0.0))
         val redHuman = Pose2d(46.0, -60.0, Math.toRadians(-90.0))
-        val redBasket = Pose2d(-48.0, -50.0, Math.toRadians(45.0))
+        val redBasket = Pose2d(-48.0+AutoVars.scoringOffsetXPosition, -50.0+AutoVars.scoringOffsetYPosition, Math.toRadians(45.0))
         val redSpecimen = Pose2d(0.0, -34.0, redStartRight.heading.toDouble())
         val redSample = Pose2d(60.0, -12.0, Math.toRadians(0.0))
         val redNeutralSample = Pose2d(-58.0, -40.0, redStartRight.heading.toDouble())
@@ -75,7 +76,6 @@ class AutoHardware(
 
     fun scorePreloadSpeci() {
         runAction = true
-        DAVars.hSpecimenP = 950.0
         runBlocking(
             SequentialAction(
                 ParallelAction(
@@ -95,7 +95,6 @@ class AutoHardware(
                         Runnable { scoringSubsystem.openClaw() },
                     )
                 ),
-                InstantAction{DAVars.hSpecimenP = 950.0}
             )
         )
     }
@@ -317,7 +316,7 @@ class AutoHardware(
                                 .setTangent(Math.toRadians(180.0))
                                 .strafeToLinearHeading(
                                     Vector2d(redBasket.position.x, redBasket.position.y),
-                                    Math.toRadians(45.0)
+                                    Math.toRadians(45.0+AutoVars.scoringOffsetTurn)
                                 )
                                 .build(),
                                     endAction()
@@ -361,7 +360,7 @@ class AutoHardware(
         val deltaY = pose2d.position.y - this.position.y
         return sqrt(deltaX * deltaX + deltaY * deltaY)
     }
-    fun Pose2d.angleTo(pose2d: Pose2d): Double {
+    public fun Pose2d.angleTo(pose2d: Pose2d): Double {
         val deltaX = pose2d.position.x - this.position.x
         val deltaY = pose2d.position.y - this.position.y
         return Math.atan2(deltaY, deltaX)
@@ -382,14 +381,14 @@ class AutoHardware(
             SampleLocation.RIGHT -> Pose2d(-48.0, -25.0, Math.toRadians(90.0))
         }
         val turnAngle = when (location) {
-            SampleLocation.LEFT -> lastPose.angleTo(pose)+Math.toRadians(4.0)
-            SampleLocation.CENTER -> lastPose.angleTo(pose)+Math.toRadians(0.0)
-            SampleLocation.RIGHT -> lastPose.angleTo(pose)+Math.toRadians(-5.0)
+            SampleLocation.LEFT -> lastPose.angleTo(pose)+Math.toRadians(AutoVars.sampleLeftTurnOffset)
+            SampleLocation.CENTER -> lastPose.angleTo(pose)+Math.toRadians(AutoVars.sampleCenterTurnOffset)
+            SampleLocation.RIGHT -> lastPose.angleTo(pose)+Math.toRadians(AutoVars.sampleRightTurnOffset)
         }
         val offset = when (location) {
-            SampleLocation.LEFT -> -5
-            SampleLocation.CENTER -> -5
-            SampleLocation.RIGHT -> -5
+            SampleLocation.LEFT -> AutoVars.sampleLeftPositionOffset
+            SampleLocation.CENTER -> AutoVars.sampleCenterPositionOffset
+            SampleLocation.RIGHT -> AutoVars.sampleRightPositionOffset
         }
         DAVars.pickUpE = (calculateExtend(lastPose, pose)+offset.toDouble())*armSubsystem.ticksPerInchExtend
         runBlocking(
@@ -405,14 +404,7 @@ class AutoHardware(
                         endAction(),
                     ),
                     uAction(driverAid, armSubsystem, scoringSubsystem),
-//                    scoringSubsystem.servoAction(
-//                        listOf(
-//                            Runnable { scoringSubsystem.setRotateLeft() },
-//                        )
-//                    ),
                 ),
-//                SleepAction(0.2),
-//
                 scoringSubsystem.servoAction(
                     listOf(
                         Runnable { scoringSubsystem.setPitchLow() },
@@ -455,8 +447,9 @@ class AutoHardware(
                         drive.actionBuilder(
                             lastPose
                         )
-                            .turnTo(Math.toRadians(45.0))
+                            .turnTo(Math.toRadians(45.0+AutoVars.scoringOffsetTurn))
                             .build(),
+
                         endAction()
                     ),
                     driverAid.daAction(listOf(Runnable { driverAid.highBasket() })),

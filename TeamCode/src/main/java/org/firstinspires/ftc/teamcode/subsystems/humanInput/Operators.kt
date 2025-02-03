@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.subsystems.humanInput
 
+import com.qualcomm.hardware.rev.RevBlinkinLedDriver
 import com.qualcomm.robotcore.eventloop.opmode.OpMode
+import com.qualcomm.robotcore.hardware.DcMotor
+import org.firstinspires.ftc.teamcode.extensions.BlinkExtensions.setPatternCo
 import org.firstinspires.ftc.teamcode.extensions.GamepadExtensions
 import org.firstinspires.ftc.teamcode.extensions.GamepadExtensions.buttonJustPressed
 import org.firstinspires.ftc.teamcode.subsystems.DriverAid
@@ -95,9 +98,20 @@ object Operators {
         if (myOpMode.gamepad2.left_trigger > 0.0) {
             da.lift()
         }else if (myOpMode.gamepad2.right_trigger > 0.0) {
+            da.
             armSubsystem.setExtendTarget(armSubsystem.extendEncoder.getMost()-100)
         } else {
             da.firstLevelLift.restartAtBeginning()
+        }
+
+        if (myOpMode.gamepad2.right_stick_button){
+            armSubsystem.pitchEncoder.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+            armSubsystem.extendMotor.mode= DcMotor.RunMode.STOP_AND_RESET_ENCODER
+            armSubsystem.extendMotor2.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+            armSubsystem.pitchEncoder.mode = DcMotor.RunMode.RUN_USING_ENCODER
+            armSubsystem.extendMotor.mode= DcMotor.RunMode.RUN_USING_ENCODER
+            armSubsystem.extendMotor2.mode = DcMotor.RunMode.RUN_USING_ENCODER
+            scoringSubsystem.blink.setPatternCo(RevBlinkinLedDriver.BlinkinPattern.GREEN)
         }
 
 

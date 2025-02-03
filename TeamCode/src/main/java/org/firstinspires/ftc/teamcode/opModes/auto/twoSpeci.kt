@@ -9,8 +9,7 @@ import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.startEnums.Alliance
 import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles
 
-@Autonomous(group = GroupingTitles.auto) //@Disabled//disabling the opmode
-@Disabled
+@Autonomous(group = GroupingTitles.auto)
 class twoSpeci() : LinearOpMode() {
     override fun runOpMode() { //if opmode is started
         val robot = AutoHardware(

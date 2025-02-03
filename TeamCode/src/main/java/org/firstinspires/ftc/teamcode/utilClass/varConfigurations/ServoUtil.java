@@ -13,6 +13,6 @@ public class ServoUtil {
     public static double rotateCenter = 63;
 
     public static double pivotHigh = 90;
-    public static double pivotLow = -80;
+    public static double pivotLow = -83;
     public static double pivotMid = 20;
 }
