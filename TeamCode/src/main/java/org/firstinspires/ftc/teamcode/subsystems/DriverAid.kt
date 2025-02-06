@@ -89,9 +89,9 @@ class DriverAid(
             humanP = DAVars.humanP
         }
         daFunc.runALot()
-        if (daState != DAState.LIFT) {
-            firstLevelLift.restartAtBeginning()
-        }
+//        if (daState != DAState.LIFT) {
+//            firstLevelLift.restartAtBeginning()
+//        }
         if (daState != DAState.PICKUP) {
             pickupSM.restartAtBeginning()
         }
