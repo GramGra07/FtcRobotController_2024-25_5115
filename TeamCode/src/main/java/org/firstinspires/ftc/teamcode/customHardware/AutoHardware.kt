@@ -10,6 +10,7 @@ import com.acmerobotics.roadrunner.SleepAction
 import com.acmerobotics.roadrunner.Vector2d
 import com.acmerobotics.roadrunner.ftc.runBlocking
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
+import com.qualcomm.robotcore.hardware.DcMotor
 import com.qualcomm.robotcore.hardware.HardwareMap
 import org.firstinspires.ftc.teamcode.customHardware.autoUtil.StartLocation
 import org.firstinspires.ftc.teamcode.followers.roadRunner.MecanumDrive
@@ -19,6 +20,7 @@ import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ScoringSubsystem
 import org.firstinspires.ftc.teamcode.utilClass.storage.PoseStorage
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.AutoVars
 import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.DAVars
+import kotlin.math.atan2
 import kotlin.math.sqrt
 
 
@@ -31,6 +33,14 @@ class AutoHardware(
 
     init {
 //        super.initRobot(ahwMap, true, startLocation)
+        armSubsystem.extendMotor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+        armSubsystem.extendMotor2.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+        armSubsystem.pitchMotor.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+        armSubsystem.pitchMotor2.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER
+        armSubsystem.extendMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+        armSubsystem.extendMotor2.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+        armSubsystem.pitchMotor.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
+        armSubsystem.pitchMotor2.mode = DcMotor.RunMode.RUN_WITHOUT_ENCODER
         telemetry.addData("Status", "Initialized")
 //        telemetry.addData("Alliance", startLocation.alliance)
         telemetry.update()
@@ -60,7 +70,7 @@ class AutoHardware(
         val redEndLeft = Pose2d(24.0, 10.0, Math.toRadians(0.0))
         val redEndRight = Pose2d(-10.0, -10.0, Math.toRadians(0.0))
         val redHuman = Pose2d(46.0, -60.0, Math.toRadians(-90.0))
-        val redBasket = Pose2d(-48.0+AutoVars.scoringOffsetXPosition, -50.0+AutoVars.scoringOffsetYPosition, Math.toRadians(45.0))
+        val redBasket = Pose2d(-48.0, -50.0, Math.toRadians(45.0))
         val redSpecimen = Pose2d(0.0, -34.0, redStartRight.heading.toDouble())
         val redSample = Pose2d(60.0, -12.0, Math.toRadians(0.0))
         val redNeutralSample = Pose2d(-58.0, -40.0, redStartRight.heading.toDouble())
@@ -260,13 +270,13 @@ class AutoHardware(
                         lastPose
                     )
                         .setTangent(Math.toRadians(180.0))
-                        .splineToLinearHeading(
-                            Pose2d(
+                        .strafeToLinearHeading(
+                            Vector2d(
                                 redSpecimen.position.x + offset,
-                                redSpecimen.position.y-5,
-                                redSpecimen.heading.toDouble()
-                            ), redSpecimen.heading.toDouble()
+                                redSpecimen.position.y-10), redSpecimen.heading.toDouble()
                         )
+                        .setTangent(redSpecimen.heading.toDouble())
+                        .lineToY(redSpecimen.position.y-5)
                         .build(),
                     endAction()
                 ),
@@ -302,7 +312,6 @@ class AutoHardware(
         )
     }
 
-
     fun scorePreloadSample() {
         runAction = true
         DAVars.hBasketP = 1800.0
@@ -316,7 +325,7 @@ class AutoHardware(
                                 .setTangent(Math.toRadians(180.0))
                                 .strafeToLinearHeading(
                                     Vector2d(redBasket.position.x, redBasket.position.y),
-                                    Math.toRadians(45.0+AutoVars.scoringOffsetTurn)
+                                    Math.toRadians(45.0)
                                 )
                                 .build(),
                                     endAction()
@@ -363,7 +372,7 @@ class AutoHardware(
     public fun Pose2d.angleTo(pose2d: Pose2d): Double {
         val deltaX = pose2d.position.x - this.position.x
         val deltaY = pose2d.position.y - this.position.y
-        return Math.atan2(deltaY, deltaX)
+        return atan2(deltaY, deltaX)
     }
     fun calculateExtend(pose2d: Pose2d,newPose: Pose2d): Double {
         val distance = pose2d.distanceTo(newPose)
@@ -378,19 +387,25 @@ class AutoHardware(
         val pose = when (location) {
             SampleLocation.LEFT -> Pose2d(-68.0, -25.0, Math.toRadians(90.0))
             SampleLocation.CENTER -> Pose2d(-58.0, -25.0, Math.toRadians(90.0))
-            SampleLocation.RIGHT -> Pose2d(-48.0, -25.0, Math.toRadians(90.0))
+            SampleLocation.RIGHT -> Pose2d(-50.0, -25.0, Math.toRadians(90.0))
+        }
+        val pose2 = when (location){
+            SampleLocation.LEFT -> Pose2d(Vector2d(-58.0,-45.0), lastPose.heading.toDouble())
+            SampleLocation.CENTER -> Pose2d(Vector2d(-58.0,-45.0), lastPose.heading.toDouble())
+            SampleLocation.RIGHT ->  Pose2d(Vector2d(pose.position.x,-45.0), lastPose.heading.toDouble())
         }
         val turnAngle = when (location) {
-            SampleLocation.LEFT -> lastPose.angleTo(pose)+Math.toRadians(AutoVars.sampleLeftTurnOffset)
-            SampleLocation.CENTER -> lastPose.angleTo(pose)+Math.toRadians(AutoVars.sampleCenterTurnOffset)
-            SampleLocation.RIGHT -> lastPose.angleTo(pose)+Math.toRadians(AutoVars.sampleRightTurnOffset)
+            SampleLocation.LEFT -> pose2.angleTo(pose)+Math.toRadians(AutoVars.sampleLeftTurnOffset)
+            SampleLocation.CENTER -> pose2.angleTo(pose)+Math.toRadians(AutoVars.sampleCenterTurnOffset)
+            SampleLocation.RIGHT -> pose2.angleTo(pose)+Math.toRadians(AutoVars.sampleRightTurnOffset)
         }
         val offset = when (location) {
             SampleLocation.LEFT -> AutoVars.sampleLeftPositionOffset
             SampleLocation.CENTER -> AutoVars.sampleCenterPositionOffset
             SampleLocation.RIGHT -> AutoVars.sampleRightPositionOffset
         }
-        DAVars.pickUpE = (calculateExtend(lastPose, pose)+offset.toDouble())*armSubsystem.ticksPerInchExtend
+        DAVars.pickUpE = (calculateExtend(pose2, pose)+offset.toDouble())*armSubsystem.ticksPerInchExtend
+
         runBlocking(
             SequentialAction(
                 driverAid.daAction(listOf(Runnable { driverAid.pickup() })),
@@ -399,7 +414,7 @@ class AutoHardware(
                         drive.actionBuilder(
                             lastPose
                         )
-                            .turnTo((turnAngle))
+                            .strafeToLinearHeading(Vector2d(pose2.position.x,pose2.position.y),turnAngle)
                             .build(),
                         endAction(),
                     ),
@@ -432,14 +447,14 @@ class AutoHardware(
                     ),
                     uAction(driverAid, armSubsystem, scoringSubsystem,250.0),
                 ),
-                InstantAction{ DAVars.pickUpE = 2000.0},
+                InstantAction{ DAVars.pickUpE = 1800.0},
             )
         )
     }
 
     fun scoreSample() {
         runAction = true
-        DAVars.hBasketP = 1800.0
+        DAVars.hBasketP = 1775.0
         runBlocking(
             SequentialAction(
                 ParallelAction(
@@ -447,9 +462,10 @@ class AutoHardware(
                         drive.actionBuilder(
                             lastPose
                         )
-                            .turnTo(Math.toRadians(45.0+AutoVars.scoringOffsetTurn))
+                            .strafeToLinearHeading(
+                                Vector2d(redBasket.position.x, redBasket.position.y), redBasket.heading.toDouble()+Math.toRadians(2.0)
+                            )
                             .build(),
-
                         endAction()
                     ),
                     driverAid.daAction(listOf(Runnable { driverAid.highBasket() })),

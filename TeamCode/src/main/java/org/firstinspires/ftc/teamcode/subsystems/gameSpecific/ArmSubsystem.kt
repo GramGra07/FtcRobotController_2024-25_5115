@@ -37,8 +37,8 @@ class ArmSubsystem(ahwMap: HardwareMap, auto: Boolean) {
     }
 
     var usePIDFp = true
-    private var pitchMotor: DcMotorEx
-    private var pitchMotor2: DcMotorEx
+    var pitchMotor: DcMotorEx
+    var pitchMotor2: DcMotorEx
     private var pitchState: PitchState = PitchState.IDLE
     private var pPower: Double = 0.0
     var pMax = 0.8

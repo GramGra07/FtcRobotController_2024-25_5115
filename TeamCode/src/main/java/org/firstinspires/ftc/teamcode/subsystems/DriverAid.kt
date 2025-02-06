@@ -77,7 +77,7 @@ class DriverAid(
         lateinit var daFunc: DAFunc
     }
 
-    private val useConfig = false
+    private val useConfig = true
     fun update() {
         if (useConfig) {
             collapseE = DAVars.collapseE
@@ -279,14 +279,14 @@ class DriverAid(
             }
             .state(AutoLift.hook)
             .onEnter(AutoLift.hook) {
-                armSubsystem.setPitchTarget(1900.0)
+                armSubsystem.setPitchTarget(2000.0)
             }
             .transition(AutoLift.hook) {
                 armSubsystem.isPitchAtTarget(400.0)
             }
             .state(AutoLift.collapse)
             .onEnter(AutoLift.collapse) {
-                armSubsystem.setExtendTarget(1600.0)
+                armSubsystem.setExtendTarget(0.0)
             }
             .transition(AutoLift.collapse) {
                 armSubsystem.isExtendAtTarget(200.0)

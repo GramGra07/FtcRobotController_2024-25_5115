@@ -24,9 +24,9 @@ class fourSample() : LinearOpMode() {
 
         if (opModeIsActive()) {
             robot.scorePreloadSample()
-            robot.getSample(AutoHardware.SampleLocation.RIGHT)
-            robot.scoreSample()
             robot.getSample(AutoHardware.SampleLocation.CENTER)
+            robot.scoreSample()
+            robot.getSample(AutoHardware.SampleLocation.RIGHT)
             robot.scoreSample()
             robot.getSample(AutoHardware.SampleLocation.LEFT)
             robot.scoreSample()

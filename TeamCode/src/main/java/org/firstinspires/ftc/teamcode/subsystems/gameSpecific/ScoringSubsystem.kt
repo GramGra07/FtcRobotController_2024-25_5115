@@ -234,7 +234,7 @@ class ScoringSubsystem(
 
     fun specimenRotate(pangle: Double) {
         val angle2 = 90 - pangle
-        val angleSend = (angle2 - 10)
+        val angleSend = (angle2 -15)
         pitchServo.setPose(angleSend)
     }
 

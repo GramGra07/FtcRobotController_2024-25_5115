@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.opModes.tuners
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp
 import com.qualcomm.robotcore.hardware.DcMotor
@@ -8,6 +9,7 @@ import org.firstinspires.ftc.teamcode.utilClass.GroupingTitles
 
 
 @TeleOp(group = GroupingTitles.TESTING)
+@Disabled
 class SetupEncoders : LinearOpMode() {
     lateinit var motorEx: List<DcMotorEx>
     override fun runOpMode() {

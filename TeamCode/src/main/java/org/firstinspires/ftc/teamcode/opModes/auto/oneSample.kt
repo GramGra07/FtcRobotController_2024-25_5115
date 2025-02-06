@@ -23,9 +23,9 @@ class oneSample() : LinearOpMode() {
         waitForStart()
 
         if (opModeIsActive()) {
-//            robot.hiBask()
-            robot.scorePreloadSample()
-            robot.collapse()
+            robot.hiBask()
+//            robot.scorePreloadSample()
+//            robot.collapse()
         }
     }
 }

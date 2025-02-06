@@ -100,8 +100,6 @@ object Operators {
         }else if (myOpMode.gamepad2.right_trigger > 0.0) {
             da.
             armSubsystem.setExtendTarget(armSubsystem.extendEncoder.getMost()-100)
-        } else {
-            da.firstLevelLift.restartAtBeginning()
         }
 
         if (myOpMode.gamepad2.right_stick_button){
@@ -111,6 +109,8 @@ object Operators {
             armSubsystem.pitchEncoder.mode = DcMotor.RunMode.RUN_USING_ENCODER
             armSubsystem.extendMotor.mode= DcMotor.RunMode.RUN_USING_ENCODER
             armSubsystem.extendMotor2.mode = DcMotor.RunMode.RUN_USING_ENCODER
+            da.firstLevelLift.restartAtBeginning()
+
             scoringSubsystem.blink.setPatternCo(RevBlinkinLedDriver.BlinkinPattern.GREEN)
         }
 
