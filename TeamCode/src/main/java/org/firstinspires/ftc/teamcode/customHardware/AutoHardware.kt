@@ -70,7 +70,7 @@ class AutoHardware(
         val redEndLeft = Pose2d(24.0, 10.0, Math.toRadians(0.0))
         val redEndRight = Pose2d(-10.0, -10.0, Math.toRadians(0.0))
         val redHuman = Pose2d(46.0, -60.0, Math.toRadians(-90.0))
-        val redBasket = Pose2d(-48.0, -50.0, Math.toRadians(45.0))
+        val redBasket = Pose2d(-46.0, -48.0, Math.toRadians(45.0))
         val redSpecimen = Pose2d(0.0, -34.0, redStartRight.heading.toDouble())
         val redSample = Pose2d(60.0, -12.0, Math.toRadians(0.0))
         val redNeutralSample = Pose2d(-58.0, -40.0, redStartRight.heading.toDouble())
@@ -276,7 +276,7 @@ class AutoHardware(
                                 redSpecimen.position.y-10), redSpecimen.heading.toDouble()
                         )
                         .setTangent(redSpecimen.heading.toDouble())
-                        .lineToY(redSpecimen.position.y-5)
+                        .lineToY(redSpecimen.position.y)
                         .build(),
                     endAction()
                 ),
@@ -454,7 +454,7 @@ class AutoHardware(
 
     fun scoreSample() {
         runAction = true
-        DAVars.hBasketP = 1775.0
+        DAVars.hBasketP = 1800.0
         runBlocking(
             SequentialAction(
                 ParallelAction(
