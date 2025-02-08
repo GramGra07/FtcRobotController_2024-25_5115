@@ -107,7 +107,7 @@ class AutoSampleMaxTuner : LinearOpMode() {
         waitForStart()
         if (opModeIsActive()) {
             runAction = true
-            DAVars.hBasketP = 1850.0
+            DAVars.hBasketP = 1800.0
             runBlocking(
                 SequentialAction(
                     robot.driverAid.daAction(listOf(Runnable { robot.driverAid.highBasket() })),
@@ -212,6 +212,7 @@ class AutoSampleMaxTuner : LinearOpMode() {
             finalOffsets.put("turnGain", turnGain)
             resetGain()
 //            //////////
+            //center
             var pose2 = Pose2d(Vector2d(-58.0,-45.0), lastPose.heading.toDouble())
             runAction = true
             var pose = Pose2d(-58.0, -25.0, Math.toRadians(90.0))
@@ -267,7 +268,21 @@ class AutoSampleMaxTuner : LinearOpMode() {
                                 robot.drive.actionBuilder(
                                     lastPose
                                 )
-                                    .turnTo((turnAngle + Math.toRadians(turnGain)))
+                                    .strafeToLinearHeading(
+                                        Vector2d(redBasket.position.x, redBasket.position.y), redBasket.heading.toDouble()+Math.toRadians(2.0)
+                                    )
+                                    .build(),
+                                robot.endAction(),
+                            ),
+                        ),
+                    )
+                    runBlocking(
+                        ParallelAction(
+                            SequentialAction(
+                                robot.drive.actionBuilder(
+                                    lastPose
+                                )
+                                    .strafeToLinearHeading(Vector2d(pose2.position.x,pose2.position.y),turnAngle)
                                     .build(),
                                 robot.endAction(),
                             ),
@@ -369,12 +384,23 @@ class AutoSampleMaxTuner : LinearOpMode() {
                 }
                 if (gainChanged()) {
                     runBlocking(
+                        SequentialAction(
+                            robot.drive.actionBuilder(
+                                lastPose).strafeToLinearHeading(
+                                Vector2d(redBasket.position.x, redBasket.position.y), redBasket.heading.toDouble()+Math.toRadians(2.0)
+                            ).build(),
+                            robot.endAction()
+                        )
+                    )
+                    runBlocking(
                         ParallelAction(
                             SequentialAction(
                                 robot.drive.actionBuilder(
                                     lastPose
                                 )
-                                    .turnTo((turnAngle + Math.toRadians(turnGain)))
+                                    .strafeToLinearHeading(
+                                        Vector2d(redBasket.position.x, redBasket.position.y), redBasket.heading.toDouble()+Math.toRadians(2.0)
+                                    )
                                     .build(),
                                 robot.endAction()
                             ),
@@ -483,14 +509,23 @@ class AutoSampleMaxTuner : LinearOpMode() {
                 }
                 if (gainChanged()) {
                     robot.scoringSubsystem.setPitchLow()
+
+                    runBlocking(
+                        SequentialAction(
+                            robot.drive.actionBuilder(
+                                lastPose).strafeToLinearHeading(
+                                Vector2d(redBasket.position.x, redBasket.position.y), redBasket.heading.toDouble()+Math.toRadians(2.0)
+                            ).build(),
+                            robot.endAction()
+                        )
+                    )
                     runBlocking(
                         ParallelAction(
                             SequentialAction(
-                                robot.driverAid.daAction(listOf(Runnable { robot.driverAid.pickup() })),
                                 robot.drive.actionBuilder(
                                     lastPose
                                 )
-                                    .turnTo((turnAngle + Math.toRadians(turnGain)))
+                                    .strafeToLinearHeading(Vector2d(pose2.position.x,pose2.position.y),turnAngle)
                                     .build(),
                                 robot.endAction(),
                             ),
