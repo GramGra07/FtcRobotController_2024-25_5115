@@ -17,6 +17,13 @@ class DriverAid(
 ) {
     init {
         daFunc = DAFunc(DAState.IDLE, {}, null, null, armSubsystem)
+        collapseE = DAVars.collapseE
+        collapseP = DAVars.collapseP
+        hSpecimenE = DAVars.hSpecimenE
+        hBasketE = DAVars.hBasketE
+        pickupP = DAVars.pickUpP
+        humanE = DAVars.humanE
+        humanP = DAVars.humanP
     }
 
     var usingDA = false
@@ -77,7 +84,7 @@ class DriverAid(
         lateinit var daFunc: DAFunc
     }
 
-    private val useConfig = true
+    private val useConfig = false
     fun update() {
         if (useConfig) {
             collapseE = DAVars.collapseE
@@ -277,20 +284,20 @@ class DriverAid(
             .transition(AutoLift.extend_pivot) {
                 armSubsystem.bothAtTarget(300.0)
             }
-            .state(AutoLift.hook)
-            .onEnter(AutoLift.hook) {
-                armSubsystem.setPitchTarget(2000.0)
-            }
-            .transition(AutoLift.hook) {
-                armSubsystem.isPitchAtTarget(400.0)
-            }
-            .state(AutoLift.collapse)
-            .onEnter(AutoLift.collapse) {
-                armSubsystem.setExtendTarget(0.0)
-            }
-            .transition(AutoLift.collapse) {
-                armSubsystem.isExtendAtTarget(200.0)
-            }
+//            .state(AutoLift.hook)
+//            .onEnter(AutoLift.hook) {
+//                armSubsystem.setPitchTarget(2000.0)
+//            }
+//            .transition(AutoLift.hook) {
+//                armSubsystem.isPitchAtTarget(400.0)
+//            }
+//            .state(AutoLift.collapse)
+//            .onEnter(AutoLift.collapse) {
+//                armSubsystem.setExtendTarget(0.0)
+//            }
+//            .transition(AutoLift.collapse) {
+//                armSubsystem.isExtendAtTarget(200.0)
+//            }
 //            .state(AutoLift.hook1st)
 //            .onEnter(AutoLift.hook1st) {
 //                armSubsystem.setPE(LiftVars.step2P, LiftVars.step2E)

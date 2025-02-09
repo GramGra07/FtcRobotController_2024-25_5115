@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.extensions.GamepadExtensions.buttonJustPre
 import org.firstinspires.ftc.teamcode.subsystems.DriverAid
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ArmSubsystem
 import org.firstinspires.ftc.teamcode.subsystems.gameSpecific.ScoringSubsystem
+import org.firstinspires.ftc.teamcode.utilClass.varConfigurations.DAVars
 
 object Operators {
 
@@ -97,10 +98,11 @@ object Operators {
 //        }
         if (myOpMode.gamepad2.left_trigger > 0.0) {
             da.lift()
-        }else if (myOpMode.gamepad2.right_trigger > 0.0) {
-            da.
-            armSubsystem.setExtendTarget(armSubsystem.extendEncoder.getMost()-100)
         }
+            if (myOpMode.gamepad2.right_trigger > 0.0) {
+                armSubsystem.setExtendTarget(DAVars.liftNeg)
+                armSubsystem.setPitchTarget(DAVars.liftP)
+            }
 
         if (myOpMode.gamepad2.right_stick_button){
             armSubsystem.pitchEncoder.mode = DcMotor.RunMode.STOP_AND_RESET_ENCODER

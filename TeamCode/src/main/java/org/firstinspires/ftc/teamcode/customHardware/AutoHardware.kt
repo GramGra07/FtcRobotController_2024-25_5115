@@ -70,7 +70,7 @@ class AutoHardware(
         val redEndLeft = Pose2d(24.0, 10.0, Math.toRadians(0.0))
         val redEndRight = Pose2d(-10.0, -10.0, Math.toRadians(0.0))
         val redHuman = Pose2d(46.0, -60.0, Math.toRadians(-90.0))
-        val redBasket = Pose2d(-46.0, -48.0, Math.toRadians(45.0))
+        val redBasket = Pose2d(-50.0, -52.0, Math.toRadians(45.0))
         val redSpecimen = Pose2d(0.0, -34.0, redStartRight.heading.toDouble())
         val redSample = Pose2d(60.0, -12.0, Math.toRadians(0.0))
         val redNeutralSample = Pose2d(-58.0, -40.0, redStartRight.heading.toDouble())
@@ -244,7 +244,7 @@ class AutoHardware(
                         drive.actionBuilder(
                             lastPose
                         )
-                            .lineToY(redHuman.position.y)
+                            .lineToY(redHuman.position.y+5)
                             .stopAndAdd(scoringSubsystem.servoAction(listOf(Runnable { scoringSubsystem.closeClaw() })))
                             .build(),
                         endAction()

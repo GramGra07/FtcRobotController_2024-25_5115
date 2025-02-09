@@ -73,7 +73,7 @@ class ScoringSubsystem(
             PROCESSORS.TARGET_LOCK,
             ahwMap,
             "Webcam 1",
-            true
+                false
         )
         claw = initServo(ahwMap, "claw")
         pitchServo = SynchronizedServo(ahwMap, "pitchServo", true)
